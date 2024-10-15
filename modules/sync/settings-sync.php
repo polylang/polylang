@@ -95,6 +95,8 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 * @since 1.0
 	 *
 	 * @return string[] Array synchronization options.
+	 *
+	 * @phpstan-return non-empty-array<non-falsy-string, string>
 	 */
 	public static function list_metas_to_sync() {
 		return array(

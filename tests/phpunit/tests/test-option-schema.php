@@ -54,8 +54,10 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	 * @param mixed       $value           The value to test.
 	 * @param int         $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
+	 * @param string      $show_0          Tells if the choice `0` (i.e. "Language set from content") is available, accepts `'yes'` or `'no'`.
 	 */
-	public function test_force_lang( $value, int $sanitized_value, $expected_valid ) {
+	public function test_force_lang( $value, int $sanitized_value, $expected_valid, $show_0 = 'no' ) {
+		update_option( 'pll_language_from_content_available', $show_0 );
 		$this->test_option( Business\Force_Lang::class, $value, $sanitized_value, $expected_valid );
 	}
 
@@ -190,7 +192,7 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid key'      => array(
-				'value'           => array( 'en' => 'https://example.com', 'fr41' => 'https://example.net', 'de' => 'https://example.org' ),
+				'value'           => array( 'en' => 'https://example.com', 'fr_FR' => 'https://example.net', 'de' => 'https://example.org' ),
 				'sanitized_value' => array( 'en' => 'https://example.com', 'de' => 'https://example.org' ),
 				'expected_valid'  => 'rest_additional_properties_forbidden',
 			),
@@ -229,6 +231,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 
 	public function force_lang_provider() {
 		return array(
+			'0 displayed'    => array(
+				'value'           => 0,
+				'sanitized_value' => 0,
+				'expected_valid'  => true,
+				'show_0'          => 'yes',
+			),
+			'0 hidden'     => array(
+				'value'           => 0,
+				'sanitized_value' => 0,
+				'expected_valid'  => 'rest_not_in_enum',
+				'show_0'          => 'no',
+			),
 			'in list'     => array(
 				'value'           => 2,
 				'sanitized_value' => 2,
@@ -260,8 +274,8 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid'    => array(
-				'value'           => 'fr41',
-				'sanitized_value' => 'fr41',
+				'value'           => 'fr_FR',
+				'sanitized_value' => 'fr_FR',
 				'expected_valid'  => 'rest_invalid_pattern',
 			),
 		);
@@ -292,22 +306,30 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'valid'                       => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 					'twentybarbaz' => array(
-						'fr' => 12,
-						'de' => 27,
+						'primary' => array(
+							'fr' => 12,
+							'de' => 27,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 					'twentybarbaz' => array(
-						'fr' => 12,
-						'de' => 27,
+						'primary' => array(
+							'fr' => 12,
+							'de' => 27,
+						),
 					),
 				),
 				'expected_valid'  => true,
@@ -320,8 +342,10 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'invalid theme'               => array(
 				'value'           => array(
 					'' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'sanitized_value' => array(),
@@ -330,14 +354,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'theme wrong type'            => array(
 				'value'           => array(
 					8 => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					8 => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'expected_valid'  => true, // Passes because php casts `8` as a string automatically, thanks to type Juggling.
@@ -354,13 +382,17 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'invalid locale'              => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						''   => 4,
+						'primary' => array(
+							'en' => 7,
+							''   => 4,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
+						'primary' => array(
+							'en' => 7,
+						),
 					),
 				),
 				'expected_valid'  => 'rest_additional_properties_forbidden',
@@ -368,14 +400,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'invalid post ID'             => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 0,
-						'fr' => -4,
+						'primary' => array(
+							'en' => 0,
+							'fr' => -4,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 0,
-						'fr' => -4,
+						'primary' => array(
+							'en' => 0,
+							'fr' => -4,
+						),
 					),
 				),
 				'expected_valid'  => 'rest_out_of_bounds',
@@ -383,14 +419,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'post ID string'              => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => '4',
+						'primary' => array(
+							'en' => 7,
+							'fr' => '4',
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'expected_valid'  => true,
@@ -398,14 +438,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'post ID wrong type'          => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => array(),
+						'primary' => array(
+							'en' => 7,
+							'fr' => array(),
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 0,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 0,
+						),
 					),
 				),
 				'expected_valid'  => 'rest_invalid_type',

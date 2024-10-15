@@ -15,7 +15,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 	public $model;
 
 	/**
-	 * @var PLL_Links|null
+	 * @var PLL_Admin_Links
 	 */
 	public $links;
 

@@ -111,10 +111,9 @@ class Languages extends WP_REST_Controller {
 				'allow_batch' => array( 'v1' => true ),
 			)
 		);
-
 		register_rest_route(
 			$this->namespace,
-			"/{$this->rest_base}/(?P<slug>[a-z_-]+)",
+			sprintf( '/%1$s/(?P<slug>%2$s)', $this->rest_base, Languages_Model::INNER_SLUG_PATTERN ),
 			array(
 				'args'   => array(
 					'slug'    => array(
@@ -141,13 +140,14 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_items( $request ) {
-		$languages = array();
+		$response = array();
 
 		foreach ( $this->languages->get_list() as $language ) {
-			$languages[] = $this->prepare_item_for_response( $language, $request );
+			$language   = $this->prepare_item_for_response( $language, $request );
+			$response[] = $this->prepare_response_for_collection( $language );
 		}
 
-		return rest_ensure_response( $languages );
+		return rest_ensure_response( $response );
 	}
 
 	/**
@@ -461,13 +461,13 @@ class Languages extends WP_REST_Controller {
 				'slug'            => array(
 					'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en).', 'polylang' ),
 					'type'        => 'string',
-					'pattern'     => '[a-z_-]+',
+					'pattern'     => Languages_Model::SLUG_PATTERN,
 					'context'     => array( 'view', 'edit' ),
 				),
 				'locale'          => array(
 					'description' => __( 'WordPress Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
-					'pattern'     => '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?',
+					'pattern'     => Languages_Model::LOCALE_PATTERN,
 					'context'     => array( 'view', 'edit' ),
 					'required'    => true,
 				),
@@ -577,7 +577,7 @@ class Languages extends WP_REST_Controller {
 					'uniqueItems' => true,
 					'items'       => array(
 						'type'    => 'string',
-						'pattern' => '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?',
+						'pattern' => Languages_Model::LOCALE_PATTERN,
 					),
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,

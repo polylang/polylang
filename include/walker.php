@@ -38,6 +38,9 @@ class PLL_Walker extends Walker {
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		if ( $element instanceof PLL_Language ) {
 			$element = $element->to_std_class();
+
+			// Sets the w3c locale as the main locale.
+			$element->locale = $element->w3c ?? $element->locale;
 		}
 
 		$element->parent = $element->id = 0; // Don't care about this.

@@ -104,7 +104,7 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	public function _upgrade() {
-		foreach ( array( '2.0.8', '2.1', '2.7', '3.4' ) as $version ) {
+		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
 				if ( is_callable( $method_to_call ) ) {
@@ -112,6 +112,13 @@ class PLL_Upgrade {
 				}
 			}
 		}
+
+		/**
+		 * Fires after Polylang has been upgraded and before the new version is saved in options.
+		 *
+		 * @since 3.7
+		 */
+		do_action( 'pll_upgrade' );
 
 		$this->options['previous_version'] = $this->options['version']; // Remember the previous version of Polylang since v1.7.7
 		$this->options['version'] = POLYLANG_VERSION;
@@ -200,6 +207,21 @@ class PLL_Upgrade {
 		$this->migrate_locale_fallback_to_language_description();
 
 		$this->migrate_strings_translations();
+	}
+
+	/**
+	 * Upgrades if the previous version is < 3.7.
+	 * Hides the "The language is set from content" option if it isn't the one selected.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	protected function upgrade_3_7() {
+		update_option(
+			'pll_language_from_content_available',
+			0 === $this->options['force_lang'] ? 'yes' : 'no'
+		);
 	}
 
 	/**

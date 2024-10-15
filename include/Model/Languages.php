@@ -21,6 +21,12 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Languages {
+	public const INNER_LOCALE_PATTERN = '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?';
+	public const INNER_SLUG_PATTERN   = '[a-z][a-z0-9_-]*';
+
+	public const LOCALE_PATTERN = '^' . self::INNER_LOCALE_PATTERN . '$';
+	public const SLUG_PATTERN   = '^' . self::INNER_SLUG_PATTERN . '$';
+
 	public const TRANSIENT_NAME = 'pll_languages_list';
 	private const CACHE_KEY     = 'languages';
 
@@ -793,12 +799,12 @@ class Languages {
 		$errors = new WP_Error();
 
 		// Validate locale with the same pattern as WP 4.3. See #28303.
-		if ( ! preg_match( '#^[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?$#', $args['locale'], $matches ) ) {
+		if ( ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
 			$errors->add( 'pll_invalid_locale', __( 'Enter a valid WordPress locale', 'polylang' ) );
 		}
 
 		// Validate slug characters.
-		if ( ! preg_match( '#^[a-z_-]+$#', $args['slug'] ) ) {
+		if ( ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
 			$errors->add( 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
 		}
 
@@ -901,13 +907,11 @@ class Languages {
 
 		// Delete relationships
 		if ( ! empty( $dr ) ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
 				"DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
-				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )'
+				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' ) ' . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				'AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
-			// PHPCS:enable
 		}
 
 		// Delete terms
@@ -918,13 +922,11 @@ class Languages {
 
 		// Update terms
 		if ( ! empty( $ut ) ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
 				"UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
-				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )'
+				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END ) ' . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				'WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
-			// PHPCS:enable
 		}
 
 		if ( ! empty( $term_ids ) ) {

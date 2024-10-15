@@ -184,7 +184,7 @@ class PLL_Admin_Filters_Columns {
 						esc_attr( $post->post_title ),
 						esc_url( $link ),
 						esc_html( $s ),
-						$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+						$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					);
 				}
 			} elseif ( $id === $post_id ) {
@@ -192,7 +192,7 @@ class PLL_Admin_Filters_Columns {
 					'<span class="pll_column_flag" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
-					$this->get_flag_html( $language ) // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$this->get_flag_html( $language ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			}
 		}
@@ -318,14 +318,14 @@ class PLL_Admin_Filters_Columns {
 					esc_attr( $term->name ),
 					esc_url( $link ),
 					esc_html( $s ),
-					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$flag
 				);
 			} elseif ( $id === $term_id ) {
 				$out .= sprintf(
 					'<span class="pll_column_flag"><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
-					$this->get_flag_html( $language ) // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$this->get_flag_html( $language )
 				);
 			}
 		}

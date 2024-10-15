@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 use WP_Syntex\Polylang\Options\Options;
 
 /**
@@ -28,12 +30,16 @@ class PLL_Wizard {
 	/**
 	 * List of steps.
 	 *
-	 * @var array $steps {
-	 *     @type string   $name    I18n string which names the step.
-	 *     @type callable $view    The callback function use to display the step content.
-	 *     @type callable $handler The callback function use to process the step after it is submitted.
-	 *     @type array    $scripts List of scripts handle needed by the step.
-	 *     @type array    $styles  The list of styles handle needed by the step.
+	 * @var array[] $steps {
+	 *     @type array {
+	 *         List of step properties.
+	 *
+	 *         @type string   $name    I18n string which names the step.
+	 *         @type callable $view    The callback function use to display the step content.
+	 *         @type callable $handler The callback function use to process the step after it is submitted.
+	 *         @type array    $scripts List of scripts handle needed by the step.
+	 *         @type array    $styles  The list of styles handle needed by the step.
+	 *     }
 	 * }
 	 */
 	protected $steps = array();
@@ -43,7 +49,7 @@ class PLL_Wizard {
 	 *
 	 * @var string|null
 	 */
-	protected $step;
+	protected $current_step;
 
 	/**
 	 * List of WordPress CSS file handles.
@@ -203,24 +209,24 @@ class PLL_Wizard {
 		$this->steps = apply_filters( 'pll_wizard_steps', $this->steps );
 		$step  = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : false; // phpcs:ignore WordPress.Security.NonceVerification
 
-		$this->step = $step && array_key_exists( $step, $this->steps ) ? $step : current( array_keys( $this->steps ) );
+		$this->current_step = $step && array_key_exists( $step, $this->steps ) ? $step : current( array_keys( $this->steps ) );
 
 		$has_languages = $this->model->has_languages();
 
-		if ( ! $has_languages && ! in_array( $this->step, array( 'licenses', 'languages' ) ) ) {
+		if ( ! $has_languages && ! in_array( $this->current_step, array( 'licenses', 'languages' ) ) ) {
 			wp_safe_redirect( sanitize_url( $this->get_step_link( 'languages' ) ) );
 			exit;
 		}
 
-		if ( $has_languages && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
+		if ( $has_languages && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->current_step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
 			wp_safe_redirect( sanitize_url( $this->get_step_link( 'untranslated-contents' ) ) );
 			exit;
 		}
 
 		// Call the handler of the step for going to the next step.
 		// Be careful nonce verification with check_admin_referer must be done in each handler.
-		if ( ! empty( $_POST['save_step'] ) && isset( $this->steps[ $this->step ]['handler'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			call_user_func( $this->steps[ $this->step ]['handler'] );
+		if ( ! empty( $_POST['save_step'] ) && isset( $this->steps[ $this->current_step ]['handler'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			call_user_func( $this->steps[ $this->current_step ]['handler'] );
 		}
 
 		$this->display_wizard_page();
@@ -274,6 +280,10 @@ class PLL_Wizard {
 	 */
 	public function display_wizard_page() {
 		set_current_screen( 'pll-wizard' );
+		do_action( 'admin_enqueue_scripts' );
+		$steps          = $this->steps;
+		$current_step   = $this->current_step;
+		$styles         = $this->styles;
 		include __DIR__ . '/view-wizard-page.php';
 	}
 
@@ -314,7 +324,7 @@ class PLL_Wizard {
 	 */
 	public function get_step_link( $step = '' ) {
 		if ( ! $step ) {
-			$step = $this->step;
+			$step = $this->current_step;
 		}
 
 		$keys = array_keys( $this->steps );
@@ -339,7 +349,7 @@ class PLL_Wizard {
 	 */
 	public function get_next_step_link( $step = '' ) {
 		if ( ! $step ) {
-			$step = $this->step;
+			$step = $this->current_step;
 		}
 
 		$keys = array_keys( $this->steps );
@@ -415,7 +425,7 @@ class PLL_Wizard {
 					// Stay on this step with an error.
 					$redirect = add_query_arg(
 						array(
-							'step'           => $this->step,
+							'step'           => $this->current_step,
 							'activate_error' => 'i18n_license_key_error',
 						)
 					);
@@ -514,6 +524,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_languages() {
+		$model = $this->model;
 		include __DIR__ . '/view-wizard-step-languages.php';
 	}
 
@@ -538,7 +549,7 @@ class PLL_Wizard {
 				sanitize_url(
 					add_query_arg(
 						array(
-							'step'           => $this->step,
+							'step'           => $this->current_step,
 							'activate_error' => 'i18n_no_language_added',
 						)
 					)
@@ -575,7 +586,7 @@ class PLL_Wizard {
 						sanitize_url(
 							add_query_arg(
 								array(
-									'step'           => $this->step,
+									'step'           => $this->current_step,
 									'activate_error' => 'i18n_' . reset( $error_keys ),
 								)
 							)
@@ -624,6 +635,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_media() {
+		$options = $this->options;
 		include __DIR__ . '/view-wizard-step-media.php';
 	}
 
@@ -681,6 +693,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_untranslated_contents() {
+		$model = $this->model;
 		include __DIR__ . '/view-wizard-step-untranslated-contents.php';
 	}
 
@@ -744,6 +757,24 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_home_page() {
+		$model   = $this->model;
+		$languages = $model->languages->get_list();
+		$home_page_id = get_option( 'page_on_front' );
+		$home_page_id = is_numeric( $home_page_id ) ? (int) $home_page_id : 0;
+		$translations = $model->post->get_translations( $home_page_id );
+		$home_page = $home_page_id > 0 ? get_post( $home_page_id ) : null;
+		$home_page_language = $model->post->get_language( $home_page_id );
+		$untranslated_languages = array();
+
+		if ( empty( $home_page ) ) {
+			return;
+		}
+
+		foreach ( $languages as $language ) {
+			if ( ! $model->post->get( $home_page_id, $language ) ) {
+				$untranslated_languages[] = $language;
+			}
+		}
 		include __DIR__ . '/view-wizard-step-home-page.php';
 	}
 
