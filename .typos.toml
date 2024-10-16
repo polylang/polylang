@@ -16,17 +16,17 @@ ignore-hidden = false
 
 [default]
 extend-ignore-re = [
+	"'bs_BA'",
 	"Jani Alha",
+	"olt-manager\\.php",
 	# En français dans le texte.
 	"Etiquette exemple",
-	"'bs_BA'",
 	"<!\\[CDATA\\[non-classe\\]\\]>",
-	"olt-manager\\.php",
 ]
 
 [default.extend-identifiers]
+"captin411" = "captin411"
+"get_post_stati" = "get_post_stati"
 "OLT_Manager_Test" = "OLT_Manager_Test"
 "PLL_OLT" = "PLL_OLT"
 "PLL_OLT_Manager" = "PLL_OLT_Manager"
-"get_post_stati" = "get_post_stati"
-"captin411" = "captin411"
