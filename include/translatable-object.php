@@ -383,24 +383,30 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$sql        = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
-		$object_ids = $this->query_objects_with_no_lang( $sql );
+		$object_ids = $this->query_objects_with_no_lang( $language_ids, $limit, $args );
 
 		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
 	}
 
 	/**
-	 * Returns object IDs without language given a specific SQL query.
+	 * Returns object IDs without language.
 	 * Can be overridden by child classes in case queried object doesn't use
 	 * `wp_cache_set_last_changed()` or another cache system.
 	 *
 	 * @since 3.4
+	 * @since 3.7 Changed all parameters.
 	 *
-	 * @param string $sql A prepared SQL query for object IDs with no language.
+	 * @param int[] $language_ids List of language `term_taxonomy_id`.
+	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param array $args         The object args.
 	 * @return string[] An array of numeric object IDs.
+	 *
+	 * @phpstan-param array<positive-int> $language_ids
+	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-param array<empty> $args
 	 */
-	protected function query_objects_with_no_lang( $sql ) {
-		$key          = md5( $sql );
+	protected function query_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) {
+		$key          = md5( maybe_serialize( $language_ids ) . maybe_serialize( $args ) . $limit );
 		$last_changed = wp_cache_get_last_changed( $this->cache_type );
 		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
 		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
@@ -409,7 +415,7 @@ abstract class PLL_Translatable_Object {
 			return $object_ids;
 		}
 
-		$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$object_ids = $this->get_raw_objects_with_no_lang( $language_ids, $limit, $args );
 		wp_cache_set( $cache_key, $object_ids, $this->cache_type );
 
 		return $object_ids;
@@ -452,30 +458,40 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Returns SQL query that fetches the IDs of the objects without language.
+	 * Fetches the IDs of the objects without language.
 	 *
-	 * @since 3.4
+	 * @since 3.7
 	 *
 	 * @param int[] $language_ids List of language `term_taxonomy_id`.
 	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
 	 * @param array $args         The object args.
-	 * @return string
+	 * @return string[]
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array<empty> $args
 	 */
-	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function get_raw_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		global $wpdb;
+
 		$db = $this->get_db_infos();
 
-		return sprintf(
-			"SELECT {$db['table']}.{$db['id_column']} FROM {$db['table']}
-			WHERE {$db['table']}.{$db['id_column']} NOT IN (
-				SELECT object_id FROM {$GLOBALS['wpdb']->term_relationships} WHERE term_taxonomy_id IN (%s)
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				sprintf(
+					"SELECT %%i FROM %%i
+					WHERE %%i NOT IN (
+						SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+					)
+					LIMIT %%d",
+					implode( ',', array_fill( 0, count( $language_ids ), '%d' ) )
+				),
+				array_merge(
+					array( $db['id_column'], $db['table'], $db['id_column'] ),
+					$language_ids,
+					array( $limit >= 1 ? $limit : 4294967295 )
+				)
 			)
-			%s",
-			PLL_Db_Tools::prepare_values_list( $language_ids ),
-			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
 
@@ -539,7 +555,7 @@ abstract class PLL_Translatable_Object {
 	 * These are specific to the table containing the objects.
 	 *
 	 * @see PLL_Translatable_Object::join_clause()
-	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+	 * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
 	 *
 	 * @since 3.4.3
 	 *

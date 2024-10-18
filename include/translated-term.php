@@ -332,7 +332,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * These are specific to the table containing the objects.
 	 *
 	 * @see PLL_Translatable_Object::join_clause()
-	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+	 * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
 	 *
 	 * @since 3.4.3
 	 *
