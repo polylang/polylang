@@ -108,7 +108,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 			if ( function_exists( 'idn_to_ascii' ) && defined( 'INTL_IDNA_VARIANT_UTS46' ) ) {
 				$hosts[ $lang ] = idn_to_ascii( $host, 0, INTL_IDNA_VARIANT_UTS46 );
 			} else {
-				$hosts[ $lang ] = \WpOrg\Requests\IdnaEncoder::encode( $host ); // Since WP 6.2.
+				$hosts[ $lang ] = (string) \WpOrg\Requests\IdnaEncoder::encode( $host ); // Since WP 6.2.
 			}
 		}
 

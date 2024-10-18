@@ -48,7 +48,7 @@ class PLL_Admin_Block_Editor {
 			return $preload_paths;
 		}
 
-		if ( 'core/edit-post' !== $context->name ) {
+		if ( 'core/edit-post' !== $context->name || ! $context->post instanceof WP_Post ) {
 			// Do nothing if not post editor.
 			return $preload_paths;
 		}
