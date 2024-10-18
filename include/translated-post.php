@@ -85,11 +85,25 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 				'show_ui'            => false, // Hide the taxonomy on admin side, needed for WP 4.4.x.
 				'show_in_nav_menus'  => false, // No metabox for nav menus, needed for WP 4.4.x.
 				'publicly_queryable' => true, // Since WP 4.5.
-				'query_var'          => 'lang',
+				'query_var'          => 'lang', // See `add_language_taxonomy_query_var()`.
 				'rewrite'            => false, // Rewrite rules are added through filters when needed.
 				'_pll'               => true, // Polylang taxonomy.
 			)
 		);
+
+		add_action( 'setup_theme', array( $this, 'add_language_taxonomy_query_var' ) );
+	}
+
+	/**
+	 * Adds the language query var once the global `$wp` is available.
+	 *
+	 * @since 3.7
+	 * @see WP_Taxonomy::add_rewrite_rules()
+	 *
+	 * @return void
+	 */
+	public function add_language_taxonomy_query_var(): void {
+		$GLOBALS['wp']->add_query_var( 'lang' );
 	}
 
 	/**
