@@ -16,8 +16,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	/**
 	 * Fetches the IDs of the objects without language.
 	 *
-	 * @since 3.4
-	 * @since 3.7 Returns the result of the query instead of the SQL query only.
+	 * @since 3.7
 	 *
 	 * @param int[] $language_ids List of language `term_taxonomy_id`.
 	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
@@ -28,7 +27,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array<string> $args
 	 */
-	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) {
+	protected function get_raw_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) {
 		global $wpdb;
 
 		if ( empty( $args ) ) {
