@@ -246,6 +246,17 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
+		//Multisite
+		if ( is_multisite() ){
+			$plugin = POLYLANG_ROOT_FILE;
+			$network_activated = __( 'No', 'polylang' );
+			if ( is_plugin_active_for_network( 'polylang/polylang.php' ) || is_plugin_active_for_network( 'polylang-pro/polylang.php' )){
+				$network_activated = __( 'Yes', 'polylang' );
+			}
+			$fields['multisite']['label'] = __( 'Network Activated', 'polylang' );
+			$fields['multisite']['value'] = $network_activated;
+		}
+
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
 			'label'  => sprintf( __( '%s options', 'polylang' ), POLYLANG ),
