@@ -290,8 +290,8 @@ class PLL_Admin_Site_Health {
 			}
 
 			$debug_info[ 'pll_language_' . $language->slug ] = array(
-				/* translators: placeholder is the language name */
-				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
+				/* translators: %1$s placeholder is the language name, %2$s is the language code */
+				'label'  => sprintf( __( 'Language: %1$s - %2$s', 'polylang' ), $language->name, $language->slug ),
 				/* translators: placeholder is the flag image */
 				'description' => sprintf( esc_html__( 'Flag used in the language switcher: %s', 'polylang' ), $this->get_flag( $language ) ),
 				'fields' => $fields,
