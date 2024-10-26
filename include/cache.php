@@ -77,7 +77,6 @@ class PLL_Cache {
 	 * @param string $key Cache key.
 	 * @return mixed
 	 *
-	 * @phpstan-param non-empty-string $key
 	 * @phpstan-return TCacheData|false
 	 */
 	public function get( $key ) {
