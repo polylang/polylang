@@ -300,8 +300,13 @@ class PLL_Table_String extends WP_List_Table {
 		// Kept for the end as it is a slow process
 		foreach ( $languages as $language ) {
 			foreach ( $this->items as $key => $row ) {
-				$this->items[ $key ]['translations'][ $language->slug ] = $mo[ $language->slug ]->translate( $row['string'] );
+				// Load translations in the correct locale according to the language.
+				switch_to_locale( $language->locale );
+				// Get strings from the l10n php file.
+				$entries = WP_Translation_Controller::get_instance()->get_entries( 'pll_string' );
+				$this->items[ $key ]['translations'][ $language->slug ] = $entries[ $row['string'] ] ?? $row['string'];
 				$this->items[ $key ]['row'] = $key; // Store the row number for convenience
+				restore_previous_locale();
 			}
 		}
 	}
@@ -380,7 +385,13 @@ class PLL_Table_String extends WP_List_Table {
 	public function save_translations() {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
+		/*
+		 * @phpstan-var WP_Filesystem_Base $wp_filesystem
+		 */
+		global $wp_filesystem;
+
 		if ( ! empty( $_POST['submit'] ) ) {
+			$files_written = array();
 			foreach ( $this->languages as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) || ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
@@ -388,8 +399,9 @@ class PLL_Table_String extends WP_List_Table {
 
 				$translations = array_map( 'trim', (array) wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-				$mo = new PLL_MO();
-				$mo->import_from_db( $language );
+				$pll_version = POLYLANG_VERSION;
+				$now = gmdate( 'Y-m-d H:i:s' );
+				$php_file_content = "<?php\nreturn ['x-generator'=>'Polylang/{$pll_version}','translation-revision-date'=>'{$now}','plural-forms'=>'nplurals=2; plural=n > 1;','language'=>'fr','messages'=>[";
 
 				foreach ( $translations as $key => $translation ) {
 					/**
@@ -404,22 +416,22 @@ class PLL_Table_String extends WP_List_Table {
 					 * @param string $context     The context as defined in pll_register_string.
 					 */
 					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'] );
-					$mo->add_entry( $mo->make_entry( $this->strings[ $key ]['string'], $translation ) );
+
+					$php_file_content .= "'{$this->strings[ $key ]['string']}'=>'{$translation}',";
 				}
 
-				// Clean database ( removes all strings which were registered some day but are no more )
-				if ( ! empty( $_POST['clean'] ) ) {
-					$new_mo = new PLL_MO();
-
-					foreach ( $this->strings as $string ) {
-						$new_mo->add_entry( $mo->make_entry( $string['string'], $mo->translate( $string['string'] ) ) );
-					}
+				$php_file_content .= ']];';
+				$php_file_path     = WP_LANG_DIR . "/plugins/pll_string-{$language->locale}.l10n.php";
+				if ( true === WP_Filesystem() ) {
+					$files_written[] = $wp_filesystem->put_contents( $php_file_path, $php_file_content, FS_CHMOD_FILE );
+				} else {
+					$files_written[] = (bool) file_put_contents( $php_file_path, $php_file_content, LOCK_EX ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
 				}
-
-				isset( $new_mo ) ? $new_mo->export_to_db( $language ) : $mo->export_to_db( $language );
 			}
 
-			pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
+			if ( count( $this->languages ) === count( $files_written ) ) {
+				pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
+			}
 
 			/**
 			 * Fires after the strings translations are saved in DB
