@@ -55,15 +55,17 @@ abstract class PLL_Base {
 		$this->model = &$links_model->model;
 		$this->options = &$this->model->options;
 
-		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
-
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 
+		// phpcs:disable Squiz.PHP.CommentedOutCode.Found
+		// Actions bellow not needed anymore?
 		// User defined strings translations
-		add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
-		add_action( 'change_locale', array( $this, 'load_strings_translations' ) ); // Since WP 4.7
-		add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
-		add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 10, 0 ); // Password reset email.
+		// add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
+		// add_action( 'change_locale', array( $this, 'load_strings_translations' ) ); // Since WP 4.7
+		// add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
+		// add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 10, 0 ); // Password reset email.
+		// phpcs:enable Squiz.PHP.CommentedOutCode.Found
+
 		// Switch_to_blog
 		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
 	}
