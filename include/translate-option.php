@@ -104,20 +104,16 @@ class PLL_Translate_Option {
 			return $value;
 		}
 
-		if ( empty( $GLOBALS['l10n']['pll_string'] ) || ! $GLOBALS['l10n']['pll_string'] instanceof PLL_MO ) {
-			return $value;
-		}
-
-		$lang = $GLOBALS['l10n']['pll_string']->get_header( 'Language' );
-
-		if ( ! is_string( $lang ) || '' === $lang ) {
-			return $value;
-		}
-
-		$cache = $this->cache->get( $lang );
+		// `WP_Translation_Controller` knows only locales...
+		$locale = WP_Translation_Controller::get_instance()->get_locale();
+		$cache  = $this->cache->get( $locale );
 		if ( false === $cache ) {
+			// `_load_text_domain_just_in_time()` will be called eventually.
 			$cache = $this->translate_string_recursive( $value, $this->keys );
-			$this->cache->set( $lang, $cache );
+
+			if ( ! empty( $locale ) ) {
+				$this->cache->set( $locale, $cache );
+			}
 		}
 
 		return $cache;
