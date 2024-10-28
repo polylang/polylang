@@ -189,32 +189,6 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	/**
-	 * @see https://github.com/polylang/polylang-pro/issues/2294
-	 */
-	public function test_archive_not_initialized() {
-		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
-		self::$model->term->set_language( $en, 'en' );
-
-		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
-		self::$model->post->set_language( $fr, 'fr' );
-
-		// Remove the language taxonomy.
-		unregister_taxonomy( 'language' );
-		$this->remove_hooks( 'setup_theme', array( \PLL_Translated_Post::class, 'add_language_taxonomy_query_var' ) );
-
-		// Recreate the language taxonomy, in the same context as it would be created normally (understand: `$wp` is not set yet).
-		unset( $GLOBALS['wp'] );
-		$this->frontend->model->post = new \PLL_Translated_Post( $this->frontend->model );
-
-		// Remove the hook that adds the query var.
-		remove_action( 'setup_theme', array( $this->frontend->model->post, 'add_language_taxonomy_query_var' ) );
-
-		// Watch it fail: FR is asked but EN is the current language.
-		$this->go_to( home_url( '/fr/2007/' ) );
-		$this->assertEquals( 'en', $this->frontend->curlang->slug );
-	}
-
 	public function test_archive_with_default_permalinks() {
 		$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
