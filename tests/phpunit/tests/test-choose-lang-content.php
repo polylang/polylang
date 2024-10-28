@@ -89,7 +89,11 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp_the_query'] = new WP_Query();
 		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 		$GLOBALS['wp'] = new WP();
-		_cleanup_query_vars();
+		/*
+		 * Instead of using `_cleanup_query_vars()` to cleanup and repopulate query vars, trigger `setup_theme`.
+		 * See `PLL_Translated_Post::add_language_taxonomy_query_var()`.
+		 */
+		do_action( 'setup_theme' );
 
 		$GLOBALS['wp']->main( $parts['query'] );
 	}
@@ -184,6 +188,32 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
+	/**
+	 * @see https://github.com/polylang/polylang-pro/issues/2294
+	 */
+	public function test_archive_not_initialized() {
+		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		self::$model->post->set_language( $fr, 'fr' );
+
+		// Remove the language taxonomy.
+		unregister_taxonomy( 'language' );
+		$this->remove_hooks( 'setup_theme', array( \PLL_Translated_Post::class, 'add_language_taxonomy_query_var' ) );
+
+		// Recreate the language taxonomy, in the same context as it would be created normally (understand: `$wp` is not set yet).
+		unset( $GLOBALS['wp'] );
+		$this->frontend->model->post = new \PLL_Translated_Post( $this->frontend->model );
+
+		// Remove the hook that adds the query var.
+		remove_action( 'setup_theme', array( $this->frontend->model->post, 'add_language_taxonomy_query_var' ) );
+
+		// Watch it fail: FR is asked but EN is the current language.
+		$this->go_to( home_url( '/fr/2007/' ) );
+		$this->assertEquals( 'en', $this->frontend->curlang->slug );
+	}
+
 	public function test_archive_with_default_permalinks() {
 		$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
@@ -216,5 +246,42 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$set_language->invokeArgs( $this->frontend->choose_lang, array( $this->frontend->model->get_language( 'ar' ) ) );
 
 		$this->assertEquals( 'rtl', wp_styles()->text_direction );
+	}
+
+	private function remove_hooks( $hook, $callback_to_remove ): void {
+		global $wp_filter;
+
+		if ( empty( $wp_filter[ $hook ] ) ) {
+			return;
+		}
+
+		foreach ( $wp_filter[ $hook ]->callbacks as $prio => $callbacks ) {
+			foreach ( $callbacks as $uniqid => $callback ) {
+				if ( ! is_array( $callback['function'] ) ) {
+					if ( $callback['function'] === $callback_to_remove ) {
+						unset( $wp_filter[ $hook ]->callbacks[ $prio ][ $uniqid ] );
+					}
+					continue;
+				}
+
+				if ( ! is_array( $callback_to_remove ) || $callback['function'][1] !== $callback_to_remove[1] ) {
+					continue;
+				}
+
+				if ( is_object( $callback['function'][0] ) && get_class( $callback['function'][0] ) === $callback_to_remove[0] ) {
+					unset( $wp_filter[ $hook ]->callbacks[ $prio ][ $uniqid ] );
+					continue;
+				}
+
+				if ( is_string( $callback['function'][0] ) && $callback['function'][0] === $callback_to_remove[0] ) {
+					unset( $wp_filter[ $hook ]->callbacks[ $prio ][ $uniqid ] );
+					continue;
+				}
+			}
+
+			if ( empty( $wp_filter[ $hook ]->callbacks[ $prio ] ) ) {
+				unset( $wp_filter[ $hook ]->callbacks[ $prio ] );
+			}
+		}
 	}
 }
