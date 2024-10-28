@@ -222,41 +222,4 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 'rtl', wp_styles()->text_direction );
 	}
-
-	private function remove_hooks( $hook, $callback_to_remove ): void {
-		global $wp_filter;
-
-		if ( empty( $wp_filter[ $hook ] ) ) {
-			return;
-		}
-
-		foreach ( $wp_filter[ $hook ]->callbacks as $prio => $callbacks ) {
-			foreach ( $callbacks as $uniqid => $callback ) {
-				if ( ! is_array( $callback['function'] ) ) {
-					if ( $callback['function'] === $callback_to_remove ) {
-						unset( $wp_filter[ $hook ]->callbacks[ $prio ][ $uniqid ] );
-					}
-					continue;
-				}
-
-				if ( ! is_array( $callback_to_remove ) || $callback['function'][1] !== $callback_to_remove[1] ) {
-					continue;
-				}
-
-				if ( is_object( $callback['function'][0] ) && get_class( $callback['function'][0] ) === $callback_to_remove[0] ) {
-					unset( $wp_filter[ $hook ]->callbacks[ $prio ][ $uniqid ] );
-					continue;
-				}
-
-				if ( is_string( $callback['function'][0] ) && $callback['function'][0] === $callback_to_remove[0] ) {
-					unset( $wp_filter[ $hook ]->callbacks[ $prio ][ $uniqid ] );
-					continue;
-				}
-			}
-
-			if ( empty( $wp_filter[ $hook ]->callbacks[ $prio ] ) ) {
-				unset( $wp_filter[ $hook ]->callbacks[ $prio ] );
-			}
-		}
-	}
 }
