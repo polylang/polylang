@@ -89,6 +89,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp_the_query'] = new WP_Query();
 		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 		$GLOBALS['wp'] = new WP();
+
 		/*
 		 * Instead of using `_cleanup_query_vars()` to cleanup and repopulate query vars, trigger `setup_theme`.
 		 * See `PLL_Translated_Post::add_language_taxonomy_query_var()`.
