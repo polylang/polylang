@@ -52,9 +52,10 @@ class First_Activation extends Abstract_Option {
 	 */
 	protected function get_data_structure(): array {
 		return array(
-			'type'    => 'integer',
-			'minimum' => 0,
-			'maximum' => PHP_INT_MAX,
+			'type'     => 'integer',
+			'minimum'  => 0,
+			'maximum'  => PHP_INT_MAX,
+			'readonly' => true,
 		);
 	}
 
