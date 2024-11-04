@@ -360,7 +360,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'default'              => array(),
 			'required'             => array_keys( $properties ),
 			'properties'           => $properties,
-			'additionalProperties' => false,
+			'additionalProperties' => true,
 		);
 
 		return $this->schema[ $this->current_blog_id ];
