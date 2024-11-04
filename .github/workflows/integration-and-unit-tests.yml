@@ -74,7 +74,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run PHPUnit tests
-        uses: polylang/actions/phpunit@main
+        uses: polylang/actions/phpunit@update-wordpress-installer
         with:
           php-version: ${{ matrix.php-version }}
           wordpress-version: ${{ matrix.wordpress-version }}
