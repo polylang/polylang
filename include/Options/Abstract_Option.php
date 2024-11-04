@@ -157,6 +157,7 @@ abstract class Abstract_Option {
 				'title'       => static::key(),
 				'description' => $this->get_description(),
 				'context'     => array( 'view', 'edit', 'embed' ),
+				'default'     => $this->get_default(),
 			),
 			$this->get_data_structure()
 		);
