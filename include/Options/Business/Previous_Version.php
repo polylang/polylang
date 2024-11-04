@@ -46,7 +46,7 @@ class Previous_Version extends Abstract_String {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'string', readonly: true}
+	 * @phpstan-return array{type: 'string', readonly: true, readonly: true}
 	 */
 	protected function get_data_structure(): array {
 		$string_schema             = parent::get_data_structure();

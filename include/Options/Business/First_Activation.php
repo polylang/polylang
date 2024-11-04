@@ -48,7 +48,7 @@ class First_Activation extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>}
+	 * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>, readonly: true}
 	 */
 	protected function get_data_structure(): array {
 		return array(
