@@ -356,7 +356,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'title'                => static::OPTION_NAME,
 			'description'          => __( 'Polylang options', 'polylang' ),
 			'type'                 => 'object',
-			'context'              => array( 'edit' ),
+			'context'              => array( 'view', 'edit', 'embed' ),
 			'properties'           => $properties,
 			'additionalProperties' => false,
 		);

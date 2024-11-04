@@ -156,7 +156,7 @@ abstract class Abstract_Option {
 				'$schema'     => 'http://json-schema.org/draft-04/schema#',
 				'title'       => static::key(),
 				'description' => $this->get_description(),
-				'context'     => array( 'edit' ),
+				'context'     => array( 'view', 'edit', 'embed' ),
 			),
 			$this->get_data_structure()
 		);
