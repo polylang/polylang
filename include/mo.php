@@ -11,6 +11,12 @@
  * @since 3.4 Stores the strings into language taxonomy term meta instead of a post meta.
  */
 class PLL_MO extends MO {
+	/**
+	 * Static cache for the translations.
+	 *
+	 * @var array<string, array<string, Translation_Entry>>
+	 */
+	private static $cache;
 
 	/**
 	 * Writes the strings into a term meta.
@@ -35,6 +41,8 @@ class PLL_MO extends MO {
 		}
 
 		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
+
+		self::$cache[ $lang->slug ] = array();
 	}
 
 	/**
@@ -49,8 +57,14 @@ class PLL_MO extends MO {
 	public function import_from_db( $lang ) {
 		$this->set_header( 'Language', $lang->slug );
 
+		if ( ! empty( self::$cache[ $lang->slug ] ) ) {
+			$this->entries = self::$cache[ $lang->slug ];
+			return;
+		}
+
 		$strings = get_term_meta( $lang->term_id, '_pll_strings_translations', true );
 		if ( empty( $strings ) || ! is_array( $strings ) ) {
+			self::$cache[ $lang->slug ] = array();
 			return;
 		}
 
@@ -61,6 +75,8 @@ class PLL_MO extends MO {
 				$this->add_entry( $entry );
 			}
 		}
+
+		self::$cache[ $lang->slug ] = &$this->entries;
 	}
 
 	/**
@@ -73,5 +89,6 @@ class PLL_MO extends MO {
 	 */
 	public function delete_entry( $string ) {
 		unset( $this->entries[ $string ] );
+		unset( self::$cache[ $this->get_header( 'Language' ) ][ $string ] );
 	}
 }

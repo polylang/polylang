@@ -300,19 +300,8 @@ function pll_translate_string( $string, $lang ) {
 		return $string;
 	}
 
-	static $cache; // Cache object to avoid loading the same translations object several times.
-
-	if ( empty( $cache ) ) {
-		$cache = new PLL_Cache();
-	}
-
-	$mo = $cache->get( $lang->slug );
-
-	if ( ! $mo instanceof PLL_MO ) {
-		$mo = new PLL_MO();
-		$mo->import_from_db( $lang );
-		$cache->set( $lang->slug, $mo );
-	}
+	$mo = new PLL_MO();
+	$mo->import_from_db( $lang );
 
 	return $mo->translate( $string );
 }
