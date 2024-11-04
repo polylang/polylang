@@ -358,6 +358,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'type'                 => 'object',
 			'context'              => array( 'view', 'edit', 'embed' ),
 			'default'              => array(),
+			'required'             => array_keys( $properties ),
 			'properties'           => $properties,
 			'additionalProperties' => false,
 		);
