@@ -335,6 +335,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 		}
 
 		$properties = array();
+		$default    = array();
 
 		if ( ! empty( $this->options[ $this->current_blog_id ] ) ) {
 			foreach ( $this->options[ $this->current_blog_id ] as $option ) {
@@ -348,6 +349,10 @@ class Options implements ArrayAccess, IteratorAggregate {
 				unset( $sub_schema['title'], $sub_schema['$schema'] );
 
 				$properties[ $option->key() ] = $sub_schema;
+
+				if ( isset( $sub_schema['default'] ) ) {
+					$default[ $option->key() ] = $sub_schema['default'];
+				}
 			}
 		}
 
@@ -357,7 +362,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'description'          => __( 'Polylang options', 'polylang' ),
 			'type'                 => 'object',
 			'context'              => array( 'view', 'edit', 'embed' ),
-			'default'              => array(),
+			'default'              => $default,
 			'required'             => array_keys( $properties ),
 			'properties'           => $properties,
 			'additionalProperties' => true,
