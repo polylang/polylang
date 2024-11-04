@@ -26,6 +26,12 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
+		$mo = new PLL_MO();
+		foreach ( $this->pll_admin->model->languages->get_list() as $lang ) {
+			// Flush the cache.
+			$mo->export_to_db( $lang );
+		}
+
 		unset( $GLOBALS['polylang'] );
 	}
 
@@ -410,5 +416,26 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->pll_admin->load_strings_translations( 'fr' );
 		$this->assertSame( 'val_fr', get_option( 'my_option1' ), 'Translations should be kept after option update' );
 		$this->assertSame( 'val_fr', get_option( 'my_option2' ), 'Translations should be kept after option update' );
+	}
+
+	public function test_cache_is_hit() {
+		$this->translate_strings();
+
+		$db_calls = 0;
+		add_filter(
+			'get_term_metadata',
+			function () use ( &$db_calls ) {
+				$db_calls++;
+				return null;
+			}
+		);
+
+		$a_mo = new PLL_MO();
+		$a_mo->import_from_db( $this->pll_admin->model->languages->get( 'en' ) );
+		$another_mo = new PLL_MO();
+		$another_mo->import_from_db( $this->pll_admin->model->languages->get( 'en' ) );
+
+		$this->assertEquals( $a_mo, $another_mo );
+		$this->assertSame( 1, $db_calls );
 	}
 }
