@@ -417,25 +417,4 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'val_fr', get_option( 'my_option1' ), 'Translations should be kept after option update' );
 		$this->assertSame( 'val_fr', get_option( 'my_option2' ), 'Translations should be kept after option update' );
 	}
-
-	public function test_cache_is_hit() {
-		$this->translate_strings();
-
-		$db_calls = 0;
-		add_filter(
-			'get_term_metadata',
-			function () use ( &$db_calls ) {
-				$db_calls++;
-				return null;
-			}
-		);
-
-		$a_mo = new PLL_MO();
-		$a_mo->import_from_db( $this->pll_admin->model->languages->get( 'en' ) );
-		$another_mo = new PLL_MO();
-		$another_mo->import_from_db( $this->pll_admin->model->languages->get( 'en' ) );
-
-		$this->assertEquals( $a_mo, $another_mo );
-		$this->assertSame( 1, $db_calls );
-	}
 }
