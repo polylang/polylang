@@ -76,7 +76,7 @@ class PLL_MO extends MO {
 			}
 		}
 
-		self::$cache[ $lang->slug ] = &$this->entries;
+		self::$cache[ $lang->slug ] = $this->entries;
 	}
 
 	/**
@@ -90,5 +90,49 @@ class PLL_MO extends MO {
 	public function delete_entry( $string ) {
 		unset( $this->entries[ $string ] );
 		unset( self::$cache[ $this->get_header( 'Language' ) ][ $string ] );
+	}
+
+	/**
+	 * Adds an entry to the MO structure and caches it.
+	 *
+	 * @since 3.7
+	 *
+	 * @param Translation_Entry|array $entry The entry to add.
+	 * @return bool True if the entry was added, false otherwise.
+	 */
+	public function add_entry( $entry ) {
+		if ( is_array( $entry ) ) {
+			$entry = new Translation_Entry( $entry );
+		}
+
+		if ( parent::add_entry( $entry ) ) {
+			self::$cache[ $this->get_header( 'Language' ) ][ $entry->key() ] = $entry;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Adds or merges an entry to the MO structure and caches it.
+	 *
+	 * @since 3.7
+	 *
+	 * @param Translation_Entry|array $entry The entry to add.
+	 * @return bool True if the entry was added, false otherwise.
+	 */
+	public function add_entry_or_merge( $entry ) {
+		if ( is_array( $entry ) ) {
+			$entry = new Translation_Entry( $entry );
+		}
+
+		if ( parent::add_entry_or_merge( $entry ) ) {
+			self::$cache[ $this->get_header( 'Language' ) ][ $entry->key() ] = $this->entries[ $entry->key() ];
+
+			return true;
+		}
+
+		return false;
 	}
 }
