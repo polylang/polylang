@@ -14,9 +14,20 @@ class PLL_MO extends MO {
 	/**
 	 * Static cache for the translations.
 	 *
-	 * @var array<string, array<string, Translation_Entry>>
+	 * @var PLL_Cache<array>
 	 */
 	private static $cache;
+
+	/**
+	 * Constructor, initializes the cache if not already done.
+	 *
+	 * @since 3.7
+	 */
+	public function __construct() {
+		if ( empty( self::$cache ) ) {
+			self::$cache = new PLL_Cache();
+		}
+	}
 
 	/**
 	 * Writes the strings into a term meta.
@@ -42,7 +53,7 @@ class PLL_MO extends MO {
 
 		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
 
-		self::$cache[ $lang->slug ] = array();
+		self::$cache->clean( $lang->slug );
 	}
 
 	/**
@@ -57,14 +68,14 @@ class PLL_MO extends MO {
 	public function import_from_db( $lang ) {
 		$this->set_header( 'Language', $lang->slug );
 
-		if ( ! empty( self::$cache[ $lang->slug ] ) ) {
-			$this->entries = self::$cache[ $lang->slug ];
+		if ( ! empty( self::$cache->get( $lang->slug ) ) ) {
+			$this->entries = self::$cache->get( $lang->slug );
 			return;
 		}
 
 		$strings = get_term_meta( $lang->term_id, '_pll_strings_translations', true );
 		if ( empty( $strings ) || ! is_array( $strings ) ) {
-			self::$cache[ $lang->slug ] = array();
+			self::$cache->set( $lang->slug, array() );
 			return;
 		}
 
@@ -76,7 +87,7 @@ class PLL_MO extends MO {
 			}
 		}
 
-		self::$cache[ $lang->slug ] = $this->entries;
+		self::$cache->set( $lang->slug, $this->entries );
 	}
 
 	/**
@@ -89,7 +100,11 @@ class PLL_MO extends MO {
 	 */
 	public function delete_entry( $string ) {
 		unset( $this->entries[ $string ] );
-		unset( self::$cache[ $this->get_header( 'Language' ) ][ $string ] );
+
+		$language = $this->get_header( 'Language' );
+		if ( ! empty( $language ) ) {
+			self::$cache->set( $language, $this->entries );
+		}
 	}
 
 	/**
@@ -106,7 +121,10 @@ class PLL_MO extends MO {
 		}
 
 		if ( parent::add_entry( $entry ) ) {
-			self::$cache[ $this->get_header( 'Language' ) ][ $entry->key() ] = $entry;
+			$language = $this->get_header( 'Language' );
+			if ( ! empty( $language ) ) {
+				self::$cache->set( $language, $this->entries );
+			}
 
 			return true;
 		}
@@ -128,7 +146,10 @@ class PLL_MO extends MO {
 		}
 
 		if ( parent::add_entry_or_merge( $entry ) ) {
-			self::$cache[ $this->get_header( 'Language' ) ][ $entry->key() ] = $this->entries[ $entry->key() ];
+			$language = $this->get_header( 'Language' );
+			if ( ! empty( $language ) ) {
+				self::$cache->set( $language, $this->entries );
+			}
 
 			return true;
 		}
