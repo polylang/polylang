@@ -417,4 +417,15 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'val_fr', get_option( 'my_option1' ), 'Translations should be kept after option update' );
 		$this->assertSame( 'val_fr', get_option( 'my_option2' ), 'Translations should be kept after option update' );
 	}
+
+	public function test_sanitization_should_no_apply_to_other_options() {
+		add_option( 'my_option1', 'val1' );
+		add_option( 'my_option2', 'val2' );
+
+		new PLL_Translate_Option( 'my_option1', array(), array( 'sanitize_callback' => '__return_empty_string' ) );
+		new PLL_Translate_Option( 'my_option2' );
+
+		$this->assertEmpty( apply_filters( 'pll_sanitize_string_translation', 'tr_val1', 'my_option1', 'Polylang', 'val1' ) ); // Sanitized.
+		$this->assertSame( 'tr_val2', apply_filters( 'pll_sanitize_string_translation', 'tr_val2', 'my_option2', 'Polylang', 'val2' ) ); // Not sanitized.
+	}
 }
