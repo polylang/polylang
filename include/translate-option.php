@@ -413,7 +413,7 @@ class PLL_Translate_Option {
 	 * Sanitizes the string translation.
 	 *
 	 * @since 2.9
-	 * @since 3.7 Add $context and $orignal parameters.
+	 * @since 3.7 Add $context and $original parameters.
 	 *
 	 * @param string $value    The unsanitised string translation value.
 	 * @param string $name     The name registered for the string.
