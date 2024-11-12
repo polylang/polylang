@@ -116,10 +116,6 @@ class PLL_MO extends MO {
 	 * @return bool True if the entry was added, false otherwise.
 	 */
 	public function add_entry( $entry ) {
-		if ( is_array( $entry ) ) {
-			$entry = new Translation_Entry( $entry );
-		}
-
 		if ( parent::add_entry( $entry ) ) {
 			$language = $this->get_header( 'Language' );
 			if ( ! empty( $language ) ) {
@@ -141,10 +137,6 @@ class PLL_MO extends MO {
 	 * @return bool True if the entry was added, false otherwise.
 	 */
 	public function add_entry_or_merge( $entry ) {
-		if ( is_array( $entry ) ) {
-			$entry = new Translation_Entry( $entry );
-		}
-
 		if ( parent::add_entry_or_merge( $entry ) ) {
 			$language = $this->get_header( 'Language' );
 			if ( ! empty( $language ) ) {
