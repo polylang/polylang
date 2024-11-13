@@ -357,7 +357,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'description'          => __( 'Polylang options', 'polylang' ),
 			'type'                 => 'object',
 			'properties'           => $properties,
-			'additionalProperties' => true,
+			'additionalProperties' => false,
 		);
 
 		return $this->schema[ $this->current_blog_id ];
