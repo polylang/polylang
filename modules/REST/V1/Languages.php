@@ -9,11 +9,11 @@ use PLL_Language;
 use PLL_Translatable_Objects;
 use stdClass;
 use WP_Error;
-use WP_REST_Controller;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Syntex\Polylang\Model\Languages as Languages_Model;
+use WP_Syntex\Polylang\REST\Abstract_Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class Languages extends WP_REST_Controller {
+class Languages extends Abstract_Controller {
 	/**
 	 * @var Languages_Model
 	 */
@@ -42,7 +42,7 @@ class Languages extends WP_REST_Controller {
 	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
 	 */
 	public function __construct( Languages_Model $languages, PLL_Translatable_Objects $translatable_objects ) {
-		$this->namespace            = 'pll/v1';
+		parent::__construct();
 		$this->rest_base            = 'languages';
 		$this->languages            = $languages;
 		$this->translatable_objects = $translatable_objects;
@@ -767,19 +767,5 @@ class Languages extends WP_REST_Controller {
 			__( 'Invalid language identifier', 'polylang' ),
 			array( 'status' => 404 )
 		);
-	}
-
-	/**
-	 * Adds a status code to the given error and returns the error.
-	 *
-	 * @since 3.7
-	 *
-	 * @param WP_Error $error       A `WP_Error` object.
-	 * @param int      $status_code Optional. A status code. Default is 400.
-	 * @return WP_Error
-	 */
-	private function add_status_to_error( WP_Error $error, int $status_code = 400 ): WP_Error {
-		$error->add_data( array( 'status' => $status_code ) );
-		return $error;
 	}
 }
