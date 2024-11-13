@@ -28,6 +28,13 @@ class API {
 	private $languages;
 
 	/**
+	 * REST options.
+	 *
+	 * @var V1\Options|null
+	 */
+	private $options;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -48,5 +55,8 @@ class API {
 	public function init(): void {
 		$this->languages = new V1\Languages( $this->model->languages, $this->model->translatable_objects );
 		$this->languages->register_routes();
+
+		$this->options = new V1\Options( $this->model->options );
+		$this->options->register_routes();
 	}
 }
