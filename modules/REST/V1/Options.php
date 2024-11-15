@@ -143,7 +143,7 @@ class Options extends Abstract_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_items_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! $this->check_update_permission() ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error(
 				'rest_forbidden_context',
 				__( 'Sorry, you are not allowed to edit options.', 'polylang' ),
@@ -204,16 +204,5 @@ class Options extends Abstract_Controller {
 	 */
 	public function get_item_schema(): array {
 		return $this->add_additional_fields_schema( $this->options->get_schema() );
-	}
-
-	/**
-	 * Tells if options can be edited.
-	 *
-	 * @since 3.7
-	 *
-	 * @return bool
-	 */
-	protected function check_update_permission(): bool {
-		return current_user_can( 'manage_options' );
 	}
 }
