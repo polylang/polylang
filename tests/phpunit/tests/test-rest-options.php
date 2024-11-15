@@ -175,7 +175,7 @@ class REST_Options_Test extends PLL_UnitTestCase {
 	 * @return WP_REST_Request
 	 */
 	private function get_request( string $method = 'GET', array $params = array() ): WP_REST_Request {
-		$request = new WP_REST_Request( $method, '/pll/v1/options' );
+		$request = new WP_REST_Request( $method, '/pll/v1/settings' );
 		$params  = array_merge(
 			array(
 				'context' => 'edit',

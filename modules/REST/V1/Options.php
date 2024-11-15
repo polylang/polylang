@@ -34,7 +34,7 @@ class Options extends Abstract_Controller {
 	 */
 	public function __construct( Options_Registry $options ) {
 		parent::__construct();
-		$this->rest_base = 'options';
+		$this->rest_base = 'settings';
 		$this->options   = $options;
 	}
 
