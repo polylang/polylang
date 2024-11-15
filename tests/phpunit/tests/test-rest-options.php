@@ -37,10 +37,10 @@ class REST_Options_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		parent::tear_down();
-
 		_unregister_post_type( 'custom1' );
 		_unregister_post_type( 'custom2' );
+
+		parent::tear_down();
 	}
 
 	public function test_get_options_list() {
