@@ -16,23 +16,23 @@ defined( 'ABSPATH' ) || exit;
  */
 class API {
 	/**
-	 * @var PLL_Model
-	 */
-	public $model;
-
-	/**
 	 * REST languages.
 	 *
 	 * @var V1\Languages|null
 	 */
-	private $languages;
+	public $languages;
 
 	/**
 	 * REST options.
 	 *
 	 * @var V1\Options|null
 	 */
-	private $options;
+	public $options;
+
+	/**
+	 * @var PLL_Model
+	 */
+	private $model;
 
 	/**
 	 * Constructor.
