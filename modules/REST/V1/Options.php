@@ -90,7 +90,6 @@ class Options extends Abstract_Controller {
 	/**
 	 * Updates option(s).
 	 * This allows to unpdate one or several options.
-	 * Note: to update an array value, use `option=val1,val2`.
 	 *
 	 * @since 3.7
 	 *
