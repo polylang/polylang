@@ -147,10 +147,6 @@ class REST_Options_Test extends PLL_UnitTestCase {
 	public function test_wrong_context( string $method ) {
 		wp_set_current_user( self::$administrator );
 
-		// No context: default to 'view'.
-		$response = $this->server->dispatch( $this->get_request( $method, array( 'context' => null ) ) );
-		$this->assertSame( 400, $response->get_status() );
-
 		// Context 'view'.
 		$response = $this->server->dispatch( $this->get_request( $method, array( 'context' => 'view' ) ) );
 		$this->assertSame( 400, $response->get_status() );
@@ -176,12 +172,6 @@ class REST_Options_Test extends PLL_UnitTestCase {
 	 */
 	private function get_request( string $method = 'GET', array $params = array() ): WP_REST_Request {
 		$request = new WP_REST_Request( $method, '/pll/v1/settings' );
-		$params  = array_merge(
-			array(
-				'context' => 'edit',
-			),
-			$params
-		);
 
 		foreach ( $params as $name => $value ) {
 			if ( isset( $value ) ) {

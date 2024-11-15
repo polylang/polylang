@@ -51,7 +51,7 @@ class Options extends Abstract_Controller {
 			"/{$this->rest_base}",
 			array(
 				'args'        => array(
-					'context' => $this->get_context_param( array( 'default' => 'view' ) ),
+					'context' => $this->get_context_param( array( 'default' => 'edit' ) ),
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
