@@ -33,7 +33,7 @@ class Options extends Abstract_Controller {
 	 * @param Options_Registry $options Options registry.
 	 */
 	public function __construct( Options_Registry $options ) {
-		parent::__construct();
+		$this->namespace = 'pll/v1';
 		$this->rest_base = 'settings';
 		$this->options   = $options;
 	}

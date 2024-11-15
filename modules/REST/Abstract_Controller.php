@@ -17,19 +17,6 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_Controller extends WP_REST_Controller {
 	/**
-	 * Constructor.
-	 *
-	 * @since 3.7
-	 *
-	 * @param int $version Optional. Version of the API. Default is `1`.
-	 *
-	 * @phpstan-param positive-int $version
-	 */
-	public function __construct( int $version = 1 ) {
-		$this->namespace = "pll/v{$version}";
-	}
-
-	/**
 	 * Adds a status code to the given error and returns the error.
 	 *
 	 * @since 3.7

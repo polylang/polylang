@@ -42,7 +42,7 @@ class Languages extends Abstract_Controller {
 	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
 	 */
 	public function __construct( Languages_Model $languages, PLL_Translatable_Objects $translatable_objects ) {
-		parent::__construct();
+		$this->namespace            = 'pll/v1';
 		$this->rest_base            = 'languages';
 		$this->languages            = $languages;
 		$this->translatable_objects = $translatable_objects;
