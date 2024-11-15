@@ -43,9 +43,9 @@ class Options extends Abstract_Controller {
 	 *
 	 * @since 3.7
 	 *
-	 * @return void
+	 * @return self
 	 */
-	public function register_routes(): void {
+	public function register_routes(): self {
 		register_rest_route(
 			$this->namespace,
 			"/{$this->rest_base}",
@@ -68,6 +68,8 @@ class Options extends Abstract_Controller {
 				'allow_batch' => array( 'v1' => true ),
 			)
 		);
+
+		return $this;
 	}
 
 	/**
