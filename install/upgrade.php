@@ -229,7 +229,7 @@ class PLL_Upgrade {
 		$options = new Options();
 		$model   = new PLL_Model( $options );
 
-		foreach ( $model->get_languages_list() as $language ) { // @todo Do not use Polylang functions here.
+		foreach ( $model->get_languages_list() as $language ) {
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
 
