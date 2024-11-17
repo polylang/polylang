@@ -141,7 +141,9 @@ class PLL_Table_String extends WP_List_Table {
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
-				format_to_edit( $translation ) // Don't interpret special chars.
+				format_to_edit(
+					$translation === $item['string'] ? '' : $translation
+				) // Don't interpret special chars.
 			);
 		}
 
@@ -404,7 +406,12 @@ class PLL_Table_String extends WP_List_Table {
 					 * @param string $context     The context as defined in pll_register_string.
 					 */
 					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'] );
-					$mo->add_entry( $mo->make_entry( $this->strings[ $key ]['string'], $translation ) );
+					$mo->add_entry(
+						$mo->make_entry(
+							$this->strings[ $key ]['string'],
+							$translation === $this->strings[ $key ]['string'] ? '' : $translation
+						)
+					);
 				}
 
 				// Clean database ( removes all strings which were registered some day but are no more )
