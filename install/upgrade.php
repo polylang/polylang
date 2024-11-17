@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages Polylang upgrades
  *
@@ -212,6 +214,7 @@ class PLL_Upgrade {
 	/**
 	 * Upgrades if the previous version is < 3.7.
 	 * Hides the "The language is set from content" option if it isn't the one selected.
+	 * Cleans up strings translations so we don't store translations duplicated from the source.
 	 *
 	 * @since 3.7
 	 *
@@ -222,6 +225,24 @@ class PLL_Upgrade {
 			'pll_language_from_content_available',
 			0 === $this->options['force_lang'] ? 'yes' : 'no'
 		);
+
+		$options = new Options();
+		$model   = new PLL_Model( $options );
+
+		foreach ( $model->get_languages_list() as $language ) { // @todo Do not use Polylang functions here.
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+
+			foreach ( $mo->entries as $entry ) {
+				if ( $entry->singular === $entry->translations[0] ) {
+					$entry->translations = array( '' );
+				}
+
+				$mo->add_entry_or_merge( $entry );
+			}
+
+			$mo->export_to_db( $language );
+		}
 	}
 
 	/**
