@@ -6,7 +6,8 @@
 /**
  * Manages strings translations storage.
  * A static cache is used internally to enhance performances,
- * for it to work as expected, `import_from_db` and `export_to_db` must be called consecutively.
+ * for it to work as expected, use `import_from_db` for the cache to be used
+ * and `export_to_db` for the cache to be cleared.
  *
  * @since 1.2
  * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
