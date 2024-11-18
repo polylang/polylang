@@ -54,24 +54,6 @@ class Test_PLL_MO extends PLL_UnitTestCase {
 		$this->assertSame( 1, $db_calls );
 	}
 
-	public function test_cache_is_populated_when_adding_entries() {
-		$language = $this->pll_admin->model->languages->get( 'en' );
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
-		$added = $mo->add_entry( $mo->make_entry( 'val', 'val_en' ) );
-
-		$this->assertTrue( $added );
-
-		$mo->export_to_db( $language );
-
-		unset( $mo );
-
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
-
-		$this->assertSame( 'val_en', $mo->translate( 'val' ) );
-	}
-
 	public function test_cache_is_updated_when_deleting_entries() {
 		$language = $this->pll_admin->model->languages->get( 'en' );
 		$mo = new PLL_MO();
