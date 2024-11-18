@@ -15,11 +15,11 @@ use WP_Syntex\Polylang\REST\Abstract_Controller;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Options REST controller.
+ * Settings REST controller.
  *
  * @since 3.7
  */
-class Options extends Abstract_Controller {
+class Settings extends Abstract_Controller {
 	/**
 	 * @var Options_Registry
 	 */

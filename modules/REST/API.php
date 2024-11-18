@@ -23,11 +23,11 @@ class API {
 	public $languages;
 
 	/**
-	 * REST options.
+	 * REST settings.
 	 *
-	 * @var V1\Options|null
+	 * @var V1\Settings|null
 	 */
-	public $options;
+	public $settings;
 
 	/**
 	 * @var PLL_Model
@@ -54,6 +54,6 @@ class API {
 	 */
 	public function init(): void {
 		$this->languages = ( new V1\Languages( $this->model->languages, $this->model->translatable_objects ) )->register_routes();
-		$this->options   = ( new V1\Options( $this->model->options ) )->register_routes();
+		$this->settings  = ( new V1\Settings( $this->model->options ) )->register_routes();
 	}
 }

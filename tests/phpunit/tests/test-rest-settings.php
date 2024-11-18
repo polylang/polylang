@@ -2,7 +2,7 @@
 
 use WP_Syntex\Polylang\REST\API;
 
-class REST_Options_Test extends PLL_UnitTestCase {
+class REST_Settings_Test extends PLL_UnitTestCase {
 	/**
 	 * @var Spy_REST_Server
 	 */
