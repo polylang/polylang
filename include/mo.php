@@ -5,7 +5,7 @@
 
 /**
  * Manages strings translations storage.
- * An static cache is used internally to enhance performances,
+ * A static cache is used internally to enhance performances,
  * for it to work as expected, `import_from_db` and `export_to_db` must be called consecutively.
  *
  * @since 1.2
