@@ -104,13 +104,13 @@ class Settings extends Abstract_Controller {
 		$errors   = new WP_Error();
 		$schema   = $this->options->get_schema();
 		$options  = array_intersect_key(
-			$this->options->get_all(), // Remove `context`.
 			$request->get_params(),
+			$this->options->get_all(), // Remove `context`.
 			rest_get_endpoint_args_for_schema( $schema, WP_REST_Server::EDITABLE ) // Remove `readonly` fields.
 		);
 
-		foreach ( $options as $option_name => $current_value ) {
-			$result = $this->options->set( $option_name, $request[ $option_name ] );
+		foreach ( $options as $option_name => $new_value ) {
+			$result = $this->options->set( $option_name, $new_value );
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
