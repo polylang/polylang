@@ -4,7 +4,9 @@
  */
 
 /**
- * Manages strings translations storage
+ * Manages strings translations storage.
+ * An static cache is used internally to enhance performances,
+ * for it to work as expected, `import_from_db` and `export_to_db` must be called consecutively.
  *
  * @since 1.2
  * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
@@ -100,52 +102,5 @@ class PLL_MO extends MO {
 	 */
 	public function delete_entry( $string ) {
 		unset( $this->entries[ $string ] );
-
-		$language = $this->get_header( 'Language' );
-		if ( ! empty( $language ) ) {
-			self::$cache->set( $language, $this->entries );
-		}
-	}
-
-	/**
-	 * Adds an entry to the MO structure and caches it.
-	 *
-	 * @since 3.7
-	 *
-	 * @param Translation_Entry|array $entry The entry to add.
-	 * @return bool True if the entry was added, false otherwise.
-	 */
-	public function add_entry( $entry ) {
-		if ( parent::add_entry( $entry ) ) {
-			$language = $this->get_header( 'Language' );
-			if ( ! empty( $language ) ) {
-				self::$cache->set( $language, $this->entries );
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Adds or merges an entry to the MO structure and caches it.
-	 *
-	 * @since 3.7
-	 *
-	 * @param Translation_Entry|array $entry The entry to add.
-	 * @return bool True if the entry was added, false otherwise.
-	 */
-	public function add_entry_or_merge( $entry ) {
-		if ( parent::add_entry_or_merge( $entry ) ) {
-			$language = $this->get_header( 'Language' );
-			if ( ! empty( $language ) ) {
-				self::$cache->set( $language, $this->entries );
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 }

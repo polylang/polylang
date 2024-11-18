@@ -62,31 +62,7 @@ class Test_PLL_MO extends PLL_UnitTestCase {
 
 		$this->assertTrue( $added );
 
-		unset( $mo );
-
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
-
-		$this->assertSame( 'val_en', $mo->translate( 'val' ) );
-	}
-
-	public function test_cache_is_populated_when_merging_entries() {
-		$language = $this->pll_admin->model->languages->get( 'en' );
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
-		$added = $mo->add_entry( $mo->make_entry( 'val', 'val_en' ) );
-
-		$this->assertTrue( $added );
-
-		unset( $mo );
-
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
-		$entry = $mo->make_entry( 'val', 'val_en' );
-		$entry->extracted_comments = 'test_comment';
-		$added = $mo->add_entry_or_merge( $entry );
-
-		$this->assertTrue( $added );
+		$mo->export_to_db( $language );
 
 		unset( $mo );
 
@@ -94,7 +70,6 @@ class Test_PLL_MO extends PLL_UnitTestCase {
 		$mo->import_from_db( $language );
 
 		$this->assertSame( 'val_en', $mo->translate( 'val' ) );
-		$this->assertSame( 'test_comment', $mo->entries['val']->extracted_comments );
 	}
 
 	public function test_cache_is_updated_when_deleting_entries() {
