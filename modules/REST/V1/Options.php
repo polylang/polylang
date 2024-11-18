@@ -89,7 +89,7 @@ class Options extends Abstract_Controller {
 
 	/**
 	 * Updates option(s).
-	 * This allows to unpdate one or several options.
+	 * This allows to update one or several options.
 	 *
 	 * @since 3.7
 	 *
