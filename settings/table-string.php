@@ -306,8 +306,9 @@ class PLL_Table_String extends WP_List_Table {
 					)
 				);
 
-				$entry                                                  = $mo[ $language->slug ]->translate_entry( $entry );
-				$translation                                            = $entry && ! empty( $entry->translations ) ? $entry->translations[0] : '';
+				$entry       = $mo[ $language->slug ]->translate_entry( $entry );
+				$translation = $entry && ! empty( $entry->translations ) ? $entry->translations[0] : '';
+
 				$this->items[ $key ]['translations'][ $language->slug ] = $translation;
 				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience
 			}
