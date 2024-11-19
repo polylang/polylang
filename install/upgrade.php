@@ -221,28 +221,8 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	protected function upgrade_3_7() {
-		update_option(
-			'pll_language_from_content_available',
-			0 === $this->options['force_lang'] ? 'yes' : 'no'
-		);
-
-		$options = new Options();
-		$model   = new PLL_Model( $options );
-
-		foreach ( $model->get_languages_list() as $language ) {
-			$mo = new PLL_MO();
-			$mo->import_from_db( $language );
-
-			foreach ( $mo->entries as $entry ) {
-				if ( $entry->singular === $entry->translations[0] ) {
-					$entry->translations = array( '' );
-				}
-
-				$mo->add_entry_or_merge( $entry );
-			}
-
-			$mo->export_to_db( $language );
-		}
+		$this->allow_to_hide_language_from_content();
+		$this->empty_duplicated_strings_translations();
 	}
 
 	/**
@@ -325,6 +305,58 @@ class PLL_Upgrade {
 			$description = maybe_serialize( $description );
 
 			wp_update_term( $term->term_id, 'language', array( 'description' => $description ) );
+		}
+	}
+
+	/**
+	 * Hides the language from content option if it is not the one selected.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function allow_to_hide_language_from_content() {
+		update_option(
+			'pll_language_from_content_available',
+			0 === $this->options['force_lang'] ? 'yes' : 'no'
+		);
+	}
+
+	/**
+	 * Cleans up strings translations so we don't store translations duplicated from the source.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function empty_duplicated_strings_translations() {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+
+		if ( ! is_array( $terms ) ) {
+			return;
+		}
+
+		foreach ( $terms as $term ) {
+			$strings = get_term_meta( $term->term_id, '_pll_strings_translations', true );
+
+			if ( empty( $strings ) || ! is_array( $strings ) ) {
+				continue;
+			}
+
+			foreach ( $strings as $i => $tuple ) {
+				if ( $tuple[0] !== $tuple[1] ) {
+					continue;
+				}
+
+				$strings[ $i ][1] = '';
+			}
+
+			update_term_meta( $term->term_id, '_pll_strings_translations', $strings );
 		}
 	}
 }
