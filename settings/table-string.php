@@ -141,9 +141,7 @@ class PLL_Table_String extends WP_List_Table {
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
-				format_to_edit(
-					$translation === $item['string'] ? '' : $translation
-				) // Don't interpret special chars.
+				format_to_edit( $translation ) // Don't interpret special chars.
 			);
 		}
 
