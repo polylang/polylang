@@ -50,3 +50,9 @@ parameters:
 			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
 			count: 1
 			path: include/model.php
+
+		# Ignored because the cache is initialized in the constructor.
+		-
+			message: "#^Static property PLL_MO\\:\\:\\$cache \\(PLL_Cache\\<array\\>\\) in empty\\(\\) is not falsy\\.$#"
+			count: 1
+			path: include/mo.php
