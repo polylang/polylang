@@ -297,7 +297,7 @@ class PLL_Table_String extends WP_List_Table {
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
 			foreach ( $this->items as $key => $row ) {
-				$this->items[ $key ]['translations'][ $language->slug ] = (string) $mo->translate_or_fail( $row['string'] );
+				$this->items[ $key ]['translations'][ $language->slug ] = $mo->translate_if_any( $row['string'] );
 				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience
 			}
 		}
