@@ -55,13 +55,13 @@ class Settings extends Abstract_Controller {
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'callback'            => array( $this, 'get_item' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_items' ),
-					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+					'callback'            => array( $this, 'update_item' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 				),
 				'schema'      => array( $this, 'get_public_item_schema' ),
@@ -83,7 +83,7 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function get_items( $request ) {
+	public function get_item( $request ) {
 		return $this->prepare_item_for_response( $this->options->get_all(), $request );
 	}
 
@@ -99,7 +99,7 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function update_items( $request ) {
+	public function update_item( $request ) {
 		$response = array();
 		$errors   = new WP_Error();
 		$schema   = $this->options->get_schema();
@@ -137,7 +137,7 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function get_items_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function get_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error(
 				'rest_forbidden_context',
@@ -159,8 +159,8 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function update_items_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return $this->get_items_permissions_check( $request );
+	public function update_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return $this->get_item_permissions_check( $request );
 	}
 
 	/**
