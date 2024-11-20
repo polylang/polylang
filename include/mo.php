@@ -74,4 +74,29 @@ class PLL_MO extends MO {
 	public function delete_entry( $string ) {
 		unset( $this->entries[ $string ] );
 	}
+
+	/**
+	 * Translates a string or returns false if the translation is not found.
+	 * Contrary to `self::translate()`, this method doesn't fallback to the source string.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $source The source string to translate.
+	 * @return string|false The translated string or false if not found.
+	 */
+	public function translate_or_fail( string $source ) {
+		$entry = $this->translate_entry(
+			new Translation_Entry(
+				array(
+					'singular' => $source,
+				)
+			)
+		);
+
+		if ( ! $entry instanceof Translation_Entry || empty( $entry->translations ) ) {
+			return false;
+		}
+
+		return $entry->translations[0];
+	}
 }

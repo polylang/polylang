@@ -300,16 +300,7 @@ class PLL_Table_String extends WP_List_Table {
 		// Kept for the end as it is a slow process
 		foreach ( $languages as $language ) {
 			foreach ( $this->items as $key => $row ) {
-				$entry = new Translation_Entry(
-					array(
-						'singular' => $row['string'],
-					)
-				);
-
-				$entry       = $mo[ $language->slug ]->translate_entry( $entry );
-				$translation = $entry && ! empty( $entry->translations ) ? $entry->translations[0] : '';
-
-				$this->items[ $key ]['translations'][ $language->slug ] = $translation;
+				$this->items[ $key ]['translations'][ $language->slug ] = (string) $mo[ $language->slug ]->translate_or_fail( $row['string'] );
 				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience
 			}
 		}
