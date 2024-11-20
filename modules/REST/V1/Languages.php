@@ -53,9 +53,9 @@ class Languages extends Abstract_Controller {
 	 *
 	 * @since 3.7
 	 *
-	 * @return self
+	 * @return void
 	 */
-	public function register_routes(): self {
+	public function register_routes(): void {
 		register_rest_route(
 			$this->namespace,
 			"/{$this->rest_base}",
@@ -126,8 +126,6 @@ class Languages extends Abstract_Controller {
 				'allow_batch' => array( 'v1' => true ),
 			)
 		);
-
-		return $this;
 	}
 
 	/**
