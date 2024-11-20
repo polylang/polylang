@@ -46,7 +46,7 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 	public function test_get_options_list() {
 		wp_set_current_user( self::$administrator );
 
-		$response = $this->server->dispatch( $this->get_request() );
+		$response = $this->dispatch_request();
 		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
@@ -83,7 +83,7 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 			'sync'          => 'taxonomies,post_meta',
 		);
 
-		$response = $this->server->dispatch( $this->get_request( $method, $values ) );
+		$response = $this->dispatch_request( $method, $values );
 		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
@@ -101,7 +101,7 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 
 		$this->pll_env->model->options->set( 'force_lang', 1 );
 
-		$response = $this->server->dispatch( $this->get_request( 'PATCH', array( 'force_lang' => 'test' ) ) );
+		$response = $this->dispatch_request( 'PATCH', array( 'force_lang' => 'test' ) );
 		$this->assertSame( 400, $response->get_status() );
 
 		$this->assertIsArray( $response->get_data() );
@@ -126,11 +126,11 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		$this->pll_env->model->options->set( 'redirect_lang', true );
 
 		// Get options.
-		$response = $this->server->dispatch( $this->get_request() );
+		$response = $this->dispatch_request();
 		$this->assertSame( $status, $response->get_status() );
 
 		// Update options.
-		$response = $this->server->dispatch( $this->get_request( 'PATCH', array( 'redirect_lang' => false ) ) );
+		$response = $this->dispatch_request( 'PATCH', array( 'redirect_lang' => false ) );
 		$this->assertSame( $status, $response->get_status() );
 		$this->assertNotFalse( $this->pll_env->model->options->get( 'redirect_lang' ) );
 	}
@@ -148,29 +148,29 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$administrator );
 
 		// Context 'view'.
-		$response = $this->server->dispatch( $this->get_request( $method, array( 'context' => 'view' ) ) );
+		$response = $this->dispatch_request( $method, array( 'context' => 'view' ) );
 		$this->assertSame( 400, $response->get_status() );
 
 		// Context 'embed'.
-		$response = $this->server->dispatch( $this->get_request( $method, array( 'context' => 'embed' ) ) );
+		$response = $this->dispatch_request( $method, array( 'context' => 'embed' ) );
 		$this->assertSame( 400, $response->get_status() );
 	}
 
 	public function test_unknown_method() {
 		wp_set_current_user( self::$administrator );
 
-		$response = $this->server->dispatch( $this->get_request( 'DELETE' ) );
+		$response = $this->dispatch_request( 'DELETE' );
 		$this->assertSame( 404, $response->get_status() );
 	}
 
 	/**
-	 * Returns a request after setting the context.
+	 * Dispatches a request after setting some params.
 	 *
 	 * @param string $method Optional. The method. Default is `GET`.
 	 * @param array  $params Optional. The params. Default is an empty array.
-	 * @return WP_REST_Request
+	 * @return WP_REST_Response
 	 */
-	private function get_request( string $method = 'GET', array $params = array() ): WP_REST_Request {
+	private function dispatch_request( string $method = 'GET', array $params = array() ): WP_REST_Response {
 		$request = new WP_REST_Request( $method, '/pll/v1/settings' );
 
 		foreach ( $params as $name => $value ) {
@@ -179,6 +179,6 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 			}
 		}
 
-		return $request;
+		return $this->server->dispatch( $request );
 	}
 }
