@@ -9,7 +9,7 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
-use WP_Syntex\Polylang\Options\Options as Options_Registry;
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\REST\Abstract_Controller;
 
 defined( 'ABSPATH' ) || exit;
@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings extends Abstract_Controller {
 	/**
-	 * @var Options_Registry
+	 * @var Options
 	 */
 	private $options;
 
@@ -30,9 +30,9 @@ class Settings extends Abstract_Controller {
 	 *
 	 * @since 3.7
 	 *
-	 * @param Options_Registry $options Options registry.
+	 * @param Options $options Options registry.
 	 */
-	public function __construct( Options_Registry $options ) {
+	public function __construct( Options $options ) {
 		$this->namespace = 'pll/v1';
 		$this->rest_base = 'settings';
 		$this->options   = $options;
