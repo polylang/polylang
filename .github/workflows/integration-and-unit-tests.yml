@@ -20,5 +20,5 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-phpunit:
+  testing:
     uses: polylang/.github/.github/workflows/reusable-integration-and-unit-tests.yml@main
