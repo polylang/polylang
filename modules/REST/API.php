@@ -16,16 +16,23 @@ defined( 'ABSPATH' ) || exit;
  */
 class API {
 	/**
-	 * @var PLL_Model
-	 */
-	public $model;
-
-	/**
 	 * REST languages.
 	 *
 	 * @var V1\Languages|null
 	 */
-	private $languages;
+	public $languages;
+
+	/**
+	 * REST settings.
+	 *
+	 * @var V1\Settings|null
+	 */
+	public $settings;
+
+	/**
+	 * @var PLL_Model
+	 */
+	private $model;
 
 	/**
 	 * Constructor.
@@ -48,5 +55,8 @@ class API {
 	public function init(): void {
 		$this->languages = new V1\Languages( $this->model->languages, $this->model->translatable_objects );
 		$this->languages->register_routes();
+
+		$this->settings = new V1\Settings( $this->model->options );
+		$this->settings->register_routes();
 	}
 }

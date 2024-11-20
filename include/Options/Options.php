@@ -342,12 +342,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 					continue;
 				}
 
-				$sub_schema = $option->get_schema();
-
-				// Cleanup.
-				unset( $sub_schema['title'], $sub_schema['$schema'] );
-
-				$properties[ $option->key() ] = $sub_schema;
+				$properties[ $option->key() ] = $option->get_schema();
 			}
 		}
 
@@ -356,7 +351,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'title'                => static::OPTION_NAME,
 			'description'          => __( 'Polylang options', 'polylang' ),
 			'type'                 => 'object',
-			'context'              => array( 'edit' ),
 			'properties'           => $properties,
 			'additionalProperties' => false,
 		);

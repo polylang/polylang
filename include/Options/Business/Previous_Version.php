@@ -5,8 +5,6 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
-use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -14,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class Previous_Version extends Abstract_String {
+class Previous_Version extends Version {
 	/**
 	 * Returns option key.
 	 *
