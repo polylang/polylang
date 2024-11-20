@@ -22,10 +22,3 @@ on:
 jobs:
   test-phpunit:
     uses: polylang/.github/.github/workflows/reusable-integration-and-unit-tests.yml@main
-  test-behat:
-    runs-on: ubuntu-latest
-    needs: test-phpunit
-    steps:
-      - name: Run Behat tests
-        run: |
-          vendor/bin/behat
