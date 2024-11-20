@@ -109,4 +109,54 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'yes', get_option( 'pll_language_from_content_available' ) );
 		$this->assertSame( 0, $options->get( 'force_lang' ) );
 	}
+
+	public function test_should_clean_up_strings_translations_on_upgrade_to_3_7() {
+		$fr = $this->factory()->language->create_and_get(
+			array( 'locale' => 'fr_FR' )
+		);
+		update_term_meta(
+			$fr->term_id,
+			'_pll_strings_translations',
+			array(
+				array( 'Hello', 'Hello' ),
+				array( 'World', 'World' ),
+			)
+		);
+
+		$en = $this->factory()->pll_model->languages->get( 'en' );
+		update_term_meta(
+			$en->term_id,
+			'_pll_strings_translations',
+			array(
+				array( 'Hello', 'Hello' ),
+				array( 'World', 'World' ),
+			)
+		);
+
+		$options = self::create_options(
+			array( 'version' => '3.6' )
+		);
+
+		( new PLL_Upgrade( $options ) )->_upgrade();
+
+		$raw_strings_fr = get_term_meta( $fr->term_id, '_pll_strings_translations', true );
+		$raw_strings_en = get_term_meta( $en->term_id, '_pll_strings_translations', true );
+
+		$this->assertSame(
+			array(
+				array( 'Hello', '' ),
+				array( 'World', '' ),
+			),
+			$raw_strings_fr,
+			'Strings translations should have been cleaned up.'
+		);
+		$this->assertSame(
+			array(
+				array( 'Hello', '' ),
+				array( 'World', '' ),
+			),
+			$raw_strings_en,
+			'Strings translations should have been cleaned up.'
+		);
+	}
 }
