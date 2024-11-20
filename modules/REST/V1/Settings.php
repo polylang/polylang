@@ -105,8 +105,7 @@ class Settings extends Abstract_Controller {
 		$schema   = $this->options->get_schema();
 		$options  = array_intersect_key(
 			$request->get_params(),
-			$this->options->get_all(), // Remove `context`.
-			rest_get_endpoint_args_for_schema( $schema, WP_REST_Server::EDITABLE ) // Remove `readonly` fields.
+			rest_get_endpoint_args_for_schema( $schema, WP_REST_Server::EDITABLE ) // Remove `context` and fields with `readonly`.
 		);
 
 		foreach ( $options as $option_name => $new_value ) {
