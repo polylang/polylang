@@ -17,8 +17,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
  * @phpstan-type Schema array{
- *     '$schema': non-falsy-string,
- *     title: non-falsy-string,
  *     type: SchemaType,
  *     context: array<non-falsy-string>
  * }
@@ -153,8 +151,6 @@ abstract class Abstract_Option {
 
 		$this->schema = array_merge(
 			array(
-				'$schema'     => 'http://json-schema.org/draft-04/schema#',
-				'title'       => static::key(),
 				'description' => $this->get_description(),
 				'context'     => array( 'edit' ),
 				'default'     => $this->get_default(),
