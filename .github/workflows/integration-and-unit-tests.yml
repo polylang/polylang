@@ -20,65 +20,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  testing:
-    name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }} + Allowed to fail ${{ matrix.allow-failure }}
-
+  test-phpunit:
+    uses: polylang/.github/.github/workflows/reusable-integration-and-unit-tests.yml@main
+  test-behat:
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mariadb:11.2
-        ports:
-          - '3306:3306'
-        env:
-          MYSQL_ROOT_PASSWORD: wordpress
-          MARIADB_INITDB_SKIP_TZINFO: 1
-          MYSQL_USER: wordpress
-          MYSQL_PASSWORD: wordpress
-          MYSQL_DATABASE: wordpress_test
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - wordpress-version: '6.2.x'
-            php-version: '7.4'
-            is-multisite: 0
-            allow-failure: false
-          - wordpress-version: 'latest'
-            php-version: '7.2'
-            is-multisite: 0
-            allow-failure: false
-          - wordpress-version: 'latest'
-            php-version: '8.1'
-            is-multisite: 0
-            allow-failure: false
-          - wordpress-version: 'latest'
-            php-version: '8.0'
-            is-multisite: 1
-            allow-failure: false
-          - wordpress-version: 'nightly'
-            php-version: '7.2'
-            is-multisite: 0
-            allow-failure: true
-          - wordpress-version: 'nightly'
-            php-version: '8.3'
-            is-multisite: 0
-            allow-failure: true
-
-    env:
-      WP_MULTISITE: ${{ matrix.is-multisite }}
-
+    needs: test-phpunit
     steps:
-      - name: Check out the source code
-        uses: actions/checkout@v4
-
-      - name: Run PHPUnit tests
-        uses: polylang/actions/phpunit@main
-        with:
-          php-version: ${{ matrix.php-version }}
-          wordpress-version: ${{ matrix.wordpress-version }}
-
       - name: Run Behat tests
         run: |
           vendor/bin/behat
