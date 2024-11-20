@@ -85,13 +85,8 @@ class PLL_MO extends MO {
 	 * @return string|false The translated string or false if not found.
 	 */
 	public function translate_or_fail( string $source ) {
-		$entry = $this->translate_entry(
-			new Translation_Entry(
-				array(
-					'singular' => $source,
-				)
-			)
-		);
+		$entry = new Translation_Entry( array( 'singular' => $source ) );
+		$entry = $this->translate_entry( $entry );
 
 		if ( ! $entry instanceof Translation_Entry || empty( $entry->translations ) ) {
 			return false;

@@ -196,14 +196,16 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @since 2.6
 	 *
-	 * @param PLL_MO[] $mos An array of PLL_MO objects.
-	 * @param string   $s   Searched string.
+	 * @param PLL_Language[] $languages An array of language objects.
+	 * @param string         $s         Searched string.
 	 * @return string[] Found strings.
 	 */
-	protected function search_in_translations( $mos, $s ) {
+	protected function search_in_translations( $languages, $s ) {
 		$founds = array();
 
-		foreach ( $mos as $mo ) {
+		foreach ( $languages as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
 			foreach ( wp_list_pluck( $mo->entries, 'translations' ) as $string => $translation ) {
 				if ( false !== stripos( $translation[0], $s ) ) {
 					$founds[] = $string;
@@ -250,13 +252,6 @@ class PLL_Table_String extends WP_List_Table {
 			$languages = $this->languages;
 		}
 
-		// Load translations
-		$mo = array();
-		foreach ( $languages as $language ) {
-			$mo[ $language->slug ] = new PLL_MO();
-			$mo[ $language->slug ]->import_from_db( $language );
-		}
-
 		$data = $this->strings;
 
 		// Filter by selected group
@@ -269,7 +264,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		if ( ! empty( $s ) ) {
 			// Search in translations
-			$in_translations = $this->search_in_translations( $mo, $s );
+			$in_translations = $this->search_in_translations( $languages, $s );
 
 			foreach ( $data as $key => $row ) {
 				if ( stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false && ! in_array( $row['string'], $in_translations ) ) {
@@ -299,8 +294,10 @@ class PLL_Table_String extends WP_List_Table {
 		// Translate strings
 		// Kept for the end as it is a slow process
 		foreach ( $languages as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
 			foreach ( $this->items as $key => $row ) {
-				$this->items[ $key ]['translations'][ $language->slug ] = (string) $mo[ $language->slug ]->translate_or_fail( $row['string'] );
+				$this->items[ $key ]['translations'][ $language->slug ] = (string) $mo->translate_or_fail( $row['string'] );
 				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience
 			}
 		}
