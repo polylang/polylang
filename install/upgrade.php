@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages Polylang upgrades
  *
@@ -212,16 +214,15 @@ class PLL_Upgrade {
 	/**
 	 * Upgrades if the previous version is < 3.7.
 	 * Hides the "The language is set from content" option if it isn't the one selected.
+	 * Cleans up strings translations so we don't store translations duplicated from the source.
 	 *
 	 * @since 3.7
 	 *
 	 * @return void
 	 */
 	protected function upgrade_3_7() {
-		update_option(
-			'pll_language_from_content_available',
-			0 === $this->options['force_lang'] ? 'yes' : 'no'
-		);
+		$this->allow_to_hide_language_from_content();
+		$this->empty_duplicated_strings_translations();
 	}
 
 	/**
@@ -304,6 +305,58 @@ class PLL_Upgrade {
 			$description = maybe_serialize( $description );
 
 			wp_update_term( $term->term_id, 'language', array( 'description' => $description ) );
+		}
+	}
+
+	/**
+	 * Hides the language from content option if it is not the one selected.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function allow_to_hide_language_from_content() {
+		update_option(
+			'pll_language_from_content_available',
+			0 === $this->options['force_lang'] ? 'yes' : 'no'
+		);
+	}
+
+	/**
+	 * Cleans up strings translations so we don't store translations duplicated from the source.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function empty_duplicated_strings_translations() {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+
+		if ( ! is_array( $terms ) ) {
+			return;
+		}
+
+		foreach ( $terms as $term ) {
+			$strings = get_term_meta( $term->term_id, '_pll_strings_translations', true );
+
+			if ( empty( $strings ) || ! is_array( $strings ) ) {
+				continue;
+			}
+
+			foreach ( $strings as $i => $tuple ) {
+				if ( $tuple[0] !== $tuple[1] ) {
+					continue;
+				}
+
+				$strings[ $i ][1] = '';
+			}
+
+			update_term_meta( $term->term_id, '_pll_strings_translations', $strings );
 		}
 	}
 }
