@@ -56,7 +56,7 @@ class Settings extends Abstract_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -127,28 +127,6 @@ class Settings extends Abstract_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to get the options.
-	 *
-	 * @since 3.7
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 *
-	 * @phpstan-template T of array
-	 * @phpstan-param WP_REST_Request<T> $request
-	 */
-	public function get_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return new WP_Error(
-				'rest_forbidden_context',
-				__( 'Sorry, you are not allowed to edit options.', 'polylang' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
-		}
-		return true;
-	}
-
-	/**
 	 * Checks if a given request has access to update the options.
 	 *
 	 * @since 3.7
@@ -160,7 +138,14 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return $this->get_item_permissions_check( $request );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new WP_Error(
+				'rest_forbidden_context',
+				__( 'Sorry, you are not allowed to edit options.', 'polylang' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+		return true;
 	}
 
 	/**
