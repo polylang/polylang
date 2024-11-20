@@ -5,8 +5,6 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
-use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -14,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class Previous_Version extends Abstract_String {
+class Previous_Version extends Version {
 	/**
 	 * Returns option key.
 	 *
@@ -37,21 +35,5 @@ class Previous_Version extends Abstract_String {
 	 */
 	protected function get_description(): string {
 		return __( "Polylang's previous version.", 'polylang' );
-	}
-
-	/**
-	 * Returns the JSON schema part specific to this option.
-	 *
-	 * @since 3.7
-	 *
-	 * @return array Partial schema.
-	 *
-	 * @phpstan-return array{type: 'string', readonly: true, readonly: true}
-	 */
-	protected function get_data_structure(): array {
-		$string_schema             = parent::get_data_structure();
-		$string_schema['readonly'] = true;
-
-		return $string_schema;
 	}
 }

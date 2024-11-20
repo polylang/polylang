@@ -49,9 +49,6 @@ class Version extends Abstract_String {
 	 * @phpstan-return array{type: 'string', readonly: true, readonly: true}
 	 */
 	protected function get_data_structure(): array {
-		$string_schema             = parent::get_data_structure();
-		$string_schema['readonly'] = true;
-
-		return $string_schema;
+		return array_merge( parent::get_data_structure(), array( 'readonly' => true ) );
 	}
 }
