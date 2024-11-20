@@ -38,4 +38,17 @@ class Version extends Abstract_String {
 	protected function get_description(): string {
 		return __( "Polylang's version.", 'polylang' );
 	}
+
+	/**
+	 * Returns the JSON schema part specific to this option.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array Partial schema.
+	 *
+	 * @phpstan-return array{type: 'string', readonly: true, readonly: true}
+	 */
+	protected function get_data_structure(): array {
+		return array_merge( parent::get_data_structure(), array( 'readonly' => true ) );
+	}
 }
