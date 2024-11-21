@@ -39,7 +39,7 @@ class Options_Test extends PLL_UnitTestCase {
 		$options = self::create_options();
 
 		$this->assertIsIterable( $options );
-		$this->assertInstanceOf( ArrayIterator::class, $options->getIterator() );
+		$this->assertSameSetsWithIndex( $options->get_all(), iterator_to_array( $options->getIterator() ) );
 	}
 
 	private function assert_option_in_db( string $key, $value ): void {
