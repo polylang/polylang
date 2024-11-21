@@ -36,8 +36,7 @@ class Options_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_iterator() {
-		$options     = self::create_options();
-		$all_options = $options->get_all();
+		$options = self::create_options();
 
 		$this->assertIsIterable( $options );
 		$this->assertInstanceOf( ArrayIterator::class, $options->getIterator() );
