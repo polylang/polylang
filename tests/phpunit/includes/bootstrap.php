@@ -15,6 +15,10 @@ tests_add_filter(
 
 		$GLOBALS['wp_plugin_paths'][ $symlink_dir_path ] = wp_normalize_path( dirname( $real_file_path ) );
 
+		// Tell WP where to find the themes.
+		register_theme_directory( "{$_root_dir}/tmp/themes" );
+		delete_site_transient( 'theme_roots' );
+
 		require_once $real_file_path;
 	}
 );
