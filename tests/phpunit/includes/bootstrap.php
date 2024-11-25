@@ -41,7 +41,7 @@ if ( ! defined( 'PLL_TEST_EXT_PLUGINS_DIR' ) ) {
 }
 
 if ( ! defined( 'PLL_TEST_WP_DIR' ) ) {
-	define( 'PLL_TEST_WP_DIR', "{$_root_dir}/tmp/wordpress/" );
+	define( 'PLL_TEST_WP_DIR', dirname( DIR_TESTROOT ) . '/wordpress/' );
 }
 
 if ( ! defined( 'PLL_TEST_THEMES_DIR' ) ) {
