@@ -17,8 +17,5 @@ downloadPluginFromRepository wordpress-importer
 # Install Jetpack.
 downloadPluginFromRepository jetpack
 
-# Install Yoast SEO.
-downloadPluginFromRepository wordpress-seo
-
 # Install Duplicate Post.
 downloadPluginFromRepository duplicate-post
