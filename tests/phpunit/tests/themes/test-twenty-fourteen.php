@@ -9,9 +9,7 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		if ( ! file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen/style.css' ) ) {
-			self::markTestSkipped( 'This test requires the theme Twenty Seventeen' );
-		}
+		self::assertFileExists( PLL_TEST_EXT_THEMES_DIR . 'twentyfourteen/style.css', 'This test requires the theme Twenty Fourteen.' );
 
 		parent::wpSetUpBeforeClass( $factory );
 

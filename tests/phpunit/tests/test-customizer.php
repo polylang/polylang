@@ -109,6 +109,8 @@ class Customizer_Test extends PLL_UnitTestCase {
 	public function test_customize_registered_hooks_with_static_page_on_front() {
 		global $_wp_theme_features;
 
+		$this->assertFileExists( PLL_TEST_THEMES_DIR . 'twentytwentythree/style.css', 'This test requires the theme Twenty Twentythree.' );
+
 		update_option( 'show_on_front', 'page' ); // Implicit `PLL_Frontend_Static_Pages` instance.
 		update_option( 'page_on_front', $this->page_en );
 		self::$model->clean_languages_cache();
