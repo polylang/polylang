@@ -28,6 +28,26 @@ if ( ! defined( 'DIR_TESTROOT' ) ) {
 	define( 'DIR_TESTROOT', $_tests_dir );
 }
 
+if ( ! defined( 'PLL_TEST_EXT_THEMES_DIR' ) ) {
+	define( 'PLL_TEST_EXT_THEMES_DIR', dirname( DIR_TESTROOT ) . '/themes/' );
+}
+
+if ( ! defined( 'PLL_TEST_EXT_PLUGINS_DIR' ) ) {
+	define( 'PLL_TEST_EXT_PLUGINS_DIR', dirname( DIR_TESTROOT ) . '/plugins/' );
+}
+
+if ( ! defined( 'PLL_TEST_WP_DIR' ) ) {
+	define( 'PLL_TEST_WP_DIR', dirname( DIR_TESTROOT ) . '/wordpress/' );
+}
+
+if ( ! defined( 'PLL_TEST_THEMES_DIR' ) ) {
+	define( 'PLL_TEST_THEMES_DIR', PLL_TEST_WP_DIR . 'wp-content/themes/' );
+}
+
+if ( ! defined( 'PLL_TEST_PLUGINS_DIR' ) ) {
+	define( 'PLL_TEST_PLUGINS_DIR', PLL_TEST_WP_DIR . 'wp-content/plugins/' );
+}
+
 if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
 	define( 'PLL_TEST_DATA_DIR', dirname( __DIR__ ) . '/data/' );
 }
