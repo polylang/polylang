@@ -29,15 +29,15 @@ if ( ! defined( 'DIR_TESTROOT' ) ) {
 }
 
 if ( ! defined( 'PLL_TEST_EXT_THEMES_DIR' ) ) {
-	define( 'PLL_TEST_EXT_THEMES_DIR', dirname( DIR_TESTROOT ) . '/themes/' );
+	define( 'PLL_TEST_EXT_THEMES_DIR', "{$_root_dir}/tmp/themes/" );
 }
 
 if ( ! defined( 'PLL_TEST_EXT_PLUGINS_DIR' ) ) {
-	define( 'PLL_TEST_EXT_PLUGINS_DIR', dirname( DIR_TESTROOT ) . '/plugins/' );
+	define( 'PLL_TEST_EXT_PLUGINS_DIR', "{$_root_dir}/tmp/plugins/" );
 }
 
 if ( ! defined( 'PLL_TEST_WP_DIR' ) ) {
-	define( 'PLL_TEST_WP_DIR', dirname( DIR_TESTROOT ) . '/wordpress/' );
+	define( 'PLL_TEST_WP_DIR', "{$_root_dir}/tmp/wordpress/" );
 }
 
 if ( ! defined( 'PLL_TEST_THEMES_DIR' ) ) {
