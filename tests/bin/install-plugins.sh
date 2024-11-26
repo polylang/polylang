@@ -12,10 +12,10 @@ downloadThemeFromRepository twentyfourteen
 downloadThemeFromRepository twentyseventeen
 
 # Install WordPress Importer.
-downloadPluginFromRepository wordpress-importer
+downloadPluginFromRepository wordpress-importer 1
 
 # Install Jetpack.
-downloadPluginFromRepository jetpack
+downloadPluginFromRepository jetpack 1
 
 # Install Duplicate Post.
-downloadPluginFromRepository duplicate-post
+downloadPluginFromRepository duplicate-post 1
