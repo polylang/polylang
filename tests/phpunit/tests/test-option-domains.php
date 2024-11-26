@@ -27,8 +27,8 @@ class Option_Domains_Test extends PLL_UnitTestCase {
 			'force_lang'   => 3,
 		);
 		$domains = array(
-			'en' => 'https://example.org', // Will succeed.
-			'fr' => 'https://example.com', // Will fail.
+			'en' => 'https://good-url.org', // Must succeed.
+			'fr' => 'https://wrong-url.org', // Must fail.
 			'es' => '',
 		);
 
@@ -67,11 +67,11 @@ class Option_Domains_Test extends PLL_UnitTestCase {
 		);
 
 		switch ( $url ) {
-			case 'https://example.org?deactivate-polylang=1':
+			case 'https://good-url.org?deactivate-polylang=1':
 				// EN: success.
 				return $_response;
 
-			case 'https://example.com?deactivate-polylang=1':
+			case 'https://wrong-url.org?deactivate-polylang=1':
 				// FR: failure.
 				$_response['response']['code'] = 404;
 				return $_response;
