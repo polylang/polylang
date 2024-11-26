@@ -41,4 +41,22 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase_Polyfill {
 		$this->assertNotFalse( $object_language, $message );
 		$this->assertSame( $language, $object_language->slug, $message );
 	}
+
+	/**
+	 * Verifies that a file exists.
+	 * Depending on the environment var `PLL_SKIP_PLUGINS_TESTS`, skips or does an assertion if the file doesn't exist.
+	 *
+	 * @param string $path    Path to the file.
+	 * @param string $message Error message.
+	 * @return void
+	 */
+	protected static function markTestSkippedIfFileNotExists( string $path, string $message = '' ): void {
+		if ( ! getenv( 'PLL_SKIP_PLUGINS_TESTS' ) ) {
+			self::assertFileExists( $path, $message );
+			return;
+		}
+		if ( ! file_exists( $path ) ) {
+			self::markTestSkipped( $message );
+		}
+	}
 }

@@ -7,7 +7,7 @@ class Twenty_Seventeen_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		self::assertFileExists( PLL_TEST_EXT_THEMES_DIR . 'twentyseventeen/style.css', 'This test requires the theme Twenty Seventeen.' );
+		self::markTestSkippedIfFileNotExists( PLL_TEST_EXT_THEMES_DIR . 'twentyseventeen/style.css', 'This test requires the theme Twenty Seventeen.' );
 
 		parent::wpSetUpBeforeClass( $factory );
 
