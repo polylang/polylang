@@ -13,26 +13,21 @@ class Options_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		// Test the value in DB.
-		$this->assert_option_in_db( 'force_lang', 1 );
+		$this->assert_option_is_persisted( 'force_lang', 1, 'The value in DB should be right from the start.' );
 
-		// Test the value in object.
-		$this->assertSame( 1, $options['force_lang'] );
+		$this->assertSame( 1, $options['force_lang'], 'The value in object should be right from the start.' );
 
 		// Change the value.
 		$options['force_lang'] = 2;
 
-		// Test that the value in DB hasn't changed.
-		$this->assert_option_in_db( 'force_lang', 1 );
+		$this->assert_option_is_persisted( 'force_lang', 1, 'The value in DB should not have changed.' );
 
-		// Test that the value in object has changed.
-		$this->assertSame( 2, $options['force_lang'] );
+		$this->assertSame( 2, $options['force_lang'], 'The value inobject should have changed.' );
 
 		// Save in DB.
 		$options->save_all();
 
-		// Test that the value in DB has changed.
-		$this->assert_option_in_db( 'force_lang', 2 );
+		$this->assert_option_is_persisted( 'force_lang', 2, 'The value in DB should have changed.' );
 	}
 
 	public function test_iterator() {
@@ -42,10 +37,10 @@ class Options_Test extends PLL_UnitTestCase {
 		$this->assertSameSetsWithIndex( $options->get_all(), iterator_to_array( $options->getIterator() ) );
 	}
 
-	private function assert_option_in_db( string $key, $value ): void {
+	private function assert_option_is_persisted( string $key, $value, string $message ): void {
 		$raw_options = get_option( 'polylang' );
 		$this->assertIsArray( $raw_options );
 		$this->assertArrayHasKey( $key, $raw_options );
-		$this->assertSame( $value, $raw_options[ $key ] );
+		$this->assertSame( $value, $raw_options[ $key ], $message );
 	}
 }
