@@ -16,7 +16,7 @@
 		"behat/behat": "^3.7|^3.8",
 		"yoast/wp-test-utils": "^1.0.0",
 		"rector/rector": "^1.1",
-		"wpsyntex/wp-phpunit": "dev-fix-download"
+		"wpsyntex/wp-phpunit": "dev-master"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
