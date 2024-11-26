@@ -1,9 +1,18 @@
 <?php
 
+namespace WP_Syntex\Polylang\Tests\Integration\Options\Options;
+
+use PLL_Context_Admin;
+use PLL_UnitTestCase;
+use WP_Error;
+use WP_UnitTest_Factory;
+
 /**
- * Test the 'domains' option.
+ * Tests for `Options\Options->set()`.
+ *
+ * @group options
  */
-class Option_Domains_Test extends PLL_UnitTestCase {
+class Set_Test extends PLL_UnitTestCase {
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
@@ -19,7 +28,12 @@ class Option_Domains_Test extends PLL_UnitTestCase {
 		parent::tear_down();
 	}
 
-	public function test_should_save_on_non_blocking_errors() {
+	/**
+	 * The "domains" option should trigger "non blocking errors" for empty or unreachable URLs.
+	 *
+	 * @return void
+	 */
+	public function test_should_trigger_non_blocking_errors_on_domains_save() {
 		add_filter( 'pre_http_request', array( $this, 'http_request_filter' ), 10, 3 );
 
 		$options = array(
@@ -51,9 +65,18 @@ class Option_Domains_Test extends PLL_UnitTestCase {
 			$this->assertStringContainsString( $expected[ $code ], $errors->get_error_message( $code ) );
 		}
 
+		// Make sure the domains are saved.
 		$this->assertSameSetsWithIndex( $domains, $this->pll_env->model->options->get( 'domains' ) );
 	}
 
+	/**
+	 * Callback used to filter the http requests.
+	 *
+	 * @param false|array|WP_Error $response    A preemptive return value of an HTTP request. Default false.
+	 * @param array                $parsed_args HTTP request arguments.
+	 * @param string               $url         The request URL.
+	 * @return false|array|WP_Error
+	 */
 	public function http_request_filter( $response, $parsed_args, $url ) {
 		$_response = array(
 			'headers'  => array(),
