@@ -19,7 +19,7 @@ class Option_Domains_Test extends PLL_UnitTestCase {
 		parent::tear_down();
 	}
 
-	public function test_non_blocking_errors() {
+	public function test_should_save_on_non_blocking_errors() {
 		add_filter( 'pre_http_request', array( $this, 'http_request_filter' ), 10, 3 );
 
 		$options = array(
