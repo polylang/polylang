@@ -23,7 +23,7 @@ class Set_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		remove_filter( 'pre_http_request', array( $this, 'http_request_filter' ) );
+		remove_filter( 'pre_http_request', array( $this, 'http_request_mock' ) );
 
 		parent::tear_down();
 	}
@@ -34,7 +34,7 @@ class Set_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_trigger_non_blocking_errors_on_domains_save() {
-		add_filter( 'pre_http_request', array( $this, 'http_request_filter' ), 10, 3 );
+		add_filter( 'pre_http_request', array( $this, 'http_request_mock' ), 10, 3 );
 
 		$options = array(
 			'default_lang' => 'en',
@@ -77,7 +77,7 @@ class Set_Test extends PLL_UnitTestCase {
 	 * @param string               $url         The request URL.
 	 * @return false|array|WP_Error
 	 */
-	public function http_request_filter( $response, $parsed_args, $url ) {
+	public function http_request_mock( $response, $parsed_args, $url ) {
 		$_response = array(
 			'headers'  => array(),
 			'body'     => '',
