@@ -45,8 +45,8 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase_Polyfill {
 	/**
 	 * Verifies that a file exists.
 	 * Depending on the environment variable `GITHUB_ACTIONS`:
-	 * - If defined to `'true'` (default value in GitHub actions): does an assertion.
-	 * - If not defined to `'true'`: skips if the file doesn't exist.
+	 * - If defined (value in GitHub Actions is `'true'`): does an assertion.
+	 * - If not defined: skips if the file doesn't exist.
 	 *
 	 * @see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
 	 *
@@ -55,7 +55,7 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase_Polyfill {
 	 * @return void
 	 */
 	protected static function markTestSkippedIfFileNotExists( string $path, string $message = '' ): void {
-		if ( 'true' === getenv( 'GITHUB_ACTIONS' ) ) {
+		if ( false !== getenv( 'GITHUB_ACTIONS' ) ) {
 			self::assertFileExists( $path, $message );
 			return;
 		}
