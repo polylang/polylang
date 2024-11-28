@@ -15,7 +15,8 @@
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"behat/behat": "^3.7|^3.8",
 		"yoast/wp-test-utils": "^1.0.0",
-		"rector/rector": "^1.1"
+		"rector/rector": "^1.1",
+		"wpsyntex/wp-phpunit": "dev-master"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
@@ -36,6 +37,17 @@
 		]
 	},
 	"scripts": {
+		"install-suite": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh",
+		"install-suite-with-db": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh latest true",
+		"install-plugins": "bash tests/bin/install-plugins.sh",
+		"install-tests": [
+			"@install-suite",
+			"@install-plugins"
+		],
+		"install-tests-with-db": [
+			"@install-suite-with-db",
+			"@install-plugins"
+		],
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
@@ -50,6 +62,11 @@
 		"dist": "bin/distribute.sh"
 	},
 	"scripts-descriptions": {
+		"install-suite": "Installs the WordPress tests suite (without installing the database).",
+		"install-suite-with-db": "Installs the WordPress tests suite (with database creation).",
+		"install-plugins": "Installs dependencies needed for integration tests.",
+		"install-tests": "Installs both the WordPress tests suite (without installing the database) and the dependencies needed for integration tests.",
+		"install-tests-with-db": "Installs both the WordPress tests suite (with database creation) and the dependencies needed for integration tests, without creating the database.",
 		"test":"Runs PHPUnit tests.",
 		"cs":"Runs PHPCS linter.",
 		"stan": "Runs PHPStan analysis.",
