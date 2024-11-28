@@ -32,7 +32,6 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 
 		// crude but effective: make sure there's no residual data in the main tables
 		foreach ( array( 'posts', 'postmeta', 'comments', 'terms', 'term_taxonomy', 'term_relationships', 'users', 'usermeta' ) as $table ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL
 			$wpdb->query( "DELETE FROM {$wpdb->$table}" );
 		}
 
