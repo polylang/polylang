@@ -9,15 +9,11 @@ class Customizer_Test extends PLL_UnitTestCase {
 	protected $page_en;
 	protected $page_fr;
 
-	protected static $default_theme;
-
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
-
-		self::$default_theme = get_stylesheet();
 	}
 
 	public static function wpTearDownAfterClass() {
@@ -25,8 +21,6 @@ class Customizer_Test extends PLL_UnitTestCase {
 
 		unset( $_POST );
 		unset( $GLOBALS['wp_customize'] );
-
-		switch_theme( self::$default_theme );
 	}
 
 	public function set_up() {
@@ -56,6 +50,12 @@ class Customizer_Test extends PLL_UnitTestCase {
 
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		require_once ABSPATH . WPINC . '/class-wp-customize-manager.php';
+	}
+
+	public function tear_down() {
+		parent::tear_down();
+
+		switch_theme( 'default' ); // Restore the default theme.
 	}
 
 	public function test_static_front_page_update() {
@@ -109,14 +109,12 @@ class Customizer_Test extends PLL_UnitTestCase {
 	public function test_customize_registered_hooks_with_static_page_on_front() {
 		global $_wp_theme_features;
 
-		$this->assertFileExists( PLL_TEST_THEMES_DIR . 'twentytwentythree/style.css', 'This test requires the theme Twenty Twentythree.' );
-
 		update_option( 'show_on_front', 'page' ); // Implicit `PLL_Frontend_Static_Pages` instance.
 		update_option( 'page_on_front', $this->page_en );
 		self::$model->clean_languages_cache();
 
 		// Switch to a block theme.
-		switch_theme( 'twentytwentythree' );
+		switch_theme( 'block-theme' );
 		// Force the features.
 		$_wp_theme_features['block-templates']      = true;
 		$_wp_theme_features['block-template-parts'] = true;
