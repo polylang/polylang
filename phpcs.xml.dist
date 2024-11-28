@@ -120,6 +120,10 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
+	<rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
+		<exclude-pattern>*/tests/phpunit/includes/testcase-trait.php</exclude-pattern>
+	</rule>
+
 	<rule ref="WordPress.NamingConventions.ValidHookName.UseUnderscores">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>

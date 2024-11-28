@@ -76,7 +76,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		self::create_model_legacy();
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
@@ -105,7 +105,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @param PLL_UnitTest_Factory $factory PLL_UnitTest_Factory object.
 	 * @return void
 	 */
-	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		// Does nothing, only ensures the factory is correctly type hinted.
 	}
 
@@ -126,7 +126,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @return void
 	 */
-	public static function wpTearDownAfterClass() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public static function wpTearDownAfterClass() {
 		self::delete_all_languages();
 	}
 
@@ -254,5 +254,28 @@ trait PLL_UnitTestCase_Trait {
 			)
 		);
 		self::$model = new PLL_Admin_Model( $options );
+	}
+
+	/**
+	 * Verifies that a file exists.
+	 * Depending on the environment variable `GITHUB_ACTIONS`:
+	 * - If defined (value in GitHub Actions is `'true'`): does an assertion.
+	 * - If not defined: skips if the file doesn't exist.
+	 *
+	 * @see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
+	 *
+	 * @param string $path    Path to the file.
+	 * @param string $message Error message.
+	 * @return void
+	 */
+	protected static function markTestSkippedIfFileNotExists( string $path, string $message = '' ): void {
+		if ( false !== getenv( 'GITHUB_ACTIONS' ) ) {
+			self::assertFileExists( $path, $message );
+			return;
+		}
+
+		if ( ! file_exists( $path ) ) {
+			self::markTestSkipped( $message );
+		}
 	}
 }
