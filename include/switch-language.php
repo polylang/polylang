@@ -9,36 +9,14 @@
 class PLL_Switch_Language {
 
 	/**
-	 * Singleton instance.
-	 *
-	 * @var PLL_Switch_Language|null
-	 */
-	protected static $instance;
-
-	/**
 	 * The original language.
 	 *
 	 * @var PLL_Language|null
 	 */
-	private $original_language;
+	public static $original_language;
 
 	/**
-	 * Access to the single instance of the class.
-	 *
-	 * @since 3.7
-	 *
-	 * @return PLL_Switch_Language
-	 */
-	public static function instance() {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * Switch the site to the given language.
+	 * Switches the site to the given language.
 	 *
 	 * @since 3.7
 	 *
@@ -61,7 +39,7 @@ class PLL_Switch_Language {
 
 		// Stores the original language.
 		$current_language        = empty( PLL()->curlang ) ? null : PLL()->curlang;
-		$this->original_language = null === $this->original_language ? $current_language : $this->original_language;
+		self::$original_language = null === self::$original_language ? $current_language : self::$original_language;
 
 		PLL()->curlang = $language;
 
@@ -78,24 +56,13 @@ class PLL_Switch_Language {
 	}
 
 	/**
-	 * Gets the original language.
-	 *
-	 * @since 3.7
-	 *
-	 * @return PLL_Language|null The language if there is one, false otherwise.
-	 */
-	public function get_original_language() {
-		return $this->original_language;
-	}
-
-	/**
 	 * Restores the original language.
 	 *
 	 * @since 3.7
 	 *
 	 * @return void
 	 */
-	public function restore_current_language() {
-		PLL()->curlang = $this->original_language;
+	public function restore_original_language() {
+		PLL()->curlang = self::$original_language;
 	}
 }
