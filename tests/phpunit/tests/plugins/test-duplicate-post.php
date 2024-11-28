@@ -6,12 +6,12 @@ class Duplicate_Post_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		self::markTestSkippedIfFileNotExists( PLL_TEST_EXT_PLUGINS_DIR . 'duplicate-post/duplicate-post.php', 'This test requires the plugin Duplicate Post.' );
+		self::markTestSkippedIfFileNotExists( PLL_TEST_PLUGINS_DIR . 'duplicate-post/duplicate-post.php', 'This test requires the plugin Duplicate Post.' );
 
 		parent::wpSetUpBeforeClass( $factory );
 
-		require_once PLL_TEST_EXT_PLUGINS_DIR . 'duplicate-post/duplicate-post.php';
-		require_once PLL_TEST_EXT_PLUGINS_DIR . 'duplicate-post/admin-functions.php';
+		require_once PLL_TEST_PLUGINS_DIR . 'duplicate-post/duplicate-post.php';
+		require_once PLL_TEST_PLUGINS_DIR . 'duplicate-post/admin-functions.php';
 
 		self::$model->post->registered_post_type( 'post' ); // Important.
 

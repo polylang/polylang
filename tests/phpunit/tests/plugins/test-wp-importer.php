@@ -5,7 +5,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		self::markTestSkippedIfFileNotExists( PLL_TEST_EXT_PLUGINS_DIR . 'wordpress-importer/wordpress-importer.php', 'This test requires the plugin WordPress Importer.' );
+		self::markTestSkippedIfFileNotExists( PLL_TEST_PLUGINS_DIR . 'wordpress-importer/wordpress-importer.php', 'This test requires the plugin WordPress Importer.' );
 
 		parent::wpSetUpBeforeClass( $factory );
 
@@ -17,7 +17,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 			define( 'WP_LOAD_IMPORTERS', true );
 		}
 
-		require_once PLL_TEST_EXT_PLUGINS_DIR . 'wordpress-importer/wordpress-importer.php';
+		require_once PLL_TEST_PLUGINS_DIR . 'wordpress-importer/wordpress-importer.php';
 	}
 
 
