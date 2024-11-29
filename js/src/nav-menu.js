@@ -52,9 +52,9 @@ const pllNavMenu = {
 				const t      = pllNavMenu.printMetabox;
 				const itemId = Number( metabox.id.replace( 'menu-item-settings-', '' ) );
 
-				metabox.append( t.createHiddenInput( 'title', itemId, pll_data.title ) );
-				metabox.append( t.createHiddenInput( 'url', itemId, '#pll_switcher' ) );
-				metabox.append( t.createHiddenInput( 'detect', itemId, 1 ) );
+				metabox.append( t.createHiddenInput( 'title', itemId, pll_data.title ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				metabox.append( t.createHiddenInput( 'url', itemId, '#pll_switcher' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				metabox.append( t.createHiddenInput( 'detect', itemId, 1 ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 				const ids          = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // Reverse order.
 				const isValDefined = typeof( pll_data.val[ itemId ] ) !== 'undefined';
@@ -68,14 +68,14 @@ const pllNavMenu = {
 						inputWrapper.classList.add( 'hidden' );
 					}
 
-					metabox.prepend( inputWrapper );
+					metabox.prepend( inputWrapper ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 
 					// Create the checkbox's label.
 					const inputId = `edit-menu-item-${ optionName }-${ itemId }`;
-					const label   = t.createElement( 'label', { for: inputId } );
+					const label   = t.createElement( 'label', { 'for': inputId } );
 					label.innerText = ` ${ pll_data.strings[ optionName ] }`;
 
-					inputWrapper.append( label );
+					inputWrapper.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 					// Create the checkbox.
 					const cb = t.createElement( 'input', {
@@ -89,7 +89,7 @@ const pllNavMenu = {
 						cb.checked = true;
 					}
 
-					label.prepend( cb );
+					label.prepend( cb ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				} );
 			} );
 		},
