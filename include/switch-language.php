@@ -45,7 +45,7 @@ class PLL_Switch_Language {
 	public static function init( PLL_Model $model ) {
 		self::$model = $model;
 
-		add_action( 'pll_language_defined', array( static::class, 'set_current_language' ), 10, 2 );
+		add_action( 'pll_language_defined', array( static::class, 'set_current_language' ) );
 	}
 
 	/**
@@ -53,12 +53,12 @@ class PLL_Switch_Language {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string       $slug    Current language slug.
-	 * @param PLL_Language $curlang Current language object.
+	 * @param string $slug Current language slug.
 	 * @return void
 	 */
-	public static function set_current_language( $slug, $curlang ) {
-		self::$current_language = $curlang;
+	public static function set_current_language( $slug ) {
+		$language = self::$model->languages->get( $slug );
+		self::$current_language = ! empty( $language ) ? $language : null;
 	}
 
 	/**

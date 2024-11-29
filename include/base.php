@@ -55,6 +55,8 @@ abstract class PLL_Base {
 		$this->model = &$links_model->model;
 		$this->options = &$this->model->options;
 
+		PLL_Switch_Language::init( $this->model );
+
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
