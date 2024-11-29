@@ -49,11 +49,16 @@ jQuery(
 							);
 							$( this ).append( h ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
-							ids = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // reverse order
+							const ids          = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // reverse order
+							const isValDefined = typeof( pll_data.val[ item ] ) !== 'undefined';
 
 							// add the fields
 							for ( var i = 0, idsLength = ids.length; i < idsLength; i++ ) {
 								p = $( '<p>' ).attr( 'class', 'description' );
+								if ( 'hide_current' === ids[ i ] && isValDefined && 1 === pll_data.val[ item ].dropdown ) {
+									// Hide the `hide_current` checkbox if `dropdown` is checked.
+									p.addClass( 'hidden' );
+								}
 								// p is hardcoded just above by using attr method which is safe.
 								$( this ).prepend( p ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 								// item is a number part of id of parent menu item built by WordPress
@@ -68,7 +73,7 @@ jQuery(
 										value: 1
 									}
 								);
-								if ( ( typeof( pll_data.val[ item ] ) != 'undefined' && pll_data.val[ item ][ ids[ i ] ] == 1 ) || ( typeof( pll_data.val[ item ] ) == 'undefined' && ids[ i ] == 'show_names' ) ) { // show_names as default value
+								if ( ( isValDefined && pll_data.val[ item ][ ids[ i ] ] === 1 ) || ( ! isValDefined && ids[ i ] === 'show_names' ) ) { // show_names as default value
 									cb.prop( 'checked', true );
 								}
 								// See reasons above. Checkbox are totally hardcoded here with safe value
@@ -100,5 +105,28 @@ jQuery(
 				}
 			}
 		);
+
+		/**
+		 * Hide and uncheck the `hide_current` checkbox when `dropdown` is checked.
+		 * Display it when `dropdown` is unchecked.
+		 */
+		document.getElementById( 'menu-to-edit' ).addEventListener( 'change', ( event ) => {
+			if ( ! event.target.id || ! event.target.id.startsWith( 'edit-menu-item-dropdown-' ) ) {
+				return;
+			}
+
+			const hideCb = event.target.closest( '.menu-item-settings' ).querySelector( '[id^="edit-menu-item-hide_current-"]' );
+
+			if ( ! hideCb ) {
+				return;
+			}
+
+			if ( event.target.checked ) {
+				hideCb.checked = false;
+				hideCb.closest( '.description' ).classList.add( 'hidden' );
+			} else {
+				hideCb.closest( '.description' ).classList.remove( 'hidden' );
+			}
+		} );
 	}
 );
