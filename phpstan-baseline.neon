@@ -730,3 +730,12 @@ parameters:
 			count: 1
 			path: settings/table-settings.php
 
+		-
+			message: "#^Offset 'file' does not exist on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: '\\-\\>'\\|'\\:\\:', args\\?\\: array, object\\?\\: object\\}\\.$#"
+			count: 1
+			path: include/base.php
+
+		-
+			message: "#^Offset 'line' does not exist on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: '\\-\\>'\\|'\\:\\:', args\\?\\: array, object\\?\\: object\\}\\.$#"
+			count: 1
+			path: include/base.php

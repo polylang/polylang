@@ -65,4 +65,30 @@ class PLL_Switch_Language {
 	public function restore_original_language() {
 		PLL()->curlang = self::$original_language;
 	}
+
+	/**
+	 * Loads user defined strings translations
+	 *
+	 * @since 1.2
+	 * @since 2.1.3 $locale parameter added.
+	 * @since 3.7   Moved from `PLL_Base`.
+	 *
+	 * @param string $locale Language locale or slug. Defaults to current locale.
+	 * @return void
+	 */
+	public static function load_strings_translations( $locale = '' ) {
+		if ( empty( $locale ) ) {
+			$locale = ( is_admin() && ! Polylang::is_ajax_on_front() ) ? get_user_locale() : get_locale();
+		}
+
+		$language = self::$model->get_language( $locale );
+
+		if ( ! empty( $language ) ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+			$GLOBALS['l10n']['pll_string'] = &$mo;
+		} else {
+			unset( $GLOBALS['l10n']['pll_string'] );
+		}
+	}
 }

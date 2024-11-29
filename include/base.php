@@ -60,10 +60,10 @@ abstract class PLL_Base {
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 
 		// User defined strings translations
-		add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
-		add_action( 'change_locale', array( $this, 'load_strings_translations' ) ); // Since WP 4.7
-		add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
-		add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 10, 0 ); // Password reset email.
+		add_action( 'pll_language_defined', array( PLL_Switch_Language::class, 'load_strings_translations' ), 5 );
+		add_action( 'change_locale', array( PLL_Switch_Language::class, 'load_strings_translations' ) ); // Since WP 4.7
+		add_action( 'personal_options_update', array( PLL_Switch_Language::class, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
+		add_action( 'lostpassword_post', array( PLL_Switch_Language::class, 'load_strings_translations' ), 10, 0 ); // Password reset email.
 		// Switch_to_blog
 		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
 	}
@@ -103,31 +103,6 @@ abstract class PLL_Base {
 		if ( ! defined( 'PLL_WIDGET_CALENDAR' ) || PLL_WIDGET_CALENDAR ) {
 			unregister_widget( 'WP_Widget_Calendar' );
 			register_widget( 'PLL_Widget_Calendar' );
-		}
-	}
-
-	/**
-	 * Loads user defined strings translations
-	 *
-	 * @since 1.2
-	 * @since 2.1.3 $locale parameter added.
-	 *
-	 * @param string $locale Language locale or slug. Defaults to current locale.
-	 * @return void
-	 */
-	public function load_strings_translations( $locale = '' ) {
-		if ( empty( $locale ) ) {
-			$locale = ( is_admin() && ! Polylang::is_ajax_on_front() ) ? get_user_locale() : get_locale();
-		}
-
-		$language = $this->model->get_language( $locale );
-
-		if ( ! empty( $language ) ) {
-			$mo = new PLL_MO();
-			$mo->import_from_db( $language );
-			$GLOBALS['l10n']['pll_string'] = &$mo;
-		} else {
-			unset( $GLOBALS['l10n']['pll_string'] );
 		}
 	}
 
@@ -214,5 +189,30 @@ abstract class PLL_Base {
 		$count = array_sum( array_map( 'count', $wp_filter['customize_register']->callbacks ) );
 
 		return $count > $floor;
+	}
+
+	/**
+	 * Backward compatibility for `load_strings_translations()` that have been moved to `PLL_Switch_Language` class.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $name Name of the method being called.
+	 * @param array  $args An array of arguments to pass to this method.
+	 * @return mixed
+	 */
+	public function __call( string $name, array $args ) {
+		if ( WP_DEBUG ) {
+			$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+
+			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				sprintf(
+					'%1$s() was called incorrectly in %2$s on line %3$s: the call to PLL()->%1$s() has been moved to `PLL_Switch_Language` in Polylang 3.7, use PLL_Switch_Language::%1$s() instead.' . "\nError handler",
+					esc_html( $name ),
+					esc_html( $debug[0]['file'] ),
+					absint( $debug[0]['line'] )
+				)
+			);
+		}
+		return call_user_func_array( array( PLL_Switch_Language::class, $name ), $args );
 	}
 }
