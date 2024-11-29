@@ -9,41 +9,120 @@
 class PLL_Switch_Language {
 
 	/**
+	 * @var PLL_Model
+	 */
+	private static $model;
+
+	/**
+	 * The previous language.
+	 *
+	 * @var PLL_Language|null
+	 */
+	public static $previous_language;
+
+	/**
 	 * The original language.
 	 *
 	 * @var PLL_Language|null
 	 */
-	public static $original_language;
+	private static $original_language;
+
+	/**
+	 * The current language.
+	 *
+	 * @var PLL_Language|null
+	 */
+	private static $current_language;
+
+	/**
+	 * Setups filters.
+	 *
+	 * @since 3.7
+	 *
+	 * @param PLL_Model $model Instance of `PLL_Model`.
+	 * @return void
+	 */
+	public static function init( PLL_Model $model ) {
+		self::$model = $model;
+
+		add_action( 'pll_language_defined', array( static::class, 'set_current_language' ), 10, 2 );
+	}
+
+	/**
+	 * Sets the current language.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string       $slug    Current language slug.
+	 * @param PLL_Language $curlang Current language object.
+	 * @return void
+	 */
+	public static function set_current_language( $slug, $curlang ) {
+		self::$current_language = $curlang;
+	}
+
+	/**
+	 * Switches to the given language.
+	 * Hooked on `pll_post_synchronized` at first.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int    $post_id ID of the source post.
+	 * @param int    $tr_id   ID of the target post.
+	 * @param string $lang    Language of the target post.
+	 * @return void
+	 */
+	public static function on_post_synchronized( $post_id, $tr_id, $lang ) {
+		self::switch_language( $lang );
+	}
+
+	/**
+	 * Switches the language back.
+	 * Hooked on `pll_post_synchronized` at last.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	public static function after_post_synchronized() {
+		self::$previous_language = self::$current_language;
+
+		self::restore_original_language();
+	}
 
 	/**
 	 * Switches the site to the given language.
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Language|string $language The language we want to switch to.
+	 * @param PLL_Language|string|null $language The language we want to switch to.
 	 * @return void
 	 */
-	public function switch_language( $language ) {
-		$language = PLL()->model->get_language( $language );
+	public static function switch_language( $language = null ) {
+		if ( null === $language ) {
+			self::$current_language = null;
+			return;
+		}
+
+		$language = self::$model->languages->get( $language );
 		if ( ! $language instanceof PLL_Language ) {
 			return;
 		}
 
-		if ( PLL()->curlang === $language ) {
+		if ( self::$current_language === $language ) {
 			return;
 		}
 
-		if ( ! in_array( $language, PLL()->model->languages->get_list() ) ) {
+		if ( ! in_array( $language, self::$model->languages->get_list(), true ) ) {
 			return;
 		}
 
 		// Stores the original language.
-		$current_language        = empty( PLL()->curlang ) ? null : PLL()->curlang;
-		self::$original_language = null === self::$original_language ? $current_language : self::$original_language;
+		self::$original_language = null === self::$original_language ? self::$current_language : self::$original_language;
 
-		PLL()->curlang = $language;
+		self::$current_language = $language;
 
-		PLL()->load_strings_translations( $language->slug );
+		self::load_strings_translations( $language->slug );
 
 		/**
 		 * Fires when the language is switched.
@@ -52,7 +131,7 @@ class PLL_Switch_Language {
 		 *
 		 * @param PLL_Language $language The new language.
 		 */
-		do_action( 'pll_change_language', $language );
+		do_action( 'pll_switch_language', $language );
 	}
 
 	/**
@@ -62,8 +141,8 @@ class PLL_Switch_Language {
 	 *
 	 * @return void
 	 */
-	public function restore_original_language() {
-		PLL()->curlang = self::$original_language;
+	public static function restore_original_language() {
+		self::switch_language( self::$original_language );
 	}
 
 	/**
