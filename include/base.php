@@ -203,18 +203,30 @@ abstract class PLL_Base {
 	 * @return mixed
 	 */
 	public function __call( string $name, array $args ) {
-		if ( WP_DEBUG ) {
-			$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-
-			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				sprintf(
-					'%1$s() was called incorrectly in %2$s on line %3$s: the call to PLL()->%1$s() has been moved to `PLL_Switch_Language` in Polylang 3.7, use PLL_Switch_Language::%1$s() instead.' . "\nError handler",
-					esc_html( $name ),
-					esc_html( $debug[0]['file'] ),
-					absint( $debug[0]['line'] )
-				)
-			);
+		if ( 'load_strings_translations' === $name ) {
+			if ( WP_DEBUG ) {
+				$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+					sprintf(
+						'%1$s() was called incorrectly in %2$s on line %3$s: the call to PLL()->%1$s() has been moved to `PLL_Switch_Language` in Polylang 3.7, use PLL_Switch_Language::%1$s() instead.' . "\nError handler",
+						esc_html( $name ),
+						esc_html( $debug[0]['file'] ?? '' ),
+						absint( $debug[0]['line'] ?? 0 )
+					)
+				);
+			}
+			return call_user_func_array( array( PLL_Switch_Language::class, $name ), $args );
 		}
-		return call_user_func_array( array( PLL_Switch_Language::class, $name ), $args );
+
+		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			sprintf(
+				'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler",
+				esc_html( $name ),
+				esc_html( $debug[0]['file'] ?? '' ),
+				absint( $debug[0]['line'] ?? 0 )
+			),
+			E_USER_ERROR
+		);
 	}
 }
