@@ -42,7 +42,7 @@ class PLL_Switch_Language {
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 * @return void
 	 */
-	public static function init( PLL_Model $model ) {
+	public static function init( PLL_Model $model ): void {
 		self::$model = $model;
 
 		add_action( 'pll_language_defined', array( static::class, 'set_current_language' ) );
@@ -56,7 +56,7 @@ class PLL_Switch_Language {
 	 * @param string $slug Current language slug.
 	 * @return void
 	 */
-	public static function set_current_language( $slug ) {
+	public static function set_current_language( $slug ): void {
 		$language = self::$model->languages->get( $slug );
 		self::$current_language = ! empty( $language ) ? $language : null;
 	}
@@ -72,7 +72,7 @@ class PLL_Switch_Language {
 	 * @param string $lang    Language of the target post.
 	 * @return void
 	 */
-	public static function on_post_synchronized( $post_id, $tr_id, $lang ) {
+	public static function on_post_synchronized( $post_id, $tr_id, $lang ): void {
 		self::switch_language( $lang );
 	}
 
@@ -84,7 +84,7 @@ class PLL_Switch_Language {
 	 *
 	 * @return void
 	 */
-	public static function after_post_synchronized() {
+	public static function after_post_synchronized(): void {
 		self::$previous_language = self::$current_language;
 
 		self::restore_original_language();
@@ -98,7 +98,7 @@ class PLL_Switch_Language {
 	 * @param PLL_Language|string|null $language The language we want to switch to.
 	 * @return void
 	 */
-	public static function switch_language( $language = null ) {
+	public static function switch_language( $language = null ): void {
 		if ( null === $language ) {
 			self::$current_language = null;
 			return;
@@ -141,7 +141,7 @@ class PLL_Switch_Language {
 	 *
 	 * @return void
 	 */
-	public static function restore_original_language() {
+	public static function restore_original_language(): void {
 		self::switch_language( self::$original_language );
 	}
 
@@ -155,7 +155,7 @@ class PLL_Switch_Language {
 	 * @param string $locale Language locale or slug. Defaults to current locale.
 	 * @return void
 	 */
-	public static function load_strings_translations( $locale = '' ) {
+	public static function load_strings_translations( $locale = '' ): void {
 		if ( empty( $locale ) ) {
 			$locale = ( is_admin() && ! Polylang::is_ajax_on_front() ) ? get_user_locale() : get_locale();
 		}
