@@ -50,6 +50,7 @@ class PLL_Switch_Language {
 
 	/**
 	 * Sets the current language.
+	 * Hooked to `pll_language_defined`.
 	 *
 	 * @since 3.7
 	 *
