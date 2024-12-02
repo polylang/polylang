@@ -63,7 +63,7 @@ class PLL_Switch_Language {
 
 	/**
 	 * Switches to the given language.
-	 * Hooked on `pll_post_synchronized` at first.
+	 * Hooked to `pll_post_synchronized` at first.
 	 *
 	 * @since 3.7
 	 *
@@ -78,7 +78,7 @@ class PLL_Switch_Language {
 
 	/**
 	 * Switches the language back.
-	 * Hooked on `pll_post_synchronized` at last.
+	 * Hooked to `pll_post_synchronized` at last.
 	 *
 	 * @since 3.7
 	 *
