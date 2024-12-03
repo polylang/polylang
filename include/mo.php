@@ -85,7 +85,7 @@ class PLL_MO extends MO {
 		foreach ( $strings as $msg ) {
 			$entry = $this->make_entry( $msg[0], $msg[1] );
 
-			if ( '' !== $entry->singular ) {
+			if ( '' !== $entry->singular && '' !== $msg[1] ) {
 				$this->add_entry( $entry );
 			}
 		}
