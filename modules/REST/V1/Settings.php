@@ -98,10 +98,9 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		$response = array();
-		$errors   = new WP_Error();
-		$schema   = $this->options->get_schema();
-		$options  = array_intersect_key(
+		$errors  = new WP_Error();
+		$schema  = $this->options->get_schema();
+		$options = array_intersect_key(
 			$request->get_params(),
 			rest_get_endpoint_args_for_schema( $schema, WP_REST_Server::EDITABLE ) // Remove `context` and fields with `readonly`.
 		);
@@ -111,8 +110,6 @@ class Settings extends Abstract_Controller {
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
-			} else {
-				$response[ $option_name ] = $this->options->get( $option_name );
 			}
 		}
 
@@ -120,7 +117,7 @@ class Settings extends Abstract_Controller {
 			return $this->add_status_to_error( $errors );
 		}
 
-		return $this->prepare_item_for_response( $response, $request );
+		return $this->prepare_item_for_response( $this->options->get_all(), $request );
 	}
 
 	/**
