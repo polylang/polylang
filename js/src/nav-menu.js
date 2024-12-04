@@ -9,14 +9,18 @@ const pllNavMenu = {
 	 * Init.
 	 */
 	init: () => {
+		const handlers = [
+			pllNavMenu.printMetabox.attachEvent,
+			pllNavMenu.ensureContent.attachEvent,
+			pllNavMenu.showHideRows.attachEvent
+		];
+
 		if ( document.readyState !== 'loading' ) {
-			pllNavMenu.printMetabox.attachEvent();
-			pllNavMenu.ensureContent.attachEvent();
-			pllNavMenu.showHideRows.attachEvent();
+			handlers.forEach( handler => handler() );
 		} else {
-			document.addEventListener( 'DOMContentLoaded', pllNavMenu.printMetabox.attachEvent );
-			document.addEventListener( 'DOMContentLoaded', pllNavMenu.ensureContent.attachEvent );
-			document.addEventListener( 'DOMContentLoaded', pllNavMenu.showHideRows.attachEvent );
+			handlers.forEach( handler =>
+				document.addEventListener( 'DOMContentLoaded', handler )
+			);
 		}
 	},
 
