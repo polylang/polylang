@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Syntex\Polylang\Tests\Integration\Options\Options;
+namespace WP_Syntex\Polylang\Tests\Integration\Options\Abstract_Option;
 
 use WP_Error;
 use PHPUnit_Adapter_TestCase;
@@ -9,7 +9,7 @@ use WP_Syntex\Polylang\Options\Business;
 /**
  * Test the schema of all classes extending {@see WP_Syntex\Polylang\Options\Abstract_Option}.
  */
-class OptionSchema_Test extends PHPUnit_Adapter_TestCase {
+class GetSchema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider boolean_provider
 	 *
