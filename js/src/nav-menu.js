@@ -24,19 +24,27 @@ const pllNavMenu = {
 		}
 	},
 
+	/**
+	 * Attaches an event to an element.
+	 *
+	 * @param {string} elemId   The HTML id of the element to attach the event to.
+	 * @param {string} type     A case-sensitive string representing the event type to listen for.
+	 * @param {Object} listener The callback to fire on that event.
+	 */
+	maybeAttachEvent: ( elemId, type, listener ) => {
+		const wrapper = document.getElementById( elemId );
+
+		if ( wrapper ) {
+			wrapper.addEventListener( type, listener );
+		}
+	},
+
 	printMetabox: {
 		/**
 		 * Attaches an event to `#menu-to-edit` to print our checkboxes in the language switcher.
 		 */
 		attachEvent: () => {
-			/* global pll_data */
-			const wrapper = document.getElementById( 'menu-to-edit' );
-
-			if ( ! wrapper ) {
-				return;
-			}
-
-			wrapper.addEventListener( 'click', ( event ) => {
+			pllNavMenu.maybeAttachEvent( 'menu-to-edit', 'click', ( event ) => {
 				if ( ! event.target.classList.contains( 'item-edit' ) ) {
 					// Not clicking on a Edit arrow button.
 					return;
@@ -142,15 +150,9 @@ const pllNavMenu = {
 		 * Attaches an event to `#menu-to-edit` to disallow unchecking both `show_names` and `show_flags`.
 		 */
 		attachEvent: () => {
-			const wrapper = document.getElementById( 'menu-to-edit' );
-
-			if ( ! wrapper ) {
-				return;
-			}
-
 			const regExpr = new RegExp( /^edit-menu-item-show_(names|flags)-(\d+)$/ );
 
-			wrapper.addEventListener( 'change', ( event ) => {
+			pllNavMenu.maybeAttachEvent( 'menu-to-edit', 'change', ( event ) => {
 				if ( ! event.target.id || event.target.checked ) {
 					// Now checked, nothing to do.
 					return;
@@ -176,15 +178,9 @@ const pllNavMenu = {
 		 * Attaches an event to `#menu-to-edit` to show or hide the `hide_current` checkbox when `dropdown` is checked.
 		 */
 		attachEvent: () => {
-			const wrapper = document.getElementById( 'menu-to-edit' );
-
-			if ( ! wrapper ) {
-				return;
-			}
-
 			const regExpr = new RegExp( /^edit-menu-item-dropdown-(\d+)$/ );
 
-			wrapper.addEventListener( 'change', ( event ) => {
+			pllNavMenu.maybeAttachEvent( 'menu-to-edit', 'change', ( event ) => {
 				if ( ! event.target.id ) {
 					// Not the checkbox we want.
 					return;
