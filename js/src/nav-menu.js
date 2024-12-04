@@ -210,7 +210,7 @@ const pllNavMenu = {
 				description.classList.toggle( 'hidden', event.target.checked );
 
 				if ( event.target.checked ) {
-					// Uncheck.
+					// Uncheck after hiding.
 					hideCb.checked = false;
 					hideCb.dispatchEvent( new Event( 'change' ) );
 				}
