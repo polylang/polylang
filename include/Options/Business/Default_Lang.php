@@ -70,14 +70,14 @@ class Default_Lang extends Abstract_String {
 	 * @return string|WP_Error The sanitized value. An instance of `WP_Error` in case of error.
 	 */
 	protected function sanitize( $value, Options $options ) {
-		parent::sanitize( $value, $options );
+		$value = parent::sanitize( $value, $options );
 
 		if ( is_wp_error( $value ) ) {
 			return $value;
 		}
 
 		if ( ! get_term_by( 'slug', $value, 'language' ) ) {
-			return new WP_Error( 'invalid_language', sprintf( 'The language slug \'%s\' is not a valid language.', $value ) );
+			return new WP_Error( 'pll_invalid_language', sprintf( 'The language slug \'%s\' is not a valid language.', $value ) );
 		}
 
 		return $value;
