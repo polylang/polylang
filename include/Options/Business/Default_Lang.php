@@ -76,6 +76,7 @@ class Default_Lang extends Abstract_String {
 			return $value;
 		}
 
+		/** @var string $value */
 		if ( ! get_term_by( 'slug', $value, 'language' ) ) {
 			return new WP_Error( 'pll_invalid_language', sprintf( 'The language slug \'%s\' is not a valid language.', $value ) );
 		}
