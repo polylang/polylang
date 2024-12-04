@@ -6,8 +6,8 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Model\Languages;
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
 
 defined( 'ABSPATH' ) || exit;
@@ -65,7 +65,7 @@ class Default_Lang extends Abstract_String {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array   $value   Value to sanitize.
+	 * @param string  $value   Value to sanitize.
 	 * @param Options $options All options.
 	 * @return string|WP_Error The sanitized value. An instance of `WP_Error` in case of error.
 	 */
