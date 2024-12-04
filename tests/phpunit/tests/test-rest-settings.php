@@ -163,6 +163,15 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		$this->assertSame( 404, $response->get_status() );
 	}
 
+	public function test_get_settings_with_no_context() {
+		wp_set_current_user( self::$administrator );
+
+		$response = $this->dispatch_request();
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'Invalid parameter(s): context', $response->get_data()['message'] );
+	}
+
 	/**
 	 * Dispatches a request after setting some params.
 	 *
