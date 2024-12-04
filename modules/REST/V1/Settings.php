@@ -51,7 +51,7 @@ class Settings extends Abstract_Controller {
 			"/{$this->rest_base}",
 			array(
 				'args'        => array(
-					'context' => $this->get_context_param( array( 'default' => 'edit' ) ),
+					'context' => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -164,6 +164,9 @@ class Settings extends Abstract_Controller {
 				$response[ $option ] = $value;
 			}
 		}
+
+		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
+		$response = $this->filter_response_by_context( $response, $context );
 
 		/** @var WP_REST_Response */
 		return rest_ensure_response( $response );
