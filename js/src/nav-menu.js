@@ -34,7 +34,7 @@ const pllNavMenu = {
 
 				const metabox = event.target.closest( '.menu-item' ).querySelector( '.menu-item-settings' );
 
-				if ( ! metabox || ! metabox.id ) {
+				if ( ! metabox?.id ) {
 					// Should not happen.
 					return;
 				}
