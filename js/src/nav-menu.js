@@ -190,6 +190,7 @@ const pllNavMenu = {
 				if ( event.target.checked ) {
 					// Uncheck.
 					hideCb.checked = false;
+					hideCb.dispatchEvent( new Event( 'change' ) );
 				}
 			} );
 		}
