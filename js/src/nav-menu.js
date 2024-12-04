@@ -150,8 +150,9 @@ const pllNavMenu = {
 				}
 
 				// Check the other checkbox.
-				const other = 'names' === matches[1] ? 'flags' : 'names';
-				document.getElementById( `edit-menu-item-show_${ other }-${ matches[2] }` ).checked = true;
+				const [ , type, id ] = matches;
+				const otherType = 'names' === type ? 'flags' : 'names';
+				document.getElementById( `edit-menu-item-show_${ otherType }-${ id }` ).checked = true;
 			} );
 		}
 	},
