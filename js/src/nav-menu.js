@@ -29,7 +29,7 @@ const pllNavMenu = {
 		 * Attaches an event to `#menu-to-edit` to print our checkboxes in the language switcher.
 		 */
 		attachEvent: () => {
-			/*global pll_data*/
+			/* global pll_data */
 			const wrapper = document.getElementById( 'menu-to-edit' );
 
 			if ( ! wrapper ) {
@@ -107,10 +107,10 @@ const pllNavMenu = {
 		/**
 		 * Creates and returns a `<input type=hidden"/>` element.
 		 *
-		 * @param {String}         id     An identifier for this input. It will be part of the final `id` attribute.
-		 * @param {Integerg}       itemId The ID of the menu element (post ID).
-		 * @param {String|Integer} value  The input's value.
-		 * @returns {HTMLElement}
+		 * @param {string}        id     An identifier for this input. It will be part of the final `id` attribute.
+		 * @param {number}        itemId The ID of the menu element (post ID).
+		 * @param {string|number} value  The input's value.
+		 * @return {HTMLElement} The input element.
 		 */
 		createHiddenInput: ( id, itemId, value ) => {
 			return pllNavMenu.printMetabox.createElement( 'input', {
@@ -124,9 +124,9 @@ const pllNavMenu = {
 		/**
 		 * Creates and returns an element.
 		 *
-		 * @param {String} type Element's type.
+		 * @param {string} type Element's type.
 		 * @param {Object} atts Element's attributes.
-		 * @returns {HTMLElement}
+		 * @return {HTMLElement} The element.
 		 */
 		createElement: ( type, atts ) => {
 			const el = document.createElement( type );
