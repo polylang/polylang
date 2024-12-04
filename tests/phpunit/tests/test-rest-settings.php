@@ -88,12 +88,12 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
-		$values['post_types'] = explode( ',', $values['post_types'] );
-		$values['sync']       = explode( ',', $values['sync'] );
 
-		foreach ( $values as $name => $value ) {
-			$this->assertSame( $value, $data[ $name ] );
-		}
+		$expected = array_merge( $this->pll_env->model->options->get_all(), $values );
+		$expected['post_types'] = explode( ',', $expected['post_types'] );
+		$expected['sync']       = explode( ',', $expected['sync'] );
+
+		$this->assertSameSetsWithIndex( $expected, $data );
 	}
 
 	public function test_invalid_format() {
