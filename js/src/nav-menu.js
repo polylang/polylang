@@ -148,13 +148,15 @@ const pllNavMenu = {
 				return;
 			}
 
+			const regExpr = new RegExp( /^edit-menu-item-show_(names|flags)-(\d+)$/ );
+
 			wrapper.addEventListener( 'change', ( event ) => {
 				if ( ! event.target.id || event.target.checked ) {
 					// Now checked, nothing to do.
 					return;
 				}
 
-				const matches = event.target.id.match( new RegExp( /^edit-menu-item-show_(names|flags)-(\d+)$/ ) );
+				const matches = event.target.id.match( regExpr );
 
 				if ( ! matches ) {
 					// Not the checkbox we want.
@@ -180,13 +182,15 @@ const pllNavMenu = {
 				return;
 			}
 
+			const regExpr = new RegExp( /^edit-menu-item-dropdown-(\d+)$/ );
+
 			wrapper.addEventListener( 'change', ( event ) => {
 				if ( ! event.target.id ) {
 					// Not the checkbox we want.
 					return;
 				}
 
-				const matches = event.target.id.match( new RegExp( /^edit-menu-item-dropdown-(\d+)$/ ) );
+				const matches = event.target.id.match( regExpr );
 
 				if ( ! matches ) {
 					// Not the checkbox we want.
