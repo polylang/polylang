@@ -12,13 +12,13 @@ const pllNavMenu = {
 		const handlers = [
 			pllNavMenu.printMetabox.attachEvent,
 			pllNavMenu.ensureContent.attachEvent,
-			pllNavMenu.showHideRows.attachEvent
+			pllNavMenu.showHideRows.attachEvent,
 		];
 
 		if ( document.readyState !== 'loading' ) {
-			handlers.forEach( handler => handler() );
+			handlers.forEach( ( handler ) => handler() );
 		} else {
-			handlers.forEach( handler =>
+			handlers.forEach( ( handler ) =>
 				document.addEventListener( 'DOMContentLoaded', handler )
 			);
 		}
@@ -92,7 +92,7 @@ const pllNavMenu = {
 						type:  'checkbox',
 						id:    inputId,
 						name:  `menu-item-${ optionName }[${ itemId }]`,
-						value: 1
+						value: 1,
 					} );
 
 					if ( ( isValDefined && 1 === pll_data.val[ itemId ][ optionName ] ) || ( ! isValDefined && 'show_names' === optionName ) ) { // `show_names` as default value.
@@ -117,7 +117,7 @@ const pllNavMenu = {
 				type:  'hidden',
 				id:    `edit-menu-item-pll-${ id }-${ itemId }`,
 				name:  `menu-item-pll-${ id }[${ itemId }]`,
-				value: value
+				value: value,
 			} );
 		},
 
@@ -134,7 +134,7 @@ const pllNavMenu = {
 				el.setAttribute( key, value );
 			}
 			return el;
-		}
+		},
 	},
 
 	ensureContent: {
@@ -168,7 +168,7 @@ const pllNavMenu = {
 				const otherType = 'names' === type ? 'flags' : 'names';
 				document.getElementById( `edit-menu-item-show_${ otherType }-${ id }` ).checked = true;
 			} );
-		}
+		},
 	},
 
 	showHideRows: {
@@ -215,8 +215,8 @@ const pllNavMenu = {
 					hideCb.dispatchEvent( new Event( 'change' ) );
 				}
 			} );
-		}
-	}
+		},
+	},
 };
 
 pllNavMenu.init();
