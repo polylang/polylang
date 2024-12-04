@@ -182,13 +182,14 @@ const pllNavMenu = {
 					return;
 				}
 
+				const description = hideCb.closest( '.description' );
+
+				// Hide or show.
+				description.classList.toggle( 'hidden', event.target.checked );
+
 				if ( event.target.checked ) {
-					// Hide and uncheck.
-					hideCb.closest( '.description' ).classList.add( 'hidden' );
+					// Uncheck.
 					hideCb.checked = false;
-				} else {
-					// Show.
-					hideCb.closest( '.description' ).classList.remove( 'hidden' );
 				}
 			} );
 		}
