@@ -30,7 +30,13 @@ const pllNavMenu = {
 		 */
 		attachEvent: () => {
 			/*global pll_data*/
-			document.getElementById( 'menu-to-edit' ).addEventListener( 'click', ( event ) => {
+			const wrapper = document.getElementById( 'menu-to-edit' );
+
+			if ( ! wrapper ) {
+				return;
+			}
+
+			wrapper.addEventListener( 'click', ( event ) => {
 				if ( ! event.target.classList.contains( 'item-edit' ) ) {
 					// Not clicking on a Edit arrow button.
 					return;
@@ -136,7 +142,13 @@ const pllNavMenu = {
 		 * Attaches an event to `#menu-to-edit` to disallow unchecking both `show_names` and `show_flags`.
 		 */
 		attachEvent: () => {
-			document.getElementById( 'menu-to-edit' ).addEventListener( 'change', ( event ) => {
+			const wrapper = document.getElementById( 'menu-to-edit' );
+
+			if ( ! wrapper ) {
+				return;
+			}
+
+			wrapper.addEventListener( 'change', ( event ) => {
 				if ( ! event.target.id || event.target.checked ) {
 					// Now checked, nothing to do.
 					return;
@@ -162,7 +174,13 @@ const pllNavMenu = {
 		 * Attaches an event to `#menu-to-edit` to show or hide the `hide_current` checkbox when `dropdown` is checked.
 		 */
 		attachEvent: () => {
-			document.getElementById( 'menu-to-edit' ).addEventListener( 'change', ( event ) => {
+			const wrapper = document.getElementById( 'menu-to-edit' );
+
+			if ( ! wrapper ) {
+				return;
+			}
+
+			wrapper.addEventListener( 'change', ( event ) => {
 				if ( ! event.target.id ) {
 					// Not the checkbox we want.
 					return;
