@@ -629,13 +629,11 @@ class Languages extends Abstract_Controller {
 
 	/**
 	 * Retrieves an array of endpoint arguments from the item schema for the controller.
-	 * Ensures that the `no_default_cat` property is not returned for `EDITABLE` requests.
+	 * Ensures that the `no_default_cat` property is returned only for `CREATABLE` requests.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $method Optional. HTTP method of the request. The arguments for `CREATABLE` requests are
-	 *                       checked for required values and may fall-back to a given default, this is not done
-	 *                       on `EDITABLE` requests. Default WP_REST_Server::CREATABLE.
+	 * @param string $method Optional. HTTP method of the request. Default WP_REST_Server::CREATABLE.
 	 * @return array Endpoint arguments.
 	 */
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
