@@ -9,6 +9,7 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+use WP_Syntex\Polylang\Model\Languages;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\REST\Abstract_Controller;
 
@@ -26,16 +27,23 @@ class Settings extends Abstract_Controller {
 	private $options;
 
 	/**
+	 * @var Languages
+	 */
+	private $languages;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
-	 * @param Options $options Options registry.
+	 * @param Options   $options   Options registry.
+	 * @param Languages $languages Languages' model.
 	 */
-	public function __construct( Options $options ) {
+	public function __construct( Options $options, Languages $languages ) {
 		$this->namespace = 'pll/v1';
 		$this->rest_base = 'settings';
 		$this->options   = $options;
+		$this->languages = $languages;
 	}
 
 	/**
@@ -103,10 +111,19 @@ class Settings extends Abstract_Controller {
 		);
 
 		foreach ( $options as $option_name => $new_value ) {
-			$result = $this->options->set( $option_name, $new_value );
+			$prev_value = $this->options->get( $option_name );
+			$result     = $this->options->set( $option_name, $new_value );
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
+				continue;
+			}
+			if ( $prev_value === $new_value ) {
+				continue;
+			}
+			// Default language.
+			if ( 'default_lang' === $option_name ) {
+				$this->languages->update_default( $new_value );
 			}
 		}
 
