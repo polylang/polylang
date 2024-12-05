@@ -637,14 +637,11 @@ class Languages extends Abstract_Controller {
 	 * @return array Endpoint arguments.
 	 */
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
-		if ( WP_REST_Server::EDITABLE === $method ) {
-			$edit_schema = $this->get_item_schema();
-			unset( $edit_schema['properties']['no_default_cat'] );
-
-			return rest_get_endpoint_args_for_schema( $edit_schema, $method );
+		$schema = $this->get_item_schema()
+		if ( WP_REST_Server::CREATABLE !== $method ) {
+			unset( $schema['properties']['no_default_cat'] );
 		}
-
-		return parent::get_endpoint_args_for_item_schema( $method );
+		return rest_get_endpoint_args_for_schema( $schema, $method );
 	}
 
 	/**
