@@ -5,7 +5,6 @@
  */
 
 const pllNavMenu = {
-	/* global pll_data */
 	/**
 	 * The element wrapping the menu elements.
 	 *
