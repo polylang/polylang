@@ -11,17 +11,17 @@ use WP_Syntex\Polylang\Options\Options;
  *
  * @since 1.2
  *
- * @method bool               has_languages()                                     Checks if there are languages or not. See `Model\Languages::has_languages()`.
+ * @method bool               has_languages()                                     Checks if there are languages or not. See `Model\Languages::has()`.
  * @method array              get_languages_list(array $args = array())           Returns the list of available languages. See `Model\Languages::get_list()`.
- * @method bool               are_languages_ready()                               Tells if get_languages_list() can be used. See `Model\Languages::are_languages_ready()`.
- * @method void               set_languages_ready()                               Sets the internal property `$languages_ready` to `true`, telling that get_languages_list() can be used. See `Model\Languages::set_languages_ready()`.
+ * @method bool               are_languages_ready()                               Tells if get_languages_list() can be used. See `Model\Languages::are_ready()`.
+ * @method void               set_languages_ready()                               Sets the internal property `$languages_ready` to `true`, telling that get_languages_list() can be used. See `Model\Languages::set_ready()`.
  * @method PLL_Language|false get_language(mixed $value)                          Returns the language by its term_id, tl_term_id, slug or locale. See `Model\Languages::get()`.
  * @method true|WP_Error      add_language(array $args)                           Adds a new language and creates a default category for this language. See `Model\Languages::add()`.
  * @method bool               delete_language(int $lang_id)                       Deletes a language. See `Model\Languages::delete()`.
  * @method true|WP_Error      update_language(array $args)                        Updates language properties. See `Model\Languages::update()`.
- * @method PLL_Language|false get_default_language()                              Returns the default language. See `Model\Languages::get_default_language()`.
- * @method void               update_default_lang(string $slug)                   Updates the default language. See `Model\Languages::update_default_language()`.
- * @method void               maybe_create_language_terms()                       Maybe adds the missing language terms for 3rd party language taxonomies. See `Model\Languages::maybe_create_language_terms()`.
+ * @method PLL_Language|false get_default_language()                              Returns the default language. See `Model\Languages::get_default()`.
+ * @method void               update_default_lang(string $slug)                   Updates the default language. See `Model\Languages::update_default()`.
+ * @method void               maybe_create_language_terms()                       Maybe adds the missing language terms for 3rd party language taxonomies. See `Model\Languages::maybe_create_terms()`.
  * @method string[]           get_translated_post_types(bool $filter = true)      Returns post types that need to be translated. See `Model\Post_Types::get_translated()`.
  * @method bool               is_translated_post_type(string|string[] $post_type) Returns true if Polylang manages languages and translations for this post type. See `Model\Post_Types::is_translated()`.
  * @method string[]           get_translated_taxonomies(bool $filter = true)      Returns taxonomies that need to be translated. See `Model\Taxonomies::get_translated()`.
