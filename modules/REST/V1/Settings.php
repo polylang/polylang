@@ -50,9 +50,6 @@ class Settings extends Abstract_Controller {
 			$this->namespace,
 			"/{$this->rest_base}",
 			array(
-				'args'        => array(
-					'context' => $this->get_context_param( array( 'default' => 'edit' ) ),
-				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_item' ),
@@ -102,7 +99,7 @@ class Settings extends Abstract_Controller {
 		$schema  = $this->options->get_schema();
 		$options = array_intersect_key(
 			$request->get_params(),
-			rest_get_endpoint_args_for_schema( $schema, WP_REST_Server::EDITABLE ) // Remove `context` and fields with `readonly`.
+			rest_get_endpoint_args_for_schema( $schema, WP_REST_Server::EDITABLE ) // Remove fields with `readonly`.
 		);
 
 		foreach ( $options as $option_name => $new_value ) {
