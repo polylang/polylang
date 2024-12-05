@@ -144,16 +144,17 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 	 * @param string $method
 	 * @return void
 	 */
-	public function test_wrong_context( string $method ) {
+	public function test_context_param_should_be_ignored( string $method ) {
 		wp_set_current_user( self::$administrator );
 
-		// Context 'view'.
 		$response = $this->dispatch_request( $method, array( 'context' => 'view' ) );
-		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
-		// Context 'embed'.
 		$response = $this->dispatch_request( $method, array( 'context' => 'embed' ) );
-		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
+
+		$response = $this->dispatch_request( $method, array( 'context' => 'edit' ) );
+		$this->assertSame( 200, $response->get_status() );
 	}
 
 	public function test_unknown_method() {
@@ -161,15 +162,6 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 
 		$response = $this->dispatch_request( 'DELETE' );
 		$this->assertSame( 404, $response->get_status() );
-	}
-
-	public function test_get_settings_with_no_context() {
-		wp_set_current_user( self::$administrator );
-
-		$response = $this->dispatch_request();
-
-		$this->assertSame( 400, $response->get_status() );
-		$this->assertSame( 'Invalid parameter(s): context', $response->get_data()['message'] );
 	}
 
 	/**
