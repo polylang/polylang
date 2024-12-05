@@ -74,7 +74,7 @@ const pllNavMenu = {
 
 			metabox.append( t.createHiddenInput( 'title', itemId, pll_data.title ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 			metabox.append( t.createHiddenInput( 'url', itemId, '#pll_switcher' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-			metabox.append( t.createHiddenInput( 'detect', itemId, 1 ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			metabox.append( t.createHiddenInput( 'pll-detect', itemId, 1 ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 			const ids          = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // Reverse order.
 			const isValDefined = typeof( pll_data.val[ itemId ] ) !== 'undefined';
@@ -124,8 +124,8 @@ const pllNavMenu = {
 		createHiddenInput: ( id, itemId, value ) => {
 			return pllNavMenu.printMetabox.createElement( 'input', {
 				type:  'hidden',
-				id:    `edit-menu-item-pll-${ id }-${ itemId }`,
-				name:  `menu-item-pll-${ id }[${ itemId }]`,
+				id:    `edit-menu-item-${ id }-${ itemId }`,
+				name:  `menu-item-${ id }[${ itemId }]`,
 				value: value,
 			} );
 		},
