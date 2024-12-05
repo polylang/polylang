@@ -1,5 +1,6 @@
 <?php
 
+use WP_Syntex\Polylang\Model\Languages;
 use WP_Syntex\Polylang\REST\API;
 
 class REST_Settings_Test extends PLL_UnitTestCase {
@@ -19,6 +20,8 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 
 		self::$administrator = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		self::$author        = self::factory()->user->create( array( 'role' => 'author' ) );
+
+		$factory->language->create_many( 2 );
 	}
 
 	public function set_up() {
@@ -209,6 +212,32 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		$rules_after_update = $wp_rewrite->rewrite_rules();
 
 		$this->assertArrayHasKey( 'language/(en|fr)/?$', $rules_after_update );
+	}
+
+	public function test_update_default_language_should_update_default_language() {
+		wp_set_current_user( self::$administrator );
+
+		$this->assertSame( 'en', $this->pll_env->model->options['default_lang'] ); // Make sure the default language is not the one we want to set.
+		$this->assertCount( 2, $this->pll_env->model->languages->get_list() ); // Put languages in cache.
+		$this->assertIsArray( get_transient( Languages::TRANSIENT_NAME ) ); // Make sure the cache is not empty.
+
+		$response = $this->dispatch_request( 'PATCH', array( 'default_lang' => 'fr' ) );
+
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+
+		// Make sure the option has been updated.
+		$this->assertSame( 'fr', $data['default_lang'] );
+		$this->assertSame( 'fr', $this->pll_env->model->options['default_lang'] );
+
+		// Make sure the cache has been cleared.
+		$this->assertFalse( get_transient( Languages::TRANSIENT_NAME ) );
+
+		// Make sure the default language has changed.
+		$lang_fr = $this->pll_env->model->languages->get( 'fr' );
+		$this->assertInstanceOf( PLL_Language::class, $lang_fr );
+		$this->assertTrue( $lang_fr->is_default );
 	}
 
 	/**
