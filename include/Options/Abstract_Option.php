@@ -17,8 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
  * @phpstan-type Schema array{
- *     type: SchemaType,
- *     context: array<non-falsy-string>
+ *     type: SchemaType
  * }
  */
 abstract class Abstract_Option {
@@ -152,7 +151,6 @@ abstract class Abstract_Option {
 		$this->schema = array_merge(
 			array(
 				'description' => $this->get_description(),
-				'context'     => array( 'edit' ),
 				'default'     => $this->get_default(),
 			),
 			$this->get_data_structure()
