@@ -69,6 +69,15 @@ class Set_Test extends PLL_UnitTestCase {
 		$this->assertSameSetsWithIndex( $domains, $this->pll_env->model->options->get( 'domains' ) );
 	}
 
+	public function test_should_not_set_bad_default_language() {
+		$options = self::create_options();
+		$errors = $options->set( 'default_lang', 'bad-lang' );
+
+		$this->assertInstanceOf( WP_Error::class, $errors );
+		$this->assertTrue( $errors->has_errors() );
+		$this->assertSame( 'pll_invalid_language', $errors->get_error_code() );
+	}
+
 	/**
 	 * Callback used to filter the http requests.
 	 *

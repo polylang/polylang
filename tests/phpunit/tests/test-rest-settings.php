@@ -163,6 +163,15 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		$this->assertSame( 404, $response->get_status() );
 	}
 
+	public function test_should_not_update_default_language_with_bad_value() {
+		wp_set_current_user( self::$administrator );
+
+		$response = $this->dispatch_request( 'PATCH', array( 'default_lang' => 'bad-lang' ) );
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'pll_invalid_language', $response->get_data()['code'] );
+	}
+
 	/**
 	 * Dispatches a request after setting some params.
 	 *
