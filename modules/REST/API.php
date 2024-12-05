@@ -56,7 +56,7 @@ class API {
 		$this->languages = new V1\Languages( $this->model->languages, $this->model->translatable_objects );
 		$this->languages->register_routes();
 
-		$this->settings = new V1\Settings( $this->model->options );
+		$this->settings = new V1\Settings( $this->model->options, $this->model->languages );
 		$this->settings->register_routes();
 	}
 }
