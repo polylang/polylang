@@ -291,15 +291,14 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translate_untranslated_string_should_return_original_string() {
-		$pll_admin = new PLL_Admin( $this->links_model );
-		$pll_admin->init();
-
 		$lang = self::$model->get_language( 'en' );
 		$mo   = new PLL_MO();
 		$mo->add_entry( $mo->make_entry( 'test', '' ) );
 		$mo->export_to_db( $lang );
 
-		do_action( 'pll_language_defined' );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->init();
+		do_action( 'setup_theme' );
 
 		$this->assertSame( 'test', __( 'test', 'pll_string' ) ); // PHPCS:ignore WordPress.WP.I18n
 	}
