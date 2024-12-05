@@ -289,4 +289,17 @@ class Strings_Test extends PLL_UnitTestCase {
 		$mo->import_from_db( $lang );
 		$this->assertSame( array( 'test', 'test 2' ), array_keys( $mo->entries ) );
 	}
+
+	public function test_translate_untranslated_string_should_return_original_string() {
+		$lang = self::$model->get_language( 'en' );
+		$mo   = new PLL_MO();
+		$mo->add_entry( $mo->make_entry( 'test', '' ) );
+		$mo->export_to_db( $lang );
+
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->init();
+		do_action( 'setup_theme' );
+
+		$this->assertSame( 'test', __( 'test', 'pll_string' ) ); // PHPCS:ignore WordPress.WP.I18n
+	}
 }
