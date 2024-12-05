@@ -67,7 +67,14 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	public function test_create_language() {
+	/**
+	 * @testWith [true]
+	 *           [false]
+	 *
+	 * @param bool $no_default_cat
+	 * @return void
+	 */
+	public function test_create_language( bool $no_default_cat ) {
 		wp_set_current_user( self::$administrator );
 		$def_cat_id = (int) get_option( 'default_category' );
 
@@ -129,7 +136,9 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request = new WP_REST_Request( 'POST', '/pll/v1/languages' );
 		$request->set_param( 'locale', 'fr_FR' ); // Required.
 		$request->set_param( 'w3c', 'foo' ); // Should not be set.
-		$request->set_param( 'no_default_cat', true ); // Do not create the default category for this language.
+		if ( $no_default_cat ) {
+			$request->set_param( 'no_default_cat', true ); // Do not create the default category for this language.
+		}
 
 		foreach ( $values as $name => $value ) {
 			$request->set_param( $name, $value );
@@ -148,9 +157,11 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 
 		$this->assertNotSame( 'foo', $data['w3c'] );
 
-		// Check the default category is not created.
-		$def_cat_id_fr = $this->pll_env->model->term->get( $def_cat_id, $data['slug'] );
-		$this->assertSame( 0, $def_cat_id_fr );
+		if ( $no_default_cat ) {
+			$this->assertSame( 0, $this->pll_env->model->term->get( $def_cat_id, $data['slug'] ) );
+		} else {
+			$this->assertInstanceOf( WP_Term::class, get_term( $this->pll_env->model->term->get( $def_cat_id, $data['slug'] ) ) );
+		}
 	}
 
 	public function test_get_language() {
@@ -351,5 +362,41 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'code', $data );
 		$this->assertSame( $code, $data['code'] );
+	}
+
+	public function test_no_default_cat_arg() {
+		/*
+		 * Let's fetch Polylang V1 routes definitions.
+		 */
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/pll/v1' ) );
+
+		$this->assertSame( 200, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( '/pll/v1/languages', $data['routes'], 'The `/pll/v1/languages` route should be registered.' );
+		$this->assertGreaterThan( 0, count( $data['routes']['/pll/v1/languages']['endpoints'] ) );
+
+		foreach ( $data['routes']['/pll/v1/languages']['endpoints'] as $endpoint ) {
+			if ( 'POST' === $endpoint['methods'][0] ) {
+				$this->assertArrayHasKey( 'no_default_cat', $endpoint['args'], 'The `no_default_cat` property should be returned for `CREATABLE` requests.' );
+			} else {
+				$this->assertArrayNotHasKey( 'no_default_cat', $endpoint['args'], 'The `no_default_cat` property should not be returned for `READABLE` requests.' );
+			}
+		}
+
+		$this->assertArrayHasKey( '/pll/v1/languages/(?P<term_id>[\d]+)', $data['routes'], 'The `/pll/v1/languages/(?P<term_id>[\d]+)` route should be registered.' );
+		$this->assertGreaterThan( 0, count( $data['routes']['/pll/v1/languages/(?P<term_id>[\d]+)']['endpoints'] ) );
+
+		foreach ( $data['routes']['/pll/v1/languages/(?P<term_id>[\d]+)']['endpoints'] as $endpoint ) {
+			$this->assertArrayNotHasKey( 'no_default_cat', $endpoint['args'], 'The `no_default_cat` property should not be returned for `EDITABLE` requests.' );
+		}
+
+		$this->assertArrayHasKey( '/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*)', $data['routes'], 'The `/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*)` route should be registered.' );
+		$this->assertGreaterThan( 0, count( $data['routes']['/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*)']['endpoints'] ) );
+
+		foreach ( $data['routes']['/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*)']['endpoints'] as $endpoint ) {
+			$this->assertArrayNotHasKey( 'no_default_cat', $endpoint['args'], 'The `no_default_cat` property should not be returned for `EDITABLE` requests.' );
+		}
 	}
 }
