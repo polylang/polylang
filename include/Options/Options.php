@@ -379,7 +379,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @param string $key The name of the option to retrieve.
 	 * @return mixed
 	 */
-	public function &get( string $key ) {
+	public function get( string $key ) {
 		if ( ! $this->has( $key ) ) {
 			$v = null;
 			return $v;
@@ -555,7 +555,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return mixed
 	 */
 	#[\ReturnTypeWillChange]
-	public function &offsetGet( $offset ) {
+	public function offsetGet( $offset ) {
 		return $this->get( (string) $offset );
 	}
 
