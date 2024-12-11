@@ -517,6 +517,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 		}
 
 		if ( empty( $keys ) ) {
+			/** @var array */
 			return $this->reset( $key );
 		}
 
@@ -527,6 +528,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			$this->modified[ $this->current_blog_id ] = true;
 		}
 
+			/** @var array */
 		return $option->get();
 	}
 
