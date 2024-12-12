@@ -123,11 +123,16 @@ class Array_Tools {
 			return $array;
 		}
 
-		if ( empty( $keys ) || ! is_array( $array[ $sub_key ] ) ) {
+		if ( empty( $keys ) ) {
 			unset( $array[ $sub_key ] );
 			return $array;
 		}
 
-		return self::unset_sub_value( $array[ $sub_key ], $keys );
+		if ( ! is_array( $array[ $sub_key ] ) ) {
+			return $array;
+		}
+
+		$array[ $sub_key ] = self::unset_sub_value( $array[ $sub_key ], $keys );
+		return $array;
 	}
 }
