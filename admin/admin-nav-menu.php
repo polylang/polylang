@@ -177,7 +177,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 		foreach ( $locations as $loc => $menu ) {
 			$infos = $this->explode_location( $loc );
-			$nav_menus[ $this->theme ][ $infos['location'] ][ $infos['lang'] ] = $menu; // set_sub_value()
+			$nav_menus[ $this->theme ][ $infos['location'] ][ $infos['lang'] ] = $menu;
 
 			if ( $this->options['default_lang'] !== $infos['lang'] ) {
 				unset( $locations[ $loc ] ); // Remove temporary locations before database update.
@@ -203,14 +203,14 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			// Manage Locations tab in Appearance -> Menus
 			if ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				check_admin_referer( 'save-menu-locations' );
-				$this->options->set_sub_value( 'nav_menus', array( $this->theme ), array() ); // set_sub_value()
+				$this->options->set_sub_value( 'nav_menus', array( $this->theme ), array() );
 			}
 
 			// Edit Menus tab in Appearance -> Menus
 			// Add the test of $_POST['update-nav-menu-nonce'] to avoid conflict with Vantage theme
 			elseif ( isset( $_POST['action'], $_POST['update-nav-menu-nonce'] ) && 'update' === $_POST['action'] ) {
 				check_admin_referer( 'update-nav_menu', 'update-nav-menu-nonce' );
-				$this->options->set_sub_value( 'nav_menus', array( $this->theme ), array() ); // set_sub_value()
+				$this->options->set_sub_value( 'nav_menus', array( $this->theme ), array() );
 			}
 
 			// Customizer
@@ -277,7 +277,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			foreach ( $locations as $loc => $languages ) {
 				foreach ( $languages as $lang => $menu_id ) {
 					if ( $menu_id === $term_id ) {
-						unset( $nav_menus[ $theme ][ $loc ][ $lang ] ); // unset_sub_value()
+						unset( $nav_menus[ $theme ][ $loc ][ $lang ] );
 					}
 				}
 			}

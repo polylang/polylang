@@ -304,7 +304,7 @@ class Languages {
 
 			// Update menus locations.
 			if ( ! empty( $this->options['nav_menus'] ) ) {
-				$nav_menus = $this->options['nav_menus']; // set_sub_value(), unset_sub_value()
+				$nav_menus = $this->options['nav_menus'];
 
 				foreach ( $nav_menus as $theme => $locations ) {
 					foreach ( array_keys( $locations ) as $location ) {
@@ -320,8 +320,8 @@ class Languages {
 
 			// Update domains.
 			if ( ! empty( $this->options['domains'][ $old_slug ] ) ) {
-				$this->options->set_sub_value( 'domains', array( $slug ), $this->options['domains'][ $old_slug ] ); // set_sub_value()
-				$this->options->unset_sub_value( 'domains', array( $old_slug ) ); // unset_sub_value()
+				$this->options->set_sub_value( 'domains', array( $slug ), $this->options['domains'][ $old_slug ] );
+				$this->options->unset_sub_value( 'domains', array( $old_slug ) );
 			}
 		}
 
@@ -419,7 +419,7 @@ class Languages {
 
 		// Delete menus locations.
 		if ( ! empty( $this->options['nav_menus'] ) ) {
-			$nav_menus = $this->options['nav_menus']; // unset_sub_value()
+			$nav_menus = $this->options['nav_menus'];
 
 			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
 				foreach ( array_keys( $locations ) as $location ) {
@@ -435,7 +435,7 @@ class Languages {
 		delete_metadata( 'user', 0, "description_{$lang->slug}", '', true );
 
 		// Delete domain.
-		$this->options->unset_sub_value( 'domains', array( $lang->slug ) ); // unset_sub_value()
+		$this->options->unset_sub_value( 'domains', array( $lang->slug ) );
 
 		/*
 		 * Delete the language itself.
