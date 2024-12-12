@@ -458,7 +458,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			);
 		}
 
-		$new_value = Array_Tools::set_sub_value( $old_value, array_merge( array( $key ), $keys ), $value );
+		$new_value = Array_Tools::set_sub_value( $old_value, $keys, $value );
 
 		if ( $option->set( $new_value, $this ) && $option->get() !== $old_value ) {
 			// No blocking errors: the value can be stored.
@@ -521,7 +521,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return $this->reset( $key );
 		}
 
-		$new_value = Array_Tools::unset_sub_value( $old_value, array_merge( array( $key ), $keys ) );
+		$new_value = Array_Tools::unset_sub_value( $old_value, $keys );
 
 		if ( $option->set( $new_value, $this ) && $option->get() !== $old_value ) {
 			// No blocking errors: the value can be stored.
