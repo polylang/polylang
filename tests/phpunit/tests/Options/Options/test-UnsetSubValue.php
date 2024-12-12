@@ -81,7 +81,7 @@ class UnsetSubValue_Test extends PLL_UnitTestCase {
 		 * This will break with PHPUnit 10.
 		 * @see https://github.com/sebastianbergmann/phpunit/issues/5062
 		 */
-		$this->expectException( '\PHPUnit\Framework\Error\Notice' );
+		$this->expectException( '\PHPUnit\Framework\Error\Notice' ); // @noRector
 		$this->expectExceptionMessage( 'Indirect modification of overloaded element of WP_Syntex\Polylang\Options\Options has no effect' );
 
 		unset( $options['nav_menus']['twentytwentyone']['primary']['fr'] );
