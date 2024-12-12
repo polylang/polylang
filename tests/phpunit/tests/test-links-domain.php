@@ -54,7 +54,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 	 * Bug fixed in version 2.1.2.
 	 */
 	public function test_second_level_domain() {
-		$this->pll_model->options['domains']['fr'] = 'http://example.org.fr';
+		$this->pll_model->options['domains'] = array_merge(
+			$this->pll_model->options['domains'],
+			array( 'fr' => 'http://example.org.fr' )
+		);
 		$this->links_model = $this->pll_model->get_links_model();
 
 		$url = 'http://example.org.fr';
