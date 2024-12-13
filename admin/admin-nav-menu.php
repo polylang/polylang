@@ -173,7 +173,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	public function update_nav_menu_locations( $locations ) {
 		// Extract language and menu from locations.
-		$nav_menus = $this->options['nav_menus'];
+		$nav_menus = $this->options->get( 'nav_menus' );
 
 		foreach ( $locations as $loc => $menu ) {
 			$infos = $this->explode_location( $loc );
@@ -184,7 +184,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 		}
 
-		$this->options['nav_menus'] = $nav_menus;
+		$this->options->set( 'nav_menus', $nav_menus );
 
 		return $locations;
 	}
@@ -203,14 +203,20 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			// Manage Locations tab in Appearance -> Menus
 			if ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				check_admin_referer( 'save-menu-locations' );
-				$this->options->set_sub_value( 'nav_menus', array( $this->theme ), array() );
+
+				$nav_menus = $this->options->get( 'nav_menus' );
+				$nav_menus[ $this->theme ] = array();
+				$this->options->set( 'nav_menus', $nav_menus );
 			}
 
 			// Edit Menus tab in Appearance -> Menus
 			// Add the test of $_POST['update-nav-menu-nonce'] to avoid conflict with Vantage theme
 			elseif ( isset( $_POST['action'], $_POST['update-nav-menu-nonce'] ) && 'update' === $_POST['action'] ) {
 				check_admin_referer( 'update-nav_menu', 'update-nav-menu-nonce' );
-				$this->options->set_sub_value( 'nav_menus', array( $this->theme ), array() );
+
+				$nav_menus = $this->options->get( 'nav_menus' );
+				$nav_menus[ $this->theme ] = array();
+				$this->options->set( 'nav_menus', $nav_menus );
 			}
 
 			// Customizer
@@ -267,11 +273,11 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return void
 	 */
 	public function delete_nav_menu( $term_id ) {
-		if ( empty( $this->options['nav_menus'] ) ) {
+		if ( empty( $this->options->get( 'nav_menus' ) ) ) {
 			return;
 		}
 
-		$nav_menus = $this->options['nav_menus'];
+		$nav_menus = $this->options->get( 'nav_menus' );
 
 		foreach ( $nav_menus as $theme => $locations ) {
 			foreach ( $locations as $loc => $languages ) {
@@ -283,6 +289,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 		}
 
-		$this->options['nav_menus'] = $nav_menus;
+		$this->options->set( 'nav_menus', $nav_menus );
 	}
 }

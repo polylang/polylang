@@ -10,7 +10,6 @@ use ArrayIterator;
 use IteratorAggregate;
 use WP_Error;
 use WP_Site;
-use WP_Syntex\Polylang\Array_Tools;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -422,54 +421,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
-	 * Assigns a sub-value to the specified (array) option.
-	 *
-	 * This doesn't allow to set an unknown option.
-	 * When doing multiple `set()`, options must be set in the right order: some options depend on other options' value.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $key   The name of the option to assign the value to.
-	 * @param array  $keys  List of array sub-keys.
-	 * @param mixed  $value The value to set.
-	 * @return WP_Error
-	 *
-	 * @phpstan-param non-empty-array<string|int> $keys
-	 */
-	public function set_sub_value( string $key, array $keys, $value ): WP_Error {
-		if ( ! $this->has( $key ) ) {
-			/* translators: %s is the name of an option. */
-			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" ) );
-		}
-
-		/** @var Abstract_Option */
-		$option    = $this->options[ $this->current_blog_id ][ $key ];
-		$old_value = $option->get();
-
-		if ( ! is_array( $old_value ) ) {
-			return new WP_Error(
-				'pll_option_value_not_array',
-				sprintf(
-					/* translators: %1$s is the name of an option, %2$s is the name of the method triggering this message. */
-					__( 'The option %1$s is not of type array, %2$s cannot be used.', 'polylang' ),
-					"'$key'",
-					sprintf( '`%s`', __METHOD__ )
-				)
-			);
-		}
-
-		$new_value = Array_Tools::set_sub_value( $old_value, $keys, $value );
-
-		if ( $option->set( $new_value, $this ) && $option->get() !== $old_value ) {
-			// No blocking errors: the value can be stored.
-			$this->modified[ $this->current_blog_id ] = true;
-		}
-
-		// Return errors.
-		return $option->get_errors();
-	}
-
-	/**
 	 * Resets an option to its default value.
 	 *
 	 * @since 3.7
@@ -489,46 +440,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 			$this->modified[ $this->current_blog_id ] = true;
 		}
 
-		return $option->get();
-	}
-
-	/**
-	 * Unsets a sub-value of the specified (array) option.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $key  The name of the option.
-	 * @param array  $keys List of array sub-keys.
-	 * @return array|null The new value. `null` on error.
-	 *
-	 * @phpstan-param non-empty-array<string|int> $keys
-	 */
-	public function unset_sub_value( string $key, array $keys ) {
-		if ( ! $this->has( $key ) ) {
-			return null;
-		}
-
-		/** @var Abstract_Option */
-		$option    = $this->options[ $this->current_blog_id ][ $key ];
-		$old_value = $option->get();
-
-		if ( ! is_array( $old_value ) ) {
-			return null;
-		}
-
-		if ( empty( $keys ) ) {
-			/** @var array */
-			return $this->reset( $key );
-		}
-
-		$new_value = Array_Tools::unset_sub_value( $old_value, $keys );
-
-		if ( $option->set( $new_value, $this ) && $option->get() !== $old_value ) {
-			// No blocking errors: the value can be stored.
-			$this->modified[ $this->current_blog_id ] = true;
-		}
-
-			/** @var array */
 		return $option->get();
 	}
 

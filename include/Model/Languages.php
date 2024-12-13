@@ -303,8 +303,8 @@ class Languages {
 			}
 
 			// Update menus locations.
-			if ( ! empty( $this->options['nav_menus'] ) ) {
-				$nav_menus = $this->options['nav_menus'];
+			if ( ! empty( $this->options->get( 'nav_menus' ) ) ) {
+				$nav_menus = $this->options->get( 'nav_menus' );
 
 				foreach ( $nav_menus as $theme => $locations ) {
 					foreach ( array_keys( $locations ) as $location ) {
@@ -315,13 +315,15 @@ class Languages {
 					}
 				}
 
-				$this->options['nav_menus'] = $nav_menus;
+				$this->options->set( 'nav_menus', $nav_menus );
 			}
 
 			// Update domains.
-			if ( ! empty( $this->options['domains'][ $old_slug ] ) ) {
-				$this->options->set_sub_value( 'domains', array( $slug ), $this->options['domains'][ $old_slug ] );
-				$this->options->unset_sub_value( 'domains', array( $old_slug ) );
+			if ( ! empty( $this->options->get( 'domains' )[ $old_slug ] ) ) {
+				$domains = $this->options->get( 'domains' );
+				$domains[ $slug ] = $domains[ $old_slug ];
+				unset( $domains[ $old_slug ] );
+				$this->options->set( 'domains', $domains );
 			}
 		}
 
@@ -418,16 +420,16 @@ class Languages {
 		}
 
 		// Delete menus locations.
-		if ( ! empty( $this->options['nav_menus'] ) ) {
-			$nav_menus = $this->options['nav_menus'];
+		if ( ! empty( $this->options->get( 'nav_menus' ) ) ) {
+			$nav_menus = $this->options->get( 'nav_menus' );
 
-			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
+			foreach ( $nav_menus as $theme => $locations ) {
 				foreach ( array_keys( $locations ) as $location ) {
 					unset( $nav_menus[ $theme ][ $location ][ $lang->slug ] );
 				}
 			}
 
-			$this->options['nav_menus'] = $nav_menus;
+			$this->options->set( 'nav_menus', $nav_menus );
 		}
 
 		// Delete users options.
@@ -435,7 +437,9 @@ class Languages {
 		delete_metadata( 'user', 0, "description_{$lang->slug}", '', true );
 
 		// Delete domain.
-		$this->options->unset_sub_value( 'domains', array( $lang->slug ) );
+		$domains = $this->options->get( 'domains' );
+		unset( $domains[ $lang->slug ] );
+		$this->options->set( 'domains', $domains );
 
 		/*
 		 * Delete the language itself.
