@@ -527,7 +527,7 @@ class PLL_WPML_Config {
 	 * @param array $array2 Array to merge.
 	 * @return array
 	 */
-	public function array_merge_recursive( array $array1, array $array2 ): array {
+	protected function array_merge_recursive( array $array1, array $array2 ): array {
 		foreach ( $array2 as $key => $value ) {
 			if ( is_array( $value ) && isset( $array1[ $key ] ) && is_array( $array1[ $key ] ) ) {
 				$array1[ $key ] = $this->array_merge_recursive( $array1[ $key ], $value );

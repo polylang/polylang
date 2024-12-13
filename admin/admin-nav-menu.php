@@ -179,7 +179,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			$infos = $this->explode_location( $loc );
 			$nav_menus[ $this->theme ][ $infos['location'] ][ $infos['lang'] ] = $menu;
 
-			if ( $this->options['default_lang'] !== $infos['lang'] ) {
+			if ( $this->options->get( 'default_lang' ) !== $infos['lang'] ) {
 				unset( $locations[ $loc ] ); // Remove temporary locations before database update.
 			}
 		}
