@@ -107,6 +107,12 @@ class Settings extends Abstract_Controller {
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
+				continue;
+			}
+
+			$options_with_flush = array( 'rewrite', 'force_lang', 'hide_default' );
+			if ( in_array( $option_name, $options_with_flush, true ) ) {
+				flush_rewrite_rules();
 			}
 		}
 
