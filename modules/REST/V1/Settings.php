@@ -129,6 +129,10 @@ class Settings extends Abstract_Controller {
 				case 'hide_default':
 					flush_rewrite_rules();
 			}
+
+			if ( 'default_lang' === $option_name ) {
+				$this->languages->update_default( $new_value );
+			}
 		}
 
 		if ( $errors->has_errors() ) {
