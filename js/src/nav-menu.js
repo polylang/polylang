@@ -63,11 +63,11 @@ const pllNavMenu = {
 			}
 
 			// Remove default fields we don't need.
-			for ( const el of metabox.children ) {
+			[ ...metabox.children ].forEach( ( el ) => {
 				if ( 'P' === el.nodeName && ! el.classList.contains( 'field-move' ) ) {
 					el.remove();
 				}
-			}
+			} );
 
 			const t      = pllNavMenu.printMetabox;
 			const itemId = Number( metabox.id.replace( 'menu-item-settings-', '' ) );
