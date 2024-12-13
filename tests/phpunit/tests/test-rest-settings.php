@@ -173,6 +173,45 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'pll_invalid_language', $response->get_data()['code'] );
 	}
 
+	public function test_should_flush_rewrite_rules_when_updating_rewrite_option() {
+		global $wp_rewrite;
+
+		self::factory()->language->create_many( 2 );
+
+		wp_set_current_user( self::$administrator );
+
+		$this->assertTrue( $this->pll_env->model->options->get( 'rewrite' ) );
+
+		// Init rewrite rules.
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
+		$links_model = $this->pll_env->model->get_links_model();
+		$links_model->init();
+		$wp_rewrite->flush_rules();
+		$frontend = new PLL_Frontend( $links_model );
+		$frontend->init();
+		$rules_prior_to_update = $wp_rewrite->rewrite_rules();
+
+		$this->assertArrayHasKey( '(en|fr)/?$', $rules_prior_to_update );
+
+		$response = $this->dispatch_request( 'POST', array( 'rewrite' => false ) );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertFalse( $this->pll_env->model->options->get( 'rewrite' ) );
+
+		// Redo frontend to get new rules.
+		$frontend->links_model->remove_filters();
+		$links_model = $this->pll_env->model->get_links_model();
+		$links_model->init();
+		$frontend = new PLL_Frontend( $links_model );
+		$frontend->init();
+		$rules_after_update = $wp_rewrite->rewrite_rules();
+
+		$this->assertNotSame( $rules_prior_to_update, $rules_after_update );
+		$this->assertArrayHasKey( 'language/(en|fr)/?$', $rules_after_update );
+	}
+
 	/**
 	 * Dispatches a request after setting some params.
 	 *
