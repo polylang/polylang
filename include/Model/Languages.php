@@ -615,22 +615,36 @@ class Languages {
 
 	/**
 	 * Updates the default language.
-	 * taking care to update the default category & the nav menu locations.
+	 * Taking care to update the default category & the nav menu locations.
 	 *
 	 * @since 1.8
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Model\Languages::update_default()`.
+	 *            Returns a `WP_Error` object.
 	 *
 	 * @param string $slug New language slug.
-	 * @return void
+	 * @return WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
 	 */
-	public function update_default( $slug ): void {
+	public function update_default( $slug ): WP_Error {
+		$prev_default_lang = $this->options->get( 'default_lang' );
+		$errors            = $this->options->set( 'default_lang', $slug );
+
+		if ( $errors->has_errors() ) {
+			return $errors;
+		}
+
+		$default_lang = $this->options->get( 'default_lang' );
+
+		if ( $prev_default_lang === $default_lang ) {
+			return new WP_Error();
+		}
+
 		// The nav menus stored in theme locations should be in the default language.
 		$theme = get_stylesheet();
 		if ( ! empty( $this->options['nav_menus'][ $theme ] ) ) {
 			$menus = array();
 
 			foreach ( $this->options['nav_menus'][ $theme ] as $key => $loc ) {
-				$menus[ $key ] = empty( $loc[ $slug ] ) ? 0 : $loc[ $slug ];
+				$menus[ $key ] = empty( $loc[ $default_lang ] ) ? 0 : $loc[ $default_lang ];
 			}
 			set_theme_mod( 'nav_menu_locations', $menus );
 		}
@@ -639,16 +653,20 @@ class Languages {
 		 * Fires when a default language is updated.
 		 *
 		 * @since 3.1
+		 * @since 3.7 The previous default language's slug is passed as 2nd param.
+		 *            The default language is updated before this hook is fired.
 		 *
-		 * @param string $slug Slug.
+		 * @param string $default_lang      New default language's slug.
+		 * @param string $prev_default_lang Previous default language's slug.
 		 */
-		do_action( 'pll_update_default_lang', $slug );
+		do_action( 'pll_update_default_lang', $default_lang, $prev_default_lang );
 
-		// Update options
-		$this->options['default_lang'] = $slug;
+		// Update options.
 
 		$this->clean_cache();
 		flush_rewrite_rules();
+
+		return new WP_Error();
 	}
 
 	/**

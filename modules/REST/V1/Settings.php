@@ -112,7 +112,12 @@ class Settings extends Abstract_Controller {
 
 		foreach ( $options as $option_name => $new_value ) {
 			$previous_value = $this->options->get( $option_name );
-			$result         = $this->options->set( $option_name, $new_value );
+
+			if ( 'default_lang' === $option_name ) {
+				$result = $this->languages->update_default( $new_value );
+			} else {
+				$result = $this->options->set( $option_name, $new_value );
+			}
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
@@ -128,10 +133,6 @@ class Settings extends Abstract_Controller {
 				case 'force_lang':
 				case 'hide_default':
 					flush_rewrite_rules();
-			}
-
-			if ( 'default_lang' === $option_name ) {
-				$this->languages->update_default( $new_value );
 			}
 		}
 
