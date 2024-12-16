@@ -185,6 +185,14 @@ class PLL_Admin_Notices {
 				$this->review_notice();
 			}
 
+			if (
+				isset( $GLOBALS['pagenow'] ) && 'admin.php' === $GLOBALS['pagenow'] &&
+				isset( $_GET['page'] ) && 'mlang_strings' === $_GET['page'] && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				! static::is_dismissed( 'empty-strings-translations' )
+			) {
+				$this->empty_strings_translations_notice();
+			}
+
 			// Custom notices
 			foreach ( static::get_notices() as $notice => $html ) {
 				if ( $this->can_display_notice( $notice ) && ! static::is_dismissed( $notice ) ) {
@@ -263,6 +271,24 @@ class PLL_Admin_Notices {
 					'</a>'
 				);
 				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Displays a notice about the empty strings translations.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function empty_strings_translations_notice() {
+		?>
+		<div class="pll-notice notice notice-info">
+		<?php $this->dismiss_button( 'empty-strings-translations' ); ?>
+			<p>
+				<?php esc_html_e( 'Untranslated strings are now emptied from the database.', 'polylang' ); ?>
 			</p>
 		</div>
 		<?php
