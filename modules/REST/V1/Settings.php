@@ -115,9 +115,11 @@ class Settings extends Abstract_Controller {
 				continue;
 			}
 
-			$options_with_flush = array( 'rewrite', 'force_lang', 'hide_default' );
-			if ( in_array( $option_name, $options_with_flush, true ) ) {
-				flush_rewrite_rules();
+			switch ( $option_name ) {
+				case 'rewrite':
+				case 'force_lang':
+				case 'hide_default':
+					flush_rewrite_rules();
 			}
 		}
 
