@@ -624,18 +624,17 @@ class Languages {
 	 * @param string $slug New language slug.
 	 * @return WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
 	 */
-	public function update_default( $slug ): WP_Error {
+	public function update_default( $default_lang ): WP_Error {
 		$prev_default_lang = $this->options->get( 'default_lang' );
-		$errors            = $this->options->set( 'default_lang', $slug );
-
-		if ( $errors->has_errors() ) {
-			return $errors;
-		}
-
-		$default_lang = $this->options->get( 'default_lang' );
 
 		if ( $prev_default_lang === $default_lang ) {
 			return new WP_Error();
+		}
+
+		$errors = $this->options->set( 'default_lang', $slug );
+
+		if ( $errors->has_errors() ) {
+			return $errors;
 		}
 
 		// The nav menus stored in theme locations should be in the default language.
