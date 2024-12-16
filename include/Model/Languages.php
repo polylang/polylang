@@ -615,7 +615,7 @@ class Languages {
 
 	/**
 	 * Updates the default language.
-	 * Taking care to update the default category & the nav menu locations.
+	 * Takes care to update default category, nav menu locations, and flushes cache and rewrite rules.
 	 *
 	 * @since 1.8
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Model\Languages::update_default()`.
