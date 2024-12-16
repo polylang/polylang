@@ -303,21 +303,28 @@ class Languages {
 			}
 
 			// Update menus locations.
-			if ( ! empty( $this->options['nav_menus'] ) ) {
-				foreach ( $this->options['nav_menus'] as $theme => $locations ) {
+			$nav_menus = $this->options->get( 'nav_menus' );
+
+			if ( ! empty( $nav_menus ) ) {
+				foreach ( $nav_menus as $theme => $locations ) {
 					foreach ( array_keys( $locations ) as $location ) {
-						if ( ! empty( $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ] ) ) {
-							$this->options['nav_menus'][ $theme ][ $location ][ $slug ] = $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ];
-							unset( $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ] );
+						if ( ! empty( $nav_menus[ $theme ][ $location ][ $old_slug ] ) ) {
+							$nav_menus[ $theme ][ $location ][ $slug ] = $nav_menus[ $theme ][ $location ][ $old_slug ];
+							unset( $nav_menus[ $theme ][ $location ][ $old_slug ] );
 						}
 					}
 				}
+
+				$this->options->set( 'nav_menus', $nav_menus );
 			}
 
 			// Update domains.
-			if ( ! empty( $this->options['domains'][ $old_slug ] ) ) {
-				$this->options['domains'][ $slug ] = $this->options['domains'][ $old_slug ];
-				unset( $this->options['domains'][ $old_slug ] );
+			$domains = $this->options->get( 'domains' );
+
+			if ( ! empty( $domains[ $old_slug ] ) ) {
+				$domains[ $slug ] = $domains[ $old_slug ];
+				unset( $domains[ $old_slug ] );
+				$this->options->set( 'domains', $domains );
 			}
 		}
 
@@ -414,12 +421,16 @@ class Languages {
 		}
 
 		// Delete menus locations.
-		if ( ! empty( $this->options['nav_menus'] ) ) {
-			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
+		$nav_menus = $this->options->get( 'nav_menus' );
+
+		if ( ! empty( $nav_menus ) ) {
+			foreach ( $nav_menus as $theme => $locations ) {
 				foreach ( array_keys( $locations ) as $location ) {
-					unset( $this->options['nav_menus'][ $theme ][ $location ][ $lang->slug ] );
+					unset( $nav_menus[ $theme ][ $location ][ $lang->slug ] );
 				}
 			}
+
+			$this->options->set( 'nav_menus', $nav_menus );
 		}
 
 		// Delete users options.
@@ -427,7 +438,9 @@ class Languages {
 		delete_metadata( 'user', 0, "description_{$lang->slug}", '', true );
 
 		// Delete domain.
-		unset( $this->options['domains'][ $lang->slug ] );
+		$domains = $this->options->get( 'domains' );
+		unset( $domains[ $lang->slug ] );
+		$this->options->set( 'domains', $domains );
 
 		/*
 		 * Delete the language itself.

@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages custom menus translations
  * Common to admin and frontend for the customizer
@@ -13,7 +15,7 @@ class PLL_Nav_Menu {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 

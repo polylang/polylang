@@ -518,7 +518,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Merge two arrays recursively.
+	 * Merges two arrays recursively.
 	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
 	 *
 	 * @since 3.6
