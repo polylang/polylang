@@ -358,14 +358,5 @@ class PLL_Upgrade {
 
 			update_term_meta( $term->term_id, '_pll_strings_translations', $strings );
 		}
-
-		ob_start();
-		include __DIR__ . '/upgrade-3-7-notice-view.php';
-		$notice = ob_get_clean();
-
-		PLL_Admin_Notices::add_notice(
-			'empty-strings-translations',
-			$notice
-		);
 	}
 }
