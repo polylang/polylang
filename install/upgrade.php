@@ -365,7 +365,7 @@ class PLL_Upgrade {
 
 		PLL_Admin_Notices::add_notice(
 			'empty-strings-translations',
-			$notice
+			(string) $notice
 		);
 	}
 }
