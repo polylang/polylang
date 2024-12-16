@@ -103,14 +103,15 @@ class Settings extends Abstract_Controller {
 		);
 
 		foreach ( $options as $option_name => $new_value ) {
-			if ( $new_value === $this->options->get( $option_name ) ) {
-				continue;
-			}
-
-			$result = $this->options->set( $option_name, $new_value );
+			$previous_value = $this->options->get( $option_name );
+			$result         = $this->options->set( $option_name, $new_value );
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
+				continue;
+			}
+
+			if ( $previous_value === $this->options->get( $option_name ) ) {
 				continue;
 			}
 
