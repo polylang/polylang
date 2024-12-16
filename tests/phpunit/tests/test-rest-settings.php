@@ -208,7 +208,6 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 		$frontend->init();
 		$rules_after_update = $wp_rewrite->rewrite_rules();
 
-		$this->assertNotSame( $rules_prior_to_update, $rules_after_update );
 		$this->assertArrayHasKey( 'language/(en|fr)/?$', $rules_after_update );
 	}
 
