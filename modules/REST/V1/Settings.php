@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\REST\V1;
 
+use PLL_Model;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -36,14 +37,13 @@ class Settings extends Abstract_Controller {
 	 *
 	 * @since 3.7
 	 *
-	 * @param Options   $options   Options registry.
-	 * @param Languages $languages Languages' model.
+	 * @param PLL_Model $model Polylang's model.
 	 */
-	public function __construct( Options $options, Languages $languages ) {
+	public function __construct( PLL_Model $model ) {
 		$this->namespace = 'pll/v1';
 		$this->rest_base = 'settings';
-		$this->options   = $options;
-		$this->languages = $languages;
+		$this->options   = $model->options;
+		$this->languages = $model->languages;
 	}
 
 	/**
