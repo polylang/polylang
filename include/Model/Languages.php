@@ -624,10 +624,10 @@ class Languages {
 	 * @param string $slug New language slug.
 	 * @return WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
 	 */
-	public function update_default( $default_lang ): WP_Error {
+	public function update_default( $slug ): WP_Error {
 		$prev_default_lang = $this->options->get( 'default_lang' );
 
-		if ( $prev_default_lang === $default_lang ) {
+		if ( $prev_default_lang === $slug ) {
 			return new WP_Error();
 		}
 
@@ -643,7 +643,7 @@ class Languages {
 			$menus = array();
 
 			foreach ( $this->options['nav_menus'][ $theme ] as $key => $loc ) {
-				$menus[ $key ] = empty( $loc[ $default_lang ] ) ? 0 : $loc[ $default_lang ];
+				$menus[ $key ] = empty( $loc[ $slug ] ) ? 0 : $loc[ $slug ];
 			}
 			set_theme_mod( 'nav_menu_locations', $menus );
 		}
@@ -655,10 +655,10 @@ class Languages {
 		 * @since 3.7 The previous default language's slug is passed as 2nd param.
 		 *            The default language is updated before this hook is fired.
 		 *
-		 * @param string $default_lang      New default language's slug.
+		 * @param string $slug              New default language's slug.
 		 * @param string $prev_default_lang Previous default language's slug.
 		 */
-		do_action( 'pll_update_default_lang', $default_lang, $prev_default_lang );
+		do_action( 'pll_update_default_lang', $slug, $prev_default_lang );
 
 		// Update options.
 
