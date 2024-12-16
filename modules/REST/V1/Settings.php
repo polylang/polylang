@@ -111,7 +111,7 @@ class Settings extends Abstract_Controller {
 				continue;
 			}
 
-			if ( $previous_value === $this->options->get( $option_name ) ) {
+			if ( $this->options->get( $option_name ) === $previous_value ) {
 				continue;
 			}
 
