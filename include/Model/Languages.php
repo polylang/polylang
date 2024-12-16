@@ -303,9 +303,9 @@ class Languages {
 			}
 
 			// Update menus locations.
-			if ( ! empty( $this->options->get( 'nav_menus' ) ) ) {
-				$nav_menus = $this->options->get( 'nav_menus' );
+			$nav_menus = $this->options->get( 'nav_menus' );
 
+			if ( ! empty( $nav_menus ) ) {
 				foreach ( $nav_menus as $theme => $locations ) {
 					foreach ( array_keys( $locations ) as $location ) {
 						if ( ! empty( $nav_menus[ $theme ][ $location ][ $old_slug ] ) ) {
@@ -319,8 +319,9 @@ class Languages {
 			}
 
 			// Update domains.
-			if ( ! empty( $this->options->get( 'domains' )[ $old_slug ] ) ) {
-				$domains = $this->options->get( 'domains' );
+			$domains = $this->options->get( 'domains' );
+
+			if ( ! empty( $domains[ $old_slug ] ) ) {
 				$domains[ $slug ] = $domains[ $old_slug ];
 				unset( $domains[ $old_slug ] );
 				$this->options->set( 'domains', $domains );
@@ -420,9 +421,9 @@ class Languages {
 		}
 
 		// Delete menus locations.
-		if ( ! empty( $this->options->get( 'nav_menus' ) ) ) {
-			$nav_menus = $this->options->get( 'nav_menus' );
+		$nav_menus = $this->options->get( 'nav_menus' );
 
+		if ( ! empty( $nav_menus ) ) {
 			foreach ( $nav_menus as $theme => $locations ) {
 				foreach ( array_keys( $locations ) as $location ) {
 					unset( $nav_menus[ $theme ][ $location ][ $lang->slug ] );
