@@ -103,10 +103,23 @@ class Settings extends Abstract_Controller {
 		);
 
 		foreach ( $options as $option_name => $new_value ) {
-			$result = $this->options->set( $option_name, $new_value );
+			$previous_value = $this->options->get( $option_name );
+			$result         = $this->options->set( $option_name, $new_value );
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
+				continue;
+			}
+
+			if ( $this->options->get( $option_name ) === $previous_value ) {
+				continue;
+			}
+
+			switch ( $option_name ) {
+				case 'rewrite':
+				case 'force_lang':
+				case 'hide_default':
+					flush_rewrite_rules();
 			}
 		}
 
