@@ -297,9 +297,6 @@ class Languages {
 			)
 		);
 
-		// Make sure the languages have the new slugs.
-		$this->clean_cache();
-
 		if ( $old_slug !== $slug ) {
 			// Update the language slug in translations.
 			$this->update_translations( $old_slug, $slug );

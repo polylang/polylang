@@ -105,11 +105,18 @@ class Domains extends Abstract_Option {
 		}
 
 		/** @phpstan-var array<non-falsy-string, string> $value */
-		$all_values    = array(); // Previous and new values.
-		$missing_langs = array(); // Lang names corresponding to the empty values.
+		$all_values     = array(); // Previous and new values.
+		$missing_langs  = array(); // Lang names corresponding to the empty values.
+		$language_terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+		$language_terms = is_array( $language_terms ) ? $language_terms : array();
 
 		// Detect empty values, fill missing keys with previous values.
-		foreach ( $polylang->model->get_languages_list() as $lang ) {
+		foreach ( $language_terms as $lang ) {
 			if ( array_key_exists( $lang->slug, $value ) ) {
 				// Use the new value.
 				$all_values[ $lang->slug ] = $value[ $lang->slug ];
