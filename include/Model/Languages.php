@@ -321,7 +321,7 @@ class Languages {
 			// Update domains.
 			$domains = $this->options->get( 'domains' );
 
-			if ( ! empty( $domains[ $old_slug ] ) ) {
+			if ( isset( $domains[ $old_slug ] ) ) {
 				$domains[ $slug ] = $domains[ $old_slug ];
 				unset( $domains[ $old_slug ] );
 				$this->options->set( 'domains', $domains );
