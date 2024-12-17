@@ -105,14 +105,22 @@ class Domains extends Abstract_Option {
 		}
 
 		/** @phpstan-var array<non-falsy-string, string> $value */
-		$all_values    = array(); // Previous and new values.
-		$missing_langs = array(); // Lang names corresponding to the empty values.
+		$all_values     = array(); // Previous and new values.
+		$missing_langs  = array(); // Lang names corresponding to the empty values.
+		$language_terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+		$language_terms = is_array( $language_terms ) ? $language_terms : array();
 
 		// Detect empty values, fill missing keys with previous values.
-		foreach ( $polylang->model->get_languages_list() as $lang ) {
+		foreach ( $language_terms as $lang ) {
 			if ( array_key_exists( $lang->slug, $value ) ) {
 				// Use the new value.
 				$all_values[ $lang->slug ] = $value[ $lang->slug ];
+				unset( $value[ $lang->slug ] );
 			} else {
 				// Use previous value.
 				$all_values[ $lang->slug ] = $this->value[ $lang->slug ] ?? '';
@@ -122,6 +130,30 @@ class Domains extends Abstract_Option {
 				// The value is empty.
 				$missing_langs[] = $lang->name;
 			}
+		}
+
+		// Detect invalid language slugs.
+		if ( ! empty( $value ) ) {
+			// Non-blocking error.
+			$value = array_keys( $value );
+
+			$this->errors->add(
+				'pll_unknown_domain_languages',
+				sprintf(
+					/* translators: %s is a list of language slugs. */
+					_n( 'The language %s is unknown and has been discarded.', 'The languages %s are unknown and have been discarded.', count( $value ), 'polylang' ),
+					wp_sprintf_l(
+						'%l',
+						array_map(
+							function ( $slug ) {
+								return "<code>{$slug}</code>";
+							},
+							$value
+						)
+					)
+				),
+				'warning'
+			);
 		}
 
 		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
