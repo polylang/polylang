@@ -69,6 +69,62 @@ class Set_Test extends PLL_UnitTestCase {
 		$this->assertSameSetsWithIndex( $domains, $this->pll_env->model->options->get( 'domains' ) );
 	}
 
+	public function test_should_not_set_bad_domain_language() {
+		add_filter( 'pre_http_request', array( $this, 'http_request_mock' ), 10, 3 );
+
+		$this->pll_env       = ( new PLL_Context_Admin() )->get();
+		$GLOBALS['polylang'] = $this->pll_env;
+
+		$domains = array(
+			'en'       => 'https://good-url.com',
+			'bad-lang' => 'https://good-url.org',
+		);
+		$errors  = $this->pll_env->model->options->set( 'domains', $domains );
+		$domains = $this->pll_env->model->options->get( 'domains' );
+
+		$this->assertArrayHasKey( 'en', $domains );
+		$this->assertSame( 'https://good-url.com', $domains['en'] );
+		$this->assertArrayNotHasKey( 'bad-lang', $domains );
+	}
+
+	/**
+	 * @ticket #2397
+	 * @see https://github.com/polylang/polylang-pro/issues/2397
+	 */
+	public function test_update_language_slug() {
+		add_filter( 'pre_http_request', array( $this, 'http_request_mock' ), 10, 3 );
+
+		$options = array(
+			'default_lang' => 'en',
+			'force_lang'   => 3,
+			'domains'      => array(
+				'en' => 'https://good-url.com',
+				'fr' => 'https://good-url.org',
+				'es' => '',
+			),
+		);
+
+		$this->pll_env       = ( new PLL_Context_Admin( array( 'options' => $options ) ) )->get();
+		$GLOBALS['polylang'] = $this->pll_env;
+
+		$language = $this->pll_env->model->languages->get( 'fr' );
+		$this->pll_env->model->languages->update(
+			array(
+				'lang_id'    => $language->term_id,
+				'name'       => $language->name,
+				'slug'       => 'fra',
+				'locale'     => $language->locale,
+				'rtl'        => $language->is_rtl,
+				'term_group' => $language->term_group,
+			)
+		);
+		$domains = $this->pll_env->model->options->get( 'domains' );
+
+		$this->assertArrayHasKey( 'fra', $domains );
+		$this->assertSame( 'https://good-url.org', $domains['fra'] );
+		$this->assertArrayNotHasKey( 'fr', $domains );
+	}
+
 	public function test_should_not_set_bad_default_language() {
 		$options = self::create_options();
 		$errors = $options->set( 'default_lang', 'bad-lang' );
@@ -98,15 +154,15 @@ class Set_Test extends PLL_UnitTestCase {
 			'filename' => '',
 		);
 
-		switch ( $url ) {
-			case 'https://good-url.org?deactivate-polylang=1':
-				// EN: success.
-				return $_response;
+		if ( 'https://wrong-url.org?deactivate-polylang=1' === $url ) {
+			// Bad URL: failure.
+			$_response['response']['code'] = 404;
+			return $_response;
+		}
 
-			case 'https://wrong-url.org?deactivate-polylang=1':
-				// FR: failure.
-				$_response['response']['code'] = 404;
-				return $_response;
+		if ( strpos( $url, 'deactivate-polylang=1' ) !== false ) {
+			// Other domain checks: success.
+			return $_response;
 		}
 
 		return $response;
