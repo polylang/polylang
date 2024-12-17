@@ -97,40 +97,39 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param  string $notice The notice name.
+	 * @param string $notice          The notice name.
+	 * @param array  $allowed_screens The screens allowed to display the notice.
+	 *                                If empty, default screens are used, i.e. dashboard, plugins, languages, strings and settings.
+	 *
 	 * @return bool
 	 */
-	protected function can_display_notice( $notice ) {
+	protected function can_display_notice( string $notice, array $allowed_screens = array() ) {
 		$screen = get_current_screen();
 
 		if ( empty( $screen ) ) {
 			return false;
 		}
 
-		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
+		if ( empty( $allowed_screens ) ) {
+			$screen_id       = sanitize_title( __( 'Languages', 'polylang' ) );
+			$allowed_screens = array(
+				'dashboard',
+				'plugins',
+				'toplevel_page_mlang',
+				$screen_id . '_page_mlang_strings',
+				$screen_id . '_page_mlang_settings',
+			);
+		}
 
 		/**
-		 * Filter admin notices which can be displayed
+		 * Filters admin notices which can be displayed.
 		 *
 		 * @since 2.7.0
 		 *
 		 * @param bool   $display Whether the notice should be displayed or not.
 		 * @param string $notice  The notice name.
 		 */
-		return apply_filters(
-			'pll_can_display_notice',
-			in_array(
-				$screen->id,
-				array(
-					'dashboard',
-					'plugins',
-					'toplevel_page_mlang',
-					$screen_id . '_page_mlang_strings',
-					$screen_id . '_page_mlang_settings',
-				)
-			),
-			$notice
-		);
+		return apply_filters( 'pll_can_display_notice', in_array( $screen->id, $allowed_screens, true ), $notice );
 	}
 
 	/**
@@ -185,11 +184,8 @@ class PLL_Admin_Notices {
 				$this->review_notice();
 			}
 
-			if (
-				isset( $GLOBALS['pagenow'] ) && 'admin.php' === $GLOBALS['pagenow'] &&
-				isset( $_GET['page'] ) && 'mlang_strings' === $_GET['page'] && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				! static::is_dismissed( 'empty-strings-translations' )
-			) {
+			$allowed_screen = sanitize_title( __( 'Languages', 'polylang' ) ) . '_page_mlang_strings';
+			if ( $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen ) && ! static::is_dismissed( 'empty-strings-translations' ) ) {
 				$this->empty_strings_translations_notice();
 			}
 
