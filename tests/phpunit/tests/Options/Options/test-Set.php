@@ -79,7 +79,7 @@ class Set_Test extends PLL_UnitTestCase {
 			'en'       => 'https://good-url.com',
 			'bad-lang' => 'https://good-url.org',
 		);
-		$errors  = $this->pll_env->model->options->set( 'domains', $domains );
+		$this->pll_env->model->options->set( 'domains', $domains );
 		$domains = $this->pll_env->model->options->get( 'domains' );
 
 		$this->assertArrayHasKey( 'en', $domains );
