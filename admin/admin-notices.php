@@ -185,7 +185,11 @@ class PLL_Admin_Notices {
 			}
 
 			$allowed_screen = sanitize_title( __( 'Languages', 'polylang' ) ) . '_page_mlang_strings';
-			if ( $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen ) && ! static::is_dismissed( 'empty-strings-translations' ) ) {
+			if (
+				( ! empty( $this->options['previous_version'] ) && version_compare( $this->options['previous_version'], '3.7.0', '<' ) )
+				&& $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen )
+				&& ! static::is_dismissed( 'empty-strings-translations' )
+			) {
 				$this->empty_strings_translations_notice();
 			}
 
