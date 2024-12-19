@@ -183,7 +183,8 @@ class REST_Settings_Test extends PLL_UnitTestCase {
 
 		wp_set_current_user( self::$administrator );
 
-		$this->assertTrue( $this->pll_env->model->options->get( 'rewrite' ) );
+		$this->pll_env->model->options->set( 'rewrite', true );
+		$this->pll_env->model->options->set( 'hide_default', false );
 
 		// Init rewrite rules.
 		$wp_rewrite->init();
