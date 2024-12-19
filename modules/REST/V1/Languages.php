@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\REST\V1;
 
 use PLL_Language;
+use PLL_Model;
 use PLL_Translatable_Objects;
 use stdClass;
 use WP_Error;
@@ -38,14 +39,13 @@ class Languages extends Abstract_Controller {
 	 *
 	 * @since 3.7
 	 *
-	 * @param Languages_Model          $languages            Languages' model.
-	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
+	 * @param PLL_Model $model Polylang's model.
 	 */
-	public function __construct( Languages_Model $languages, PLL_Translatable_Objects $translatable_objects ) {
+	public function __construct( PLL_Model $model ) {
 		$this->namespace            = 'pll/v1';
 		$this->rest_base            = 'languages';
-		$this->languages            = $languages;
-		$this->translatable_objects = $translatable_objects;
+		$this->languages            = $model->languages;
+		$this->translatable_objects = $model->translatable_objects;
 	}
 
 	/**

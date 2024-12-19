@@ -53,10 +53,10 @@ class API {
 	 * @return void
 	 */
 	public function init(): void {
-		$this->languages = new V1\Languages( $this->model->languages, $this->model->translatable_objects );
+		$this->languages = new V1\Languages( $this->model );
 		$this->languages->register_routes();
 
-		$this->settings = new V1\Settings( $this->model->options );
+		$this->settings = new V1\Settings( $this->model );
 		$this->settings->register_routes();
 	}
 }
