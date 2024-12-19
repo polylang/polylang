@@ -5,10 +5,12 @@
 
 namespace WP_Syntex\Polylang\REST\V1;
 
+use PLL_Model;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+use WP_Syntex\Polylang\Model\Languages;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\REST\Abstract_Controller;
 
@@ -26,16 +28,22 @@ class Settings extends Abstract_Controller {
 	private $options;
 
 	/**
+	 * @var Languages
+	 */
+	private $languages;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
-	 * @param Options $options Options registry.
+	 * @param PLL_Model $model Polylang's model.
 	 */
-	public function __construct( Options $options ) {
+	public function __construct( PLL_Model $model ) {
 		$this->namespace = 'pll/v1';
 		$this->rest_base = 'settings';
-		$this->options   = $options;
+		$this->options   = $model->options;
+		$this->languages = $model->languages;
 	}
 
 	/**
@@ -104,7 +112,12 @@ class Settings extends Abstract_Controller {
 
 		foreach ( $options as $option_name => $new_value ) {
 			$previous_value = $this->options->get( $option_name );
-			$result         = $this->options->set( $option_name, $new_value );
+
+			if ( 'default_lang' === $option_name ) {
+				$result = $this->languages->update_default( $new_value );
+			} else {
+				$result = $this->options->set( $option_name, $new_value );
+			}
 
 			if ( $result->has_errors() ) {
 				$errors->merge_from( $result );
