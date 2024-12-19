@@ -283,6 +283,20 @@ class Languages {
 		$slug     = $args['slug'];
 		$old_slug = $lang->slug;
 
+		// Update the language itself.
+		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
+
+		wp_update_term(
+			$lang->get_tax_prop( 'language', 'term_id' ),
+			'language',
+			array(
+				'slug'        => $slug,
+				'name'        => $args['name'],
+				'description' => $this->build_metas( $args ),
+				'term_group'  => (int) $args['term_group'],
+			)
+		);
+
 		if ( $old_slug !== $slug ) {
 			// Update the language slug in translations.
 			$this->update_translations( $old_slug, $slug );
@@ -302,7 +316,7 @@ class Languages {
 				}
 			}
 
-			// Update menus locations.
+			// Update menus locations in options.
 			$nav_menus = $this->options->get( 'nav_menus' );
 
 			if ( ! empty( $nav_menus ) ) {
@@ -318,7 +332,10 @@ class Languages {
 				$this->options->set( 'nav_menus', $nav_menus );
 			}
 
-			// Update domains.
+			/*
+			 * Update domains in options.
+			 * This must happen after the term is saved (see `Options\Business\Domains::sanitize()`).
+			 */
 			$domains = $this->options->get( 'domains' );
 
 			if ( ! empty( $domains[ $old_slug ] ) ) {
@@ -326,20 +343,14 @@ class Languages {
 				unset( $domains[ $old_slug ] );
 				$this->options->set( 'domains', $domains );
 			}
-		}
 
-		// And finally update the language itself.
-		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
-
-		$description = $this->build_metas( $args );
-		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
-
-		/*
-		 * Update the default language option if necessary.
-		 * This must happen after the term is saved (see `Options\Business\Default_Lang::sanitize()`).
-		 */
-		if ( $old_slug !== $slug && $lang->is_default ) {
-			$this->options['default_lang'] = $slug;
+			/*
+			 * Update the default language option if necessary.
+			 * This must happen after the term is saved (see `Options\Business\Default_Lang::sanitize()`).
+			 */
+			if ( $lang->is_default ) {
+				$this->options->set( 'default_lang', $slug );
+			}
 		}
 
 		// Refresh languages.
