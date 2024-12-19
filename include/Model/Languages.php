@@ -308,7 +308,7 @@ class Languages {
 			if ( ! empty( $nav_menus ) ) {
 				foreach ( $nav_menus as $theme => $locations ) {
 					foreach ( array_keys( $locations ) as $location ) {
-						if ( ! empty( $nav_menus[ $theme ][ $location ][ $old_slug ] ) ) {
+						if ( isset( $nav_menus[ $theme ][ $location ][ $old_slug ] ) ) {
 							$nav_menus[ $theme ][ $location ][ $slug ] = $nav_menus[ $theme ][ $location ][ $old_slug ];
 							unset( $nav_menus[ $theme ][ $location ][ $old_slug ] );
 						}
