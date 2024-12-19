@@ -322,7 +322,7 @@ class Languages {
 			if ( ! empty( $nav_menus ) ) {
 				foreach ( $nav_menus as $theme => $locations ) {
 					foreach ( array_keys( $locations ) as $location ) {
-						if ( ! empty( $nav_menus[ $theme ][ $location ][ $old_slug ] ) ) {
+						if ( isset( $nav_menus[ $theme ][ $location ][ $old_slug ] ) ) {
 							$nav_menus[ $theme ][ $location ][ $slug ] = $nav_menus[ $theme ][ $location ][ $old_slug ];
 							unset( $nav_menus[ $theme ][ $location ][ $old_slug ] );
 						}
@@ -338,7 +338,7 @@ class Languages {
 			 */
 			$domains = $this->options->get( 'domains' );
 
-			if ( ! empty( $domains[ $old_slug ] ) ) {
+			if ( isset( $domains[ $old_slug ] ) ) {
 				$domains[ $slug ] = $domains[ $old_slug ];
 				unset( $domains[ $old_slug ] );
 				$this->options->set( 'domains', $domains );
