@@ -288,7 +288,7 @@ class PLL_Admin_Notices {
 		<div class="pll-notice notice notice-info">
 		<?php $this->dismiss_button( 'empty-strings-translations' ); ?>
 			<p>
-				<?php esc_html_e( 'Untranslated strings are now emptied from the database.', 'polylang' ); ?>
+				<?php esc_html_e( 'Translations matching the original string are shown as empty in the table. Untranslated content remains unchanged.', 'polylang' ); ?>
 			</p>
 		</div>
 		<?php
