@@ -87,7 +87,7 @@ class PLL_Canonical {
 			$requested_url = pll_get_requested_url();
 		}
 
-		if ( ( is_single() || is_page() ) && ! is_front_page() ) {
+		if ( ( is_single() && ! is_attachment() ) || ( is_page() && ! is_front_page() ) ) {
 			$post = get_post();
 			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
 				$language = $this->model->post->get_language( (int) $post->ID );
