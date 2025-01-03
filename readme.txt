@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 3.6.5
+Stable tag: 3.6.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,6 +104,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.6.6 (2025-01-13) =
+
+* Pro: Fix character encoding in the autocomplete field in the block editor languages panel
+* Pro: Fix navigation language switcher block allowing a dropdown to hide the current language
+* Pro: Fix translation of Media and text block when the media is shown on right
+* Pro: Fix translation of the Cover block when fixed background is enabled
+* Fix redirect of translated attachment page when attachment pages are disabled #1605
 
 = 3.6.5 (2024-11-05) =
 
