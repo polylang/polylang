@@ -85,7 +85,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 		$hosts = array();
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$host = wp_parse_url( $this->home_url( $lang ), PHP_URL_HOST );
-			$hosts[ $lang->slug ] = $host ? $host : '';
+			$hosts[ $lang->slug ] = $host ?: '';
 		}
 		return $hosts;
 	}

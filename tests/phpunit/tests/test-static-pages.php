@@ -79,8 +79,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
-
 		$this->links_model = self::$model->get_links_model();
 		$this->links_model->init();
 	}
@@ -530,11 +528,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 
-		self::$model->options['post_types'] = array(
-			'trcpt' => 'trcpt',
-		);
-
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
+
+		self::$model->options['post_types'] = array( 'trcpt' );
 
 		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -701,8 +697,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public function test_page_deletion_without_translations() {
 		// Delete translations.
 		self::$model->post->delete_translation( self::$home_en );
-		self::$model->post->delete_translation( self::$home_de, true );
-		self::$model->post->delete_translation( self::$posts_en, true );
+		self::$model->post->delete_translation( self::$home_de );
+		self::$model->post->delete_translation( self::$posts_en );
 
 		$this->init_test( 'admin' );
 
@@ -779,5 +775,43 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 				),
 			),
 		);
+	}
+
+	/**
+	 * @ticket 2178
+	 * @see https://github.com/polylang/polylang-pro/issues/2178
+	 *
+	 * @return void
+	 */
+	public function test_update_page_on_front_option_with_admin_language_filter_activated() {
+		$this->init_test( 'admin' );
+
+		// Create a new home page without translation to update `page_on_front` option later.
+		$en = self::factory()->post->create(
+			array(
+				'post_title'   => 'new home',
+				'post_type'    => 'page',
+				'post_content' => 'Home without translation',
+				'lang'         => 'en',
+			)
+		);
+
+		// Set the Polylang Admin language filter to English.
+		$this->pll_env->filter_lang = $this->pll_env->model->get_language( 'en' );
+		$this->pll_env->set_current_language();
+
+		$this->assertSame( self::$home_en, get_option( 'page_on_front' ), 'Expected the page on front in English to be ' . self::$home_en );
+
+		// Updates the `page_on_front` option with the untranslated new page.
+		update_option( 'page_on_front', $en );
+
+		// Checks the `page_on_front` property of the English language is correctly updated.
+		$this->assertSame( $en, $this->pll_env->model->get_language( 'en' )->page_on_front, 'Expected `page_on_front` property of the English language to be ' . $en );
+
+		// Simulate another process after updating `page_on_front` option: refresh the edit option page for example.
+		$this->pll_env->filter_lang = $this->pll_env->model->get_language( 'en' );
+		$this->pll_env->set_current_language();
+
+		$this->assertSame( $en, get_option( 'page_on_front' ), 'Expected the page on front to be ' . $en );
 	}
 }

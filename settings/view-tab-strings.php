@@ -3,11 +3,11 @@
  * Displays the strings translations tab in Polylang settings
  *
  * @package Polylang
+ *
+ * @var PLL_Table_String $string_table An object representing the translations list table.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-}
+defined( 'ABSPATH' ) || exit;
 ?>
 <div class="form-wrap">
 	<form id="string-translation" method="post" action="<?php echo esc_url( add_query_arg( 'noheader', 'true' ) ); ?>">

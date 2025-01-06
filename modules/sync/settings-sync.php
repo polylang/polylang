@@ -41,7 +41,6 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 */
 	public function deactivate() {
 		$this->options['sync'] = array();
-		update_option( 'polylang', $this->options );
 	}
 
 	/**
@@ -67,16 +66,16 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Sanitizes the settings before saving.
+	 * Prepare the received data before saving.
 	 *
-	 * @since 1.8
+	 * @since 3.7
 	 *
-	 * @param array $options Unsanitized options to save.
+	 * @param array $options Raw values to save.
 	 * @return array
 	 */
-	protected function update( $options ) {
-		$newoptions = array( 'sync' => empty( $options['sync'] ) ? array() : array_keys( $options['sync'], 1 ) );
-		return $newoptions; // Take care to return only validated options.
+	protected function prepare_raw_data( array $options ): array {
+		// Take care to return only validated options.
+		return array( 'sync' => empty( $options['sync'] ) ? array() : array_keys( $options['sync'], 1 ) );
 	}
 
 	/**
@@ -96,6 +95,8 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 * @since 1.0
 	 *
 	 * @return string[] Array synchronization options.
+	 *
+	 * @phpstan-return non-empty-array<non-falsy-string, string>
 	 */
 	public static function list_metas_to_sync() {
 		return array(

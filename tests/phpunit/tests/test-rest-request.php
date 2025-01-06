@@ -85,7 +85,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * }
 	 */
 	public function test_should_not_define_default_language_when_default_language_is_invalid( $data ) {
-		$this->pll_rest->model->options['default_lang'] = 'es';
+		$this->pll_rest->options = self::create_options( array( 'default_lang' => 'es' ) );
 
 		$request = new WP_REST_Request( $data['method'], $data['route'] );
 		$request->set_param( 'lang', 'it' );

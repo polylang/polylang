@@ -26,6 +26,12 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
+		$mo = new PLL_MO();
+		foreach ( $this->pll_admin->model->languages->get_list() as $lang ) {
+			// Flush the cache.
+			$mo->export_to_db( $lang );
+		}
+
 		unset( $GLOBALS['polylang'] );
 	}
 

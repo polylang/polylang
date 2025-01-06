@@ -1,19 +1,13 @@
 <?php
 
 class WP_Importer_Test extends PLL_UnitTestCase {
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		self::markTestSkippedIfFileNotExists( PLL_TEST_PLUGINS_DIR . 'wordpress-importer/wordpress-importer.php', 'This test requires the plugin WordPress Importer.' );
 
-	public function set_up() {
-
-		if ( ! file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php' ) ) {
-			self::markTestSkipped( 'This test requires the plugin WordPress Importer' );
-		}
-
-		parent::set_up();
-
-		require_once POLYLANG_DIR . '/include/api.php';
-
-		self::$model->options['hide_default'] = 0;
-		update_option( 'polylang', self::$model->options ); // make sure we have options in DB ( needed by PLL_WP_Import )
+		parent::wpSetUpBeforeClass( $factory );
 
 		if ( ! defined( 'WP_IMPORTING' ) ) {
 			define( 'WP_IMPORTING', true );
@@ -23,12 +17,21 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 			define( 'WP_LOAD_IMPORTERS', true );
 		}
 
-		require_once DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php';
+		require_once PLL_TEST_PLUGINS_DIR . 'wordpress-importer/wordpress-importer.php';
+	}
 
+
+	public function set_up() {
 		global $wpdb;
+
+		parent::set_up();
+
+		require_once POLYLANG_DIR . '/include/api.php';
+
+		self::$model->options['hide_default'] = 0;
+
 		// crude but effective: make sure there's no residual data in the main tables
 		foreach ( array( 'posts', 'postmeta', 'comments', 'terms', 'term_taxonomy', 'term_relationships', 'users', 'usermeta' ) as $table ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL
 			$wpdb->query( "DELETE FROM {$wpdb->$table}" );
 		}
 
@@ -82,12 +85,11 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$importer->import( $file );
 		ob_end_clean();
 
-		self::$model->options = get_option( 'polylang' );
 		$_POST = array();
 	}
 
 	public function test_simple_import() {
-		$this->_import_wp( __DIR__ . '/../../data/test-import.xml' );
+		$this->_import_wp( PLL_TEST_DATA_DIR . 'test-import.xml' );
 
 		// languages
 		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );

@@ -37,7 +37,7 @@ class PLL_Admin_Strings {
 	 */
 	public static function init() {
 		// default strings translations sanitization
-		add_filter( 'pll_sanitize_string_translation', array( __CLASS__, 'sanitize_string_translation' ), 10, 2 );
+		add_filter( 'pll_sanitize_string_translation', array( self::class, 'sanitize_string_translation' ), 10, 2 );
 	}
 
 	/**
@@ -70,7 +70,6 @@ class PLL_Admin_Strings {
 			'widget_text'  => __( 'Widget text', 'polylang' ),
 		);
 
-		// Widgets titles
 		global $wp_registered_widgets;
 		$sidebars = wp_get_sidebars_widgets();
 		foreach ( $sidebars as $sidebar => $widgets ) {
@@ -79,8 +78,7 @@ class PLL_Admin_Strings {
 			}
 
 			foreach ( $widgets as $widget ) {
-				// Nothing can be done if the widget is created using pre WP2.8 API :(
-				// There is no object, so we can't access it to get the widget options
+				// Nothing can be done if the widget is created using pre WP2.8 API. There is no object, so we can't access it to get the widget options.
 				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
 					continue;
 				}
@@ -88,15 +86,24 @@ class PLL_Admin_Strings {
 				$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
 				$number = $wp_registered_widgets[ $widget ]['params'][0]['number'];
 
-				// Don't enable widget translation if the widget is visible in only one language or if there is no title
-				if ( empty( $widget_settings[ $number ]['pll_lang'] ) ) {
-					if ( isset( $widget_settings[ $number ]['title'] ) && $title = $widget_settings[ $number ]['title'] ) {
-						self::register_string( self::$default_strings['widget_title'], $title, 'Widget' );
-					}
+				// Don't enable widget translation if the widget is visible in only one language or if there is no title.
+				if ( ! empty( $widget_settings[ $number ]['pll_lang'] ) ) {
+					continue;
+				}
 
-					if ( isset( $widget_settings[ $number ]['text'] ) && $text = $widget_settings[ $number ]['text'] ) {
-						self::register_string( self::$default_strings['widget_text'], $text, 'Widget', true );
-					}
+				// Widget title.
+				if ( ! empty( $widget_settings[ $number ]['title'] ) ) { 
+					self::register_string( self::$default_strings['widget_title'], $widget_settings[ $number ]['title'], 'Widget' );
+				}
+
+				// Text of the Widget text.
+				if ( ! empty( $widget_settings[ $number ]['text'] ) ) {
+					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['text'], 'Widget', true );
+				}
+
+				// Content of the widget custom html.
+				if ( ! empty( $widget_settings[ $number ]['content'] ) ) {
+					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['content'], 'Widget', true );
 				}
 			}
 		}

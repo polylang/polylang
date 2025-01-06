@@ -7,6 +7,17 @@
  * The language switcher widget
  *
  * @since 0.1
+ *
+ * @extends WP_Widget<T>
+ * @phpstan-template T of array{
+ *     title: string,
+ *     dropdown: 0|1,
+ *     show_names: 0|1,
+ *     show_flags: 0|1,
+ *     force_home: 0|1,
+ *     hide_current: 0|1,
+ *     hide_if_no_translation: 0|1
+ * }
  */
 class PLL_Widget_Languages extends WP_Widget {
 
@@ -34,6 +45,23 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @param array $args     Display arguments including before_title, after_title, before_widget, and after_widget.
 	 * @param array $instance The settings for the particular instance of the widget
 	 * @return void
+	 *
+	 * @phpstan-param array{
+	 *     name: string,
+	 *     id: string,
+	 *     description: string,
+	 *     class: string,
+	 *     before_widget: string,
+	 *     after_widget: string,
+	 *     before_title: string,
+	 *     after_title: string,
+	 *     before_sidebar: string,
+	 *     after_sidebar: string,
+	 *     show_in_rest: boolean,
+	 *     widget_id: string,
+	 *     widget_name: string
+	 * } $args
+	 * @phpstan-param T $instance
 	 */
 	public function widget( $args, $instance ) {
 		// Sets a unique id for dropdown.
@@ -92,6 +120,9 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @param array $new_instance New settings for this instance as input by the user via form()
 	 * @param array $old_instance Old settings for this instance
 	 * @return array Settings to save or bool false to cancel saving
+	 *
+	 * @phpstan-param T $new_instance
+	 * @phpstan-param T $old_instance
 	 */
 	public function update( $new_instance, $old_instance ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$instance = array( 'title' => sanitize_text_field( $new_instance['title'] ) );
@@ -109,6 +140,8 @@ class PLL_Widget_Languages extends WP_Widget {
 	 *
 	 * @param array $instance Current settings.
 	 * @return string
+	 *
+	 * @phpstan-param T $instance
 	 */
 	public function form( $instance ) {
 		// Default values

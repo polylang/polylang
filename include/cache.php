@@ -81,7 +81,7 @@ class PLL_Cache {
 	 * @phpstan-return TCacheData|false
 	 */
 	public function get( $key ) {
-		return isset( $this->cache[ $this->blog_id ][ $key ] ) ? $this->cache[ $this->blog_id ][ $key ] : false;
+		return $this->cache[ $this->blog_id ][ $key ] ?? false;
 	}
 
 	/**

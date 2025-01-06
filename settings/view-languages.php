@@ -3,22 +3,22 @@
  * Displays the Languages admin panel
  *
  * @package Polylang
+ *
+ * @var string $active_tab Active Polylang settings page.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-}
+defined( 'ABSPATH' ) || exit;
 
 require ABSPATH . 'wp-admin/options-head.php'; // Displays the errors messages as when we were a child of options-general.php
 ?>
 <div class="wrap">
 	<h1><?php echo esc_html( $GLOBALS['title'] ); ?></h1>
 	<?php
-	switch ( $this->active_tab ) {
+	switch ( $active_tab ) {
 		case 'lang':     // Languages tab
 		case 'strings':  // String translations tab
 		case 'settings': // Settings tab
-			include __DIR__ . '/view-tab-' . $this->active_tab . '.php';
+			include __DIR__ . '/view-tab-' . $active_tab . '.php';
 			// Intentional fall-through to upgrade to fire the action below.
 
 		default:
@@ -28,7 +28,7 @@ require ABSPATH . 'wp-admin/options-head.php'; // Displays the errors messages a
 			 *
 			 * @since 1.5.1
 			 */
-			do_action( 'pll_settings_active_tab_' . $this->active_tab );
+			do_action( 'pll_settings_active_tab_' . $active_tab );
 			break;
 	}
 	?>

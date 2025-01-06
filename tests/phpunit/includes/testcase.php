@@ -1,5 +1,7 @@
 <?php
 
+use Brain\Monkey\Functions;
+
 /**
  * A test case class for Polylang standard tests
  */
@@ -7,6 +9,12 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase_Polyfill {
 	use PLL_UnitTestCase_Trait;
 
 	public function set_up() {
+		Functions\when( 'pll_is_plugin_active' )->alias(
+			function ( $value ) {
+				return POLYLANG_BASENAME === $value;
+			}
+		);
+
 		parent::set_up();
 
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.

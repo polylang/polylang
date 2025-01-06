@@ -72,7 +72,7 @@ class PLL_Translate_Option {
 		$this->cache = new PLL_Cache();
 
 		// Registers the strings.
-		$context = isset( $args['context'] ) ? $args['context'] : 'Polylang';
+		$context = $args['context'] ?? 'Polylang';
 		$this->register_string_recursive( $context, $name, get_option( $name ), $keys );
 
 		// Translates the strings.
@@ -404,6 +404,8 @@ class PLL_Translate_Option {
 	 * @return string Sanitized value.
 	 */
 	public function sanitize_option( $value, $name ) {
-		return sanitize_option( $name, $value );
+		/** @var string $value */
+		$value = sanitize_option( $name, $value );
+		return $value;
 	}
 }

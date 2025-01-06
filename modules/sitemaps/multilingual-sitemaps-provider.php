@@ -138,8 +138,8 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	public function get_sitemap_type_data() {
 		$sitemap_data = array();
 
-		add_filter( 'wp_sitemaps_posts_query_args', array( __CLASS__, 'query_args' ) );
-		add_filter( 'wp_sitemaps_taxonomies_query_args', array( __CLASS__, 'query_args' ) );
+		add_filter( 'wp_sitemaps_posts_query_args', array( self::class, 'query_args' ) );
+		add_filter( 'wp_sitemaps_taxonomies_query_args', array( self::class, 'query_args' ) );
 
 		$object_subtypes = $this->get_object_subtypes();
 

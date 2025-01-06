@@ -16,21 +16,11 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 		register_taxonomy( 'trtax', 'trcpt', array( 'show_in_rest' => true ) ); // Translated custom taxonomy.
 		register_taxonomy( 'trtax_with_no_namespace', 'trcpt', array( 'show_in_rest' => true, 'rest_namespace' => null ) ); // Translated custom taxonomy with namespace explicitly set to null as in CPTUI.
 
-		$options = array_merge(
-			PLL_Install::get_default_options(),
+		$options = self::create_options(
 			array(
 				'default_lang' => 'en',
-			),
-			array(
-				'post_types' => array(
-					'trcpt' => 'trcpt',
-				),
-			),
-			array(
-				'taxonomies' => array(
-					'trtax'                   => 'trtax',
-					'trtax_with_no_namespace' => 'trtax_with_no_namespace',
-				),
+				'post_types'   => array( 'trcpt' ),
+				'taxonomies'   => array( 'trtax', 'trtax_with_no_namespace' ),
 			)
 		);
 		$model           = new PLL_Admin_Model( $options );

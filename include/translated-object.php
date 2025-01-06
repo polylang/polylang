@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -28,7 +30,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model $model ) {
 		parent::__construct( $model );
 
 		$this->tax_to_cache[] = $this->tax_translations;
@@ -36,6 +38,17 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		/*
 		 * Register our taxonomy as soon as possible.
 		 */
+		$this->register_translations_taxonomy();
+	}
+
+	/**
+	 * Registers the translations taxonomy.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	protected function register_translations_taxonomy(): void {
 		register_taxonomy(
 			$this->tax_translations,
 			(array) $this->object_type,
@@ -296,31 +309,31 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param int                 $id   Object ID.
 	 * @param PLL_Language|string $lang Language (slug or object).
-	 * @return int|false Object ID of the translation, `false` if there is none.
+	 * @return int Object ID of the translation, `0` if there is none.
 	 *
-	 * @phpstan-return positive-int|false
+	 * @phpstan-return int<0, max>
 	 */
 	public function get_translation( $id, $lang ) {
-		$lang = $this->model->get_language( $lang );
+		$lang = $this->languages->get( $lang );
 
 		if ( empty( $lang ) ) {
-			return false;
+			return 0;
 		}
 
 		$translations = $this->get_translations( $id );
 
-		return isset( $translations[ $lang->slug ] ) ? $translations[ $lang->slug ] : false;
+		return $translations[ $lang->slug ] ?? 0;
 	}
 
 	/**
 	 * Among the object and its translations, returns the ID of the object which is in `$lang`.
 	 *
 	 * @since 0.1
-	 * @since 3.4 Returns 0 instead of false.
+	 * @since 3.4 Returns `0` instead of `false`.
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+	 * @return int The translation object ID if exists. `0` if the passed object has no language or if not translated.
 	 *
 	 * @phpstan-return int<0, max>
 	 */
@@ -331,7 +344,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return 0;
 		}
 
-		$lang = $this->model->get_language( $lang );
+		$lang = $this->languages->get( $lang );
 
 		if ( empty( $lang ) ) {
 			return 0;
@@ -343,7 +356,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return 0;
 		}
 
-		return $obj_lang->term_id === $lang->term_id ? $id : (int) $this->get_translation( $id, $lang );
+		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
 	}
 
 	/**
@@ -444,7 +457,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		 */
 		$translations = array_intersect_key(
 			$translations,
-			array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) )
+			array_flip( $this->languages->get_list( array( 'fields' => 'slug' ) ) )
 		);
 
 		// Make sure values are clean before working with them.
@@ -506,38 +519,60 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		$count       = array();
 
 		foreach ( $translations as $t ) {
-			$term = uniqid( 'pll_' ); // the term name
-			$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
-			$slugs[] = $wpdb->prepare( '%s', $term );
+			$term = uniqid( 'pll_' ); // The term name.
+			$terms[] = array( $term, $term );
+			$slugs[] = $term;
 			$description[ $term ] = maybe_serialize( $t );
 			$count[ $term ] = count( $t );
 		}
 
-		// Insert terms
+		// Insert terms.
 		if ( ! empty( $terms ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->terms} ( slug, name ) VALUES " . implode( ',', array_unique( $terms ) ) );
+			$wpdb->query(
+				$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+					sprintf(
+						"INSERT INTO {$wpdb->terms} ( slug, name ) VALUES %s",
+						implode( ',', array_fill( 0, count( $terms ), '( %s, %s )' ) )
+					),
+					array_merge( ...$terms )
+				)
+			);
 		}
 
-		// Get all terms with their term_id
-		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$terms    = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
+		// Get all terms with their term_id.
+		$terms = $wpdb->get_results(
+			$wpdb->prepare(
+				sprintf(
+					"SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN (%s)",
+					implode( ',', array_fill( 0, count( $slugs ), '%s' ) )
+				),
+				$slugs
+			)
+		);
+
 		$term_ids = array();
 		$tts      = array();
 
-		// Prepare terms taxonomy relationship
+		// Prepare terms taxonomy relationship.
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id;
-			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $this->tax_translations, $description[ $term->slug ], $count[ $term->slug ] );
+			$tts[]      = array( $term->term_id, $this->tax_translations, $description[ $term->slug ], $count[ $term->slug ] );
 		}
 
-		// Insert term_taxonomy
+		// Insert term_taxonomy.
 		if ( ! empty( $tts ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_taxonomy} ( term_id, taxonomy, description, count ) VALUES " . implode( ',', array_unique( $tts ) ) );
+			$wpdb->query(
+				$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+					sprintf(
+						"INSERT INTO {$wpdb->term_taxonomy} ( term_id, taxonomy, description, count ) VALUES %s",
+						implode( ',', array_fill( 0, count( $tts ), '( %d, %s, %s, %d )' ) )
+					),
+					array_merge( ...$tts )
+				)
+			);
 		}
 
-		// Get all terms with term_taxonomy_id
+		// Get all terms with term_taxonomy_id.
 		$terms = get_terms( array( 'taxonomy' => $this->tax_translations, 'hide_empty' => false ) );
 		$trs   = array();
 
@@ -548,18 +583,24 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 				if ( is_array( $t ) && in_array( $t, $translations ) ) {
 					foreach ( $t as $object_id ) {
 						if ( ! empty( $object_id ) ) {
-							$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
+							$trs[] = array( $object_id, $term->term_taxonomy_id );
 						}
 					}
 				}
 			}
 		}
 
-		// Insert term_relationships
+		// Insert term_relationships.
 		if ( ! empty( $trs ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
-			$trs = array_unique( $trs );
+			$wpdb->query(
+				$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+					sprintf(
+						"INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES %s",
+						implode( ',', array_fill( 0, count( $trs ), '( %d, %d )' ) )
+					),
+					array_merge( ...$trs )
+				)
+			);
 		}
 
 		clean_term_cache( $term_ids, $this->tax_translations );

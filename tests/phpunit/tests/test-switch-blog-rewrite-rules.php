@@ -58,9 +58,9 @@ if ( is_multisite() ) :
 
 			$this->assertCount( 2, $languages );
 			$this->assertSame( 'en', $languages[0]->slug );
-			$this->assertSame( 'polylang-domains.en/', $languages[0]->get_home_url() );
+			$this->assertSame( 'http://polylang-domains.en/', $languages[0]->get_home_url() );
 			$this->assertSame( 'de', $languages[1]->slug );
-			$this->assertSame( 'polylang-domains.de/', $languages[1]->get_home_url() );
+			$this->assertSame( 'http://polylang-domains.de/', $languages[1]->get_home_url() );
 
 			restore_current_blog();
 

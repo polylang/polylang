@@ -97,40 +97,39 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param  string $notice The notice name.
+	 * @param string $notice          The notice name.
+	 * @param array  $allowed_screens The screens allowed to display the notice.
+	 *                                If empty, default screens are used, i.e. dashboard, plugins, languages, strings and settings.
+	 *
 	 * @return bool
 	 */
-	protected function can_display_notice( $notice ) {
+	protected function can_display_notice( string $notice, array $allowed_screens = array() ) {
 		$screen = get_current_screen();
 
 		if ( empty( $screen ) ) {
 			return false;
 		}
 
-		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
+		if ( empty( $allowed_screens ) ) {
+			$screen_id       = sanitize_title( __( 'Languages', 'polylang' ) );
+			$allowed_screens = array(
+				'dashboard',
+				'plugins',
+				'toplevel_page_mlang',
+				$screen_id . '_page_mlang_strings',
+				$screen_id . '_page_mlang_settings',
+			);
+		}
 
 		/**
-		 * Filter admin notices which can be displayed
+		 * Filters admin notices which can be displayed.
 		 *
 		 * @since 2.7.0
 		 *
 		 * @param bool   $display Whether the notice should be displayed or not.
 		 * @param string $notice  The notice name.
 		 */
-		return apply_filters(
-			'pll_can_display_notice',
-			in_array(
-				$screen->id,
-				array(
-					'dashboard',
-					'plugins',
-					'toplevel_page_mlang',
-					$screen_id . '_page_mlang_strings',
-					$screen_id . '_page_mlang_settings',
-				)
-			),
-			$notice
-		);
+		return apply_filters( 'pll_can_display_notice', in_array( $screen->id, $allowed_screens, true ), $notice );
 	}
 
 	/**
@@ -177,17 +176,26 @@ class PLL_Admin_Notices {
 	public function display_notices() {
 		if ( current_user_can( 'manage_options' ) ) {
 			// Core notices
-			if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && $this->can_display_notice( 'pllwc' ) && ! $this->is_dismissed( 'pllwc' ) ) {
+			if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && $this->can_display_notice( 'pllwc' ) && ! static::is_dismissed( 'pllwc' ) ) {
 				$this->pllwc_notice();
 			}
 
-			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
+			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! static::is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
 				$this->review_notice();
 			}
 
+			$allowed_screen = sanitize_title( __( 'Languages', 'polylang' ) ) . '_page_mlang_strings';
+			if (
+				( ! empty( $this->options['previous_version'] ) && version_compare( $this->options['previous_version'], '3.7.0', '<' ) )
+				&& $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen )
+				&& ! static::is_dismissed( 'empty-strings-translations' )
+			) {
+				$this->empty_strings_translations_notice();
+			}
+
 			// Custom notices
-			foreach ( $this->get_notices() as $notice => $html ) {
-				if ( $this->can_display_notice( $notice ) && ! $this->is_dismissed( $notice ) ) {
+			foreach ( static::get_notices() as $notice => $html ) {
+				if ( $this->can_display_notice( $notice ) && ! static::is_dismissed( $notice ) ) {
 					?>
 					<div class="pll-notice notice notice-info">
 						<?php
@@ -263,6 +271,24 @@ class PLL_Admin_Notices {
 					'</a>'
 				);
 				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Displays a notice about the empty strings translations.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function empty_strings_translations_notice() {
+		?>
+		<div class="pll-notice notice notice-info">
+		<?php $this->dismiss_button( 'empty-strings-translations' ); ?>
+			<p>
+				<?php esc_html_e( 'Translations matching the original string are shown as empty in the table. Untranslated content remains unchanged.', 'polylang' ); ?>
 			</p>
 		</div>
 		<?php

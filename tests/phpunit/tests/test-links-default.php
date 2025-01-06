@@ -20,11 +20,8 @@ class Links_Default_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		self::$model->options['post_types'] = array(
-			'cpt' => 'cpt',
-		);
 		register_post_type( 'cpt', array( 'public' => true ) ); // translated custom post type
-
+		self::$model->options['post_types']   = array( 'cpt' );
 		self::$model->options['hide_default'] = 1;
 
 		$this->links_model = self::$model->get_links_model();
@@ -116,8 +113,17 @@ class Links_Default_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_language_from_post_content() {
-		self::$model->options['force_lang'] = 0;
-		$frontend = new PLL_Frontend( $this->links_model );
+		$options = self::create_options(
+			array(
+				'hide_default' => 1,
+				'force_lang'   => 0,
+				'browser'      => 0,
+				'default_lang' => 'en',
+			)
+		);
+		$model       = new PLL_Model( $options );
+		$links_model = $model->get_links_model();
+		$frontend    = new PLL_Frontend( $links_model );
 		new PLL_Filters_Links( $frontend );
 
 		$fr = self::factory()->post->create();

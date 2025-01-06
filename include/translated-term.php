@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -69,7 +71,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model $model ) {
 		parent::__construct( $model );
 
 		// Keep hooks in constructor for backward compatibility.
@@ -192,13 +194,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-return array<non-empty-string, non-empty-string>
 	 */
 	public function get_translated_object_types( $filter = true ) {
-		$taxonomies = $this->model->cache->get( 'taxonomies' );
+		$taxonomies = $this->cache->get( 'taxonomies' );
 
 		if ( false === $taxonomies ) {
 			$taxonomies = array( 'category' => 'category', 'post_tag' => 'post_tag' );
 
-			if ( ! empty( $this->model->options['taxonomies'] ) && is_array( $this->model->options['taxonomies'] ) ) {
-				$taxonomies = array_merge( $taxonomies, array_combine( $this->model->options['taxonomies'], $this->model->options['taxonomies'] ) );
+			if ( ! empty( $this->options['taxonomies'] ) ) {
+				$taxonomies = array_merge( $taxonomies, array_combine( $this->options['taxonomies'], $this->options['taxonomies'] ) );
 			}
 
 			/**
@@ -215,7 +217,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			$taxonomies = (array) apply_filters( 'pll_get_taxonomies', $taxonomies, false );
 
 			if ( did_action( 'after_setup_theme' ) && ! doing_action( 'switch_blog' ) ) {
-				$this->model->cache->set( 'taxonomies', $taxonomies );
+				$this->cache->set( 'taxonomies', $taxonomies );
 			}
 		}
 
@@ -239,7 +241,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	public function _prime_terms_cache( $terms, $taxonomies ) {
 		$ids = array();
 
-		if ( is_array( $terms ) && $this->model->is_translated_taxonomy( $taxonomies ) ) {
+		if ( is_array( $terms ) && $this->is_translated_object_type( $taxonomies ) ) {
 			foreach ( $terms as $term ) {
 				$ids[] = is_object( $term ) ? $term->term_id : (int) $term;
 			}
@@ -314,11 +316,23 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Returns the description to use for the "language properties" in the REST API.
+	 *
+	 * @since 3.7
+	 * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
+	 *
+	 * @return string
+	 */
+	public function get_rest_description(): string {
+		return __( 'Language taxonomy properties for terms.', 'polylang' );
+	}
+
+	/**
 	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
 	 * @see PLL_Translatable_Object::join_clause()
-	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+	 * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
 	 *
 	 * @since 3.4.3
 	 *
@@ -337,5 +351,136 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			'type_column'   => 'taxonomy',
 			'default_alias' => 't',
 		);
+	}
+
+	/**
+	 * Wraps `wp_insert_term` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string       $term     The term name to add.
+	 * @param string       $taxonomy The taxonomy to which to add the term.
+	 * @param PLL_Language $language The term language.
+	 * @param array        $args {
+	 *     Optional. Array of arguments for inserting a term.
+	 *
+	 *     @type string   $alias_of     Slug of the term to make this term an alias of.
+	 *                                  Default empty string. Accepts a term slug.
+	 *     @type string   $description  The term description. Default empty string.
+	 *     @type int      $parent       The id of the parent term. Default 0.
+	 *     @type string   $slug         The term slug to use. Default empty string.
+	 *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+	 * }
+	 * @return array|WP_Error {
+	 *     An array of the new term data, `WP_Error` otherwise.
+	 *
+	 *     @type int        $term_id          The new term ID.
+	 *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+	 * }
+	 */
+	public function insert( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
+		$parent = $args['parent'] ?? 0;
+		$this->toggle_inserted_term_filters( $language, $parent );
+		$term = wp_insert_term( $term, $taxonomy, $args );
+		$this->toggle_inserted_term_filters( $language, $parent );
+
+		if ( is_wp_error( $term ) ) {
+			// Something went wrong!
+			return $term;
+		}
+
+		$this->set_language( (int) $term['term_id'], $language );
+
+		if ( ! empty( $args['translations'] ) ) {
+			$this->save_translations( (int) $term['term_id'], $args['translations'] );
+		}
+
+		return $term;
+	}
+
+	/**
+	 * Wraps `wp_update_term` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int   $term_id The ID of the term.
+	 * @param array $args {
+	 *     Optional. Array of arguments for updating a term.
+	 *
+	 *     @type string       $alias_of     Slug of the term to make this term an alias of.
+	 *                                      Default empty string. Accepts a term slug.
+	 *     @type string       $description  The term description. Default empty string.
+	 *     @type int          $parent       The id of the parent term. Default 0.
+	 *     @type string       $slug         The term slug to use. Default empty string.
+	 *     @type PLL_Language $lang         The term language object.
+	 *     @type string[]     $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+	 * }
+	 * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
+	 *                        WP_Error otherwise.
+	 */
+	public function update( int $term_id, array $args = array() ) {
+		$term = get_term( $term_id );
+		if ( ! $term instanceof WP_Term ) {
+			return new WP_Error( 'invalid_term', __( 'Empty Term.', 'polylang' ) );
+		}
+
+		/** @var PLL_Language $language */
+		$language = $this->get_language( $term_id );
+		if ( ! empty( $args['lang'] ) ) {
+			$language = $this->languages->get( $args['lang'] );
+			if ( ! $language instanceof PLL_Language ) {
+				return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+			}
+
+			$this->set_language( $term_id, $language );
+		}
+
+		$parent = $args['parent'] ?? $term->parent;
+		$this->toggle_inserted_term_filters( $language, $parent );
+		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
+		$this->toggle_inserted_term_filters( $language, $parent );
+
+		if ( is_wp_error( $term ) ) {
+			// Something went wrong!
+			return $term;
+		}
+
+		if ( ! empty( $args['translations'] ) ) {
+			$this->save_translations( $term_id, $args['translations'] );
+		}
+
+		return $term;
+	}
+
+	/**
+	 * Toggles Polylang term slug filters management.
+	 * Must be used before and after any term slug modification or insertion.
+	 *
+	 * @since 3.7
+	 *
+	 * @param PLL_Language $language The language to use.
+	 * @param int          $parent   The parent term id to use.
+	 * @return void
+	 */
+	private function toggle_inserted_term_filters( PLL_Language $language, int $parent ): void {
+		static $callbacks = array();
+		if ( isset( $callbacks[ $language->slug ], $callbacks[ (string) $parent ] ) ) {
+			// Clean up!
+			remove_filter( 'pll_inserted_term_language', $callbacks[ $language->slug ] );
+			remove_filter( 'pll_inserted_term_parent', $callbacks[ (string) $parent ] );
+			unset( $callbacks[ $language->slug ], $callbacks[ (string) $parent ] );
+			return;
+		}
+
+		$callbacks[ $language->slug ] = function () use ( $language ) {
+			return $language;
+		};
+		$callbacks[ (string) $parent ] = function () use ( $parent ) {
+			return $parent;
+		};
+
+		// Set term parent and language for suffixed slugs.
+		add_filter( 'pll_inserted_term_language', $callbacks[ $language->slug ] );
+		add_filter( 'pll_inserted_term_parent', $callbacks[ (string) $parent ] );
 	}
 }

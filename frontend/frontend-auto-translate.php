@@ -87,7 +87,7 @@ class PLL_Frontend_Auto_Translate {
 		$arr = array();
 		if ( ! empty( $qv['cat'] ) ) {
 			foreach ( explode( ',', $qv['cat'] ) as $cat ) {
-				$tr = $this->get_term( abs( $cat ) );
+				$tr = $this->get_term( abs( (int) $cat ) );
 				$arr[] = $cat < 0 ? -$tr : $tr;
 			}
 

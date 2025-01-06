@@ -12,11 +12,10 @@
  * Description:       Adds multilingual capability to WordPress
  * Version:           3.7-dev
  * Requires at least: 6.2
- * Requires PHP:      7.0
+ * Requires PHP:      7.2
  * Author:            WP SYNTEX
  * Author URI:        https://polylang.pro
  * Text Domain:       polylang
- * Domain Path:       /languages
  * License:           GPL v3 or later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  *
@@ -55,7 +54,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	// Go on loading the plugin
 	define( 'POLYLANG_VERSION', '3.7-dev' );
 	define( 'PLL_MIN_WP_VERSION', '6.2' );
-	define( 'PLL_MIN_PHP_VERSION', '7.0' );
+	define( 'PLL_MIN_PHP_VERSION', '7.2' );
 
 	define( 'POLYLANG_FILE', __FILE__ );
 	define( 'POLYLANG_DIR', __DIR__ );

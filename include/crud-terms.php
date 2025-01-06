@@ -236,7 +236,7 @@ class PLL_CRUD_Terms {
 	 * @return void
 	 */
 	public function set_tax_query_lang( $query ) {
-		$this->tax_query_lang = isset( $query->query_vars['lang'] ) ? $query->query_vars['lang'] : '';
+		$this->tax_query_lang = $query->query_vars['lang'] ?? '';
 	}
 
 	/**
@@ -280,7 +280,9 @@ class PLL_CRUD_Terms {
 	 * @return string unmodified term name
 	 */
 	public function set_pre_term_name( $name ) {
-		return $this->pre_term_name = $name;
+		$this->pre_term_name = is_string( $name ) ? $name : '';
+
+		return $name;
 	}
 
 	/**
@@ -293,54 +295,12 @@ class PLL_CRUD_Terms {
 	 * @return string Slug with a language suffix if found.
 	 */
 	public function set_pre_term_slug( $slug, $taxonomy ) {
-		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) || ! is_string( $slug ) ) {
 			return $slug;
 		}
 
-		if ( ! $slug ) {
-			$slug = sanitize_title( $this->pre_term_name );
-		}
+		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name );
 
-		if ( ! term_exists( $slug, $taxonomy ) ) {
-			return $slug;
-		}
-
-		/**
-		 * Filters the subsequently inserted term language.
-		 *
-		 * @since 3.3
-		 *
-		 * @param PLL_Language|null $lang     Found language object, null otherwise.
-		 * @param string            $taxonomy Term taonomy.
-		 * @param string            $slug     Term slug
-		 */
-		$lang = apply_filters( 'pll_inserted_term_language', null, $taxonomy, $slug );
-
-		if ( ! $lang instanceof PLL_Language ) {
-			return $slug;
-		}
-
-		$parent = 0;
-		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
-			/**
-			 * Filters the subsequently inserted term parent.
-			 *
-			 * @since 3.3
-			 *
-			 * @param int          $parent   Parent term ID, 0 if none.
-			 * @param string       $taxonomy Term taxonomy.
-			 * @param string       $slug     Term slug
-			 */
-			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
-		}
-
-		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
-
-		// If no term exist in the given language with that slug, it can be created.
-		if ( ! $term_id ) {
-			$slug .= '-' . $lang->slug;
-		}
-
-		return $slug;
+		return $term_slug->get_suffixed_slug( '-' );
 	}
 }

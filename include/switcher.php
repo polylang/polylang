@@ -9,7 +9,7 @@
  * @since 1.2
  */
 class PLL_Switcher {
-	const DEFAULTS = array(
+	public const DEFAULTS = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
 		'echo'                   => 1, // Echoes the list.
 		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
@@ -122,18 +122,19 @@ class PLL_Switcher {
 		$out   = array();
 
 		foreach ( $this->links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
-			$id = (int) $language->term_id;
-			$order = (int) $language->term_group;
-			$slug = $language->slug;
-			$locale = $language->get_locale( 'display' );
+			$id           = (int) $language->term_id;
+			$order        = (int) $language->term_group;
+			$slug         = $language->slug;
+			$locale       = $language->get_locale( 'display' );
+			$is_rtl       = $language->is_rtl;
 			$item_classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$classes = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
+			$classes      = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
 				array_merge(
 					$item_classes,
 					$args['classes']
 				) :
 				$item_classes;
-			$link_classes = isset( $args['link_classes'] ) ? $args['link_classes'] : array();
+			$link_classes = $args['link_classes'] ?? array();
 			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
@@ -183,7 +184,7 @@ class PLL_Switcher {
 				$first = false;
 			}
 
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
+			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'is_rtl', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
 		}
 
 		return $out;

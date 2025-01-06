@@ -143,8 +143,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // our filter update_nav_menu_locations does not run due to security checks
 
-		$options = get_option( 'polylang' );
-		$this->assertEquals( array( 'en' => $menu_en, 'fr' => $menu_fr ), $options['nav_menus'][ $theme ][ $primary_location ] );
+		$this->assertEquals( array( 'en' => $menu_en, 'fr' => $menu_fr ), $pll_admin->options['nav_menus'][ $theme ][ $primary_location ] );
 
 		// setup filters
 		$nav_menu->admin_init();
@@ -152,8 +151,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		// delete a nav_menu
 		wp_delete_nav_menu( $menu_en );
 
-		$options = get_option( 'polylang' );
-		$this->assertEquals( array( 'fr' => $menu_fr ), $options['nav_menus'][ $theme ][ $primary_location ] );
+		$this->assertEquals( array( 'fr' => $menu_fr ), $pll_admin->options['nav_menus'][ $theme ][ $primary_location ] );
 	}
 
 	public function test_auto_add_pages_to_menu() {
@@ -427,8 +425,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
-		$options = get_option( 'polylang' );
-		$this->assertEqualSets( array( 'en' => 2, 'fr' => 3 ), $options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
+		$this->assertEqualSets( array( 'en' => 2, 'fr' => 3 ), $pll_admin->options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
 		$options = get_option( 'theme_mods_' . get_stylesheet() );
 		$this->assertEquals( 2, $options['nav_menu_locations'][ $primary_location ] );
 	}
@@ -457,8 +454,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$_REQUEST['_wpnonce'] = wp_create_nonce( 'save-menu-locations' );
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
-		$options = get_option( 'polylang' );
-		$this->assertEqualSets( array( 'en' => 4, 'fr' => 5 ), $options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
+		$this->assertEqualSets( array( 'en' => 4, 'fr' => 5 ), $pll_admin->options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
 		$options = get_option( 'theme_mods_' . get_stylesheet() );
 		$this->assertEquals( 4, $options['nav_menu_locations'][ $primary_location ] );
 	}

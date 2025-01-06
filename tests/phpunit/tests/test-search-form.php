@@ -25,7 +25,6 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
 
 		$this->links_model = self::$model->get_links_model();

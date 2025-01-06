@@ -155,6 +155,16 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
+	 * Dummy method to display the 3 tabs pages: languages, strings translations, settings.
+	 * Overwritten in `PLL_Settings`.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	public function languages_page() {}
+
+	/**
 	 * Setup js scripts & css styles ( only on the relevant pages )
 	 *
 	 * @since 0.6
@@ -458,9 +468,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$this->pref_lang = apply_filters( 'pll_admin_preferred_language', $this->pref_lang );
 
 		$this->set_current_language();
-
-		// Plugin i18n, only needed for backend.
-		load_plugin_textdomain( 'polylang' );
 	}
 
 	/**

@@ -78,6 +78,8 @@ class PLL_WPSEO {
 			'company_name',
 			'rssbefore',
 			'rssafter',
+			'social-title-*',
+			'social-description-*',
 		);
 
 		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
@@ -405,7 +407,7 @@ class PLL_WPSEO {
 			} elseif ( 'post-type-archive' === $indexable->object_type && pll_is_translated_post_type( $indexable->object_sub_type ) ) {
 				$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
 				$breadcrumb_title = WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type );
-				$breadcrumb_title = $breadcrumb_title ? $breadcrumb_title : $indexable->breadcrumb_title; // The option may be empty.
+				$breadcrumb_title = $breadcrumb_title ?: $indexable->breadcrumb_title; // The option may be empty.
 				$indexable->breadcrumb_title = pll__( $breadcrumb_title );
 			} elseif ( 'term' === $indexable->object_type && pll_is_translated_taxonomy( $indexable->object_sub_type ) ) {
 				$indexable->permalink = get_term_link( $indexable->object_id );

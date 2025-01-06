@@ -17,7 +17,6 @@ class BrowserPreferredLanguageContext extends PLL_UnitTestCase implements Contex
 	 */
 	public static function prepare_for_feature() {
 		self::setUpBeforeClass();
-		self::$model->post->register_taxonomy();
 	}
 
 	/**

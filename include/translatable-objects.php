@@ -37,6 +37,14 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 *
 	 * @param PLL_Translatable_Object $object The translatable object to register.
 	 * @return PLL_Translatable_Object
+	 *
+	 * @phpstan-return (
+	 *     $object is PLL_Translated_Post ? PLL_Translated_Post : (
+	 *         $object is PLL_Translated_Term ? PLL_Translated_Term : (
+	 *             PLL_Translatable_Object
+	 *         )
+	 *     )
+	 * )
 	 */
 	public function register( PLL_Translatable_Object $object ) {
 		if ( empty( $this->main_type ) ) {

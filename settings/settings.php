@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * A class for the Polylang settings pages, accessible from @see PLL().
  *
@@ -306,6 +308,8 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		// Displays the page
+		$modules    = $this->modules;
+		$active_tab = $this->active_tab;
 		include __DIR__ . '/view-languages.php';
 	}
 
@@ -368,14 +372,18 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @since 2.3
 	 *
-	 * @return string[] {
-	 *   @type string $code     ISO 639-1 language code.
-	 *   @type string $locale   WordPress locale.
-	 *   @type string $name     Native language name.
-	 *   @type string $dir      Text direction: 'ltr' or 'rtl'.
-	 *   @type string $flag     Flag code, generally the country code.
-	 *   @type string $w3c      W3C locale.
-	 *   @type string $facebook Facebook locale.
+	 * @return string[][] {
+	 *   An array of array of language properties.
+	 *
+	 *   @type string[] {
+	 *      @type string $code     ISO 639-1 language code.
+	 *      @type string $locale   WordPress locale.
+	 *      @type string $name     Native language name.
+	 *      @type string $dir      Text direction: 'ltr' or 'rtl'.
+	 *      @type string $flag     Flag code, generally the country code.
+	 *      @type string $w3c      W3C locale.
+	 *      @type string $facebook Facebook locale.
+	 *   }
 	 * }
 	 */
 	public static function get_predefined_languages() {

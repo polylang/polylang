@@ -86,10 +86,10 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertEquals( self::$model->post->get_translation( $en, 'de' ), $de );
 		$this->assertEquals( self::$model->post->get_translation( $de, 'en' ), $en );
 
-		$this->assertFalse( self::$model->post->get_translation( $en, 'fr' ) ); // fails
-		$this->assertFalse( self::$model->post->get_translation( $fr, 'en' ) );
-		$this->assertFalse( self::$model->post->get_translation( $fr, 'de' ) );
-		$this->assertFalse( self::$model->post->get_translation( $de, 'fr' ) ); // fails
+		$this->assertSame( 0, self::$model->post->get_translation( $en, 'fr' ) ); // fails
+		$this->assertSame( 0, self::$model->post->get_translation( $fr, 'en' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $fr, 'de' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $de, 'fr' ) ); // fails
 	}
 
 	public function test_current_user_can_synchronize() {
@@ -226,9 +226,12 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Object::save_translations()
 	 */
 	public function test_dont_save_translations_with_incorrect_language() {
-		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$options = self::create_options(
+			array(
+				'default_lang' => 'en',
+			)
+		);
 		$model = new PLL_Model( $options );
-		$model->post = new PLL_Translated_Post( $model );
 
 		$this->dont_save_translations_with_incorrect_language( $model->post );
 	}
@@ -238,7 +241,11 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Post::get_db_infos()
 	 */
 	public function test_get_db_infos() {
-		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$options = self::create_options(
+			array(
+				'default_lang' => 'en',
+			)
+		);
 		$model = new PLL_Model( $options );
 
 		$ref = new ReflectionMethod( $model->post, 'get_db_infos' );

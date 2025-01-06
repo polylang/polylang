@@ -33,12 +33,22 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$value_type = $args['value'];
+
+		// Some data from the language object to be passed as HTML data attributes for fetching in JS.
+		$data_lang = array(
+			'id'   => $element->id,
+			'name' => $element->name,
+			'slug' => $element->slug,
+			'dir'  => $element->is_rtl ?? '',
+		);
+
 		$output .= sprintf(
-			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
+			"\t" . '<option value="%1$s"%2$s%3$s data-lang="%5$s">%4$s</option>' . "\n",
 			'url' === $value_type ? esc_url( $element->$value_type ) : esc_attr( $element->$value_type ),
 			! empty( $element->locale ) ? sprintf( ' lang="%s"', esc_attr( $element->locale ) ) : '',
 			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value_type, true, false ),
-			esc_html( $element->name )
+			esc_html( $element->name ),
+			esc_html( (string) wp_json_encode( $data_lang ) )
 		);
 	}
 

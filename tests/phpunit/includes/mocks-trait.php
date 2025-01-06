@@ -19,7 +19,7 @@ trait PLL_Mocks_Trait {
 		Functions\when( 'pll_get_constant' )->alias(
 			function ( $constant_name, $default = null ) use ( $constants ) {
 				if ( array_key_exists( $constant_name, $constants ) ) {
-					return null !== $constants[ $constant_name ] ? $constants[ $constant_name ] : $default;
+					return $constants[ $constant_name ] ?? $default;
 				}
 
 				return defined( $constant_name ) ? constant( $constant_name ) : $default;

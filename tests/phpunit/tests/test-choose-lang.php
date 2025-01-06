@@ -2,15 +2,6 @@
 
 class Choose_Lang_Test extends PLL_UnitTestCase {
 
-	/**
-	 * @param WP_UnitTest_Factory $factory
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-
-		self::$model->post->register_taxonomy();
-	}
-
 	public function tear_down() {
 		self::delete_all_languages();
 

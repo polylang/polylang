@@ -445,7 +445,7 @@ class PLL_WPML_Config {
 			$this->parsing_rules = $this->extract_blocks_parsing_rules();
 		}
 
-		return isset( $this->parsing_rules[ $rule_tag ] ) ? $this->parsing_rules[ $rule_tag ] : array();
+		return $this->parsing_rules[ $rule_tag ] ?? array();
 	}
 
 	/**
@@ -518,7 +518,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Merge two arrays recursively.
+	 * Merges two arrays recursively.
 	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
 	 *
 	 * @since 3.6

@@ -10,15 +10,7 @@
  */
 class PLL_Filter_REST_Routes {
 	/**
-	 * REST routes filterable by language ordered by entity type.
-	 *
-	 * @var string[]
-	 * @phpstan-var array<string, string>
-	 */
-	private $filtered_entities = array();
-
-	/**
-	 * Other REST routes filterable by language.
+	 * Cached REST routes filterable by language ordered by types.
 	 *
 	 * @var string[]
 	 * @phpstan-var array<string, string>
@@ -39,9 +31,6 @@ class PLL_Filter_REST_Routes {
 	 */
 	public function __construct( PLL_Model $model ) {
 		$this->model = $model;
-
-		// Adds search REST endpoint.
-		$this->filtered_routes['search'] = 'wp/v2/search';
 	}
 
 	/**
@@ -121,8 +110,8 @@ class PLL_Filter_REST_Routes {
 	 * @phpstan-return array<string, string>
 	 */
 	private function get(): array {
-		if ( ! empty( $this->filtered_entities ) ) {
-			return array_merge( $this->filtered_entities, $this->filtered_routes );
+		if ( ! empty( $this->filtered_routes ) ) {
+			return $this->filtered_routes;
 		}
 
 		$translatable_post_types  = $this->model->get_translated_post_types();
@@ -131,12 +120,27 @@ class PLL_Filter_REST_Routes {
 		$post_types = get_post_types( array( 'show_in_rest' => true ), 'objects' );
 		$taxonomies = get_taxonomies( array( 'show_in_rest' => true ), 'objects' );
 
-		$this->extract_filtered_rest_entities(
+		$filtered_entities = $this->extract_filtered_rest_entities(
 			array_merge( $post_types, $taxonomies ),
 			array_merge( $translatable_post_types, $translatable_taxonomies )
 		);
 
-		return array_merge( $this->filtered_entities, $this->filtered_routes );
+		/**
+		 * Filters REST routes filterable by languages.
+		 *
+		 * @since 3.7
+		 *
+		 * @param string[] $routes Array of filterable REST routes, with types as key.
+		 */
+		$this->filtered_routes = apply_filters(
+			'pll_filtered_rest_routes',
+			array_merge(
+				$filtered_entities,
+				array( 'search' => 'wp/v2/search' )
+			)
+		);
+
+		return $this->filtered_routes;
 	}
 
 	/**
@@ -161,18 +165,21 @@ class PLL_Filter_REST_Routes {
 	 *
 	 * @param object[] $rest_entities         Array of post type or taxonomy objects.
 	 * @param string[] $translatable_entities Array of translatable entity names.
-	 * @return void
+	 * @return string[] Filtered routes.
 	 * @phpstan-param array<WP_Post_Type|WP_Taxonomy> $rest_entities
+	 * @phpstan-return array<string, string>
 	 */
 	private function extract_filtered_rest_entities( array $rest_entities, array $translatable_entities ) {
-		$this->filtered_entities = array();
+		$filtered_entities = array();
 		foreach ( $rest_entities as $rest_entity ) {
 			if ( in_array( $rest_entity->name, $translatable_entities, true ) ) {
 				$rest_base      = empty( $rest_entity->rest_base ) ? $rest_entity->name : $rest_entity->rest_base;
 				$rest_namespace = empty( $rest_entity->rest_namespace ) ? 'wp/v2' : $rest_entity->rest_namespace;
 
-				$this->filtered_entities[ $rest_entity->name ] = "{$rest_namespace}/{$rest_base}";
+				$filtered_entities[ $rest_entity->name ] = "{$rest_namespace}/{$rest_base}";
 			}
 		}
+
+		return $filtered_entities;
 	}
 }

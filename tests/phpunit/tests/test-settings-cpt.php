@@ -82,8 +82,11 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_public_post_type() {
-		self::$model->options['post_types'] = array( 'cpt' );
 		register_post_type( 'cpt', array( 'public' => true, 'label' => 'CPT' ) );
+
+		self::$model->cache->clean( 'post_types' );
+		self::$model->options['post_types'] = array( 'cpt' );
+
 		$module = new PLL_Settings_CPT( $this->pll_env );
 
 		$doc = new DomDocument();
@@ -116,8 +119,11 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_private_post_type() {
-		self::$model->options['post_types'] = array( 'cpt' );
 		register_post_type( 'cpt', array( 'public' => false, 'label' => 'CPT' ) );
+
+		self::$model->cache->clean( 'post_types' );
+		self::$model->options['post_types'] = array( 'cpt' );
+
 		$module = new PLL_Settings_CPT( $this->pll_env );
 		$this->assertEmpty( $module->get_form() );
 	}
@@ -144,9 +150,12 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_private_post_type_in_settings() {
-		self::$model->options['post_types'] = array( 'cpt' );
 		add_filter( 'pll_get_post_types', array( $this, 'filter_untranslated_post_type_in_settings' ), 10, 2 );
 		register_post_type( 'cpt', array( 'public' => false, 'label' => 'CPT' ) );
+
+		self::$model->cache->clean( 'post_types' );
+		self::$model->options['post_types'] = array( 'cpt' );
+
 		$module = new PLL_Settings_CPT( $this->pll_env );
 
 		$doc = new DomDocument();
@@ -172,8 +181,11 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_public_taxonomy() {
-		self::$model->options['taxonomies'] = array( 'tax' );
 		register_taxonomy( 'tax', array( 'post' ), array( 'public' => true ) );
+
+		self::$model->cache->clean( 'taxonomies' );
+		self::$model->options['taxonomies'] = array( 'tax' );
+
 		$module = new PLL_Settings_CPT( $this->pll_env );
 
 		$doc = new DomDocument();
@@ -206,8 +218,11 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_private_taxonomy() {
-		self::$model->options['taxonomies'] = array( 'tax' );
 		register_taxonomy( 'tax', array( 'post' ), array( 'public' => false ) );
+
+		self::$model->cache->clean( 'taxonomies' );
+		self::$model->options['taxonomies'] = array( 'tax' );
+
 		$module = new PLL_Settings_CPT( $this->pll_env );
 
 		$this->assertEmpty( $module->get_form() );
@@ -235,9 +250,12 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_private_taxonomy_in_settings() {
-		self::$model->options['taxonomies'] = array( 'tax' );
 		add_filter( 'pll_get_taxonomies', array( $this, 'filter_untranslated_taxonomy_in_settings' ), 10, 2 );
 		register_taxonomy( 'tax', array( 'post' ), array( 'public' => false ) );
+
+		self::$model->cache->clean( 'taxonomies' );
+		self::$model->options['taxonomies'] = array( 'tax' );
+
 		$module = new PLL_Settings_CPT( $this->pll_env );
 
 		$doc = new DomDocument();

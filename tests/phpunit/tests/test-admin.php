@@ -1,7 +1,5 @@
 <?php
 class Admin_Test extends PLL_UnitTestCase {
-	protected static $stylesheet;
-
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
@@ -10,8 +8,6 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
-
-		self::$stylesheet = get_option( 'stylesheet' ); // save default theme
 	}
 
 	public function set_up() {
@@ -25,7 +21,7 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		remove_action( 'customize_register', array( $this, 'whatever' ) );
 
-		switch_theme( self::$stylesheet );
+		switch_theme( 'default' ); // Restore the default theme.
 	}
 
 	public function test_admin_bar_menu() {
@@ -54,16 +50,10 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_remove_customize_submenu_with_block_base_theme() {
-		$block_base_theme = wp_get_theme( 'twentytwentytwo' );
-		if ( ! $block_base_theme->exists() ) {
-			self::markTestSkipped( 'This test requires twenty twenty two' );
-		}
-
-		global $submenu;
-		switch_theme( 'twentytwentytwo' );
-
-		global $_wp_theme_features;
+		global $submenu, $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
+
+		switch_theme( 'block-theme' );
 
 		$links_model         = self::$model->get_links_model();
 		$pll_admin           = new PLL_Admin( $links_model );
@@ -75,9 +65,7 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_remove_customize_submenu_with_non_block_base_theme() {
-		global $submenu;
-
-		global $_wp_theme_features;
+		global $submenu, $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
 
 		$links_model         = self::$model->get_links_model();
@@ -90,16 +78,10 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_do_not_remove_customize_submenu_with_block_base_theme_if_a_plugin_use_it() {
-		$block_base_theme = wp_get_theme( 'twentytwentytwo' );
-		if ( ! $block_base_theme->exists() ) {
-			self::markTestSkipped( 'This test requires twenty twenty two' );
-		}
-
-		global $submenu;
-		switch_theme( 'twentytwentytwo' );
-
-		global $_wp_theme_features;
+		global $submenu, $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
+
+		switch_theme( 'block-theme' );
 
 		$links_model         = self::$model->get_links_model();
 		$pll_admin           = new PLL_Admin( $links_model );

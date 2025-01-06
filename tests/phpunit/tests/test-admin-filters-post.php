@@ -9,8 +9,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		self::$model->post->register_taxonomy();
-
 		$links_model     = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
 		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
@@ -330,7 +328,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$en = self::factory()->attachment->create_object( 'image0.jpg' );
 		self::$model->post->set_language( $en, 'en' );
 
-		$post_ID = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
+		$post_ID = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
 
 		$lang = self::$model->get_language( 'fr' );
 
@@ -384,11 +382,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_posts_with_query_var() {
-		$this->pll_admin->options['taxonomies'] = array(
-			'trtax' => 'trtax',
-		);
-
 		register_taxonomy( 'trtax', 'post' ); // Translated custom tax
+
+		$this->pll_admin->options['taxonomies'] = array( 'trtax' );
 
 		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );

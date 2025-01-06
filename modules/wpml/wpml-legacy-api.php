@@ -63,7 +63,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 
 		foreach ( $languages as $lang ) {
 			// We can find a translation only on frontend once the global $wp_query object has been instantiated
-			if ( method_exists( PLL()->links, 'get_translation_url' ) && ! empty( $GLOBALS['wp_query'] ) ) {
+			if ( PLL()->links instanceof PLL_Frontend_Links && ! empty( $GLOBALS['wp_query'] ) ) {
 				$url = PLL()->links->get_translation_url( $lang );
 			}
 
@@ -81,7 +81,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 				'language_code'    => $lang->slug,
 				'country_flag_url' => $lang->get_display_flag_url(),
 				'url'              => ! empty( $url ) ? $url :
-					( empty( $args['link_empty_to'] ) ? PLL()->links->get_home_url( $lang ) :
+					( empty( $args['link_empty_to'] ) ? $lang->get_home_url() :
 					str_replace( '{$lang}', $lang->slug, $args['link_empty_to'] ) ),
 			);
 		}
@@ -186,6 +186,10 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 			$ulanguage_code = pll_current_language();
 		}
 
+		if ( empty( $ulanguage_code ) ) {
+			return null;
+		}
+
 		if ( 'nav_menu' === $element_type ) {
 			$tr_id = false;
 			$theme = get_option( 'stylesheet' );
@@ -250,8 +254,14 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 			$post_id = get_the_ID();
 		}
 
+		if ( empty( $post_id ) ) {
+			return array();
+		}
+
+		$lang = PLL()->model->post->get_language( $post_id );
+
 		// FIXME WPML may return a WP_Error object
-		return false === ( $lang = PLL()->model->post->get_language( $post_id ) ) ? array() : array(
+		return false === $lang ? array() : array(
 			'language_code'      => $lang->slug,
 			'locale'             => $lang->locale,
 			'text_direction'     => (bool) $lang->is_rtl,
@@ -385,7 +395,7 @@ if ( ! function_exists( 'icl_get_default_language' ) ) {
 	 * @return string default language code
 	 */
 	function icl_get_default_language() {
-		return pll_default_language();
+		return (string) pll_default_language();
 	}
 }
 
@@ -400,7 +410,7 @@ if ( ! function_exists( 'wpml_get_default_language' ) ) {
 	 * @return string default language code
 	 */
 	function wpml_get_default_language() {
-		return pll_default_language();
+		return (string) pll_default_language();
 	}
 }
 
@@ -413,6 +423,6 @@ if ( ! function_exists( 'icl_get_current_language' ) ) {
 	 * @return string Current language code
 	 */
 	function icl_get_current_language() {
-		return pll_current_language();
+		return (string) pll_current_language();
 	}
 }

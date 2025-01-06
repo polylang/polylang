@@ -37,13 +37,16 @@ class Single_Language_Test extends PLL_UnitTestCase {
 	public function test_front_page() {
 		global $wp_rewrite;
 
-		$options                  = PLL_Install::get_default_options();
-		$options['redirect_lang'] = 1;
-		$options['hide_default']  = 0;
-		$options['force_lang']    = 1;
-		$options['rewrite']       = 1;
-		$options['default_lang']  = 'en';
-		$model                    = new PLL_Model( $options );
+		$options = self::create_options(
+			array(
+				'redirect_lang' => true,
+				'hide_default'  => false,
+				'force_lang'    => 1,
+				'rewrite'       => true,
+				'default_lang'  => 'en',
+			)
+		);
+		$model = new PLL_Model( $options );
 
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $this->home_en );
@@ -54,7 +57,6 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		$model->post->register_taxonomy(); // needs this for 'lang' query var
 		$links_model = $model->get_links_model();
 		$links_model->init();
 

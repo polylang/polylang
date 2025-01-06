@@ -150,7 +150,6 @@ abstract class PLL_Base {
 		$this->links_model->remove_filters();
 
 		if ( $this->is_active_on_current_site() ) {
-			$this->options     = get_option( 'polylang' ); // Needed for menus.
 			$this->links_model = $this->model->get_links_model();
 		}
 	}
@@ -163,7 +162,7 @@ abstract class PLL_Base {
 	 * @return bool
 	 */
 	protected function is_active_on_current_site(): bool {
-		return pll_is_plugin_active( POLYLANG_BASENAME ) && get_option( 'polylang' );
+		return pll_is_plugin_active( POLYLANG_BASENAME ) && ! empty( $this->options['version'] );
 	}
 
 	/**

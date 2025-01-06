@@ -18,25 +18,20 @@ class Query_Test extends PLL_UnitTestCase {
 
 		global $wp_rewrite;
 
-		self::$model->options['hide_default'] = 1;
-		self::$model->options['post_types'] = array(
-			'trcpt' => 'trcpt',
-		);
-		self::$model->options['taxonomies'] = array(
-			'trtax' => 'trtax',
-		);
-
 		// switch to pretty permalinks
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
 		register_taxonomy( 'trtax', 'trcpt' ); // translated custom tax
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 		register_taxonomy( 'tax', 'cpt' ); // *untranslated* custom tax
+
+		self::$model->options['hide_default'] = 1;
+		self::$model->options['post_types'] = array( 'trcpt' );
+		self::$model->options['taxonomies'] = array( 'trtax' );
 
 		$links_model = self::$model->get_links_model();
 		$links_model->init();

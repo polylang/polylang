@@ -97,7 +97,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 */
 	public function get_hosts() {
 		$hosts = array();
-		foreach ( $this->options['domains'] as $lang => $domain ) {
+		foreach ( (array) $this->options['domains'] as $lang => $domain ) {
 			$host = wp_parse_url( $domain, PHP_URL_HOST );
 
 			if ( ! is_string( $host ) ) {
@@ -106,13 +106,9 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 			// The function idn_to_ascii() is much faster than the WordPress method.
 			if ( function_exists( 'idn_to_ascii' ) && defined( 'INTL_IDNA_VARIANT_UTS46' ) ) {
-				$hosts[ $lang ] = idn_to_ascii( $host, 0, INTL_IDNA_VARIANT_UTS46 );
-			} elseif ( class_exists( 'WpOrg\Requests\IdnaEncoder' ) ) {
-				// Since WP 6.2.
-				$hosts[ $lang ] = \WpOrg\Requests\IdnaEncoder::encode( $host );
+				$hosts[ $lang ] = (string) idn_to_ascii( $host, 0, INTL_IDNA_VARIANT_UTS46 );
 			} else {
-				// Backward compatibility with WP < 6.2.
-				$hosts[ $lang ] = Requests_IDNAEncoder::encode( $host );
+				$hosts[ $lang ] = \WpOrg\Requests\IdnaEncoder::encode( $host ); // Since WP 6.2.
 			}
 		}
 
