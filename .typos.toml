@@ -10,7 +10,6 @@ extend-exclude = [
 	"tmp/",
 	"vendor/",
 	".typos.toml",
-	"*.xml",
 ]
 ignore-hidden = false
 
@@ -22,6 +21,7 @@ extend-ignore-re = [
 	# En français dans le texte.
 	"Etiquette exemple",
 	"<!\\[CDATA\\[non-classe\\]\\]>",
+	"\\bicl_lso_",
 ]
 
 [default.extend-identifiers]
