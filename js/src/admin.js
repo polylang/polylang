@@ -141,7 +141,7 @@ jQuery(
 			// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
 			$( event.target ).selectmenu( 'refresh' );
 		}
-		// There is no need of create and select callbacks with jQuery UI 1.12 because overriding _renderButtonItem method do the job.
+		// There is no need to create and select callbacks with jQuery UI 1.12 because overriding _renderButtonItem method does the job.
 		if ( isJqueryUImin112 ) {
 			selectmenuFlagListCallbacks =
 				{
@@ -222,7 +222,7 @@ jQuery(
 			selectmenuOptions = Object.assign( selectmenuOptions, { width: wizardSelectmenuWidth } );
 		}
 
-		// There is no need of create and select callbacks with jQuery UI 1.12 because overrinding _renderButtonItem method do the job.
+		// There is no need to create and select callbacks with jQuery UI 1.12 because overriding _renderButtonItem method does the job.
 		if ( isJqueryUImin112 ) {
 			selectmenuLangListCallbacks = {
 				change: changeCallback,
