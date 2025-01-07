@@ -371,6 +371,9 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		$translations[ $lang->slug ] = $tr_id;
 		$this->save_translations( $tr_id, $translations );
 
+		// Loads the strings translations with the attachment's target language.
+		PLL()->load_strings_translations( $lang );
+
 		/**
 		 * Fires after a media translation is created
 		 *
