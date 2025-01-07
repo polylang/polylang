@@ -20,6 +20,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
+
+		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
 	public function set_up() {
@@ -30,10 +32,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
-		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
+		$this->pll_admin->links          = new PLL_Admin_Links( $this->pll_admin );
+		$this->pll_admin->filters_post   = new PLL_Admin_Filters_Post( $this->pll_admin );
 		$this->pll_admin->classic_editor = new PLL_Admin_Classic_Editor( $this->pll_admin );
-		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->posts          = new PLL_CRUD_Posts( $this->pll_admin );
+		$GLOBALS['polylang']             = $this->pll_admin;
 	}
 
 	public function test_default_language() {
