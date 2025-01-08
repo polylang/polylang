@@ -390,17 +390,19 @@ class PLL_Table_String extends WP_List_Table {
 
 				foreach ( $translations as $key => $translation ) {
 					/**
-					 * Filter the string translation before it is saved in DB
-					 * Allows to sanitize strings registered with pll_register_string
+					 * Filters the string translation before it is saved in DB.
+					 * Allows to sanitize strings registered with pll_register_string().
 					 *
 					 * @since 1.6
 					 * @since 2.7 The translation passed to the filter is unslashed.
+					 * @since 3.7 Add original string as 4th parameter.
 					 *
 					 * @param string $translation The string translation.
 					 * @param string $name        The name as defined in pll_register_string.
 					 * @param string $context     The context as defined in pll_register_string.
+					 * @param string $original    The original string to translate.
 					 */
-					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'] );
+					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'], $this->strings[ $key ]['string'] );
 					$mo->add_entry(
 						$mo->make_entry(
 							$this->strings[ $key ]['string'],
