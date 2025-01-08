@@ -346,6 +346,10 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			$post['post_parent'] = (int) $this->get_translation( $post['post_parent'], $lang->slug );
 		}
 		$post['tax_input'] = array( 'language' => array( $lang->slug ) ); // Assigns the language.
+
+		// Loads the strings translations with the attachment's target language.
+		PLL()->load_strings_translations( $lang->slug );
+
 		$tr_id = wp_insert_attachment( wp_slash( $post ) );
 		remove_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Restore automatic duplicate at upload.
 
@@ -371,9 +375,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		$translations[ $lang->slug ] = $tr_id;
 		$this->save_translations( $tr_id, $translations );
 
-		// Loads the strings translations with the attachment's target language.
-		PLL()->load_strings_translations( $lang->slug );
-
 		/**
 		 * Fires after a media translation is created
 		 *
@@ -384,6 +385,13 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		 * @param string $slug    Language code of the new translation.
 		 */
 		do_action( 'pll_translate_media', $post_id, $tr_id, $lang->slug );
+
+		// Restores the strings translations with the original language.
+		$source_language = $this->model->languages->get( $post_id );
+		if ( ! empty( $source_language ) ) {
+			PLL()->load_strings_translations( $source_language );
+		}
+
 		return $tr_id;
 	}
 
