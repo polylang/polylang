@@ -387,7 +387,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		do_action( 'pll_translate_media', $post_id, $tr_id, $lang->slug );
 
 		// Restores the strings translations with the original language.
-		$source_language = $this->model->languages->get( $post_id );
+		$source_language = $this->languages->get( $post_id );
 		if ( ! empty( $source_language ) ) {
 			PLL()->load_strings_translations( $source_language );
 		}
