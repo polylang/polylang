@@ -21,9 +21,9 @@ class PLL_Translate_Option {
 	/**
 	 * Sanitization callback.
 	 *
-	 * @var callable
+	 * @var string
 	 */
-	private $sanitize_callback = 'sanitize_option';
+	private $sanitize_callback;
 
 	/**
 	 * Hashes for registered strings for this option.
@@ -98,7 +98,7 @@ class PLL_Translate_Option {
 		add_action( 'update_option_' . $name, array( $this, 'update_option' ) );
 
 		// Sanitizes translated strings.
-		if ( ! empty( $args['sanitize_callback'] ) && is_callable( $args['sanitize_callback'] ) ) {
+		if ( ! empty( $args['sanitize_callback'] ) ) {
 			$this->sanitize_callback = $args['sanitize_callback'];
 		}
 		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize_option' ), 10, 4 );
@@ -426,6 +426,11 @@ class PLL_Translate_Option {
 			return $value;
 		}
 
-		return call_user_func( $this->sanitize_callback, $value, $name, $context, $original );
+		if ( is_callable( $this->sanitize_callback ) ) {
+			return call_user_func( $this->sanitize_callback, $value, $name, $context, $original );
+		}
+
+		/** @var string */
+		return sanitize_option( $name, $value );
 	}
 }
