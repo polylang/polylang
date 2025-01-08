@@ -20,8 +20,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
-
-		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
 	public function set_up() {
