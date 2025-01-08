@@ -389,7 +389,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		// Restores the strings translations with the original language.
 		$source_language = $this->languages->get( $post_id );
 		if ( ! empty( $source_language ) ) {
-			PLL()->load_strings_translations( $source_language );
+			PLL()->load_strings_translations( $source_language->slug );
 		}
 
 		return $tr_id;
