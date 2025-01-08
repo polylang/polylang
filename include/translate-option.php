@@ -21,7 +21,7 @@ class PLL_Translate_Option {
 	/**
 	 * Sanitization callback.
 	 *
-	 * @var string
+	 * @var callable|null
 	 */
 	private $sanitize_callback;
 
@@ -78,8 +78,8 @@ class PLL_Translate_Option {
 	 * @param array  $args {
 	 *    Optional. Array of arguments for registering the option.
 	 *
-	 *    @type string $context           The group in which the strings will be registered.
-	 *    @type string $sanitize_callback A callback function that sanitizes the option's value.
+	 *    @type string   $context           The group in which the strings will be registered.
+	 *    @type callable $sanitize_callback A callback function that sanitizes the option's value.
 	 * }
 	 */
 	public function __construct( $name, $keys = array(), $args = array() ) {
