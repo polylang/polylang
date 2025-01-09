@@ -83,7 +83,7 @@ class Set_Test extends PLL_UnitTestCase {
 		$domains = $this->pll_env->model->options->get( 'domains' );
 
 		$this->assertCount( 1, $errors->get_error_codes() );
-		$this->assertSame( 'pll_unknown_domain_languages', $errors->get_error_code() );
+		$this->assertSame( 'pll_unknown_domains_languages', $errors->get_error_code() );
 
 		$this->assertArrayHasKey( 'en', $domains );
 		$this->assertSame( 'https://good-url.com', $domains['en'] );
