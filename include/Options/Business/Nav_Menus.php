@@ -5,7 +5,9 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
+use WP_Error;
 use WP_Syntex\Polylang\Options\Abstract_Option;
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Model\Languages;
 
 
@@ -15,6 +17,14 @@ defined( 'ABSPATH' ) || exit;
  * Class defining navigation menus array option.
  *
  * @since 3.7
+ *
+ * @phpstan-type Value array<
+ *     non-falsy-string,
+ *     array<
+ *         non-falsy-string,
+ *         array<non-falsy-string, int<0, max>>
+ *     >
+ * >
  */
 class Nav_Menus extends Abstract_Option {
 	/**
@@ -71,6 +81,78 @@ class Nav_Menus extends Abstract_Option {
 			),
 			'additionalProperties' => false,
 		);
+	}
+
+	/**
+	 * Sanitizes option's value.
+	 * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+	 * the value is sanitized and can be stored.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array   $value   Value to sanitize.
+	 * @param Options $options All options.
+	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+	 *
+	 * @phpstan-return Value|WP_Error
+	 */
+	protected function sanitize( $value, Options $options ) {
+		global $polylang;
+
+		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
+			// Access to global `$polylang` is required.
+			_doing_it_wrong(
+				__METHOD__,
+				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
+				'3.7'
+			);
+			/** @phpstan-var Value */
+			return $this->get();
+		}
+
+		// Sanitize new value.
+		$value = parent::sanitize( $value, $options );
+
+		if ( is_wp_error( $value ) ) {
+			// Blocking error.
+			return $value;
+		}
+
+		/** @phpstan-var Value $value */
+		if ( empty( $value ) ) {
+			// Nothing to validate.
+			return $value;
+		}
+
+		$unknown_langs  = array();
+		$language_terms = $this->get_language_terms( 'slugs' );
+
+		foreach ( $value as $theme_slug => $menu_ids_by_location ) {
+			foreach ( $menu_ids_by_location as $location => $menu_ids ) {
+				// Make sure the language slugs correspond to an existing language.
+				$value[ $theme_slug ][ $location ] = array();
+
+				foreach ( $language_terms as $lang_slug ) {
+					if ( ! empty( $menu_ids[ $lang_slug ] ) ) {
+						$value[ $theme_slug ][ $location ][ $lang_slug ] = $menu_ids[ $lang_slug ];
+					}
+				}
+
+				// Detect unknown languages.
+				$unknown_langs = array_merge( $unknown_langs, $menu_ids );
+			}
+		}
+
+		/** @phpstan-var Value $value */
+		$unknown_langs = array_diff_key( $unknown_langs, array_flip( $language_terms ) );
+
+		// Detect invalid language slugs.
+		if ( ! empty( $unknown_langs ) ) {
+			// Non-blocking error.
+			$this->add_unknown_languages_warning( array_keys( $unknown_langs ) );
+		}
+
+		return $value;
 	}
 
 	/**
