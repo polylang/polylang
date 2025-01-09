@@ -85,6 +85,9 @@ class Domains extends Abstract_Option {
 	protected function sanitize( $value, Options $options ) {
 		global $polylang;
 
+		/** @phpstan-var array<non-falsy-string, string> */
+		$current_value = $this->get();
+
 		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
 			// Access to global `$polylang` is required.
 			_doing_it_wrong(
@@ -92,8 +95,7 @@ class Domains extends Abstract_Option {
 				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
 				'3.7'
 			);
-			/** @phpstan-var array<non-falsy-string, string> */
-			return $this->get();
+			return $current_value;
 		}
 
 		// Sanitize new URLs.
@@ -117,7 +119,7 @@ class Domains extends Abstract_Option {
 				unset( $value[ $lang->slug ] );
 			} else {
 				// Use previous value.
-				$all_values[ $lang->slug ] = $this->value[ $lang->slug ] ?? '';
+				$all_values[ $lang->slug ] = $current_value[ $lang->slug ] ?? '';
 			}
 
 			if ( empty( $all_values[ $lang->slug ] ) ) {
