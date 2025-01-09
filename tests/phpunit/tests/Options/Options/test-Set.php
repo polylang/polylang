@@ -90,6 +90,89 @@ class Set_Test extends PLL_UnitTestCase {
 		$this->assertArrayNotHasKey( 'bad-lang', $domains );
 	}
 
+	public function test_should_not_set_bad_nav_menus_language() {
+		$settings = array(
+			'options' => array(
+				'nav_menus' => array(
+					'twentytwentyone' => array(
+						'primary' => array(
+							'en' => 22, // Will be overwritten by `0` (removed).
+							'fr' => 7, // Will be overwritten by `2`.
+						),
+						'footer' => array( // Will be removed.
+							'en' => 24,
+							'fr' => 0,
+						),
+					),
+					'twentyseventeen' => array( // Will be kept identical.
+						'top'    => array(
+							'en' => 26,
+						),
+						'social' => array(),
+					),
+					'twentytwentytwo' => array( // Will be removed.
+						'foo' => array(
+							'en' => 318,
+						),
+					),
+				),
+			),
+		);
+		$this->pll_env       = ( new PLL_Context_Admin( $settings ) )->get();
+		$GLOBALS['polylang'] = $this->pll_env;
+
+		$new_menus = array(
+			'twentytwentyone' => array(
+				'primary' => array(
+					'en' => 0, // Overwrites `22`.
+					'fr' => 2, // Overwrites `7`.
+					'es' => 2738, // Added.
+					'de' => 4317, // Unknown language, not added.
+				),
+				'custom'  => array( // Added.
+					'es' => 269,
+				),
+			),
+			'twentyseventeen' => array( // Not modified.
+				'top'    => array(
+					'en' => 26,
+				),
+				'social' => array(),
+			),
+		);
+		$errors    = $this->pll_env->model->options->set( 'nav_menus', $new_menus );
+		$nav_menus = $this->pll_env->model->options->get( 'nav_menus' );
+
+		$this->assertCount( 1, $errors->get_error_codes() );
+		$this->assertSame( 'pll_unknown_nav_menus_languages', $errors->get_error_code() );
+
+		$expected = array(
+			'twentytwentyone' => array(
+				'primary' => array(
+					'fr' => 2, // Overwritten.
+					'es' => 2738, // Added.
+				),
+				'custom' => array( // Added.
+					'es' => 269,
+				),
+			),
+			'twentyseventeen' => array( // Not modified.
+				'top'    => array(
+					'en' => 26,
+				),
+				'social' => array(),
+			),
+		);
+		foreach ( $expected as $theme_slug => $menu_ids_by_location ) {
+			$this->assertArrayHasKey( $theme_slug, $nav_menus );
+
+			foreach ( $menu_ids_by_location as $location => $menu_ids ) {
+				$this->assertArrayHasKey( $location, $nav_menus[ $theme_slug ] );
+				$this->assertSameSetsWithIndex( $menu_ids, $nav_menus[ $theme_slug ][ $location ] );
+			}
+		}
+	}
+
 	/**
 	 * @ticket #2397
 	 * @see https://github.com/polylang/polylang-pro/issues/2397
