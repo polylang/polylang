@@ -340,9 +340,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 							) {
 								// An empty string or null/undefined.
 								options.data = pllStr;
-							} else if ( Array.isArray( options.data ) && ! options.data.length ) {
-								// Empty array.
-								options.data = pllArr;
 							} else if ( 'string' === typeof options.data ) {
 								// A non-empty string: can be a JSON string or a query string.
 								try {
