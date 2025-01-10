@@ -320,59 +320,42 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * @param array $params List of parameters to add to the admin ajax request.
 		 */
 		$params = apply_filters( 'pll_admin_ajax_params', $params );
-
-		$str = http_build_query( $params );
-		$arr = wp_json_encode( $params );
 		?>
 		<script>
-			if (typeof jQuery != 'undefined') {
+			if ( typeof jQuery != 'undefined' ) {
 				jQuery(
-					function( $ ){
-						$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
-							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
-
-								function addPolylangParametersAsString() {
-									if ( 'undefined' === typeof options.data || '' === options.data.trim() ) {
-										// Only Polylang data need to be send. So it could be as a simple query string.
-										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
-									} else {
-										/*
-										 * In some cases data could be a JSON string like in third party plugins.
-										 * So we need not to break their process by adding polylang parameters as valid JSON data.
-										 */
-										try {
-											options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> ) );
-										} catch( exception ) {
-											// Add Polylang data to the existing query string.
-											options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
-										}
-									}
-								}
-
-								/*
-								 * options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
-								 * This step is done before applying filters. Thus here the options.data is already a string in this case.
-								 * @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
-								 * It is the most case WordPress send ajax request this way however third party plugins or themes could be send JSON string.
-								 * Use JSON format is recommended in jQuery.param() documentation to be able to send complex data structures.
-								 * @See https://api.jquery.com/jquery.param/ jQuery param function.
-								 */
-								if ( options.processData ) {
-									addPolylangParametersAsString();
-								} else {
-									/*
-									 * If options.processData is set to false data could be undefined or pass as a string.
-									 * So data as to be processed as if options.processData is set to true.
-									 */
-									if ( 'undefined' === typeof options.data || 'string' === typeof options.data ) {
-										addPolylangParametersAsString();
-									} else {
-										// Otherwise options.data is probably an object.
-										options.data = Object.assign( options.data || {} , <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
-									}
-								}
+					function( $ ) {
+						$.ajaxPrefilter( function ( options ) {
+							if ( -1 === options.url.indexOf( ajaxurl ) && -1 === ajaxurl.indexOf( options.url ) ) {
+								return;
 							}
-						});
+
+							const pllStr = '<?php echo esc_js( http_build_query( $params ) ); ?>';
+							const pllArr = <?php echo wp_json_encode( $params ); ?>;
+
+							if (
+								'undefined' === typeof options.data ||
+								null === options.data ||
+								'string' === typeof options.data && '' === options.data.trim()
+							) {
+								// An empty string or null/undefined.
+								options.data = pllStr;
+							} else if ( Array.isArray( options.data ) && ! options.data.length ) {
+								// Empty array.
+								options.data = pllArr;
+							} else if ( 'string' === typeof options.data ) {
+								// A non-empty string: can be a JSON string or a query string.
+								try {
+									options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), pllArr ) );
+								} catch( exception ) {
+									// A non-empty non-JSON string is considered a query string.
+									options.data = `${ options.data }&${ pllStr }`;
+								}
+							} else if ( jQuery.isPlainObject( options.data ) ) {
+								// An object.
+								options.data = Object.assign( options.data, pllArr );
+							}
+						} );
 					}
 				);
 			}
