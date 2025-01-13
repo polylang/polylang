@@ -26,15 +26,35 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 		$this->links = &$polylang->links;
 
-		// Add post state for translations of the front page and posts page
+		add_action( 'pll_init', array( $this, 'init_page_hooks' ), 1000 ); // Hook late to allow other sources to filter `'pll_get_post_types'` easily.
+	}
+
+	/**
+	 * Launches hooks related to the `page` post type.
+	 *
+	 * @since 3.7
+	 *
+	 * @param PLL_Base $polylang The Polylang object.
+	 * @return void
+	 */
+	public function init_page_hooks( PLL_Base $polylang ): void {
+		$post_types = $polylang->model->post->get_translated_object_types();
+
+		if ( ! in_array( 'page', $post_types, true ) ) {
+			// No need of the following if the pages are not translated.
+			return;
+		}
+
+		// Add post state for translations of the front page and posts page.
 		add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
 
-		// Refreshes the language cache when a static front page or page for for posts has been translated.
+		// Refresh the language cache when a static front page or page for for posts has been translated.
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 
-		// Prevents WP resetting the option
+		// Prevent WP resetting the option.
 		add_filter( 'pre_update_option_show_on_front', array( $this, 'update_show_on_front' ), 10, 2 );
 
+		// Add a notice to translate the static front page if it is not translated in all languages.
 		add_action( 'admin_notices', array( $this, 'notice_must_translate' ) );
 	}
 
@@ -92,7 +112,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Add a notice to translate the static front page if it is not translated in all languages
+	 * Adds a notice to translate the static front page if it is not translated in all languages.
 	 * This is especially useful after a new language is created.
 	 * The notice is not dismissible and displayed on the Languages pages and the list of pages.
 	 *
