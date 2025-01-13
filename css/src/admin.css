@@ -225,6 +225,17 @@ td.column-default_lang .icon-default-lang:before,
 	width: 20px;
 }
 
+.components-panel #post-translations .pll-language-column {
+	width: 21px; /* 1px padding-left + 16px icon + 4px padding-right */
+	padding-right: 4px;
+}
+
+.components-panel #post-translations .pll-column-icon {
+	width: 26px;
+	padding: 1px;
+	text-align: center;
+}
+
 #post-translations .tr_lang {
 	width: 100%;
 }
