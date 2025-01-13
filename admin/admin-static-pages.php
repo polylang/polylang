@@ -15,6 +15,11 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	protected $links;
 
 	/**
+	 * @var PLL_Translated_Post
+	 */
+	protected $post;
+
+	/**
 	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.8
@@ -25,8 +30,9 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		parent::__construct( $polylang );
 
 		$this->links = &$polylang->links;
+		$this->post  = &$polylang->model->post;
 
-		add_action( 'pll_init', array( $this, 'init_page_hooks' ), 1000 ); // Hook late to allow other sources to filter `'pll_get_post_types'` easily.
+		add_action( 'after_setup_theme', array( $this, 'init_page_hooks' ), 1000 ); // Hook late to allow other sources to filter `'pll_get_post_types'` easily.
 	}
 
 	/**
@@ -34,13 +40,10 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Base $polylang The Polylang object.
 	 * @return void
 	 */
-	public function init_page_hooks( PLL_Base $polylang ): void {
-		$post_types = $polylang->model->post->get_translated_object_types();
-
-		if ( ! in_array( 'page', $post_types, true ) ) {
+	public function init_page_hooks(): void {
+		if ( ! in_array( 'page', $this->post->get_translated_object_types(), true ) ) {
 			// No need of the following if the pages are not translated.
 			return;
 		}
