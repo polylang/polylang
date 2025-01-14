@@ -348,7 +348,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 									// A non-empty non-JSON string is considered a query string.
 									options.data = `${ options.data }&${ pllStr }`;
 								}
-							} else if ( jQuery.isPlainObject( options.data ) ) {
+							} else if ( $.isPlainObject( options.data ) ) {
 								// An object.
 								options.data = Object.assign( options.data, pllArr );
 							}
