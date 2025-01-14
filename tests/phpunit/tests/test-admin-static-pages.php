@@ -89,6 +89,8 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( preg_match( '@href="([^"]+/post-new\.php[^"]+)"@', $notices, $matches ) );
 		$query_str = wp_parse_url( html_entity_decode( $matches[1] ), PHP_URL_QUERY );
 		$this->assertIsString( $query_str );
+
+		$query_arr = array();
 		wp_parse_str( $query_str, $query_arr );
 
 		$expected = array(
