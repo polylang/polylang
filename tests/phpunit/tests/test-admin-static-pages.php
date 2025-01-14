@@ -34,6 +34,12 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		parent::wpTearDownAfterClass();
 	}
 
+	public function tear_down() {
+		parent::tear_down();
+
+		remove_filter( 'pll_get_post_types', array( $this, 'remove_page_post_type' ) );
+	}
+
 	/**
 	 * @testWith [true]
 	 *           [false]
@@ -50,12 +56,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 
 		if ( ! $translate_page_post_type ) {
 			// Don't translate the `page` post type.
-			add_filter(
-				'pll_get_post_types',
-				function ( $post_types ) {
-					return array_diff( $post_types, array( 'page' ) );
-				}
-			);
+			add_filter( 'pll_get_post_types', array( $this, 'remove_page_post_type' ) );
 		}
 
 		$links_model   = self::$model->get_links_model();
@@ -99,5 +100,15 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 			$expected,
 			array_intersect_key( $query_arr, $expected )
 		);
+	}
+
+	/**
+	 * Removes the `page` post type from the given array.
+	 *
+	 * @param array $post_types An array of post types.
+	 * @return array
+	 */
+	public function remove_page_post_type( array $post_types ): array {
+		return array_diff( $post_types, array( 'page' ) );
 	}
 }
