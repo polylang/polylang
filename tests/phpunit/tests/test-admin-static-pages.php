@@ -11,7 +11,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		parent::pllSetUpBeforeClass( $factory );
 
 		$factory->language->create_many( 2 );
-		self::$model->options['default_lang'] = 'en'; // Otherwise static model isn't aware of the created languages...
+		$factory->pll_model->options['default_lang'] = 'en'; // Otherwise static model isn't aware of the created languages...
 
 		self::$home_en = $factory->post->create(
 			array(
@@ -22,7 +22,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		self::$model->clean_languages_cache();
+		$factory->pll_model->clean_languages_cache();
 
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', self::$home_en );
