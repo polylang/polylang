@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Model\Post_Types;
+
 /**
  * Manages the static front page and the page for posts on admin side
  *
@@ -15,9 +17,9 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	protected $links;
 
 	/**
-	 * @var PLL_Translated_Post
+	 * @var Post_Types
 	 */
-	protected $post;
+	protected $post_types;
 
 	/**
 	 * Constructor: setups filters and actions.
@@ -29,8 +31,8 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
-		$this->links = &$polylang->links;
-		$this->post  = &$polylang->model->post;
+		$this->links      = &$polylang->links;
+		$this->post_types = &$polylang->model->post_types;
 
 		add_action( 'after_setup_theme', array( $this, 'init_page_hooks' ), 1000 ); // Hook late to allow other sources to filter `'pll_get_post_types'` easily.
 	}
@@ -43,7 +45,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return void
 	 */
 	public function init_page_hooks(): void {
-		if ( ! in_array( 'page', $this->post->get_translated_object_types(), true ) ) {
+		if ( ! $this->post_types->is_translated( 'page' ) ) {
 			// No need of the following if the pages are not translated.
 			return;
 		}
