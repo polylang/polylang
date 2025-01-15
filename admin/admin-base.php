@@ -324,7 +324,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		<script>
 			if ( typeof jQuery != 'undefined' ) {
 				jQuery(
-					function( $ ) {
+					function ( $ ) {
 						$.ajaxPrefilter( function ( options ) {
 							if ( -1 === options.url.indexOf( ajaxurl ) && -1 === ajaxurl.indexOf( options.url ) ) {
 								return;
@@ -344,7 +344,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 								// A non-empty string: can be a JSON string or a query string.
 								try {
 									options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), pllArr ) );
-								} catch( exception ) {
+								} catch ( exception ) {
 									// A non-empty non-JSON string is considered a query string.
 									options.data = `${ options.data }&${ pllStr }`;
 								}
