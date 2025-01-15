@@ -322,7 +322,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$params = apply_filters( 'pll_admin_ajax_params', $params );
 		?>
 		<script>
-			if ( typeof jQuery != 'undefined' ) {
+			if ( 'undefined' !== typeof jQuery ) {
 				jQuery(
 					function ( $ ) {
 						$.ajaxPrefilter( function ( options ) {
