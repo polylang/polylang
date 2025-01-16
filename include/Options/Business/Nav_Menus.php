@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-type Value array<
+ * @phpstan-type NavMenusValue array<
  *     non-falsy-string,
  *     array<
  *         non-falsy-string,
@@ -94,7 +94,7 @@ class Nav_Menus extends Abstract_Option {
 	 * @param Options $options All options.
 	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 *
-	 * @phpstan-return Value|WP_Error
+	 * @phpstan-return NavMenusValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
 		global $polylang;
@@ -106,7 +106,7 @@ class Nav_Menus extends Abstract_Option {
 				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
 				'3.7'
 			);
-			/** @phpstan-var Value */
+			/** @phpstan-var NavMenusValue */
 			return $this->get();
 		}
 
@@ -118,7 +118,7 @@ class Nav_Menus extends Abstract_Option {
 			return $value;
 		}
 
-		/** @phpstan-var Value $value */
+		/** @phpstan-var NavMenusValue $value */
 		if ( empty( $value ) ) {
 			// Nothing to validate.
 			return $value;
@@ -143,7 +143,7 @@ class Nav_Menus extends Abstract_Option {
 			}
 		}
 
-		/** @phpstan-var Value $value */
+		/** @phpstan-var NavMenusValue $value */
 		$unknown_langs = array_diff_key( $unknown_langs, array_flip( $language_terms ) );
 
 		// Detect invalid language slugs.
