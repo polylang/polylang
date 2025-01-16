@@ -126,14 +126,14 @@ class Set_Test extends PLL_UnitTestCase {
 				'primary' => array(
 					'en' => 0, // Overwrites `22`.
 					'fr' => 2, // Overwrites `7`.
-					'es' => 2738, // Added.
+					'es' => 2738, // Added because not present in `$settings`.
 					'de' => 4317, // Unknown language, not added.
 				),
-				'custom'  => array( // Added.
+				'custom'  => array( // Added because not present in `$settings`.
 					'es' => 269,
 				),
 			),
-			'twentyseventeen' => array( // Not modified.
+			'twentyseventeen' => array( // Not modified because identical in `$settings`.
 				'top'    => array(
 					'en' => 26,
 				),
