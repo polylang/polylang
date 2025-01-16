@@ -125,7 +125,8 @@ class Nav_Menus extends Abstract_Option {
 		}
 
 		$unknown_langs  = array();
-		$language_terms = $this->get_language_terms( 'slugs' );
+		$language_terms = $this->get_language_terms();
+		$language_terms = \wp_list_pluck( $language_terms, 'slug' );
 
 		foreach ( $value as $theme_slug => $menu_ids_by_location ) {
 			foreach ( $menu_ids_by_location as $location => $menu_ids ) {

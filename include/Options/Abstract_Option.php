@@ -232,22 +232,15 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $fields Optional. Term fields to query for (see `WP_Term_Query` for possible values). Default is `'all'`.
 	 * @return array
 	 *
-	 * @phpstan-param 'all'|'all_with_object_id'|'names'|'slugs'|'id=>name'|'id=>slug'|'ids'|'tt_ids' $fields
-	 * @phpstan-return (
-	 *     $fields is 'all'|'all_with_object_id' ? list<WP_Term> : (
-	 *         $fields is 'names'|'slugs'|'id=>name'|'id=>slug' ? array<int, string> : array<int, int>
-	 *     )
-	 * )
+	 * @phpstan-return list<WP_Term>
 	 */
-	protected function get_language_terms( string $fields = 'all' ): array {
+	protected function get_language_terms(): array {
 		$language_terms = get_terms(
 			array(
 				'taxonomy'   => 'language',
 				'hide_empty' => false,
-				'fields'     => $fields,
 			)
 		);
 		return is_array( $language_terms ) ? $language_terms : array();
