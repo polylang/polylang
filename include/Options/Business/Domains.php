@@ -17,6 +17,8 @@ defined( 'ABSPATH' ) || exit;
  * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
  *
  * @since 3.7
+ *
+ * @phpstan-type DomainsValue array<non-falsy-string, string>
  */
 class Domains extends Abstract_Option {
 	/**
@@ -80,12 +82,12 @@ class Domains extends Abstract_Option {
 	 * @param Options $options All options.
 	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 *
-	 * @phpstan-return array<non-falsy-string, string>|WP_Error
+	 * @phpstan-return DomainsValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
 		global $polylang;
 
-		/** @phpstan-var array<non-falsy-string, string> */
+		/** @phpstan-var DomainsValue */
 		$current_value = $this->get();
 
 		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
@@ -106,7 +108,7 @@ class Domains extends Abstract_Option {
 			return $value;
 		}
 
-		/** @phpstan-var array<non-falsy-string, string> $value */
+		/** @phpstan-var DomainsValue $value */
 		$all_values     = array(); // Previous and new values.
 		$missing_langs  = array(); // Lang names corresponding to the empty values.
 		$language_terms = $this->get_language_terms();
@@ -175,7 +177,7 @@ class Domains extends Abstract_Option {
 			}
 		}
 
-		/** @phpstan-var array<non-falsy-string, string> */
+		/** @phpstan-var DomainsValue */
 		return $all_values;
 	}
 
