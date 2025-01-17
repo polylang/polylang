@@ -124,7 +124,7 @@ class Nav_Menus extends Abstract_Option {
 			return $value;
 		}
 
-		$unknown_langs  = array();
+		$all_langs      = array();
 		$language_terms = wp_list_pluck( $this->get_language_terms(), 'slug' );
 
 		foreach ( $value as $theme_slug => $menu_ids_by_location ) {
@@ -139,12 +139,12 @@ class Nav_Menus extends Abstract_Option {
 				}
 
 				// Detect unknown languages.
-				$unknown_langs = array_merge( $unknown_langs, $menu_ids );
+				$all_langs = array_merge( $all_langs, $menu_ids );
 			}
 		}
 
 		/** @phpstan-var NavMenusValue $value */
-		$unknown_langs = array_diff_key( $unknown_langs, array_flip( $language_terms ) );
+		$unknown_langs = array_diff_key( $all_langs, array_flip( $language_terms ) );
 
 		// Detect invalid language slugs.
 		if ( ! empty( $unknown_langs ) ) {
