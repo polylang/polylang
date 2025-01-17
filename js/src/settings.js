@@ -3,7 +3,7 @@
  */
 
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 
 		// languages list table
 		// accessibility to row actions on focus
@@ -11,18 +11,18 @@ jQuery(
 		var transitionTimeout;
 		$( 'table.languages' ).on(
 			{ // restricted to languages list table
-				focusin: function() {
+				focusin: function () {
 					clearTimeout( transitionTimeout );
 					var focusedRowActions = $( this ).find( '.row-actions' );
 					// transitionTimeout is necessary for Firefox, but Chrome won't remove the CSS class without a little help.
 					$( '.row-actions' ).not( this ).removeClass( 'visible' );
 					focusedRowActions.addClass( 'visible' );
 				},
-				focusout: function() {
+				focusout: function () {
 					// Tabbing between post title and .row-actions links needs a brief pause, otherwise
 					// the .row-actions div gets hidden in transit in some browsers ( ahem, Firefox ).
 					transitionTimeout = setTimeout(
-						function() {
+						function () {
 							focusedRowActions.removeClass( 'visible' );
 						},
 						30
@@ -34,7 +34,7 @@ jQuery(
 
 		/**
 		 * Common functions and variables for overriding languages and flags dropdown list by a jQuery UI selectmenu widget.
-		*/
+		 */
 
 		// Add a boolean variable to be able to check jQuery UI >= 1.12 which is introduced in WP 5.6.
 		// Backward compatibility WP < 5.6
@@ -51,25 +51,29 @@ jQuery(
 		// jQuery UI 1.12 introduce a wrapper inside de li tag which is necessary to selectmenu widget to work correctly.
 		// Mainly copy from the original jQuery UI 1.12 selectmenu widget _renderItem method.
 		// Note this code works fine with jQuery UI 1.11.4 too.
-		var selectmenuRenderItem = function( ul, item ) {
+		var selectmenuRenderItem = function ( ul, item ) {
 			var li = $( '<li>' );
 			var wrapper = $( '<div>');
 
 			if ( item.disabled ) {
 				this._addClass( li, null, "ui-state-disabled" );
 			}
+			// `item.label` is the original `<option>`'s label.
 			this._setText( wrapper, item.label );
 
 			// Add the flag from the data attribute in the selected element.
-			wrapper.prepend( $( item.element ).data( 'flag-html' ) );
+			// `item.element` is the original `<option>` element, the data to prepend comes from a `data-html-flag` HTML attribute, filled by a method from `PLL_Language`.
+			wrapper.prepend( $( item.element ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			wrapper.children( 'img' ).addClass( 'ui-icon' );
 
-			return li.append( wrapper ).appendTo( ul );
+			// `wrapper` and `ul` are safe, see above.
+			return li.append( wrapper ).appendTo( ul ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append, WordPressVIPMinimum.JS.HTMLExecutingFunctions.appendTo
 		};
 		// Override selected item to inject flag for jQuery UI less than 1.12.
-		var selectmenuRefreshButtonText = function( selectElement ) {
+		var selectmenuRefreshButtonText = function ( selectElement ) {
 			var buttonText = $( selectElement ).selectmenu( 'instance' ).buttonText;
-			buttonText.prepend( $( selectElement ).children( ':selected' ).data( 'flag-html' ) );
+			// The data to prepend comes from a `data-html-flag` HTML attribute, filled by a method from `PLL_Language`.
+			buttonText.prepend( $( selectElement ).children( ':selected' ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			buttonText.children( 'img' ).addClass( 'ui-icon' );
 		};
 		// Override selected item since jQuery UI 1.12 which introduces extension point method _renderButtonItem.
@@ -80,7 +84,8 @@ jQuery(
 			this._addClass( buttonItem, "ui-selectmenu-text" );
 
 			// Add the flag from the data attribute in the selected element.
-			buttonItem.prepend( $( selectElement.element ).data( 'flag-html' ) );
+			// The data to prepend comes from a `data-html-flag` HTML attribute, filled by a method from `PLL_Language`.
+			buttonItem.prepend( $( selectElement.element ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			buttonItem.children( 'img' ).addClass( 'ui-icon' );
 
 			return buttonItem;
@@ -122,7 +127,7 @@ jQuery(
 		// Selectmenu widget callbacks
 		var selectmenuFlagListCallbacks = {};
 		// Callbacks when Selectmenu widget create or select event is triggered.
-		var createSelectCallback = function( event, ui ) {
+		var createSelectCallback = function ( event, ui ) {
 			selectmenuRefreshButtonText( event.target );
 		}
 
@@ -133,11 +138,11 @@ jQuery(
 		// Callbacks when Selectmenu widget change or open event is triggered.
 		// Needed to correctly refresh the selected element in the list when editing an existing language or when the value change is triggered by the language choice.
 		// jQuery UI 1.11 callback version.
-		var changeOpenCallback = function( event, ui ){
+		var changeOpenCallback = function ( event, ui ) {
 			selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
 		}
 		// jQueryUI 1.12 callback version.
-		var changeOpenCallbackjQueryUI112 = function( event, ui ){
+		var changeOpenCallbackjQueryUI112 = function ( event, ui ) {
 			// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
 			$( event.target ).selectmenu( 'refresh' );
 		}
@@ -163,7 +168,7 @@ jQuery(
 			var selectmenuFlagList = initializeSelectmenuWidget( $( '#flag_list' ), Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) );
 			$( '#lang_list' ).on(
 				'languageChanged',
-				function( event, flag ) {
+				function ( event, flag ) {
 					// Refresh the flag field
 					selectmenuFlagList.element.val( flag );
 					selectmenuFlagList._trigger( 'change' );
@@ -207,7 +212,7 @@ jQuery(
 		}
 
 		// Callback when selectmenu widget change event is triggered.
-		var changeCallback = function( event, ui ) {
+		var changeCallback = function ( event, ui ) {
 			var language = parseSelectedLanguage( event );
 
 			fillLanguageFields( language );
@@ -218,7 +223,7 @@ jQuery(
 		// Create the jQuery UI selectmenu widget languages list dropdown and return its instance.
 		var selectmenuLangListCallbacks = {};
 		// For the wizard we need a 100% width. So we override the previous defined value of selectmenuOptions.
-		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
+		if ( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
 			selectmenuOptions = Object.assign( selectmenuOptions, { width: wizardSelectmenuWidth } );
 		}
 
@@ -242,7 +247,7 @@ jQuery(
 		// save translations when pressing enter
 		$( '.translation input' ).on(
 			'keydown',
-			function( event ){
+			function ( event ) {
 				if ( 'Enter' === event.key ) {
 					event.preventDefault();
 					$( '#submit' ).trigger( 'click' );
@@ -255,7 +260,7 @@ jQuery(
 		$( '#the-list' ).on(
 			'click',
 			'.configure>a',
-			function(){
+			function () {
 				$( '.pll-configure' ).hide().prev().show();
 				$( this ).closest( 'tr' ).hide().next().show();
 				return false;
@@ -266,7 +271,7 @@ jQuery(
 		$( '#the-list' ).on(
 			'click',
 			'.cancel',
-			function(){
+			function () {
 				$( this ).closest( 'tr' ).hide().prev().show();
 			}
 		);
@@ -275,7 +280,7 @@ jQuery(
 		$( '#the-list' ).on(
 			'click',
 			'.save',
-			function(){
+			function () {
 				var tr = $( this ).closest( 'tr' );
 				var parts = tr.attr( 'id' ).split( '-' );
 
@@ -291,12 +296,12 @@ jQuery(
 				$.post(
 					ajaxurl,
 					data,
-					function( response ) {
+					function ( response ) {
 						// Target a non existing WP HTML id to avoid a conflict with WP ajax requests.
 						var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 						$.each(
 							res.responses,
-							function() {
+							function () {
 								/**
 								 * Fires after saving the settings, before applying changes to the DOM.
 								 *
@@ -309,18 +314,20 @@ jQuery(
 
 								switch ( this.what ) {
 									case 'license-update':
-										$( '#pll-license-' + this.data ).replaceWith( this.supplemental.html );
+										// Data comes from `PLL_License::get_form_field()`, where everything is escaped.
+										$( '#pll-license-' + this.data ).replaceWith( this.supplemental.html ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
 									break;
 									case 'success':
 										tr.hide().prev().show(); // close only if there is no error
 									case 'error':
 										$( '.settings-error' ).remove(); // remove previous messages if any
-										$( 'h1' ).after( this.data );
+										// The data comes from `pll_add_notice()`, where message are passed through `wp_kses()`.
+										$( 'h1' ).after( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
 
 										// Make notices dismissible
 										// copy paste of common.js from WP 4.2.2
 										$( '.notice.is-dismissible' ).each(
-											function() {
+											function () {
 												var $this = $( this ),
 													$button = $( '<button type="button" class="notice-dismiss"><span class="screen-reader-text"></span></button>' ),
 													btnText = pll_settings.dismiss_notice || '';
@@ -333,15 +340,15 @@ jQuery(
 
 												$button.on(
 													'click.wp-dismiss-notice',
-													function( event ) {
+													function ( event ) {
 														event.preventDefault();
 														$this.fadeTo(
 															100,
 															0,
-															function() {
+															function () {
 																$( this ).slideUp(
 																	100,
-																	function() {
+																	function () {
 																		$( this ).remove();
 																	}
 																);
@@ -363,7 +370,7 @@ jQuery(
 		// act when pressing enter or esc in configurations
 		$( '.pll-configure' ).on(
 			'keydown',
-			function( event ){
+			function ( event ) {
 				if ( 'Enter' === event.key ) {
 					event.preventDefault();
 					$( this ).find( '.save' ).trigger( 'click' );
@@ -380,7 +387,7 @@ jQuery(
 		// manages visibility of fields
 		$( "input[name='force_lang']" ).on(
 			'change',
-			function() {
+			function () {
 				function pll_toggle( a, test ) {
 					test ? a.show() : a.hide();
 				}
@@ -397,7 +404,7 @@ jQuery(
 		// deactivate button
 		$( '.pll-deactivate-license' ).on(
 			'click',
-			function() {
+			function () {
 				var data = {
 					action:            'pll_deactivate_license',
 					pll_ajax_settings: true,
@@ -407,8 +414,9 @@ jQuery(
 				$.post(
 					ajaxurl,
 					data,
-					function( response ){
-						$( '#pll-license-' + response.id ).replaceWith( response.html );
+					function ( response ) {
+						// Data comes from `PLL_License::get_form_field()`, where everything is escaped.
+						$( '#pll-license-' + response.id ).replaceWith( response.html ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
 					}
 				);
 			}
