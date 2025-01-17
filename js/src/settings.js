@@ -323,7 +323,7 @@ jQuery(
 											function() {
 												var $this = $( this ),
 													$button = $( '<button type="button" class="notice-dismiss"><span class="screen-reader-text"></span></button>' ),
-													btnText = pll_admin.dismiss_notice || '';
+													btnText = pll_settings.dismiss_notice || '';
 
 												// Ensure plain text
 												$button.find( '.screen-reader-text' ).text( btnText );
