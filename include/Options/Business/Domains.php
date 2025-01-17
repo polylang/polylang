@@ -85,18 +85,10 @@ class Domains extends Abstract_Option {
 	 * @phpstan-return DomainsValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
-		global $polylang;
-
 		/** @phpstan-var DomainsValue */
 		$current_value = $this->get();
 
-		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
-			// Access to global `$polylang` is required.
-			_doing_it_wrong(
-				__METHOD__,
-				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
-				'3.7'
-			);
+		if ( ! $this->are_languages_ready( __METHOD__ ) ) {
 			return $current_value;
 		}
 

@@ -228,6 +228,31 @@ abstract class Abstract_Option {
 	abstract protected function get_description(): string;
 
 	/**
+	 * Tells if the languages list is ready.
+	 * If not ready, a "doing it wrong" notice is fired.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $method The name of the method using this. Used in the error message.
+	 * @return bool
+	 */
+	protected function are_languages_ready( string $method ): bool {
+		global $polylang;
+
+		if ( empty( $polylang ) || ! $polylang->model->languages->are_ready() ) {
+			// Access to global `$polylang` is required.
+			_doing_it_wrong(
+				esc_html( $method ),
+				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
+				'3.7'
+			);
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns a list of language terms.
 	 *
 	 * @since 3.7

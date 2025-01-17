@@ -97,15 +97,7 @@ class Nav_Menus extends Abstract_Option {
 	 * @phpstan-return NavMenusValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
-		global $polylang;
-
-		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
-			// Access to global `$polylang` is required.
-			_doing_it_wrong(
-				__METHOD__,
-				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
-				'3.7'
-			);
+		if ( ! $this->are_languages_ready( __METHOD__ ) ) {
 			/** @phpstan-var NavMenusValue */
 			return $this->get();
 		}
