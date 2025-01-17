@@ -71,8 +71,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		add_action( 'admin_menu', array( $this, 'remove_customize_submenu' ) );
 
 		// Setup js scripts and css styles
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 
@@ -172,12 +171,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_script( 'pll_admin', plugins_url( "/js/build/admin{$suffix}.js", POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+		wp_localize_script( 'pll_admin', 'pll_admin', array( 'ajax_filter' => $this->get_ajax_filter_data() ) );
+
 		$screen = get_current_screen();
 		if ( empty( $screen ) ) {
 			return;
 		}
-
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		/*
 		 * For each script:
@@ -285,22 +287,22 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Sets pll_ajax_backend on all backend ajax request
-	 * The final goal is to detect if an ajax request is made on admin or frontend
+	 * Returns the data to use with the AJAX filter.
+	 * The final goal is to detect if an ajax request is made on admin or frontend.
 	 *
 	 * Takes care to various situations:
-	 * when the ajax request has no options.data thanks to ScreenfeedFr
-	 * see: https://wordpress.org/support/topic/ajaxprefilter-may-not-work-as-expected
-	 * when options.data is a json string
-	 * see: https://wordpress.org/support/topic/polylang-breaking-third-party-ajax-requests-on-admin-panels
-	 * when options.data is an empty string (GET request with the method 'load')
-	 * see: https://wordpress.org/support/topic/invalid-url-during-wordpress-new-dashboard-widget-operation
+	 * - When the AJAX request has no `options.data` thanks to ScreenfeedFr.
+	 *   See: https://wordpress.org/support/topic/ajaxprefilter-may-not-work-as-expected.
+	 * - When `options.data` is a JSON string.
+	 *   See: https://wordpress.org/support/topic/polylang-breaking-third-party-ajax-requests-on-admin-panels.
+	 * - When `options.data` is an empty string (GET request with the method 'load').
+	 *   See: https://wordpress.org/support/topic/invalid-url-during-wordpress-new-dashboard-widget-operation.
 	 *
-	 * @since 1.4
+	 * @since 3.7
 	 *
-	 * @return void
+	 * @return array
 	 */
-	public function admin_print_footer_scripts() {
+	public function get_ajax_filter_data(): array {
 		global $post_ID, $tag_ID;
 
 		$params = array( 'pll_ajax_backend' => 1 );
@@ -319,45 +321,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @param array $params List of parameters to add to the admin ajax request.
 		 */
-		$params = apply_filters( 'pll_admin_ajax_params', $params );
-		?>
-		<script>
-			if ( 'undefined' !== typeof jQuery ) {
-				jQuery(
-					function ( $ ) {
-						$.ajaxPrefilter( function ( options ) {
-							if ( -1 === options.url.indexOf( ajaxurl ) && -1 === ajaxurl.indexOf( options.url ) ) {
-								return;
-							}
-
-							const pllStr = '<?php echo esc_js( http_build_query( $params ) ); ?>';
-							const pllArr = <?php echo wp_json_encode( $params ); ?>;
-
-							if (
-								'undefined' === typeof options.data ||
-								null === options.data ||
-								'string' === typeof options.data && '' === options.data.trim()
-							) {
-								// An empty string or null/undefined.
-								options.data = pllStr;
-							} else if ( 'string' === typeof options.data ) {
-								// A non-empty string: can be a JSON string or a query string.
-								try {
-									options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), pllArr ) );
-								} catch ( exception ) {
-									// A non-empty non-JSON string is considered a query string.
-									options.data = `${ options.data }&${ pllStr }`;
-								}
-							} else if ( $.isPlainObject( options.data ) ) {
-								// An object.
-								options.data = Object.assign( options.data, pllArr );
-							}
-						} );
-					}
-				);
-			}
-		</script>
-		<?php
+		return (array) apply_filters( 'pll_admin_ajax_params', $params );
 	}
 
 	/**
