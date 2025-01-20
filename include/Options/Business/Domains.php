@@ -85,13 +85,6 @@ class Domains extends Abstract_Option {
 	 * @phpstan-return DomainsValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
-		/** @phpstan-var DomainsValue */
-		$current_value = $this->get();
-
-		if ( ! $this->are_languages_ready( __METHOD__ ) ) {
-			return $current_value;
-		}
-
 		// Sanitize new URLs.
 		$value = parent::sanitize( $value, $options );
 
@@ -100,6 +93,8 @@ class Domains extends Abstract_Option {
 			return $value;
 		}
 
+		/** @phpstan-var DomainsValue */
+		$current_value = $this->get();
 		/** @phpstan-var DomainsValue $value */
 		$all_values     = array(); // Previous and new values.
 		$missing_langs  = array(); // Lang names corresponding to the empty values.

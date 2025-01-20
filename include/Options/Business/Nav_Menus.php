@@ -97,11 +97,6 @@ class Nav_Menus extends Abstract_Option {
 	 * @phpstan-return NavMenusValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
-		if ( ! $this->are_languages_ready( __METHOD__ ) ) {
-			/** @phpstan-var NavMenusValue */
-			return $this->get();
-		}
-
 		// Sanitize new value.
 		$value = parent::sanitize( $value, $options );
 
