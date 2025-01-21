@@ -144,7 +144,8 @@ class PLL_CRUD_Posts {
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {
 		static $avoid_recursion;
 
-		if ( $avoid_recursion || empty( $terms ) || ! is_array( $terms ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+		if ( $avoid_recursion || empty( $terms ) || ! is_array( $terms ) || empty( $tt_ids )
+			|| ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			return;
 		}
 
