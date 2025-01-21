@@ -262,7 +262,7 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		// Create a post with this category so that `get_terms()` returns terms (since `hide_empty` is `true` by default).
 		self::factory()->post->create( array( 'post_category' => array( $en_cat ) ) );
 
-		update_option( 'default_category', '999' );
+		update_option( 'default_category', $en_cat + 999 ); // Use this number to make sure the category doesn't exist.
 
 		// Simulate the request that create the post and assigns language.
 		$post = get_default_post_to_edit( 'post', true );
