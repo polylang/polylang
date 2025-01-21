@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options;
 
 use WP_Error;
+use WP_Term;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -225,4 +226,51 @@ abstract class Abstract_Option {
 	 * @return string
 	 */
 	abstract protected function get_description(): string;
+
+	/**
+	 * Returns a list of language terms.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array
+	 *
+	 * @phpstan-return list<WP_Term>
+	 */
+	protected function get_language_terms(): array {
+		$language_terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+		return is_array( $language_terms ) ? $language_terms : array();
+	}
+
+	/**
+	 * Adds a non-blocking error warning about unknown language slugs.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $language_slugs List of language slugs.
+	 * @return void
+	 */
+	protected function add_unknown_languages_warning( array $language_slugs ): void {
+		$this->errors->add(
+			sprintf( 'pll_unknown_%s_languages', static::key() ),
+			sprintf(
+				/* translators: %s is a list of language slugs. */
+				_n( 'The language %s is unknown and has been discarded.', 'The languages %s are unknown and have been discarded.', count( $language_slugs ), 'polylang' ),
+				wp_sprintf_l(
+					'%l',
+					array_map(
+						function ( $slug ) {
+							return "<code>{$slug}</code>";
+						},
+						$language_slugs
+					)
+				)
+			),
+			'warning'
+		);
+	}
 }
