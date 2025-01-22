@@ -174,7 +174,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_enqueue_script( 'pll_admin', plugins_url( "/js/build/admin{$suffix}.js", POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
-		wp_localize_script( 'pll_admin', 'pll_admin', array( 'ajax_filter' => $this->get_ajax_filter_data() ) );
+		$inline_script = sprintf( 'let pll_admin = %s;', wp_json_encode( array( 'ajax_filter' => $this->get_ajax_filter_data() ) ) );
+		wp_add_inline_script( 'pll_admin', $inline_script, 'before' );
 
 		$screen = get_current_screen();
 		if ( empty( $screen ) ) {
