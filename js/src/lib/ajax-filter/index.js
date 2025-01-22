@@ -10,7 +10,7 @@
  * @param {Object} data The data to add.
  * @returns {void}
  */
-const ajaxFilter = ( data ) => {
+export function ajaxFilter( data ) {
 	if ( 'undefined' === typeof jQuery || ! data || ! data.length ) {
 		return;
 	}
@@ -47,5 +47,3 @@ const ajaxFilter = ( data ) => {
 		}
 	);
 }
-
-export default ajaxFilter;
