@@ -4,4 +4,4 @@
 
 import ajaxFilter from './lib/ajax-filter.js';
 
-ajaxFilter( pll_admin.ajax_filter );
+ajaxFilter( pll_admin?.ajax_filter );
