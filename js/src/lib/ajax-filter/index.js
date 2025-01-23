@@ -11,7 +11,7 @@
  * @returns {void}
  */
 export function ajaxFilter( data ) {
-	if ( 'undefined' === typeof jQuery || ! data || ! data.length ) {
+	if ( 'undefined' === typeof jQuery || ! data ) {
 		return;
 	}
 
