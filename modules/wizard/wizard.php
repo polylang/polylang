@@ -377,17 +377,17 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		// Be careful pll_admin script is enqueued here without dependency except jquery because only code useful for deactivate license button is needed.
-		// To be really loaded the script need to be passed to the $steps['licenses']['scripts'] array below with the same handle than in wp_enqueue_script().
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
-		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
+		// Be careful `settings` script is enqueued here without dependency except jquery because only code useful for deactivate license button is needed.
+		// To be really loaded the script needs to be passed to the `$steps['licenses']['scripts']` array below with the same handle than in `wp_enqueue_script()`.
+		wp_enqueue_script( 'pll_settings', plugins_url( '/js/build/settings' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+		wp_localize_script( 'pll_settings', 'pll_settings', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
 				'name'    => esc_html__( 'Licenses', 'polylang' ),
 				'view'    => array( $this, 'display_step_licenses' ),
 				'handler' => array( $this, 'save_step_licenses' ),
-				'scripts' => array( 'pll_admin' ), // Polylang admin script used by deactivate license button.
+				'scripts' => array( 'pll_settings' ), // Polylang admin script used by deactivate license button.
 				'styles'  => array(),
 			);
 		}
@@ -477,11 +477,11 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_languages( $steps ) {
-		wp_deregister_script( 'pll_admin' ); // Deregister after the licenses step enqueue to update jquery-ui-selectmenu dependency.
+		wp_deregister_script( 'pll_settings' ); // Deregister after the licenses step enqueue to update jquery-ui-selectmenu dependency.
 		// The wp-ajax-response and postbox dependencies is useless in wizard steps especially postbox which triggers a javascript error otherwise.
-		// To be really loaded the script need to be passed to the $steps['languages']['scripts'] array below with the same handle than in wp_enqueue_script().
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
+		// To be really loaded the script needs to be passed to the `$steps['languages']['scripts']` array below with the same handle than in `wp_enqueue_script()`.
+		wp_enqueue_script( 'pll_settings', plugins_url( '/js/build/settings' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+		wp_localize_script( 'pll_settings', 'pll_settings', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 		wp_register_script( 'pll-wizard-languages', plugins_url( '/js/build/languages-step' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-dialog' ), POLYLANG_VERSION, true );
 		wp_localize_script(
 			'pll-wizard-languages',
@@ -510,7 +510,7 @@ class PLL_Wizard {
 			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
 			'handler' => array( $this, 'save_step_languages' ),
-			'scripts' => array( 'pll-wizard-languages', 'pll_admin' ),
+			'scripts' => array( 'pll-wizard-languages', 'pll_settings' ),
 			'styles'  => array( 'pll-wizard-selectmenu' ),
 		);
 		return $steps;
@@ -669,16 +669,16 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->has_languages() || $this->model->get_objects_with_no_lang( 1 ) ) {
-			// Even if pll_admin is already enqueued with the same dependencies by the languages step, it is interesting to keep that it's also useful for the untranslated-contents step.
-			// To be really loaded the script need to be passed to the $steps['untranslated-contents']['scripts'] array below with the same handle than in wp_enqueue_script().
-			wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-			wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
+			// Even if `pll_settings` is already enqueued with the same dependencies by the languages step, it is interesting to keep that it's also useful for the untranslated-contents step.
+			// To be really loaded the script needs to be passed to the `$steps['untranslated-contents']['scripts']` array below with the same handle than in `wp_enqueue_script()`.
+			wp_enqueue_script( 'pll_settings', plugins_url( '/js/build/settings' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+			wp_localize_script( 'pll_settings', 'pll_settings', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/build/selectmenu' . $this->get_suffix() . '.css', POLYLANG_ROOT_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
 				'handler' => array( $this, 'save_step_untranslated_contents' ),
-				'scripts' => array( 'pll_admin' ),
+				'scripts' => array( 'pll_settings' ),
 				'styles'  => array( 'pll-wizard-selectmenu' ),
 			);
 		}
