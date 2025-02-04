@@ -35,7 +35,7 @@ class PLL_Cache_Compat {
 	 *
 	 * @since 2.3
 	 *
-	 * @return string The script that creates the cookie.
+	 * @return void
 	 */
 	public function add_cookie_script() {
 		// Embeds should not set the cookie.
