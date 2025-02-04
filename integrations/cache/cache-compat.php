@@ -72,7 +72,7 @@ class PLL_Cache_Compat {
 
 		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
 
-		$script = "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+		$script = "<script{$type_attr}>\n{$js}\n</script>\n";
 
 		/**
 		 * Filters the content of the script tag that creates the cookie.
@@ -81,7 +81,7 @@ class PLL_Cache_Compat {
 		 *
 		 * @param string $script The Script tag and content.
 		 */
-		echo apply_filters( 'pll_cookie_script', $script );
+		echo apply_filters( 'pll_cookie_script', $script ); // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**
