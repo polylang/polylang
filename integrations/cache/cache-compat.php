@@ -34,6 +34,8 @@ class PLL_Cache_Compat {
 	 * This functions allows to create the cookie in javascript as a workaround.
 	 *
 	 * @since 2.3
+	 *
+	 * @return string The script that creates the cookie.
 	 */
 	public function add_cookie_script() {
 		// Embeds should not set the cookie.
@@ -70,7 +72,16 @@ class PLL_Cache_Compat {
 
 		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
 
-		echo "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+		$script = "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+
+		/**
+		 * Filters the content of the script tag that creates the cookie.
+		 *
+		 * @since 3.7
+		 *
+		 * @param string $script The Script tag and content.
+		 */
+		echo apply_filters( 'pll_cookie_script', $script );
 	}
 
 	/**
