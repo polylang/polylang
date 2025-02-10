@@ -43,6 +43,7 @@ class Sync extends Abstract_List {
 		add_filter( 'lang_dir_for_domain', '__return_false' ); // Prevents loading the translations too early.
 		$enum = array_keys( \PLL_Settings_Sync::list_metas_to_sync() );
 		remove_filter( 'lang_dir_for_domain', '__return_false' );
+		unload_textdomain( 'polylang' ); // To ensure string translation later in the process will be done.
 		return array(
 			'type'  => 'array',
 			'items' => array(
