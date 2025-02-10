@@ -40,11 +40,14 @@ class Sync extends Abstract_List {
 	 * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-list<non-falsy-string>}}
 	 */
 	protected function get_data_structure(): array {
+		add_filter( 'lang_dir_for_domain', '__return_false' ); // Prevents loading the translations too early.
+		$enum = array_keys( \PLL_Settings_Sync::list_metas_to_sync() );
+		remove_filter( 'lang_dir_for_domain', '__return_false' );
 		return array(
 			'type'  => 'array',
 			'items' => array(
 				'type' => $this->get_type(),
-				'enum' => \PLL_Settings_Sync::get_synchronizable_elements(),
+				'enum' => $enum,
 			),
 		);
 	}
