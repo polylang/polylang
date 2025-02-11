@@ -11,7 +11,6 @@ extend-exclude = [
 	"vendor/",
 	".typos.toml",
 	"*.xml",
-	"tests/phpunit/data/plugins/polylang/polylang-fr_FR.l10n.php",
 ]
 ignore-hidden = false
 

@@ -17,7 +17,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 	public static function wpTearDownAfterClass() {
 		parent::wpTearDownAfterClass();
 
-		unlink( WP_LANG_DIR . '/plugins/polylang-fr_FR.l10n.php' );
+		unlink( WP_LANG_DIR . '/plugins/polylang-fr_FR.mo' );
 	}
 
 	public function test_polylang_textdomain_load_after_setup_theme() {
@@ -25,7 +25,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 		@mkdir( DIR_TESTDATA );
 		@mkdir( WP_LANG_DIR );
 		@mkdir( WP_LANG_DIR . '/plugins' );
-		copy( PLL_TEST_DATA_DIR . 'plugins/polylang/polylang-fr_FR.l10n.php', WP_LANG_DIR . '/plugins/polylang-fr_FR.l10n.php' );
+		copy( PLL_TEST_DATA_DIR . 'plugins/polylang/polylang-fr_FR.mo', WP_LANG_DIR . '/plugins/polylang-fr_FR.mo' );
 
 		update_user_meta( 1, 'locale', 'fr_FR' );
 		wp_set_current_user( 1 );

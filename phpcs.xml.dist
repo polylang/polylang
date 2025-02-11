@@ -179,5 +179,4 @@
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
-	<exclude-pattern>tests/phpunit/data/plugins/polylang/polylang-fr_FR.l10n.php</exclude-pattern>
 </ruleset>
