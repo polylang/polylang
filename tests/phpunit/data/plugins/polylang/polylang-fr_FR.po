@@ -1,0 +1,23 @@
+# Translation of Polylang plugin for test.
+msgid ""
+msgstr ""
+"Project-Id-Version: Polylang Test\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2025-02-13 09:50+0100\n"
+"Last-Translator: \n"
+"Language-Team: WP SYNTEX\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Poedit 3.4.2\n"
+
+msgid "Custom fields"
+msgstr "Champs personnalisés"
+
+msgid "Language switcher"
+msgstr "Sélecteur de langues"
+
+msgid "Languages"
+msgstr "Langues"
