@@ -177,8 +177,6 @@ jQuery(
 			'change',
 			function () {
 				var value = $( this ).val();
-				var lang  = $( this ).children( 'option[value="' + value + '"]' ).attr( 'lang' );
-				var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' );
 				// The selected option in the dropdown list.
 				const selectedOption = event.target;
 
