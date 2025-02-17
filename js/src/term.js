@@ -240,7 +240,7 @@ jQuery(
 
 		// Listen to `onTermLangChoice` to perform actions after the language has been changed.
 		document.addEventListener(
-			'onPostLangChoice',
+			'onTermLangChoice',
 			( e ) => {
 				// Modifies the text direction.
 				let dir = e.detail.lang.is_rtl ? 'rtl' : 'ltr'
