@@ -225,7 +225,7 @@ function pll_add_notice( WP_Error $error ) {
 		$message = wp_kses(
 			implode( '<br>', $error->get_error_messages( $error_code ) ),
 			array(
-				'a'    => array( 'href' ),
+				'a'    => array( 'href' => true ),
 				'br'   => array(),
 				'code' => array(),
 				'em'   => array(),
