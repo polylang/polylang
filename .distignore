@@ -18,4 +18,5 @@ phpstan-baseline.neon
 phpstan.neon.dist
 phpunit.xml
 readme.md
+rector.php
 webpack.config.js
