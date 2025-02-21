@@ -17,7 +17,7 @@ class PLL_Cache_Compat {
 	 */
 	public function init() {
 		if ( PLL_COOKIE ) {
-			add_action( 'wp_print_footer_scripts', array( $this, 'add_cookie_script' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'add_cookie_script' ) );
 		}
 
 		// Since version 3.0.5, WP Rocket does not serve the cached page if our cookie is not set
@@ -70,16 +70,9 @@ class PLL_Cache_Compat {
 			esc_js( $expiration )
 		);
 
-		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
-
-		/**
-		 * Filters the script tag that creates the cookie.
-		 *
-		 * @since 3.7
-		 *
-		 * @param string $script The Script tag and content.
-		 */
-		echo apply_filters( 'pll_cookie_script', "<script{$type_attr}>\n{$js}\n</script>\n" ); // phpcs:ignore WordPress.Security.EscapeOutput
+		wp_register_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION );
+		wp_enqueue_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION, true );
+		wp_add_inline_script( 'pll_cookie_script', $js );
 	}
 
 	/**
