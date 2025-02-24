@@ -558,7 +558,7 @@ class Languages extends Abstract_Controller {
 					'readonly'    => true,
 				),
 				'page_on_front'   => array(
-					'description' => __( 'Identifier of the page on front in this language.', 'polylang' ),
+					'description' => __( 'Page on front ID in this language.', 'polylang' ),
 					'type'        => 'integer',
 					'minimum'     => 0,
 					'context'     => array( 'view', 'edit' ),
@@ -604,14 +604,14 @@ class Languages extends Abstract_Controller {
 				'type'        => 'object',
 				'properties'  => array(
 					'term_id'          => array(
-						/* translators: %s is the name of the term property. */
-						'description' => sprintf( __( 'Term\'s %s of this type of content in this language.', 'polylang' ), '`term_id`' ),
+						/* translators: %s is the name of the term property (`term_id` or `term_taxonomy_id`). */
+						'description' => sprintf( __( 'The %s of the language term for this translatable entity.', 'polylang' ), '`term_id`' ),
 						'type'        => 'integer',
 						'minimum'     => 1,
 					),
 					'term_taxonomy_id' => array(
-						/* translators: %s is the name of the term property. */
-						'description' => sprintf( __( 'Term\'s %s of this type of content in this language.', 'polylang' ), '`term_taxonomy_id`' ),
+						/* translators: %s is the name of the term property (`term_id` or `term_taxonomy_id`). */
+						'description' => sprintf( __( 'The %s of the language term for this translatable entity.', 'polylang' ), '`term_taxonomy_id`' ),
 						'type'        => 'integer',
 						'minimum'     => 1,
 					),
