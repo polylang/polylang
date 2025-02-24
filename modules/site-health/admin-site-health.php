@@ -126,10 +126,18 @@ class PLL_Admin_Site_Health {
 				break;
 			case 'rewrite':
 				if ( $value ) {
-					$value = '1: ' . esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' );
+					$value = '1: ' . sprintf(
+						/* translators: %s is a URL slug: `/language/`. */
+						esc_html__( 'Remove %s in pretty permalinks', 'polylang' ),
+						'`/language/`'
+					);
 					break;
 				}
-				$value = '0: ' . esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' );
+				$value = '0: ' . sprintf(
+					/* translators: %s is a URL slug: `/language/`. */
+					esc_html__( 'Keep %s in pretty permalinks', 'polylang' ),
+					'`/language/`'
+				);
 				break;
 			case 'hide_default':
 				if ( $value ) {
