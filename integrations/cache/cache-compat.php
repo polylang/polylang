@@ -71,8 +71,8 @@ class PLL_Cache_Compat {
 		);
 
 		// Need to register prior to enqueue empty script and add extra code to it.
-		wp_register_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION );
-		wp_enqueue_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION, true );
+		wp_register_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION, true );
+		wp_enqueue_script( 'pll_cookie_script' );
 		wp_add_inline_script( 'pll_cookie_script', $js );
 	}
 
