@@ -155,17 +155,18 @@ class PLL_Plugin_Updater {
 		}
 
 		// Added by Polylang.
-		foreach ( array( 'url', 'package', 'new_version', 'tested', 'requires', 'requires_php' ) as $prop ) {
-			if ( ! isset( $version_info->$prop ) ) {
-				$version_info->$prop = '';
-			}
-		}
-
-		foreach ( array( 'icons', 'banners' ) as $prop ) {
-			if ( ! isset( $version_info->$prop ) ) {
-				$version_info->$prop = new stdClass();
-			}
-		}
+		$default = array(
+			'url'          => '',
+			'package       => '',
+			'new_version'  => '',
+			'tested'       => '',
+			'requires'     => '',
+			'requires_php' => '',
+			'icons'        => new stdClass(),
+			'banners'      => new stdClass(),
+		);
+		
+		$version_info = (object) array_merge( $defaults, (array) $version_info );
 		// End of added by Polylang.
 
 		return $version_info;
