@@ -155,9 +155,9 @@ class PLL_Plugin_Updater {
 		}
 
 		// Added by Polylang.
-		$default = array(
+		$defaults = array(
 			'url'          => '',
-			'package       => '',
+			'package'       => '',
 			'new_version'  => '',
 			'tested'       => '',
 			'requires'     => '',
@@ -165,7 +165,7 @@ class PLL_Plugin_Updater {
 			'icons'        => new stdClass(),
 			'banners'      => new stdClass(),
 		);
-		
+
 		$version_info = (object) array_merge( $defaults, (array) $version_info );
 		// End of added by Polylang.
 
