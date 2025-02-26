@@ -7,12 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Allows plugins to use their own update API.
- * Modified version with 'polylang' text domain, missing comments for translators, and a bug fix.
+ * Modified version with:
+ * - 'polylang' text domain,
+ * - missing comments for translators,
+ * - a bug fix (https://github.com/polylang/polylang/pull/1629).
  *
  * @author Easy Digital Downloads
  * @version 1.9.4
- *
- * @see https://github.com/polylang/polylang/pull/1629
  */
 class PLL_Plugin_Updater {
 
