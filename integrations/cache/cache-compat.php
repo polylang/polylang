@@ -70,6 +70,7 @@ class PLL_Cache_Compat {
 			esc_js( $expiration )
 		);
 
+		// Need to register the script to enqueue and add extra code to it.
 		wp_register_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION );
 		wp_enqueue_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION, true );
 		wp_add_inline_script( 'pll_cookie_script', $js );
