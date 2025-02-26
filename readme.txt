@@ -64,7 +64,6 @@ Neither of them will allow to do automated translation.
 = Our other free plugins =
 
 * [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/) allows migrating from WPML to Polylang.
-* [DynaMo](https://wordpress.org/plugins/dynamo/) speeds up the translation of WordPress for all non-English sites.
 * [Site Editor Classic Features](https://wordpress.org/plugins/fse-classic/) allows to use classic widgets (including the Polylang language switcher) and menus in the site editor (FSE).
 
 = Credits =
@@ -110,6 +109,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Requires PHP 7.2 as minimum version
 * Pro: Add DeepL machine translation for strings
 * Pro: Consider Polylang Pro as equivalent to Polylang for plugin dependencies
+* Pro: Add the details block and several labels in other blocks to XLIFF files and machine translation
 * Pro: Allow to translate metas stored as objects
 * Pro: Enhanced multilingual support of archive template hierarchy
 * Pro: Wrap the language switcher block in a nav tag
@@ -120,6 +120,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Add languages in ACF locations
 * Pro: Add translation of ACF labels in the strings translations page
 * Pro: Fix incorrect translation when an XLIFF import updates a term sharing its slug
+* Pro: Fix term hierarchy with machine translation
 * Pro: Fix navigation block inserted in the wrong language
 * Update plugin updater to 1.9.4
 * Add translation of widgets custom html in strings translations #1423
