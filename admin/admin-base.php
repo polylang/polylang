@@ -4,6 +4,7 @@
  */
 
 use WP_Syntex\Polylang\Capabilities\Tools;
+use WP_Syntex\Polylang\Capabilities\User;
 
 /**
  * Setup features available on all admin pages.
@@ -384,8 +385,23 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
-		// Set preferred language for use when saving posts and terms: must not be empty
-		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_default_language() : $this->filter_lang;
+		$user = new User();
+
+		if ( ! empty( $this->filter_lang ) && ! $user->can_translate( $this->filter_lang ) ) {
+			$this->filter_lang = null;
+		}
+
+		// Set preferred language for use when saving posts and terms: must not be empty.
+		if ( ! empty( $this->filter_lang ) ) {
+			$this->pref_lang = $this->filter_lang;
+		} else {
+			$this->pref_lang = $this->model->get_default_language();
+
+			if ( ! $this->pref_lang || ! $user->can_translate( $this->pref_lang ) ) {
+				$user_languages  = $user->filter_languages( $this->model->get_languages_list() );
+				$this->pref_lang = reset( $user_languages );
+			}
+		}
 
 		/**
 		 * Filters the preferred language on admin side.
