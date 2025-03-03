@@ -119,7 +119,7 @@ class PLL_Admin_Filters_Term {
 		$dropdown = new PLL_Walker_Dropdown();
 
 		$dropdown_html = $dropdown->walk(
-			$this->model->get_languages_list(),
+			$this->model->get_languages_list( array( 'translator_id' => 0 ) ),
 			-1,
 			array(
 				'name'     => 'term_lang_choice',
@@ -187,7 +187,7 @@ class PLL_Admin_Filters_Term {
 		$dropdown = new PLL_Walker_Dropdown();
 
 		$dropdown_html = $dropdown->walk(
-			$this->model->get_languages_list(),
+			$this->model->get_languages_list( array( 'translator_id' => 0 ) ),
 			-1,
 			array(
 				'name'     => 'term_lang_choice',

@@ -109,7 +109,7 @@ class PLL_Admin_Classic_Editor {
 		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post_ID ) : 'post_lang_choice';
 
 		$dropdown_html = $dropdown->walk(
-			$this->model->get_languages_list(),
+			$this->model->get_languages_list( array( 'translator_id' => 0 ) ),
 			-1,
 			array(
 				'name'     => $id,

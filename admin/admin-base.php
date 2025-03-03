@@ -459,6 +459,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			esc_html( $selected->name )
 		);
 
+		$languages = $this->model->get_languages_list( array( 'translator_id' => 0 ) );
+
 		/**
 		 * Filters the admin languages filter submenu items
 		 *
@@ -466,7 +468,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @param array $items The admin languages filter submenu items.
 		 */
-		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $this->model->get_languages_list() ) );
+		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $languages ) );
 
 		$menu = array(
 			'id'    => 'languages',

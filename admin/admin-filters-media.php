@@ -60,7 +60,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			'label' => __( 'Language', 'polylang' ),
 			'input' => 'html',
 			'html'  => $dropdown->walk(
-				$this->model->get_languages_list(),
+				$this->model->get_languages_list( array( 'translator_id' => 0 ) ),
 				-1,
 				array(
 					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
