@@ -20,13 +20,11 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @return string
 	 */
 	protected function new_translation_link( $link, $language ) {
-		$str = '';
-
-		if ( $link ) {
+		if ( ! empty( $link ) ) {
 			/* translators: accessibility text, %s is a native language name */
 			$hint = sprintf( __( 'Add a translation in %s', 'polylang' ), $language->name );
 
-			$str = sprintf(
+			return sprintf(
 				'<a href="%1$s" title="%2$s" class="pll_icon_add"><span class="screen-reader-text">%3$s</span></a>',
 				esc_url( $link ),
 				esc_attr( $hint ),
@@ -34,7 +32,14 @@ class PLL_Admin_Links extends PLL_Links {
 			);
 		}
 
-		return $str;
+		/* translators: accessibility text, %s is a native language name */
+		$hint = sprintf( __( 'You are not allowed to add a translation in %s', 'polylang' ), $language->name );
+
+		return sprintf(
+			'<span title="%1$s" class="pll_icon_add wp-ui-text-icon"><span class="screen-reader-text">%2$s</span></span>',
+			esc_attr( $hint ),
+			esc_html( $hint )
+		);
 	}
 
 	/**
@@ -47,12 +52,26 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @return string
 	 */
 	public function edit_translation_link( $link, $language ) {
-		return $link ? sprintf(
-			'<a href="%1$s" class="pll_icon_edit"><span class="screen-reader-text">%2$s</span></a>',
-			esc_url( $link ),
+		if ( ! empty( $link ) ) {
 			/* translators: accessibility text, %s is a native language name */
-			esc_html( sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name ) )
-		) : '';
+			$hint = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
+
+			return sprintf(
+				'<a href="%1$s" title="%2$s" class="pll_icon_edit"><span class="screen-reader-text">%3$s</span></a>',
+				esc_url( $link ),
+				esc_attr( $hint ),
+				esc_html( $hint )
+			);
+		}
+
+		/* translators: accessibility text, %s is a native language name */
+		$hint = sprintf( __( 'You are not allowed to edit the translation in %s', 'polylang' ), $language->name );
+
+		return sprintf(
+			'<span title="%1$s" class="pll_icon_edit wp-ui-text-icon"><span class="screen-reader-text">%2$s</span></span>',
+			esc_attr( $hint ),
+			esc_html( $hint )
+		);
 	}
 
 	/**
@@ -68,8 +87,8 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	public function get_new_post_translation_link( $post_id, $language, $context = 'display' ) {
 		$post_type = get_post_type( $post_id );
-		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
-		if ( empty( $post_type_object ) || ! current_user_can( $post_type_object->cap->create_posts ) ) {
+		$post_type_object = get_post_type_object( $post_type );
+		if ( empty( $post_type_object ) || ! current_user_can( $post_type_object->cap->create_posts, $language->slug ) ) {
 			return '';
 		}
 
@@ -165,7 +184,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	public function get_new_term_translation_link( $term_id, $taxonomy, $post_type, $language ) {
 		$tax = get_taxonomy( $taxonomy );
-		if ( ! $tax || ! current_user_can( $tax->cap->edit_terms ) ) {
+		if ( ! $tax || ! current_user_can( $tax->cap->edit_terms, $language->slug ) ) {
 			return '';
 		}
 

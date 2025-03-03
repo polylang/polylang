@@ -194,6 +194,8 @@ class PLL_Admin_Filters_Columns {
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
 					$this->get_flag_html( $language ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
+			} else {
+				echo $this->links->edit_post_translation_link( $id ); // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 		}
 		// Link to add a new translation
@@ -326,6 +328,15 @@ class PLL_Admin_Filters_Columns {
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
 					$this->get_flag_html( $language )
+				);
+			} else {
+				/* translators: accessibility text, %s is a native language name */
+				$hint = sprintf( __( 'You are not allowed to edit the translation in %s', 'polylang' ), $language->name );
+				$out .= sprintf(
+					'<span title="%s" class="pll_icon_edit translation_%s wp-ui-text-icon"><span class="screen-reader-text">%s</span></span>',
+					esc_attr( $hint ),
+					$id,
+					esc_html( $hint )
 				);
 			}
 		}
