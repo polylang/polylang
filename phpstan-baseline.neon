@@ -27,7 +27,7 @@ parameters:
 
 		-
 			message: "#^Property PLL_Admin_Base\\:\\:\\$pref_lang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
-			count: 1
+			count: 2
 			path: admin/admin-base.php
 
 		-
@@ -44,6 +44,11 @@ parameters:
 			message: "#^Parameter \\#3 \\$lang of method PLL_Translated_Post\\:\\:get_untranslated\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: admin/admin-classic-editor.php
+
+		-
+			message: "#^Cannot call method edit_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
 
 		-
 			message: "#^Cannot call method new_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
