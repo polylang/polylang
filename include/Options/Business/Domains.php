@@ -157,7 +157,7 @@ class Domains extends Abstract_Option {
 			if ( ! empty( $failed_urls ) ) {
 				// Non-blocking error.
 				if ( 1 === count( $failed_urls ) ) {
-					/* translators: %s is a URLs. */
+					/* translators: %s is a URL. */
 					$message = __( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' );
 				} else {
 					/* translators: %s is a list of URLs. */
