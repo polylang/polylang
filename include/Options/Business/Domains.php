@@ -126,7 +126,7 @@ class Domains extends Abstract_Option {
 		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
 			// Non-blocking error.
 			if ( 1 === count( $missing_langs ) ) {
-				/* translators: %s is a native languag name. */
+				/* translators: %s is a native language name. */
 				$message = __( 'Please enter a valid URL for %s.', 'polylang' );
 			} else {
 				/* translators: %s is a list of native language names. */
