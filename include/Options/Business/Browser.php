@@ -61,6 +61,7 @@ class Browser extends Abstract_Boolean {
 	 * @return string
 	 */
 	protected function get_description(): string {
+		/* translators: Do not translate "true" and "false". */
 		return __( 'Detect preferred browser language on front page: true to detect, false to not detect.', 'polylang' );
 	}
 }

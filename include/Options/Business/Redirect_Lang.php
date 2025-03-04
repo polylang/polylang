@@ -38,6 +38,7 @@ class Redirect_Lang extends Abstract_Boolean {
 	 * @return string
 	 */
 	protected function get_description(): string {
-		return __( 'Remove the page name or page id from the URL of the front page: true to remove, false to keep.', 'polylang' );
+		/* translators: Do not translate "true" and "false". */
+		return __( 'Remove the page name or page ID from the URL of the front page: true to remove, false to keep.', 'polylang' );
 	}
 }

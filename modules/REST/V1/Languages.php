@@ -484,6 +484,7 @@ class Languages extends Abstract_Controller {
 					'readonly'    => true,
 				),
 				'is_rtl'          => array(
+					/* translators: Do not translate "True". */
 					'description' => __( 'Text direction. True for right-to-left.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
