@@ -293,7 +293,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				break;
 
 			case 'strings':
-				$string_table = new PLL_Table_String( $this->model->get_languages_list() );
+				$string_table = new PLL_Table_String( $this->model->get_languages_list( array( 'translator_id' => 0 ) ) );
 				$string_table->prepare_items();
 				break;
 		}
