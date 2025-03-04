@@ -50,9 +50,11 @@ class Rewrite extends Abstract_Boolean {
 	 */
 	protected function get_description(): string {
 		return sprintf(
-			/* translators: %s is a URL slug: `/language/`. */
-			__( 'Remove %s in pretty permalinks: true to remove, false to keep.', 'polylang' ),
-			'`/language/`'
+			/* translators: %1$s is a URL slug: `/language/`. %2$s and %3$s are "true/false" values. */
+			__( 'Remove %1$s in pretty permalinks: %2$s to remove, %3$s to keep.', 'polylang' ),
+			'`/language/`',
+			'`true`',
+			'`false`'
 		);
 	}
 }

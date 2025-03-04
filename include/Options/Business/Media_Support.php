@@ -37,6 +37,11 @@ class Media_Support extends Abstract_Boolean {
 	 * @return string
 	 */
 	protected function get_description(): string {
-		return __( 'Translate media: true to translate, false otherwise.', 'polylang' );
+		return sprintf(
+			/* translators: %1$s and %2$s are "true/false" values. */
+			__( 'Translate media: %1$s to translate, %2$s otherwise.', 'polylang' ),
+			'`true`',
+			'`false`'
+		);
 	}
 }
