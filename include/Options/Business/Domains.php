@@ -156,13 +156,16 @@ class Domains extends Abstract_Option {
 
 			if ( ! empty( $failed_urls ) ) {
 				// Non-blocking error.
+				if ( 1 === count( $failed_urls ) ) {
+					/* translators: %s is a URLs. */
+					$message = __( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' );
+				} else {
+					/* translators: %s is a list of URLs. */
+					$message = __( 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', 'polylang' );
+				}
 				$this->errors->add(
 					'pll_invalid_domains',
-					sprintf(
-						/* translators: %s is a list of URLs. */
-						_n( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', count( $failed_urls ), 'polylang' ),
-						wp_sprintf_l( '%l', $failed_urls )
-					),
+					sprintf( $message, wp_sprintf_l( '%l', $failed_urls ) ),
 					'warning'
 				);
 			}
