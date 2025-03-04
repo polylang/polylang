@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Capabilities;
 
 use PLL_Language;
+use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -111,6 +112,10 @@ class Hooks {
 		if ( is_numeric( $args[0] ) ) {
 			// When a post ID is provided: `current_user_can( 'edit_post', 42 )`.
 			$language      = PLL()->model->post->get_language( (int) $args[0] );
+			$language_slug = $language ? $language->slug : false;
+		} elseif ( $args[0] instanceof WP_Post ) {
+			// When a post object is provided: `current_user_can( 'edit_post', $post )`.
+			$language      = PLL()->model->post->get_language( (int) $args[0]->ID );
 			$language_slug = $language ? $language->slug : false;
 		} elseif ( is_string( $args[0] ) ) {
 			// When a language slug is provided: `current_user_can( 'edit_posts', 'fr' )`.
