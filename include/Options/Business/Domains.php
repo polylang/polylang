@@ -155,14 +155,8 @@ class Domains extends Abstract_Option {
 				$this->errors->add(
 					'pll_invalid_domains',
 					sprintf(
-						/* translators: %1$s is a formatted number of URLs, 2$s is a list of URLs. */
-						_n(
-							'Polylang was unable to access %1$s URL: %2$s. Please check that the URL is valid.',
-							'Polylang was unable to access %1$s URLs: %2$s. Please check that the URLs are valid.',
-							count( $failed_urls ),
-							'polylang'
-						),
-						number_format_i18n( count( $failed_urls ) ),
+						/* translators: %s is a list of URLs. */
+						_n( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', count( $failed_urls ), 'polylang' ),
 						wp_sprintf_l( '%l', $failed_urls )
 					),
 					'warning'
