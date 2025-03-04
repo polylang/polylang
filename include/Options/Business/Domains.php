@@ -125,13 +125,17 @@ class Domains extends Abstract_Option {
 
 		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
 			// Non-blocking error.
+			if ( 1 === count( $missing_langs ) ) {
+				/* translators: %s is a native languag name. */
+				$message = __( 'Please enter a valid URL for %s.', 'polylang' );
+			} else {
+				/* translators: %s is a list of native language names. */
+				$message = __( 'Please enter valid URLs for %s.', 'polylang' );
+			}
+
 			$this->errors->add(
 				'pll_empty_domains',
-				sprintf(
-					/* translators: %s is a list of native language names. */
-					_n( 'Please enter a valid URL for %s.', 'Please enter valid URLs for %s.', count( $missing_langs ), 'polylang' ),
-					wp_sprintf_l( '%l', $missing_langs )
-				),
+				sprintf( $message, wp_sprintf_l( '%l', $missing_langs ) ),
 				'warning'
 			);
 		}
