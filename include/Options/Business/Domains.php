@@ -125,13 +125,17 @@ class Domains extends Abstract_Option {
 
 		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
 			// Non-blocking error.
+			if ( 1 === count( $missing_langs ) ) {
+				/* translators: %s is a native language name. */
+				$message = __( 'Please enter a valid URL for %s.', 'polylang' );
+			} else {
+				/* translators: %s is a list of native language names. */
+				$message = __( 'Please enter valid URLs for %s.', 'polylang' );
+			}
+
 			$this->errors->add(
 				'pll_empty_domains',
-				sprintf(
-					/* translators: %s is a list of native language names. */
-					_n( 'Please enter a valid URL for %s.', 'Please enter valid URLs for %s.', count( $missing_langs ), 'polylang' ),
-					wp_sprintf_l( '%l', $missing_langs )
-				),
+				sprintf( $message, wp_sprintf_l( '%l', $missing_langs ) ),
 				'warning'
 			);
 		}
@@ -152,13 +156,16 @@ class Domains extends Abstract_Option {
 
 			if ( ! empty( $failed_urls ) ) {
 				// Non-blocking error.
+				if ( 1 === count( $failed_urls ) ) {
+					/* translators: %s is a URL. */
+					$message = __( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' );
+				} else {
+					/* translators: %s is a list of URLs. */
+					$message = __( 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', 'polylang' );
+				}
 				$this->errors->add(
 					'pll_invalid_domains',
-					sprintf(
-						/* translators: %s is a list of URLs. */
-						_n( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', count( $failed_urls ), 'polylang' ),
-						wp_sprintf_l( '%l', $failed_urls )
-					),
+					sprintf( $message, wp_sprintf_l( '%l', $failed_urls ) ),
 					'warning'
 				);
 			}

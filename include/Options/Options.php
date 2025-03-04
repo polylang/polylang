@@ -302,11 +302,18 @@ class Options implements ArrayAccess, IteratorAggregate {
 		}
 
 		// Merge all "unknown option" errors into a single error message.
+		if ( 1 === count( $values ) ) {
+			/* translators: %s is an option name. */
+			$message = __( 'Unknown option key %s.', 'polylang' );
+		} else {
+			/* translators: %s is a list of option names. */
+			$message = __( 'Unknown option keys %s.', 'polylang' );
+		}
+
 		$errors->add(
 			'pll_unknown_option_keys',
 			sprintf(
-				/* translators: %s is a list of option names. */
-				_n( 'Unknown option key %s.', 'Unknown option keys %s.', count( $values ), 'polylang' ),
+				$message,
 				wp_sprintf_l(
 					'%l',
 					array_map(

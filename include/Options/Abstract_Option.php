@@ -255,11 +255,18 @@ abstract class Abstract_Option {
 	 * @return void
 	 */
 	protected function add_unknown_languages_warning( array $language_slugs ): void {
+		if ( 1 === count( $language_slugs ) ) {
+			/* translators: %s is a language slug. */
+			$message = __( 'The language %s is unknown and has been discarded.', 'polylang' );
+		} else {
+			/* translators: %s is a list of language slugs. */
+			$message = __( 'The languages %s are unknown and have been discarded.', 'polylang' );
+		}
+
 		$this->errors->add(
 			sprintf( 'pll_unknown_%s_languages', static::key() ),
 			sprintf(
-				/* translators: %s is a list of language slugs. */
-				_n( 'The language %s is unknown and has been discarded.', 'The languages %s are unknown and have been discarded.', count( $language_slugs ), 'polylang' ),
+				$message,
 				wp_sprintf_l(
 					'%l',
 					array_map(
