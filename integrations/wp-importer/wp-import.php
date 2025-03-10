@@ -23,6 +23,7 @@ class PLL_WP_Import extends WP_Import {
 	 */
 	public function process_terms() {
 		$term_translations = array();
+		$term_languages = array();
 
 		// Store this for future usage as parent function unsets $this->terms.
 		foreach ( $this->terms as $term ) {
@@ -31,6 +32,10 @@ class PLL_WP_Import extends WP_Import {
 			}
 			if ( 'term_translations' == $term['term_taxonomy'] ) {
 				$term_translations[] = $term;
+			}
+
+			if ( 'language' == $term['term_taxonomy'] ) {
+				$term_languages[] = $term;
 			}
 		}
 
@@ -44,6 +49,28 @@ class PLL_WP_Import extends WP_Import {
 			$languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id' ) );
 			$default_lang = reset( $languages );
 			PLL()->options['default_lang'] = $default_lang->slug;
+		}
+
+		// Merge strings translations.
+		foreach ( $term_languages as $term ) {
+			if ( empty( $this->processed_terms[ $term['term_id'] ] ) || empty( $term['termmeta'] ) ) {
+				continue;
+			}
+
+			foreach ( $term['termmeta'] as $term_meta ) {
+				if ( '_pll_strings_translations' !== $term_meta['key'] ) {
+					continue;
+				}
+
+				$strings  = maybe_unserialize( $term_meta['value'] );
+				$mo       = new PLL_MO();
+				$language = PLL()->model->languages->get( $term['term_id'] );
+				$mo->import_from_db( $language );
+				foreach ( $strings as $msg ) {
+					$mo->add_entry_or_merge( $mo->make_entry( $msg[0], $msg[1] ) );
+				}
+				$mo->export_to_db( $language );
+			}
 		}
 
 		// Clean languages cache in case some of them were created during import.
