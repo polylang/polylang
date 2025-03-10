@@ -64,7 +64,7 @@ class PLL_WP_Import extends WP_Import {
 
 				$language = PLL()->model->languages->get( $term['term_id'] );
 				if ( empty( $language ) ) {
-				    continue;
+					continue;
 				}
 
 				$strings = maybe_unserialize( $term_meta['value'] );
