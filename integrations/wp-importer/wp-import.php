@@ -23,7 +23,7 @@ class PLL_WP_Import extends WP_Import {
 	 */
 	public function process_terms() {
 		$term_translations = array();
-		$term_languages = array();
+		$term_languages    = array();
 
 		// Store this for future usage as parent function unsets $this->terms.
 		foreach ( $this->terms as $term ) {
@@ -34,7 +34,7 @@ class PLL_WP_Import extends WP_Import {
 				$term_translations[] = $term;
 			}
 
-			if ( 'language' == $term['term_taxonomy'] ) {
+			if ( 'language' === $term['term_taxonomy'] ) {
 				$term_languages[] = $term;
 			}
 		}
