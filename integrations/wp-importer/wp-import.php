@@ -87,21 +87,13 @@ class PLL_WP_Import extends WP_Import {
 	 * @since 1.2
 	 */
 	public function process_posts() {
-		$menu_items = $mo_posts = array();
+		$menu_items = array();
 
 		// Store this for future usage as parent function unset $this->posts
 		foreach ( $this->posts as $post ) {
 			if ( 'nav_menu_item' == $post['post_type'] ) {
 				$menu_items[] = $post;
 			}
-
-			if ( 0 === strpos( $post['post_title'], 'polylang_mo_' ) ) {
-				$mo_posts[] = $post;
-			}
-		}
-
-		if ( ! empty( $mo_posts ) ) {
-			new PLL_MO(); // Just to register the polylang_mo post type before processing posts
 		}
 
 		parent::process_posts();
@@ -118,24 +110,6 @@ class PLL_WP_Import extends WP_Import {
 					update_post_meta( $this->processed_menu_items[ $item['post_id'] ], '_pll_menu_item', maybe_unserialize( $meta['value'] ) );
 				}
 			}
-		}
-
-		// Merge strings translations
-		foreach ( $mo_posts as $post ) {
-			$lang_id = (int) substr( $post['post_title'], 12 );
-
-			if ( ! empty( $this->processed_terms[ $lang_id ] ) ) {
-				if ( $strings = maybe_unserialize( $post['post_content'] ) ) {
-					$mo = new PLL_MO();
-					$mo->import_from_db( $this->processed_terms[ $lang_id ] );
-					foreach ( $strings as $msg ) {
-						$mo->add_entry_or_merge( $mo->make_entry( $msg[0], $msg[1] ) );
-					}
-					$mo->export_to_db( $this->processed_terms[ $lang_id ] );
-				}
-			}
-			// Delete the now useless imported post
-			wp_delete_post( $this->processed_posts[ $post['post_id'] ], true );
 		}
 	}
 
