@@ -65,6 +65,10 @@ class PLL_WP_Import extends WP_Import {
 				$strings  = maybe_unserialize( $term_meta['value'] );
 				$mo       = new PLL_MO();
 				$language = PLL()->model->languages->get( $term['term_id'] );
+				
+				if ( empty( $language ) ) {
+				    continue;
+				}
 				$mo->import_from_db( $language );
 				foreach ( $strings as $msg ) {
 					$mo->add_entry_or_merge( $mo->make_entry( $msg[0], $msg[1] ) );
