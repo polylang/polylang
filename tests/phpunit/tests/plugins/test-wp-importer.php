@@ -44,6 +44,10 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 		self::delete_all_languages();
 
+		if ( file_exists( PLL_TEST_DATA_DIR . 'test-modified-import.xml' ) ) {
+			unlink( PLL_TEST_DATA_DIR . 'test-modified-import.xml' );
+		}
+
 		parent::tear_down();
 	}
 
@@ -168,7 +172,5 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$fr_mo = new PLL_MO();
 		$fr_mo->import_from_db( self::$model->languages->get( 'fr' ) );
 		$this->assertSame( 'WordPress FR', $fr_mo->translate( 'WordPress' ) );
-
-		unlink( $import_filepath_test );
 	}
 }
