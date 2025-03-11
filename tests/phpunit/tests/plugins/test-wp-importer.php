@@ -104,7 +104,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		);
 		file_put_contents( $import_filepath_test, $import_content );
 
-		$this->_import_wp( PLL_TEST_DATA_DIR . 'test-modified-import.xml' );
+		$this->_import_wp( $import_filepath_test );
 		// languages
 		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
 
@@ -160,7 +160,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		);
 		file_put_contents( $import_filepath_test, $import_content );
 
-		$this->_import_wp( PLL_TEST_DATA_DIR . 'test-modified-import.xml' );
+		$this->_import_wp( $import_filepath_test );
 
 		// Languages.
 		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
