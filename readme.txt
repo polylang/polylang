@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.2
-Stable tag: 3.6.6
+Stable tag: 3.6.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -136,6 +136,12 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix translations not loaded when the language is set from the content #1395
 * Fix possible term duplication #1490
 * Fix sanitization of translated options that may impact other strings #1571
+
+= 3.6.7 (2025-03-11) =
+
+* Pro: Security : Fix private content disclosure.
+* Fix links wrongly removed in notices #1627
+* Fix all categories assigned when the default category is missing #1617
 
 = 3.6.6 (2025-01-13) =
 
