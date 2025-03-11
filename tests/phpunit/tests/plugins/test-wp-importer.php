@@ -89,10 +89,30 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_simple_import() {
-		$this->_import_wp( PLL_TEST_DATA_DIR . 'test-import.xml' );
+		$import_filepath      = PLL_TEST_DATA_DIR . 'test-import.xml';
+		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
+		$import_content  = strtr(
+			file_get_contents( $import_filepath ),
+			array(
+				'{lang_id_1}' => '<![CDATA[172]]>',
+				'{lang_id_2}' => '<![CDATA[174]]>',
+			)
+		);
+		file_put_contents( $import_filepath_test, $import_content );
 
+		$this->_import_wp( PLL_TEST_DATA_DIR . 'test-modified-import.xml' );
 		// languages
 		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
+
+		// Strings translations.
+		$en_mo = new PLL_MO();
+		$en_mo->import_from_db( self::$model->languages->get( 'en' ) );
+		$en_mo->export_to_db( self::$model->languages->get( 'en' ) ); // To clean `PLL_MO` cache for following test.
+		$this->assertSame( 'WordPress EN', $en_mo->translate( 'WordPress' ) );
+		$fr_mo = new PLL_MO();
+		$fr_mo->import_from_db( self::$model->languages->get( 'fr' ) );
+		$en_mo->export_to_db( self::$model->languages->get( 'fr' ) );  // To clean `PLL_MO` cache for following test.
+		$this->assertSame( 'WordPress FR', $fr_mo->translate( 'WordPress' ) );
 
 		// posts
 		$en = get_posts( array( 's' => 'Test', 'lang' => 'en' ) );
@@ -115,5 +135,40 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', self::$model->term->get_language( $en->term_id )->slug );
 		$this->assertEquals( 'fr', self::$model->term->get_language( $fr->term_id )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $en->term_id, 'fr' => $fr->term_id ), self::$model->term->get_translations( $en->term_id ) );
+	}
+
+	/**
+	 * This test checks the import of strings translations with already existing languages.
+	 * The strings translations are not the same between those of the existing languages and those of the import file.
+	 */
+	public function test_simple_import_with_existing_languages() {
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+
+		$import_filepath      = PLL_TEST_DATA_DIR . 'test-import.xml';
+		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
+		$import_content  = strtr(
+			file_get_contents( $import_filepath ),
+			array(
+				'{lang_id_1}' => '<![CDATA[' . self::$model->languages->get( 'en' )->term_id . ']]>',
+				'{lang_id_2}' => '<![CDATA[' . self::$model->languages->get( 'fr' )->term_id . ']]>',
+			)
+		);
+		file_put_contents( $import_filepath_test, $import_content );
+
+		$this->_import_wp( PLL_TEST_DATA_DIR . 'test-modified-import.xml' );
+
+		// Languages.
+		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
+
+		// Strings translations.
+		$en_mo = new PLL_MO();
+		$en_mo->import_from_db( self::$model->languages->get( 'en' ) );
+		$this->assertSame( 'WordPress EN', $en_mo->translate( 'WordPress' ) );
+		$fr_mo = new PLL_MO();
+		$fr_mo->import_from_db( self::$model->languages->get( 'fr' ) );
+		$this->assertSame( 'WordPress FR', $fr_mo->translate( 'WordPress' ) );
+
+		unlink( $import_filepath_test );
 	}
 }
