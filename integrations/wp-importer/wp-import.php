@@ -51,7 +51,12 @@ class PLL_WP_Import extends WP_Import {
 			PLL()->options['default_lang'] = $default_lang->slug;
 		}
 
-		// Merge strings translations.
+		/**
+		 * Merge strings translations for an already existing language.
+		 *
+		 * Term metas are handled by the importer when creating a term,
+		 * but not when updating a term meta on an existing term.
+		 */
 		foreach ( $term_languages as $term ) {
 			if ( empty( $this->processed_terms[ $term['term_id'] ] ) || empty( $term['termmeta'] ) ) {
 				continue;
