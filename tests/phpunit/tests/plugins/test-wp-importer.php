@@ -96,7 +96,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$import_filepath      = PLL_TEST_DATA_DIR . 'test-import.xml';
 		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
 
-		// Prepare the imported file by replacing language id placeholders by a meaningful int.
+		// Prepare the imported file by replacing language ID placeholders by a meaningful int.
 		$import_content  = strtr(
 			file_get_contents( $import_filepath ),
 			array(
@@ -151,10 +151,18 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
+		$en_mo = new PLL_MO();
+		$en_mo->add_entry( $en_mo->make_entry( 'test', 'test en' ) );
+		$en_mo->export_to_db( self::$model->get_language( 'en' ) );
+
+		$fr_mo = new PLL_MO();
+		$fr_mo->add_entry( $fr_mo->make_entry( 'test', 'test fr' ) );
+		$fr_mo->export_to_db( self::$model->get_language( 'fr' ) );
+
 		$import_filepath      = PLL_TEST_DATA_DIR . 'test-import.xml';
 		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
 
-		// Prepare the imported file by replacing language id placeholders by the id of the languages just created.
+		// Prepare the imported file by replacing language ID placeholders by the ID of the languages just created.
 		$import_content  = strtr(
 			file_get_contents( $import_filepath ),
 			array(
@@ -173,8 +181,10 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$en_mo = new PLL_MO();
 		$en_mo->import_from_db( self::$model->languages->get( 'en' ) );
 		$this->assertSame( 'WordPress EN', $en_mo->translate( 'WordPress' ) );
+		$this->assertSame( 'test en', $en_mo->translate( 'test' ) );
 		$fr_mo = new PLL_MO();
 		$fr_mo->import_from_db( self::$model->languages->get( 'fr' ) );
 		$this->assertSame( 'WordPress FR', $fr_mo->translate( 'WordPress' ) );
+		$this->assertSame( 'test fr', $fr_mo->translate( 'test' ) );
 	}
 }
