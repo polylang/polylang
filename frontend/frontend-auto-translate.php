@@ -141,7 +141,7 @@ class PLL_Frontend_Auto_Translate {
 		// According to the codex, this type of query is deprecated as of WP 3.1 but it does not appear in WP 3.5 source code
 		foreach ( array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) ) as $taxonomy ) {
 			$tax = get_taxonomy( $taxonomy );
-			if ( ! empty( $tax ) && ! empty( $qv[ $tax->query_var ] ) ) {
+			if ( ! empty( $tax ) && ! empty( $tax->query_var ) && ! empty( $qv[ $tax->query_var ] ) ) {
 				$qv[ $tax->query_var ] = $this->translate_terms_list( $qv[ $tax->query_var ], $taxonomy );
 			}
 		}
