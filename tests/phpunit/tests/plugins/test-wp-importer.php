@@ -95,13 +95,13 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 	public function test_simple_import() {
 		$import_filepath      = PLL_TEST_DATA_DIR . 'test-import.xml';
 		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
-		
+
 		// Prepare the imported file by replacing language id placeholders by a meaningful int.
 		$import_content  = strtr(
 			file_get_contents( $import_filepath ),
 			array(
-				'{lang_id_1}' => '<![CDATA[172]]>',
-				'{lang_id_2}' => '<![CDATA[174]]>',
+				'{lang_id_1}' => 172,
+				'{lang_id_2}' => 174,
 			)
 		);
 		file_put_contents( $import_filepath_test, $import_content );
@@ -158,8 +158,8 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$import_content  = strtr(
 			file_get_contents( $import_filepath ),
 			array(
-				'{lang_id_1}' => '<![CDATA[' . self::$model->languages->get( 'en' )->term_id . ']]>',
-				'{lang_id_2}' => '<![CDATA[' . self::$model->languages->get( 'fr' )->term_id . ']]>',
+				'{lang_id_1}' => self::$model->languages->get( 'en' )->term_id,
+				'{lang_id_2}' => self::$model->languages->get( 'fr' )->term_id,
 			)
 		);
 		file_put_contents( $import_filepath_test, $import_content );
