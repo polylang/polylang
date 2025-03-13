@@ -97,7 +97,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
 
 		// Prepare the imported file by replacing language ID placeholders by a meaningful int.
-		$import_content  = strtr(
+		$import_content = strtr(
 			file_get_contents( $import_filepath ),
 			array(
 				'{lang_id_1}' => 172,
@@ -163,7 +163,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
 
 		// Prepare the imported file by replacing language ID placeholders by the ID of the languages just created.
-		$import_content  = strtr(
+		$import_content = strtr(
 			file_get_contents( $import_filepath ),
 			array(
 				'{lang_id_1}' => self::$model->languages->get( 'en' )->term_id,
