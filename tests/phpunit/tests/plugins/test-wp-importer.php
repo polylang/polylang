@@ -95,6 +95,8 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 	public function test_simple_import() {
 		$import_filepath      = PLL_TEST_DATA_DIR . 'test-import.xml';
 		$import_filepath_test = PLL_TEST_DATA_DIR . 'test-modified-import.xml';
+		
+		// Prepare the imported file by replacing language id placeholders by a meaningful int.
 		$import_content  = strtr(
 			file_get_contents( $import_filepath ),
 			array(
