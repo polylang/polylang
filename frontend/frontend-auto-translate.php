@@ -312,13 +312,17 @@ class PLL_Frontend_Auto_Translate {
 		$slugs = array();
 
 		if ( is_array( $query_var ) ) {
-			$slugs = &$query_var;
+			$slugs = $query_var;
 		} elseif ( is_string( $query_var ) ) {
 			$sep   = strpos( $query_var, ',' ) !== false ? ',' : '+'; // Two possible separators.
 			$slugs = explode( $sep, $query_var );
 		}
 
 		foreach ( $slugs as &$slug ) {
+			if ( ! is_string( $slug ) ) {
+				// We got an unexpected query var, let return it unchanged.
+				return $query_var;
+			}
 			$slug = $this->get_translated_term_by( 'slug', $slug, $taxonomy );
 		}
 
