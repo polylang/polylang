@@ -79,12 +79,13 @@ class PLL_Admin_Strings {
 
 			foreach ( $widgets as $widget ) {
 				// Nothing can be done if the widget is created using pre WP2.8 API. There is no object, so we can't access it to get the widget options.
-				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
+				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! $wp_registered_widgets[ $widget ]['callback'][0] instanceof WP_Widget ) {
 					continue;
 				}
 
-				$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
-				$number = $wp_registered_widgets[ $widget ]['params'][0]['number'];
+				$widget_instance = $wp_registered_widgets[ $widget ]['callback'][0];
+				$widget_settings = $widget_instance->get_settings();
+				$number          = $wp_registered_widgets[ $widget ]['params'][0]['number'];
 
 				// Don't enable widget translation if the widget is visible in only one language or if there is no title.
 				if ( ! empty( $widget_settings[ $number ]['pll_lang'] ) ) {
@@ -92,7 +93,7 @@ class PLL_Admin_Strings {
 				}
 
 				// Widget title.
-				if ( ! empty( $widget_settings[ $number ]['title'] ) ) { 
+				if ( ! empty( $widget_settings[ $number ]['title'] ) ) {
 					self::register_string( self::$default_strings['widget_title'], $widget_settings[ $number ]['title'], 'Widget' );
 				}
 
@@ -102,7 +103,7 @@ class PLL_Admin_Strings {
 				}
 
 				// Content of the widget custom html.
-				if ( ! empty( $widget_settings[ $number ]['content'] ) ) {
+				if ( $widget_instance instanceof WP_Widget_Custom_HTML && ! empty( $widget_settings[ $number ]['content'] ) ) {
 					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['content'], 'Widget', true );
 				}
 			}
