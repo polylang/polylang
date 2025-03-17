@@ -327,9 +327,9 @@ class PLL_Frontend_Auto_Translate {
 		}
 
 		if ( ! empty( $sep ) ) {
-			$query_var = implode( $sep, $slugs );
+			return implode( $sep, $slugs );
 		}
 
-		return $query_var;
+		return $slugs;
 	}
 }
