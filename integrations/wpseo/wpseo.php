@@ -47,6 +47,7 @@ class PLL_WPSEO {
 			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 4 );
 			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
 			add_filter( 'pll_post_metas_to_export', array( $this, 'export_post_metas' ) );
+			add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 			// Yoast SEO adds the columns hooks only for the 'inline-save' action. We need them for 'pll_update_post_rows' too.
 			if ( wp_doing_ajax() && isset( $_POST['action'] ) && 'pll_update_post_rows' === $_POST['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -493,6 +494,48 @@ class PLL_WPSEO {
 		$metas_to_export = array_fill_keys( $this->get_translatable_meta_keys(), 1 );
 
 		return array_merge( $metas, $metas_to_export );
+	}
+
+	/**
+	 * Translates Yoast SEO block attributes.
+	 * Currently `how-to-block` and `faq-block`.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $parsing_rules Rules for blocks attributes to translate.
+	 * @return array Rules completed with ones from Yoast SEO blocks.
+	 *
+	 * @phpstan-param array<non-empty-string, array|true> $parsing_rules
+	 * @phpstan-return array<non-empty-string, array|true>
+	 */
+	public function translate_blocks_attributes( $parsing_rules ) {
+		if ( ! is_array( $parsing_rules ) ) {
+			return $parsing_rules;
+		}
+
+		$parsing_rules['yoast/how-to-block'] = array(
+			'steps' => array(
+				'*' => array(
+					'name'     => true,
+					'text'     => true,
+					'jsonName' => true,
+					'jsonText' => true,
+				),
+			),
+		);
+
+		$parsing_rules['yoast/faq-block'] = array(
+			'questions' => array(
+				'*' => array(
+					'question'     => true,
+					'answer'       => true,
+					'jsonQuestion' => true,
+					'jsonAnswer'   => true,
+				),
+			),
+		);
+
+		return $parsing_rules;
 	}
 
 	/**
