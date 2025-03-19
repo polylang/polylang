@@ -17,13 +17,11 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // Translated custom post type with archives.
 		register_taxonomy( 'trtax', 'trcpt' ); // Translated custom tax.
-
-		self::$model->options['post_types'] = array( 'trcpt' );
-		self::$model->options['taxonomies'] = array( 'trtax' );
+		register_taxonomy( 'without_qv', 'trcpt', array( 'query_var' => false ) );
 
 		$options = array(
 			'post_types' => array( 'trcpt' ),
-			'taxonomies' => array( 'trtax' ),
+			'taxonomies' => array( 'trtax', 'without_qv' ),
 		);
 
 		$frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
@@ -230,5 +228,26 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$expected = get_term( $en, 'category' );
 		$terms = get_terms( array( 'taxonomy' => 'category', 'hide_empty' => 0, 'include' => array( $en ), 'lang' => '' ) );
 		$this->assertEquals( array( $expected->term_id ), wp_list_pluck( $terms, 'term_id' ) );
+	}
+
+	/**
+	 * Conflict with WooCommerce Price Based on Country #1638.
+	 */
+	public function test_query_with_unexpected_extra_data() {
+		$posts = self::factory()->post->create_translated(
+			array( 'post_title' => 'test', 'post_type' => 'trcpt', 'lang' => 'en' ),
+			array( 'post_title' => 'essai', 'post_type' => 'trcpt', 'lang' => 'fr' )
+		);
+
+		$extra = array( array( array( 'some data' ) ) ); // We need a 3D array to reproduce the fatal error.
+
+		$args = array(
+			'post_type' => 'trcpt',
+			'name'      => 'test',
+			0           => $extra,
+		);
+
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( get_post( $posts['fr'] ) ), $query->posts );
 	}
 }
