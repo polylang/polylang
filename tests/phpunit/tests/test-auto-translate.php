@@ -17,16 +17,24 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // Translated custom post type with archives.
 		register_taxonomy( 'trtax', 'trcpt' ); // Translated custom tax.
-		register_taxonomy( 'without_qv', 'trcpt', array( 'query_var' => false ) );
+		register_taxonomy( 'tax_without_qv', 'trcpt', array( 'query_var' => false ) );
 
 		$options = array(
 			'post_types' => array( 'trcpt' ),
-			'taxonomies' => array( 'trtax', 'without_qv' ),
+			'taxonomies' => array( 'trtax', 'tax_without_qv' ),
 		);
 
 		$frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
 
 		$frontend->curlang = $frontend->model->get_language( 'fr' );
+	}
+
+	public function tear_down() {
+		parent::tear_down();
+
+		_unregister_post_type( 'trcpt' );
+		_unregister_taxonomy( 'trtax' );
+		_unregister_taxonomy( 'tax_without_qv' );
 	}
 
 	public function test_category() {
@@ -232,6 +240,8 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	/**
 	 * Conflict with WooCommerce Price Based on Country #1638.
+	 *
+	 * This test implicitly depends on the taxonomy without query var `tax_without_qv`.
 	 */
 	public function test_query_with_unexpected_extra_data() {
 		$posts = self::factory()->post->create_translated(
