@@ -142,7 +142,7 @@ class Languages {
 	 *                                not be loaded...
 	 *   @type bool   $rtl            True if rtl language, false otherwise.
 	 *   @type int    $term_group     Language order when displayed.
-	 *   @type string $flag           Optional. Country code, {@see ser/settings/flags.php}.
+	 *   @type string $flag           Optional. Country code, {@see src/settings/flags.php}.
 	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
@@ -217,7 +217,7 @@ class Languages {
 		 *                                not be loaded...
 		 *   @type bool   $rtl            True if rtl language, false otherwise.
 		 *   @type int    $term_group     Language order when displayed.
-		 *   @type string $flag           Optional. Country code, {@see ser/settings/flags.php}.
+		 *   @type string $flag           Optional. Country code, {@see src/settings/flags.php}.
 		 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
 		 * }
 		 */
@@ -242,7 +242,7 @@ class Languages {
 	 *                            not be loaded...
 	 *   @type bool   $rtl        True if rtl language, false otherwise.
 	 *   @type int    $term_group Language order when displayed.
-	 *   @type string $flag       Optional, country code, {@see ser/settings/flags.php}.
+	 *   @type string $flag       Optional, country code, {@see src/settings/flags.php}.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
@@ -751,7 +751,7 @@ class Languages {
 	 *   @type int    $term_group Language order when displayed.
 	 *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
 	 *                            created.
-	 *   @type string $flag       Optional, country code, {@see ser/settings/flags.php}.
+	 *   @type string $flag       Optional, country code, {@see src/settings/flags.php}.
 	 * }
 	 * @return string The serialized description array updated.
 	 *
@@ -802,7 +802,7 @@ class Languages {
 		 *     @type int    $term_group Language order when displayed.
 		 *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
 		 *                              being created.
-		 *     @type string $flag       Optional, country code, {@see ser/settings/flags.php}.
+		 *     @type string $flag       Optional, country code, {@see src/settings/flags.php}.
 		 * }
 		 * @param mixed[] $new_data New data.
 		 * @param mixed[] $old_data {
