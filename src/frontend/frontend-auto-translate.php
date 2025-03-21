@@ -141,7 +141,7 @@ class PLL_Frontend_Auto_Translate {
 		// According to the codex, this type of query is deprecated as of WP 3.1 but it does not appear in WP 3.5 source code
 		foreach ( array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) ) as $taxonomy ) {
 			$tax = get_taxonomy( $taxonomy );
-			if ( ! empty( $tax ) && ! empty( $qv[ $tax->query_var ] ) ) {
+			if ( ! empty( $tax ) && ! empty( $tax->query_var ) && ! empty( $qv[ $tax->query_var ] ) ) {
 				$qv[ $tax->query_var ] = $this->translate_terms_list( $qv[ $tax->query_var ], $taxonomy );
 			}
 		}
@@ -312,20 +312,24 @@ class PLL_Frontend_Auto_Translate {
 		$slugs = array();
 
 		if ( is_array( $query_var ) ) {
-			$slugs = &$query_var;
+			$slugs = $query_var;
 		} elseif ( is_string( $query_var ) ) {
 			$sep   = strpos( $query_var, ',' ) !== false ? ',' : '+'; // Two possible separators.
 			$slugs = explode( $sep, $query_var );
 		}
 
 		foreach ( $slugs as &$slug ) {
+			if ( ! is_string( $slug ) ) {
+				// We got an unexpected query var, let return it unchanged.
+				return $query_var;
+			}
 			$slug = $this->get_translated_term_by( 'slug', $slug, $taxonomy );
 		}
 
 		if ( ! empty( $sep ) ) {
-			$query_var = implode( $sep, $slugs );
+			return implode( $sep, $slugs );
 		}
 
-		return $query_var;
+		return $slugs;
 	}
 }
