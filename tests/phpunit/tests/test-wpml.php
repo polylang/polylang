@@ -79,7 +79,7 @@ class WPML_Test extends PLL_UnitTestCase {
 			'missing'          => 0,
 			'translated_name'  => '',
 			'language_code'    => 'fr',
-			'country_flag_url' => plugins_url( '/src/flags/fr.png', POLYLANG_FILE ),
+			'country_flag_url' => plugins_url( '/flags/fr.png', POLYLANG_FILE ),
 			'url'              => home_url( "?page_id={$fr}&lang=fr" ),
 		);
 

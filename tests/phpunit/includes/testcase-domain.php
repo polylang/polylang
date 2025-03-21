@@ -57,7 +57,7 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 			$code = 'en' === $flag_language->slug ? 'us' : $flag_language->slug;
 			$dir  = $is_subfolder_install ? "/{$this->subfolder_name}" : '';
 			$this->assertSame(
-				$this->hosts[ $curlang->slug ] . "{$dir}/wp-content/plugins/polylang/src/flags/{$code}.png",
+				$this->hosts[ $curlang->slug ] . "{$dir}/wp-content/plugins/polylang/flags/{$code}.png",
 				$flag_language->get_display_flag_url(),
 				"{$flag_language->name} flag URL with current language set to {$curlang->name} is wrong."
 			);
