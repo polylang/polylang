@@ -28,7 +28,7 @@ function configureWebpack( options ){
 	];
 
 	const jsFileNamesToIgnore = [
-		'js/src/lib/**',
+		'src/js/src/lib/**',
 		'**/*.config.js',
 		'**/*.min.js',
 	];
@@ -37,15 +37,15 @@ function configureWebpack( options ){
 	console.log( 'js files to minify:', jsFileNames );
 
 	const jsFileNamesEntries = [
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', true ) ),
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', false ) )
+		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/src/js/build', true ) ),
+		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/src/js/build', false ) )
 	]
 
 	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
 	console.log( 'css files to minify:', cssFileNames );
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
-	const cssFileNamesEntries = cssFileNames.map( transformCssEntry( path.resolve( __dirname ) + '/css/build', isProduction ) );
+	const cssFileNamesEntries = cssFileNames.map( transformCssEntry( path.resolve( __dirname ) + '/src/css/build', isProduction ) );
 
 	// Make webpack configuration.
 	const config = [

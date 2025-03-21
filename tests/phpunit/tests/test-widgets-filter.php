@@ -17,7 +17,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		$this->links_model = self::$model->get_links_model();
 
-		require_once POLYLANG_DIR . '/include/api.php'; // Usually loaded only if an instance of Polylang exists
+		require_once POLYLANG_DIR . '/src/include/api.php'; // Usually loaded only if an instance of Polylang exists
 
 		update_option(
 			'widget_search',

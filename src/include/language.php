@@ -379,7 +379,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 		);
 
 		// Polylang builtin flags.
-		if ( ! empty( $code ) && is_readable( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
+		if ( ! empty( $code ) && is_readable( POLYLANG_DIR . ( $file = '/src/flags/' . $code . '.png' ) ) ) {
 			$default_flag['url'] = plugins_url( $file, POLYLANG_FILE );
 
 			// If base64 encoded flags are preferred.

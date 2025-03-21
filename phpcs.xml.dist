@@ -168,8 +168,8 @@
 	#############################################################################
 	-->
 
-	<exclude-pattern>js/*.min.js</exclude-pattern>
-	<exclude-pattern>js/build</exclude-pattern>
+	<exclude-pattern>src/js/*.min.js</exclude-pattern>
+	<exclude-pattern>src/js/build</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>
 	<exclude-pattern>vendor/*</exclude-pattern>
 	<exclude-pattern>tmp/*</exclude-pattern>
@@ -177,6 +177,6 @@
 	<exclude-pattern>rector.php</exclude-pattern>
 
 	<!-- Specific to Polylang -->
-	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
-	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
+	<exclude-pattern>src/install/plugin-updater.php</exclude-pattern>
+	<exclude-pattern>src/include/widget-calendar.php</exclude-pattern>
 </ruleset>
