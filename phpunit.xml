@@ -18,13 +18,7 @@
 	</testsuites>
 	<filter>
 		<whitelist addUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./src/admin</directory>
-			<directory suffix=".php">./src/frontend</directory>
-			<directory suffix=".php">./src/include</directory>
-			<directory suffix=".php">./src/install</directory>
-			<directory suffix=".php">./src/integrations</directory>
-			<directory suffix=".php">./src/modules</directory>
-			<directory suffix=".php">./src/settings</directory>
+			<directory suffix=".php">./src</directory>
 			<file>polylang.php</file>
 			<file>uninstall.php</file>
 			<exclude>
