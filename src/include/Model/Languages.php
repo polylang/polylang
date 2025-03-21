@@ -866,7 +866,7 @@ class Languages {
 		}
 
 		// Validate flag.
-		if ( ! empty( $args['flag'] ) && ! is_readable( POLYLANG_DIR . '/src/flags/' . $args['flag'] . '.png' ) ) {
+		if ( ! empty( $args['flag'] ) && ! is_readable( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
 			$flag = PLL_Language::get_flag_information( $args['flag'] );
 
 			if ( ! empty( $flag['url'] ) ) {

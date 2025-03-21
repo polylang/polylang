@@ -1,9 +1,9 @@
 # Folders, allowing symbolic links for tmp/
 .idea/
 coverage/
+css/build/
+js/build/
 node_modules/
-src/css/build/
-src/js/build/
 tmp
 vendor/
 

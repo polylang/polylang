@@ -2,9 +2,9 @@
 
 bin/
 coverage/
+css/src/
+js/src/
 node_modules/
-src/css/src/
-src/js/src/
 tests/
 tmp/
 behat.yml
