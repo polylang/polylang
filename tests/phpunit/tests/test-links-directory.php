@@ -237,7 +237,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 
 		foreach ( $languages as $language ) {
 			$code = 'en' === $language->slug ? 'us' : $language->slug;
-			$this->assertSame( "http://example.org/{$this->subfolder_name}/wp-content/plugins/polylang/flags/{$code}.png", $language->get_display_flag_url() );
+			$this->assertSame( "http://example.org/{$this->subfolder_name}/wp-content/plugins/polylang/src/flags/{$code}.png", $language->get_display_flag_url() );
 		}
 	}
 }

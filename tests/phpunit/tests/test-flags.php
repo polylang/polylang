@@ -41,7 +41,7 @@ class Flags_Test extends PLL_UnitTestCase {
 
 	public function test_default_flag() {
 		$lang = self::$model->get_language( 'en' );
-		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
+		$this->assertEquals( plugins_url( '/src/flags/us.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
 		$this->assertEquals( 1, preg_match( '#<img src="data:image\/png;base64,(.+)" alt="English" width="16" height="11" style="(.+)" \/>#', $lang->get_display_flag() ) );
 	}
 

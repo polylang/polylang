@@ -15,7 +15,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		require_once POLYLANG_DIR . '/src/include/api.php';
 	}
 
 	public function set_up() {
@@ -62,7 +62,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'English', $arr['en']['name'] );
 		$this->assertEquals( 'en-US', $arr['en']['locale'] );
 		$this->assertEquals( 'en', $arr['en']['slug'] );
-		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $arr['en']['flag'] );
+		$this->assertEquals( plugins_url( '/src/flags/us.png', POLYLANG_FILE ), $arr['en']['flag'] );
 
 		// Other arguments
 		$args = array_merge(

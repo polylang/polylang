@@ -13,7 +13,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
 		copy( __DIR__ . '/../data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		require_once POLYLANG_DIR . '/src/include/api.php';
 	}
 
 	public static function wpTearDownAfterClass() {

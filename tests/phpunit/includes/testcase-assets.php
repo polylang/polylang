@@ -1,5 +1,5 @@
 <?php
-require POLYLANG_DIR . '/include/api.php';
+require POLYLANG_DIR . '/src/include/api.php';
 
 abstract class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	/**

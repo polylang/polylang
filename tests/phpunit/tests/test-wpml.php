@@ -13,7 +13,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		require_once POLYLANG_DIR . '/src/include/api.php';
 	}
 
 	public function set_up() {
@@ -79,7 +79,7 @@ class WPML_Test extends PLL_UnitTestCase {
 			'missing'          => 0,
 			'translated_name'  => '',
 			'language_code'    => 'fr',
-			'country_flag_url' => plugins_url( '/flags/fr.png', POLYLANG_FILE ),
+			'country_flag_url' => plugins_url( '/src/flags/fr.png', POLYLANG_FILE ),
 			'url'              => home_url( "?page_id={$fr}&lang=fr" ),
 		);
 
