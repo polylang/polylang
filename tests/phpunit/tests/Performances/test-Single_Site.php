@@ -12,6 +12,10 @@ class Single_Site_Test extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang/issues/2557
 	 */
 	public function test_active_sitewide_plugins_is_not_called() {
+		if ( is_multisite() ) {
+			$this->markTestSkipped( 'This test is not relevant on multisite.' );
+		}
+
 		add_action( 'pll_init_options_for_blog', array( Registry::class, 'register' ) );
 		new Options();
 
