@@ -5,11 +5,10 @@
 
 namespace WP_Syntex\Polylang\Options;
 
+use WP_Error;
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
-use WP_Error;
-use WP_Site;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -75,13 +74,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 */
 	public function __construct() {
 		// Keep track of the blog ID.
-		$this->blog_id = (int) get_current_blog_id();
+		$this->blog_id         = (int) get_current_blog_id();
+		$this->current_blog_id = $this->blog_id;
 
 		// Handle options.
 		$this->init_options_for_blog( $this->blog_id );
 
 		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
-		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), -1000 ); // Options must be ready early.
+		add_action( 'switch_blog', array( $this, 'on_blog_switch' ), PHP_INT_MIN ); // Options must be ready early.
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
 
@@ -146,16 +146,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return void
 	 */
 	public function init_options_for_blog( $blog_id ): void {
-		$this->current_blog_id = (int) $blog_id;
-
-		if ( isset( $this->options[ $blog_id ] ) ) {
-			return;
-		}
-
-		if ( ! pll_is_plugin_active( POLYLANG_BASENAME ) && ! doing_action( 'activate_' . POLYLANG_BASENAME ) ) {
-			return;
-		}
-
 		$options = get_option( self::OPTION_NAME );
 
 		if ( empty( $options ) || ! is_array( $options ) ) {
@@ -178,6 +168,28 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
+	 * Initializes options for the newly switched blog if applicable.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int $blog_id The blog ID.
+	 * @return void
+	 */
+	public function on_blog_switch( $blog_id ): void {
+		$this->current_blog_id = (int) $blog_id;
+
+		if ( isset( $this->options[ $blog_id ] ) ) {
+			return;
+		}
+
+		if ( ! pll_is_plugin_active( POLYLANG_BASENAME ) && ! doing_action( 'activate_' . POLYLANG_BASENAME ) ) {
+			return;
+		}
+
+		$this->init_options_for_blog( $this->current_blog_id );
+	}
+
+	/**
 	 * Stores the options into the database for all blogs.
 	 * Hooked to `shutdown`.
 	 *
@@ -194,7 +206,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return;
 		}
 
-		remove_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
+		remove_action( 'switch_blog', array( $this, 'on_blog_switch' ), PHP_INT_MIN );
 
 		// Handle the original blog first, maybe this will prevent the use of `switch_to_blog()`.
 		if ( isset( $modified[ $this->blog_id ] ) && $this->current_blog_id === $this->blog_id ) {
