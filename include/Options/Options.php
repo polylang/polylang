@@ -81,7 +81,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 		$this->init_options_for_current_blog();
 
 		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
-		add_action( 'switch_blog', array( $this, 'on_blog_switch' ), PHP_INT_MIN ); // Options must be ready early.
+		add_action( 'switch_blog', array( $this, 'on_blog_switch' ), -1000 ); // Options must be ready early.
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
 
@@ -173,7 +173,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return;
 		}
 
-		remove_action( 'switch_blog', array( $this, 'on_blog_switch' ), PHP_INT_MIN );
+		remove_action( 'switch_blog', array( $this, 'on_blog_switch' ), -1000 );
 
 		// Handle the original blog first, maybe this will prevent the use of `switch_to_blog()`.
 		if ( isset( $modified[ $this->blog_id ] ) && $this->current_blog_id === $this->blog_id ) {
