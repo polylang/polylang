@@ -1,6 +1,4 @@
 <?php
-require POLYLANG_DIR . '/src/include/api.php';
-
 abstract class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	/**
 	 * The Polylang assets identifiers (those rendered by WordPress in HTML tags).
