@@ -12,7 +12,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once POLYLANG_DIR . '/src/include/api.php';
+		self::require_api();
 	}
 
 	public function set_up() {

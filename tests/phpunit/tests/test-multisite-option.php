@@ -9,7 +9,7 @@ if ( is_multisite() ) :
 
 			self::create_language( 'en_US' );
 
-			require_once POLYLANG_DIR . '/src/include/api.php';
+			self::require_api();
 		}
 
 		public function set_up() {
