@@ -244,7 +244,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function require_api(): void {
-		require_once POLYLANG_DIR . '/src/include/api.php';
+		require_once POLYLANG_DIR . '/src/api.php';
 	}
 
 	/**

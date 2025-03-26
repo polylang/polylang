@@ -368,202 +368,202 @@ parameters:
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$options\\.$#"
 			count: 1
-			path: src/include/crud-posts.php
+			path: src/crud-posts.php
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
 			count: 1
-			path: src/include/crud-terms.php
+			path: src/crud-terms.php
 
 		-
 			message: "#^Method PLL_CRUD_Terms\\:\\:get_queried_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|null\\.$#"
 			count: 2
-			path: src/include/crud-terms.php
+			path: src/crud-terms.php
 
 		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Model\\:\\:terms_clauses\\(\\) expects PLL_Language\\|false, PLL_Language\\|string\\|false given\\.$#"
 			count: 1
-			path: src/include/crud-terms.php
+			path: src/crud-terms.php
 
 		-
 			message: "#^Cannot access offset 'term_id' on array\\{term_id\\: int, term_taxonomy_id\\: int\\|string\\}\\|WP_Error\\.$#"
 			count: 1
-			path: src/include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
 			count: 1
-			path: src/include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: "#^Cannot cast mixed to int\\.$#"
 			count: 2
-			path: src/include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:get_translations\\(\\) expects int, mixed given\\.$#"
 			count: 1
-			path: src/include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 2
-			path: src/include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: "#^@param PLL_Language \\$lang does not accept actual type of parameter\\: PLL_Language\\|false\\.$#"
 			count: 2
-			path: src/include/filters-links.php
+			path: src/filters-links.php
 
 		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 4
-			path: src/include/filters-links.php
+			path: src/filters-links.php
 
 		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, PLL_Language\\|null given\\.$#"
 			count: 1
-			path: src/include/filters-links.php
+			path: src/filters-links.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:get_translations\\(\\) expects int, mixed given\\.$#"
 			count: 1
-			path: src/include/filters.php
+			path: src/filters.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function pll__ expects string, mixed given\\.$#"
 			count: 1
-			path: src/include/filters.php
+			path: src/filters.php
 
 		-
 			message: "#^Parameter \\#1 \\$.+ of function base64_encode expects string, string\\|false given\\.$#"
 			count: 1
-			path: src/include/language.php
+			path: src/language.php
 
 		-
 			message: "#^Parameter \\#1 \\$format of function date_i18n expects string, mixed given\\.$#"
 			count: 3
-			path: src/include/license.php
+			path: src/license.php
 
 		-
 			message: "#^Method PLL_Links_Directory\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
-			path: src/include/links-directory.php
+			path: src/links-directory.php
 
 		-
 			message: "#^Method PLL_Links_Directory\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
-			path: src/include/links-directory.php
+			path: src/links-directory.php
 
 		-
 			message: "#^Parameter \\#1 \\$str of function preg_quote expects string, string\\|null given\\.$#"
 			count: 2
-			path: src/include/links-directory.php
+			path: src/links-directory.php
 
 		-
 			message: "#^Method PLL_Links_Domain\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
-			path: src/include/links-domain.php
+			path: src/links-domain.php
 
 		-
 			message: "#^Method PLL_Links_Domain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
-			path: src/include/links-domain.php
+			path: src/links-domain.php
 
 		-
 			message: "#^Method PLL_Links_Model\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int, string\\|false\\|null\\>\\.$#"
 			count: 1
-			path: src/include/links-model.php
+			path: src/links-model.php
 
 		-
 			message: "#^@param string \\$modified_url does not accept actual type of parameter\\: string\\|null\\.$#"
 			count: 1
-			path: src/include/links-permalinks.php
+			path: src/links-permalinks.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, mixed given\\.$#"
 			count: 1
-			path: src/include/links-permalinks.php
+			path: src/links-permalinks.php
 
 		-
 			message: "#^Parameter \\#2 \\$subject of function preg_match expects string, mixed given\\.$#"
 			count: 1
-			path: src/include/links-permalinks.php
+			path: src/links-permalinks.php
 
 		-
 			message: "#^Method PLL_Links_Subdomain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
-			path: src/include/links-subdomain.php
+			path: src/links-subdomain.php
 
 		-
 			message: "#^Method PLL_Model\\:\\:get_links_model\\(\\) should return PLL_Links_Model but returns object\\.$#"
 			count: 1
-			path: src/include/model.php
+			path: src/model.php
 
 		-
 			message: "#^Property PLL_Nav_Menu\\:\\:\\$theme \\(string\\) does not accept mixed\\.$#"
 			count: 1
-			path: src/include/nav-menu.php
+			path: src/nav-menu.php
 
 		-
 			message: "#^Cannot access property \\$model on PLL_Links\\|null\\.$#"
 			count: 5
-			path: src/include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: "#^Cannot access property \\$options on PLL_Links\\|null\\.$#"
 			count: 1
-			path: src/include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: "#^Cannot call method get_home_url\\(\\) on PLL_Links\\|null\\.$#"
 			count: 1
-			path: src/include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: "#^Method PLL_Switcher\\:\\:get_link\\(\\) should return string\\|null but returns string\\|false\\.$#"
 			count: 2
-			path: src/include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: "#^Parameter \\#1 \\$language of method PLL_Switcher\\:\\:get_link\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 1
-			path: src/include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: "#^Method PLL_Translate_Option\\:\\:translate_string_recursive\\(\\) should return array\\|string but returns array\\|string\\|Traversable\\.$#"
 			count: 1
-			path: src/include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: "#^Parameter \\#1 \\$singular of method Translations\\:\\:translate\\(\\) expects string, mixed given\\.$#"
 			count: 1
-			path: src/include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function pll__ expects string, mixed given\\.$#"
 			count: 1
-			path: src/include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{description\\: mixed\\} given\\.$#"
 			count: 1
-			path: src/include/translated-object.php
+			path: src/translated-object.php
 
 		-
 			message: "#^Parameter \\#3 \\$args of function wp_update_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{description\\: mixed\\} given\\.$#"
 			count: 2
-			path: src/include/translated-object.php
+			path: src/translated-object.php
 
 		-
 			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{description\\: mixed\\} given\\.$#"
 			count: 1
-			path: src/include/translated-term.php
+			path: src/translated-term.php
 
 		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
 			count: 1
-			path: src/include/widget-languages.php
+			path: src/widget-languages.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$_last_checked\\.$#"

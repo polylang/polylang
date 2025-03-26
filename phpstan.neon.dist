@@ -5,16 +5,12 @@ parameters:
 	level: max
 	paths:
 		- polylang.php
-		- src/admin/
-		- src/frontend/
-		- src/include/
-		- src/install/
-		- src/modules/
-		- src/settings/
+		- src/
 	excludePaths:
 		- **/load.php
-		- src/include/widget-calendar.php
+		- src/integrations/
 		- src/install/plugin-updater.php
+		- src/widget-calendar.php
 	treatPhpDocTypesAsCertain: false
 	ignoreErrors:
 		- identifier: missingType.iterableValue
@@ -49,10 +45,10 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
 			count: 1
-			path: src/include/model.php
+			path: src/model.php
 
 		# Ignored because the cache is initialized in the constructor.
 		-
 			message: "#^Static property PLL_MO\\:\\:\\$cache \\(PLL_Cache\\<array\\>\\) in empty\\(\\) is not falsy\\.$#"
 			count: 1
-			path: src/include/mo.php
+			path: src/mo.php
