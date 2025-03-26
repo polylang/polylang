@@ -5,7 +5,12 @@ parameters:
 	level: max
 	paths:
 		- polylang.php
-		- src/
+		- src/admin/
+		- src/frontend/
+		- src/include/
+		- src/install/
+		- src/modules/
+		- src/settings/
 	excludePaths:
 		- **/load.php
 		- src/include/widget-calendar.php
