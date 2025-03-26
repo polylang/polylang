@@ -10,9 +10,7 @@ on:
       - '**.yml'
       - '**.sh'
   pull_request:
-    branches:
-      - master
-      - dev-3.8
+    branches: master
     paths:
       - '**.php'
       - 'phpunit.xml'
