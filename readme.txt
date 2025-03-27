@@ -119,8 +119,10 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Remove the possibility to translate ACF field groups
 * Pro: Add languages in ACF locations
 * Pro: Add translation of ACF labels in the strings translations page
+* Pro: Fix incorrect count of translated strings when importing strings translations
 * Pro: Fix incorrect translation when an XLIFF import updates a term sharing its slug
 * Pro: Fix term hierarchy with machine translation
+* Pro: Fix indented items of a list block not translated with machine translation
 * Pro: Fix navigation block inserted in the wrong language
 * Update plugin updater to 1.9.4
 * Add translation of widgets custom html in strings translations #1423
@@ -136,6 +138,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix translations not loaded when the language is set from the content #1395
 * Fix possible term duplication #1490
 * Fix sanitization of translated options that may impact other strings #1571
+* Fix a conflict with WooCommerce Price Based on Country #1638
 
 = 3.6.7 (2025-03-11) =
 
