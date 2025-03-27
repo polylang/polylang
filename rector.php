@@ -11,7 +11,13 @@ use Rector\Php71\Rector\List_\ListToArrayDestructRector;
 return RectorConfig::configure()
 	->withPaths(
 		[
-			__DIR__ . '/src',
+			__DIR__ . '/admin',
+			__DIR__ . '/frontend',
+			__DIR__ . '/include',
+			__DIR__ . '/install',
+			__DIR__ . '/integrations',
+			__DIR__ . '/modules',
+			__DIR__ . '/settings',
 			__DIR__ . '/tests',
 			__DIR__ . '/polylang.php',
 			__DIR__ . '/uninstall.php',
@@ -26,7 +32,7 @@ return RectorConfig::configure()
 		[
 			LongArrayToShortArrayRector::class,
 			ListToArrayDestructRector::class,
-			__DIR__ . '/src/install/plugin-updater.php',
+			__DIR__ . '/install/plugin-updater.php',
 			StringClassNameToClassConstantRector::class => [ // Ignoring this allows to silence a warning from PHPUnit.
 				__DIR__ . '/tests/phpunit/tests/Options/Options/test-OffsetSet.php',
 				__DIR__ . '/tests/phpunit/tests/Options/Options/test-OffsetUnset.php',

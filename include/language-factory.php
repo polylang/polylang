@@ -197,7 +197,7 @@ class PLL_Language_Factory {
 	 */
 	private function get_languages() {
 		if ( empty( self::$languages ) ) {
-			self::$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+			self::$languages = include POLYLANG_DIR . '/settings/languages.php';
 		}
 
 		return self::$languages;

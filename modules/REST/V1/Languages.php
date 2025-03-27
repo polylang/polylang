@@ -702,7 +702,7 @@ class Languages extends Abstract_Controller {
 		}
 
 		// Create a language from our default list with only the locale.
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 		if ( empty( $languages[ $request['locale'] ] ) ) {
 			return new WP_Error(

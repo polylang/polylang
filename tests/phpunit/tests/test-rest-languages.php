@@ -87,7 +87,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 
 		// Check for default values from `languages.php`.
 		$data      = $response->get_data();
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 		$language  = $languages['es_ES'];
 
 		$this->assertIsArray( $data );

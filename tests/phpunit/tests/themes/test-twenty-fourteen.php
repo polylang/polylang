@@ -16,7 +16,7 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::require_api();
+		require_once POLYLANG_DIR . '/include/api.php';
 
 		self::$stylesheet = get_option( 'stylesheet' ); // save default theme
 		switch_theme( 'twentyfourteen' );

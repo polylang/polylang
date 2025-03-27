@@ -538,7 +538,7 @@ class PLL_Wizard {
 	public function save_step_languages() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$all_languages   = include POLYLANG_DIR . '/src/settings/languages.php';
+		$all_languages   = include POLYLANG_DIR . '/settings/languages.php';
 		$languages       = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'sanitize_locale_name', $_POST['languages'] ) : false;
 		$saved_languages = array();
 

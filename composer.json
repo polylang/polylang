@@ -22,7 +22,13 @@
 	"prefer-stable": true,
 	"autoload": {
 		"classmap": [
-			"src/"
+			"admin/",
+			"frontend/",
+			"include/",
+			"integrations/",
+			"install/",
+			"modules/",
+			"settings/"
 		]
 	},
 	"autoload-dev": {

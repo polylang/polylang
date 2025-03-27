@@ -15,7 +15,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::require_api();
+		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
 	public function set_up() {

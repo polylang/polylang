@@ -26,7 +26,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 
 		parent::set_up();
 
-		self::require_api();
+		require_once POLYLANG_DIR . '/include/api.php';
 
 		self::$model->options['hide_default'] = 0;
 

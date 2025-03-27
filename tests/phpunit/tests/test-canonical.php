@@ -23,7 +23,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::require_api();
+		require_once POLYLANG_DIR . '/include/api.php';
+
 		self::generate_shared_fixtures( $factory );
 		self::$model->clean_languages_cache();
 	}

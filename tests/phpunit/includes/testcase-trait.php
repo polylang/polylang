@@ -161,7 +161,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	public static function create_language( $locale, $args = array() ) {
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 		$values    = $languages[ $locale ];
 
 		$values['slug']       = $values['code'];
@@ -236,15 +236,6 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		return static::$submenu;
-	}
-
-	/**
-	 * Requires the API functions.
-	 *
-	 * @return void
-	 */
-	protected static function require_api(): void {
-		require_once POLYLANG_DIR . '/src/api.php';
 	}
 
 	/**

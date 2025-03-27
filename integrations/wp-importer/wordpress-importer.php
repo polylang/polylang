@@ -54,7 +54,7 @@ class PLL_WordPress_Importer {
 	 * @return array
 	 */
 	public function wp_import_terms( $terms ) {
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 		foreach ( $terms as $key => $term ) {
 			if ( 'language' === $term['term_taxonomy'] ) {
