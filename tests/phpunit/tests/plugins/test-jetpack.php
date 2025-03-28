@@ -24,7 +24,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
+		self::require_api(); // usually loaded only if an instance of Polylang exists
 		$this->load_jetpack();
 
 		$links_model = self::$model->get_links_model();
