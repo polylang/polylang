@@ -15,7 +15,7 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
+		self::require_api(); // usually loaded only if an instance of Polylang exists
 
 		self::$model->options['hide_default'] = 0;
 
