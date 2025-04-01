@@ -37,6 +37,14 @@ class Polylang {
 	public function __construct() {
 		require_once __DIR__ . '/functions.php'; // VIP functions
 
+		/*
+		 * Disable Polylang's textdomain until it can be safely used.
+		 * I18n functions, like `__()`, won't work until `Polylang::load_textdomain()` is called.
+		 * This allows to not worry about `_load_textdomain_just_in_time()` being called too soon.
+		 */
+		$GLOBALS['l10n_unloaded']['polylang'] = true;
+		add_action( 'after_setup_theme', array( $this, 'load_textdomain' ), 1 );
+
 		// register an action when plugin is activating.
 		register_activation_hook( POLYLANG_BASENAME, array( 'PLL_Wizard', 'start_wizard' ) );
 
@@ -300,5 +308,19 @@ class Polylang {
 		do_action_ref_array( 'pll_init', array( &$polylang ) );
 
 		return $polylang;
+	}
+
+	/**
+	 * Loads Polylang's textdomain at the right moment.
+	 * The textdomain is initially unloaded in `Polylang::__construct()`.
+	 * Hooked to `after_setup_theme`.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	public function load_textdomain(): void {
+		unset( $GLOBALS['l10n_unloaded']['polylang'] );
+		load_plugin_textdomain( 'polylang' );
 	}
 }
