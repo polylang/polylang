@@ -45,6 +45,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 			remove_action( 'pll_no_language_defined', array( PLL_OLT_Manager::instance(), 'load_textdomains' ) );
 		}
 
+		do_action( 'after_setup_theme' ); // Fires `Polylang::enable_textdomain()`.
 		( new PLL_Context_Admin( array( 'options' => $this->factory()->pll_model->options->get_all() ) ) )->get();
 
 		$this->assertSame( 'Langues', __( 'Languages', 'polylang' ) );
