@@ -142,7 +142,7 @@ class Languages extends Abstract_Controller {
 	public function get_items( $request ) {
 		$response = array();
 
-		foreach ( $this->languages->get_list() as $language ) {
+		foreach ( $this->languages->get_list( array( 'translator_id' => 0 ) ) as $language ) {
 			$language   = $this->prepare_item_for_response( $language, $request );
 			$response[] = $this->prepare_response_for_collection( $language );
 		}

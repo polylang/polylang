@@ -3,6 +3,9 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\Tools;
+use WP_Syntex\Polylang\Capabilities\User;
+
 /**
  * Setup features available on all admin pages.
  *
@@ -120,36 +123,19 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function add_menus() {
 		global $admin_page_hooks;
 
-		// Prepare the list of tabs
-		$tabs = array( 'lang' => __( 'Languages', 'polylang' ) );
+		$tabs   = $this->get_tabs();
+		$parent = false;
 
-		// Only if at least one language has been created
-		if ( $this->model->has_languages() ) {
-			$tabs['strings'] = __( 'Translations', 'polylang' );
-		}
-
-		$tabs['settings'] = __( 'Settings', 'polylang' );
-
-		/**
-		 * Filter the list of tabs in Polylang settings
-		 *
-		 * @since 1.5.1
-		 *
-		 * @param array $tabs list of tab names
-		 */
-		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
-
-		$parent = '';
-
-		foreach ( $tabs as $tab => $title ) {
+		foreach ( $tabs as $tab => $tab_data ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+
 			if ( empty( $parent ) ) {
 				$parent = $page;
-				add_menu_page( $title, __( 'Languages', 'polylang' ), 'manage_options', $page, '__return_null', 'dashicons-translation' );
+				add_menu_page( $tab_data['label'], __( 'Languages', 'polylang' ), $tab_data['capability'], $page, '__return_null', 'dashicons-translation' );
 				$admin_page_hooks[ $page ] = 'languages'; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
-			add_submenu_page( $parent, $title, $title, 'manage_options', $page, array( $this, 'languages_page' ) );
+			add_submenu_page( $parent, $tab_data['label'], $tab_data['label'], $tab_data['capability'], $page, array( $this, 'languages_page' ) );
 		}
 	}
 
@@ -399,8 +385,23 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
-		// Set preferred language for use when saving posts and terms: must not be empty
-		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_default_language() : $this->filter_lang;
+		$user = new User();
+
+		if ( ! empty( $this->filter_lang ) && ! $user->can_translate( $this->filter_lang ) ) {
+			$this->filter_lang = null;
+		}
+
+		// Set preferred language for use when saving posts and terms: must not be empty.
+		if ( ! empty( $this->filter_lang ) ) {
+			$this->pref_lang = $this->filter_lang;
+		} else {
+			$this->pref_lang = $this->model->get_default_language();
+
+			if ( ! $this->pref_lang || ! $user->can_translate( $this->pref_lang ) ) {
+				$user_languages  = $user->filter_languages( $this->model->get_languages_list() );
+				$this->pref_lang = reset( $user_languages );
+			}
+		}
 
 		/**
 		 * Filters the preferred language on admin side.
@@ -458,6 +459,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			esc_html( $selected->name )
 		);
 
+		$languages = $this->model->get_languages_list( array( 'translator_id' => 0 ) );
+
 		/**
 		 * Filters the admin languages filter submenu items
 		 *
@@ -465,7 +468,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @param array $items The admin languages filter submenu items.
 		 */
-		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $this->model->get_languages_list() ) );
+		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $languages ) );
 
 		$menu = array(
 			'id'    => 'languages',
@@ -526,5 +529,84 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns the list of tabs.
+	 *
+	 * @since 3.8
+	 *
+	 * @return array[] {
+	 *     List of tabs with page slugs as array keys, and arrays as follow as array values:
+	 *
+	 *     @type string $label      Tab title.
+	 *     @type string $capability Optional. User capability. Default is `manage_options`.
+	 * }
+	 *
+	 * @phpstan-return array<non-empty-string, array{label: string, capability: non-empty-string}>
+	 */
+	protected function get_tabs(): array {
+		$tabs = array(
+			'lang' => __( 'Languages', 'polylang' ),
+		);
+
+		// Only if at least one language has been created.
+		if ( $this->model->has_languages() ) {
+			$tabs['strings'] = __( 'Translations', 'polylang' );
+		}
+
+		$tabs['settings'] = __( 'Settings', 'polylang' );
+
+		/**
+		 * Filter the list of tabs in Polylang settings.
+		 *
+		 * @since 1.5.1
+		 * @since 3.8 Added the possibility to pass user capabilities.
+		 *
+		 * @param string[]|string[][] $tabs {
+		 *     List of tabs with page slugs as array keys. Can be an array of titles, or an array of arrays as follow:
+		 *
+		 *     @type string $label      Tab title.
+		 *     @type string $capability Optional. User capability. Default is `manage_options`.
+		 * }
+		 */
+		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
+
+		if ( isset( $tabs['strings'] ) && is_string( $tabs['strings'] ) ) {
+			$tabs['strings'] = array(
+				'label'      => $tabs['strings'],
+				'capability' => Tools::serialize_capabilities( array( 'manage_options', 'translate_strings' ) ),
+			);
+		}
+
+		/** @phpstan-var array<non-empty-string, string|array{label: string, capability: non-empty-string}> $tabs */
+		$return = array();
+
+		foreach ( $tabs as $tab => $label_or_data ) {
+			if ( is_array( $label_or_data ) ) {
+				$menu_data = array_merge(
+					array(
+						'label'      => '',
+						'capability' => 'manage_options',
+					),
+					$label_or_data
+				);
+			} elseif ( is_string( $label_or_data ) ) {
+				// Backard compatibility.
+				$menu_data = array(
+					'label'      => $label_or_data,
+					'capability' => 'manage_options',
+				);
+			} else {
+				continue;
+			}
+
+			if ( current_user_can( $menu_data['capability'] ) ) {
+				// Keep only useful tabs to ease `add_menu_page()` in `PLL_Admin_Base::add_menus()`.
+				$return[ $tab ] = $menu_data;
+			}
+		}
+
+		return $return;
 	}
 }

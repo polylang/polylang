@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities;
+
 /**
  * Base class for both admin and frontend
  *
@@ -10,6 +12,15 @@
  */
 #[AllowDynamicProperties]
 abstract class PLL_Base {
+	/**
+	 * Capabilities.
+	 *
+	 * @since 3.8
+	 *
+	 * @var Capabilities\Hooks
+	 */
+	public $capabilities;
+
 	/**
 	 * Stores the plugin options.
 	 *
@@ -51,9 +62,10 @@ abstract class PLL_Base {
 	 * @param PLL_Links_Model $links_model Links Model.
 	 */
 	public function __construct( &$links_model ) {
-		$this->links_model = &$links_model;
-		$this->model = &$links_model->model;
-		$this->options = &$this->model->options;
+		$this->capabilities = new Capabilities\Hooks();
+		$this->links_model  = &$links_model;
+		$this->model        = &$links_model->model;
+		$this->options      = &$this->model->options;
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 
