@@ -26,10 +26,6 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 		// To make `polylang` textdomain correctly registered.
 		$wp_textdomain_registry = new WP_Textdomain_Registry();
 
-		// Reset the textdomain.
-		$GLOBALS['l10n_unloaded']['polylang'] = true;
-		unset( $GLOBALS['l10n']['polylang'] );
-
 		// Copy language file.
 		@mkdir( DIR_TESTDATA );
 		@mkdir( WP_LANG_DIR );
@@ -49,9 +45,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 			remove_action( 'pll_no_language_defined', array( PLL_OLT_Manager::instance(), 'load_textdomains' ) );
 		}
 
-		$this->assertSame( 'Languages', __( 'Languages', 'polylang' ) );
-
-		do_action( 'after_setup_theme' ); // Fires `Polylang::enable_textdomain()`.
+		( new PLL_Context_Admin( array( 'options' => $this->factory()->pll_model->options->get_all() ) ) )->get();
 
 		$this->assertSame( 'Langues', __( 'Languages', 'polylang' ) );
 		$this->assertSame( 'Champs personnalisés', __( 'Custom fields', 'polylang' ) );

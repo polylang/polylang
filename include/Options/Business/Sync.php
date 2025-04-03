@@ -40,11 +40,15 @@ class Sync extends Abstract_List {
 	 * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-list<non-falsy-string>}}
 	 */
 	protected function get_data_structure(): array {
+		$GLOBALS['l10n_unloaded']['polylang'] = true;
+		$enum = array_keys( \PLL_Settings_Sync::list_metas_to_sync() );
+		unset( $GLOBALS['l10n_unloaded']['polylang'] );
+		unload_textdomain( 'polylang', true ); // Required to allow `_load_textdomain_just_in_time()` to load the translations.
 		return array(
 			'type'  => 'array',
 			'items' => array(
 				'type' => $this->get_type(),
-				'enum' => array_keys( \PLL_Settings_Sync::list_metas_to_sync() ),
+				'enum' => $enum,
 			),
 		);
 	}
