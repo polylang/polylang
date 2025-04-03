@@ -4,9 +4,7 @@ on:
   push:
     branches: master
   pull_request:
-    branches:
-      - master
-      - dev-3.8
+    branches: master
   workflow_dispatch:
 
 jobs:
