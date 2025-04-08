@@ -58,6 +58,7 @@ class PLL_Upgrade {
 		}
 
 		delete_transient( 'pll_languages_list' );
+		delete_option( '_transient_pll_languages_list' ); // Force deletion of the transient from the options table in case external object cache is used.
 		add_action( 'admin_init', array( $this, '_upgrade' ) );
 		return true;
 	}
