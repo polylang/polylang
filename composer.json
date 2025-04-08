@@ -50,6 +50,7 @@
 		],
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
+		"cs-fix": "vendor/bin/phpcbf",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
 		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [
