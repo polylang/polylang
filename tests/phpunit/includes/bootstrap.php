@@ -3,6 +3,14 @@ use function WP_Syntex\Polylang_Phpunit\getCliColors;
 
 $_root_dir = dirname( __DIR__, 3 );
 $_tests_dir = ! empty( getenv( 'WP_TESTS_DIR' ) ) ? getenv( 'WP_TESTS_DIR' ) : $_root_dir . '/tmp/wordpress-tests-lib';
+
+/*
+ * Ensures GitHub actions is not running since it defines WP_TESTS_DIR like @wordpress/wp-env package does.
+ */
+if ( empty( getenv( 'GITHUB_ACTIONS' ) ) && ! empty( getenv( 'WP_TESTS_DIR' ) ) ) {
+	define( 'WP_TESTS_CONFIG_FILE_PATH', $_root_dir . '/tests/phpunit/includes/wp-tests-config-docker.php' );
+}
+
 require_once $_tests_dir . '/includes/functions.php';
 
 // load the plugin however *no* Polylang instance is created as no languages exist in DB

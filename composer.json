@@ -4,6 +4,7 @@
 	"license": "GPL-3.0-or-later",
 	"homepage": "https://polylang.pro",
 	"type": "wordpress-plugin",
+	"version": "3.8",
 	"require": {
 		"php": ">=7.2"
 	},
@@ -50,6 +51,7 @@
 		],
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
+		"cs-fix": "vendor/bin/phpcbf",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
 		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [

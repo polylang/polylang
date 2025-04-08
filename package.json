@@ -11,7 +11,12 @@
     "build:dev": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development --watch",
     "clean": "rimraf js/build css/build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+		"env:start": "wp-env start",
+    "env:stop": "wp-env stop",
+    "env:clean": "wp-env clean",
+    "env:composer": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang composer",
+    "wp-env": "wp-env",
+    "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang vendor/bin/phpunit"
   },
   "repository": {
     "type": "git",
@@ -34,6 +39,7 @@
   },
   "homepage": "https://github.com/polylang/polylang#readme",
   "devDependencies": {
+    "@wordpress/env": "^10.21.0",
     "@wpsyntex/polylang-build-scripts": "^2.0.3",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
