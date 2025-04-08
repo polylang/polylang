@@ -11,7 +11,7 @@
     "build:dev": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development --watch",
     "clean": "rimraf js/build css/build",
-		"env:start": "wp-env start",
+    "env:start": "wp-env start",
     "env:stop": "wp-env stop",
     "env:clean": "wp-env clean",
     "env:composer": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang composer",
