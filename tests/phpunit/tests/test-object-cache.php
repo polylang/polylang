@@ -78,7 +78,7 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 
 		$this->assertCount( 3, $this->pll_env->model->languages->get_list(), 'All 3 languages should be available.' );
 
-		// Suprise, surprise, the annihilator is back.
+		// Surprise, surprise, the annihilator is back.
 		$cache_backup->resurrect();
 		$this->pll_env->model->languages->clean_cache();
 
