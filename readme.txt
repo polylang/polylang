@@ -138,6 +138,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix translations not loaded when the language is set from the content #1395
 * Fix possible term duplication #1490
 * Fix sanitization of translated options that may impact other strings #1571
+* Fix home link block not translated #1647
 * Fix a conflict with WooCommerce Price Based on Country #1638
 
 = 3.6.7 (2025-03-11) =
