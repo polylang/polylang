@@ -231,4 +231,53 @@ class PLL_Query {
 			unset( $this->query->query_vars['lang'] ); // Unset the language query var otherwise WordPress would add the language query by slug in WP_Query::parse_tax_query().
 		}
 	}
+
+	/**
+	 * Transforms a language query by `slug` to a language query by `term_taxonomy_id`.
+	 *
+	 * Example:
+	 * From: array(
+	 *     'taxonomy'         => 'language',
+	 *     'terms'            => array( 'en' ),
+	 *     'field'            => 'slug',
+	 *     'operator'         => 'IN',
+	 *     'include_children' => 1,
+	 * )
+	 * To: array(
+	 *     'taxonomy'         => 'language',
+	 *     'terms'            => array( 238 ),
+	 *     'field'            => 'term_taxonomy_id',
+	 *     'operator'         => 'IN',
+	 *     'include_children' => 1,
+	 * )
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public function transform_query(): void {
+		if ( empty( $this->query->tax_query ) ) {
+			// Null.
+			return;
+		}
+
+		foreach ( $this->query->tax_query->queries as &$tax_query ) {
+			if ( ! is_array( $tax_query ) || ! isset( $tax_query['taxonomy'], $tax_query['field'], $tax_query['terms'] ) ) {
+				// Can be a `relation` entry (string), or a sub-query.
+				continue;
+			}
+
+			if ( 'language' !== $tax_query['taxonomy'] || 'slug' !== $tax_query['field'] ) {
+				// Not what we're looking for.
+				continue;
+			}
+
+			$tax_query['field'] = 'term_taxonomy_id';
+
+			foreach ( $tax_query['terms'] as &$term ) {
+				$language = $this->model->get_language( $term );
+				$term     = ! empty( $language ) ? $language->get_tax_prop( 'language', 'term_taxonomy_id' ) : 0;
+			}
+		}
+	}
 }
