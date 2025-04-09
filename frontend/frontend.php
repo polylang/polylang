@@ -88,10 +88,8 @@ class PLL_Frontend extends PLL_Base {
 		// Avoids the language being the queried object when querying multiple taxonomies
 		add_action( 'parse_tax_query', array( $this, 'parse_tax_query' ), 1 );
 
-		if ( $this->model->has_languages() ) {
-			// Prevent unnecessary queries to the DB.
-			add_action( 'parse_tax_query', array( $this, 'transform_query' ) );
-		}
+		// Prevent unnecessary queries to the DB.
+		add_action( 'parse_tax_query', array( $this, 'transform_query' ) );
 
 		// Filters posts by language
 		add_action( 'parse_query', array( $this, 'parse_query' ), 6 );
