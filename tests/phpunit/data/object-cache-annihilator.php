@@ -10,15 +10,6 @@
 
 namespace WP_Syntex;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-// Check if WordPress is already loaded
-if ( function_exists( 'wp_cache_add' ) ) {
-	return;
-}
-
 use WP_Object_Cache;
 
 /**
@@ -293,7 +284,7 @@ class Object_Cache_Annihilator {
 		global $wp_object_cache;
 
 		$this->flush();
-		$wp_object_cache = new WP_Object_Cache();
+		$wp_object_cache = null;
 		wp_using_ext_object_cache( false );
 	}
 
@@ -531,103 +522,4 @@ class Object_Cache_Annihilator {
 		$safe_key = preg_replace( '/[^a-zA-Z0-9_-]/', '_', $key );
 		return $group_dir . $this->cache_prefix . $safe_key . '.cache';
 	}
-}
-
-/**
- * Initializes the object cache.
- *
- * @global WP_Object_Cache $wp_object_cache WordPress Object Cache
- */
-function wp_cache_init() { // phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed
-	global $wp_object_cache;
-
-	if ( ! ( $wp_object_cache instanceof Object_Cache_Annihilator ) ) {
-		$wp_object_cache = new Object_Cache_Annihilator();
-	}
-}
-
-/*
- * phpcs:disable Squiz.Commenting.FunctionComment.WrongStyle
- * phpcs:disable Squiz.Commenting.FunctionComment.Missing
- *
- * Core cache functions implementation.
- */
-
-function wp_cache_add( $key, $data, $group = '', $expire = 0 ) {
-	global $wp_object_cache;
-	return $wp_object_cache->add( $key, $data, $group, $expire );
-}
-
-function wp_cache_add_global_groups( $groups ) {
-	global $wp_object_cache;
-	$wp_object_cache->add_global_groups( $groups );
-}
-
-function wp_cache_add_non_persistent_groups( $groups ) {
-	global $wp_object_cache;
-	$wp_object_cache->add_non_persistent_groups( $groups );
-}
-
-function wp_cache_incr( $key, $offset = 1, $group = '' ) {
-	global $wp_object_cache;
-	return $wp_object_cache->incr( $key, $offset, $group );
-}
-
-function wp_cache_decr( $key, $offset = 1, $group = '' ) {
-	global $wp_object_cache;
-	return $wp_object_cache->decr( $key, $offset, $group );
-}
-
-function wp_cache_switch_to_blog( $blog_id ) {
-	global $wp_object_cache;
-	$wp_object_cache->switch_to_blog( $blog_id );
-}
-
-function wp_cache_get( $key, $group = '', $force = false, &$found = null ) {
-	global $wp_object_cache;
-	return $wp_object_cache->get( $key, $group, $force, $found );
-}
-
-function wp_cache_get_multiple( $keys, $group = '', $force = false ) {
-	global $wp_object_cache;
-	return $wp_object_cache->get_multiple( $keys, $group, $force );
-}
-
-function wp_cache_set( $key, $data, $group = '', $expire = 0 ) {
-	global $wp_object_cache;
-	return $wp_object_cache->set( $key, $data, $group, $expire );
-}
-
-function wp_cache_set_multiple( $items, $group = '', $expire = 0 ) {
-	global $wp_object_cache;
-	return $wp_object_cache->set_multiple( $items, $group, $expire );
-}
-
-function wp_cache_delete( $key, $group = '' ) {
-	global $wp_object_cache;
-	return $wp_object_cache->delete( $key, $group );
-}
-
-function wp_cache_delete_multiple( $keys, $group = '' ) {
-	global $wp_object_cache;
-	return $wp_object_cache->delete_multiple( $keys, $group );
-}
-
-function wp_cache_add_multiple( $items, $group = '', $expire = 0 ) {
-	global $wp_object_cache;
-	return $wp_object_cache->add_multiple( $items, $group, $expire );
-}
-
-function wp_cache_flush_runtime() {
-	global $wp_object_cache;
-	return $wp_object_cache->flush_runtime();
-}
-
-function wp_cache_flush_group( $group ) {
-	global $wp_object_cache;
-	return $wp_object_cache->flush_group( $group );
-}
-
-function wp_cache_close() {
-	return true;
 }
