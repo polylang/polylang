@@ -750,21 +750,13 @@ class Languages {
 	/**
 	 * Sets the transient in the options table since WordPress does not do it when using object cache.
 	 *
-	 * @global string $wp_version WordPress version.
-	 *
 	 * @since 3.8
 	 *
 	 * @param mixed $value Value of the transient.
 	 * @return void
 	 */
 	public function set_transient_to_options_table( $value ): void {
-		global $wp_version;
-
 		if ( wp_using_ext_object_cache() || wp_installing() ) {
-			// Backward compatibility with WordPress 6.4.
-			if ( version_compare( $wp_version, '6.4', '>' ) ) {
-				wp_prime_option_caches( array( '_transient_' . self::TRANSIENT_NAME ) );
-			}
 			add_option( '_transient_' . self::TRANSIENT_NAME, $value, '', true );
 		}
 	}
