@@ -33,7 +33,7 @@ trait PLL_Check_WP_Functions_Trait {
 		if ( version_compare( $wp_version, $version, '<' ) ) {
 			$this->markTestSkipped( "This test requires WordPress version {$version} or higher" );
 		}
-		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() has been modified', implode( '::', $args ) ) );
+		$this->assertSame( $md5, $this->md5( ...$args ), sprintf( 'The function %s() has been modified', implode( '::', $args ) ) );
 	}
 
 	/**
@@ -43,10 +43,10 @@ trait PLL_Check_WP_Functions_Trait {
 	 * @param string ...$args Function name or class and method name.
 	 */
 	protected function check_internal_method( $md5, ...$args ) {
-		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
+		$this->assertSame( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
 	}
 
-	/**
+/**
 	 * Checks if a file has been modified.
 	 *
 	 * @param string $md5      Expected method md5.
