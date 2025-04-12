@@ -53,6 +53,7 @@ trait PLL_Check_WP_Functions_Trait {
 	 * @param string $filepath Filepath of the file to check.
 	 */
 	protected function check_file( $md5, $filepath ) {
+		$this->assertFileIsReadable( $filepath, sprintf( 'The file %s is not readable', $filepath ) );
 		$this->assertSame( $md5, md5( file_get_contents( $filepath ) ), sprintf( 'The file %s has been modified', $filepath ) );
 	}
 }
