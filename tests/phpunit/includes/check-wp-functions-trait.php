@@ -46,7 +46,7 @@ trait PLL_Check_WP_Functions_Trait {
 		$this->assertSame( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
 	}
 
-/**
+	/**
 	 * Checks if a file has been modified.
 	 *
 	 * @param string $md5      Expected method md5.
