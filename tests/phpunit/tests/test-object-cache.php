@@ -70,7 +70,7 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		$de['slug']       = $de['code'];
 		$de['rtl']        = 0;
 		$de['term_group'] = 0;
-		$this->assertGreaterThan( 0, $this->pll_env->model->languages->add( $de ) );
+		$this->assertTrue( $this->pll_env->model->languages->add( $de ) );
 		$this->assertCount( 3, $this->pll_env->model->languages->get_list(), 'All 3 languages should be available.' );
 
 		$object_cache_languages = $wp_object_cache->get( 'pll_languages_list', 'transient' );
