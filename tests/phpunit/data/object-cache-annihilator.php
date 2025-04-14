@@ -364,9 +364,7 @@ class Object_Cache_Annihilator {
 		}
 
 		$value += $offset;
-		if ( $value < 0 ) {
-			$value = 0;
-		}
+		$value = max( 0, $value );
 
 		$this->set( $key, $value, $group );
 		return $value;
