@@ -1,6 +1,16 @@
 <?php
 
 trait PLL_Check_WP_Functions_Trait {
+	protected function compare_wp_version( $version ) {
+		// Keep only the main part of the WP version (removing alpha, beta or rc).
+		$parts = explode( '-', $GLOBALS['wp_version'] );
+		$wp_version = $parts[0];
+
+		if ( version_compare( $wp_version, $version, '<' ) ) {
+			$this->markTestSkipped( "This test requires WordPress version {$version} or higher" );
+		}
+	}
+
 	protected function md5( ...$args ) {
 		if ( empty( $args[1] ) ) {
 			// We got a function.
@@ -51,15 +61,5 @@ trait PLL_Check_WP_Functions_Trait {
 		$this->compare_wp_version( $version );
 		$this->assertFileIsReadable( $filepath, sprintf( 'The file %s is not readable', $filepath ) );
 		$this->assertSame( $md5, md5( file_get_contents( $filepath ) ), sprintf( 'The file %s has been modified', $filepath ) );
-	}
-
-	private function compare_wp_version( $version ) {
-		// Keep only the main part of the WP version (removing alpha, beta or rc).
-		$parts = explode( '-', $GLOBALS['wp_version'] );
-		$wp_version = $parts[0];
-
-		if ( version_compare( $wp_version, $version, '<' ) ) {
-			$this->markTestSkipped( "This test requires WordPress version {$version} or higher" );
-		}
 	}
 }
