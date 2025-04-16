@@ -1,7 +1,5 @@
 <?php
 
-use WP_Syntex\Object_Cache_Annihilator;
-
 class Test_Object_Cache extends PLL_UnitTestCase {
 	/**
 	 * @var WP_Object_Cache
@@ -15,12 +13,12 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 
 		$this->cache_backup = $wp_object_cache;
 
-		self::factory()->language->create_many( 2 );
-
 		// Drop in the annihilator.
-		copy( PLL_TEST_DATA_DIR . 'object-cache-annihilator.php', WP_CONTENT_DIR . '/object-cache.php' );
+		copy( POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
 		wp_using_ext_object_cache( true );
 		$wp_object_cache = new Object_Cache_Annihilator();
+
+		self::factory()->language->create_many( 2 );
 
 		$options = self::create_options( array( 'default_lang' => 'en' ) );
 		$model   = new PLL_Model( $options );
