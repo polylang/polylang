@@ -14,6 +14,7 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		$this->cache_backup = $wp_object_cache;
 
 		// Drop in the annihilator.
+		require_once POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php';
 		copy( POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
 		wp_using_ext_object_cache( true );
 		$wp_object_cache = new Object_Cache_Annihilator();
