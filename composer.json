@@ -19,13 +19,6 @@
 		"wpsyntex/wp-phpunit": "dev-master",
 		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
-	"repositories": [
-		{
-			"name": "wpsyntex/object-cache-annihilator",
-			"type": "vcs",
-			"url":  "git@github.com:polylang/object-cache-annihilator.git"
-		}
-	],
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"autoload": {
