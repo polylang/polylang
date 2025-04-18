@@ -123,7 +123,6 @@ class PLL_Model {
 		add_filter( 'language_description', '__return_empty_string' );
 
 		add_action( 'delete_transient_' . Model\Languages::TRANSIENT_NAME, array( $this->languages, 'delete_transient_from_options_table' ) );
-		add_action( 'set_transient_' . Model\Languages::TRANSIENT_NAME, array( $this->languages, 'set_transient_to_options_table' ) );
 	}
 
 	/**
