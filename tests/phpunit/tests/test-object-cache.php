@@ -1,61 +1,12 @@
 <?php
 
-class Test_Object_Cache extends PLL_UnitTestCase {
-	/**
-	 * @var WP_Object_Cache
-	 */
-	private static $cache_backup;
-
-	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
-		global $wp_object_cache;
-
-		parent::pllSetUpBeforeClass( $factory );
-
-		self::$cache_backup = $wp_object_cache;
-
-		// Register shutdown function to cleanup the annihilator in case of fatal error.
-		register_shutdown_function( Closure::fromCallable( array( self::class, 'remove_annihilator' ) ) );
-
-		// Drop in the annihilator.
-		require_once POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php';
-		copy( POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
-		wp_using_ext_object_cache( true );
-		$wp_object_cache = new Object_Cache_Annihilator();
-	}
-
-
-	public function set_up() {
-		parent::set_up();
-
+class Test_Object_Cache extends PLL_Object_Cache_TestCase {
+	protected function get_pll_env(): PLL_Base {
 		$options = self::create_options( array( 'default_lang' => 'en' ) );
 		$model   = new PLL_Model( $options );
 		$links   = $model->get_links_model();
-		$this->pll_env = new PLL_Frontend( $links );
-		$this->pll_env->init();
-	}
 
-	public static function wpTearDownAfterClass() {
-		self::remove_annihilator();
-
-		parent::wpTearDownAfterClass();
-	}
-
-	/**
-	 * Removes the Object Cache Annihilator drop-in, its cache files and restores the original object cache.
-	 *
-	 * @return void
-	 */
-	private static function remove_annihilator() {
-		global $wp_object_cache;
-
-		// Annihilate the annihilator.
-		Object_Cache_Annihilator::instance()->die();
-
-		if ( file_exists( WP_CONTENT_DIR . '/object-cache.php' ) ) {
-			unlink( WP_CONTENT_DIR . '/object-cache.php' );
-		}
-
-		$wp_object_cache = self::$cache_backup;
+		return new PLL_Frontend( $links );
 	}
 
 	public function test_object_cache_unavailable() {
