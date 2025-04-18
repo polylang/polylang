@@ -28,8 +28,8 @@ abstract class PLL_Object_Cache_TestCase extends PLL_UnitTestCase {
 		parent::set_up();
 
 		// Drop in the annihilator.
-		require_once POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php';
-		copy( POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
+		require_once $this->get_root_dir() . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php';
+		copy( $this->get_root_dir() . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
 		wp_using_ext_object_cache( true );
 		$wp_object_cache = new Object_Cache_Annihilator();
 
@@ -59,6 +59,15 @@ abstract class PLL_Object_Cache_TestCase extends PLL_UnitTestCase {
 		}
 
 		$wp_object_cache = self::$cache_backup;
+	}
+
+	/**
+	 * Gets the root directory of the plugin.
+	 *
+	 * @return string The root directory of the plugin.
+	 */
+	protected function get_root_dir(): string {
+		return POLYLANG_DIR;
 	}
 
 	/**
