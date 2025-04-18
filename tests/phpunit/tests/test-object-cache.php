@@ -21,8 +21,6 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		copy( POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
 		wp_using_ext_object_cache( true );
 		$wp_object_cache = new Object_Cache_Annihilator();
-
-		self::factory()->language->create_many( 2 );
 	}
 
 
@@ -65,14 +63,27 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( Object_Cache_Annihilator::class, $wp_object_cache, 'The custom object cache should be enabled.' );
 
+		// Let's create languages and ensure they are found in database.
+		$wp_object_cache->die();
+
+		$this->assertInstanceOf( WP_Object_Cache::class, $wp_object_cache, 'The custom object cache should be enabled.' );
+
+		self::factory()->language->create_many( 2 );
+
 		/*
 		 * We must setup the model like in production and tell the languages model that it's ready.
 		 * Otherwise the transient is not set and internal cache is not set... Leading to a false positive.
 		 */
 		$this->pll_env->model->languages->set_ready();
 
-		// Populate cache.
-		$this->assertTrue( $wp_object_cache->flush() );
+		$this->pll_env->model->languages->clean_cache();
+		$this->assertCount( 2, $this->pll_env->model->languages->get_list(), 'All 2 languages should be available.' );
+		$transient_db_value = get_option( '_transient_pll_languages_list' );
+		$this->assertIsArray( $transient_db_value );
+		$this->assertCount( 2, $transient_db_value, 'The transient should be found in the options table.' );
+
+		// Populate object cache.
+		Object_Cache_Annihilator::instance()->resurrect();
 		$this->pll_env->model->languages->clean_cache();
 
 		$this->assertCount( 2, $this->pll_env->model->languages->get_list(), 'All 2 languages should be available.' );
@@ -102,6 +113,7 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		$this->assertSame( 'de', $object_cache_languages[2]['slug'], 'The third language should be de.' );
 
 		// Another request, another day, another cache. Let's remove the custom object cache and use the core one.
+		// $this->pll_env->model->languages->clean_cache();
 		$cache_backup = $wp_object_cache;
 		$wp_object_cache->die();
 		$wp_object_cache = new WP_Object_Cache();
@@ -109,9 +121,7 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		/**
 		 * This one in particular should fail if we don't force transient deletion in options table.
 		 */
-		$transient_db_value = get_option( '_transient_pll_languages_list' );
-		$this->assertIsArray( $transient_db_value );
-		$this->assertCount( 3, $transient_db_value, 'The transient should be deleted from the options table.' );
+		$this->assertFalse( get_option( '_transient_pll_languages_list' ), 'The transient should be deleted from the options table.' );
 		$this->assertCount( 3, $this->pll_env->model->languages->get_list(), 'All 3 languages should be available.' );
 
 		// Surprise, surprise, the annihilator is back. Ensure data is not lost.
