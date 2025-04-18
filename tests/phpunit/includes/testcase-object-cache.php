@@ -19,28 +19,32 @@ abstract class PLL_Object_Cache_TestCase extends PLL_UnitTestCase {
 
 		// Register shutdown function to cleanup the annihilator in case of fatal error.
 		register_shutdown_function( Closure::fromCallable( array( self::class, 'remove_annihilator' ) ) );
-	}
-
-
-	public function set_up() {
-		global $wp_object_cache;
-
-		parent::set_up();
 
 		// Drop in the annihilator.
-		require_once $this->get_root_dir() . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php';
-		copy( $this->get_root_dir() . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php', WP_CONTENT_DIR . '/object-cache.php' );
+		$drop_in_path = \Composer\InstalledVersions::getInstallPath( 'wpsyntex/object-cache-annihilator' ) . '/drop-in.php';
+		require_once $drop_in_path;
+		copy( $drop_in_path, WP_CONTENT_DIR . '/object-cache.php' );
 		wp_using_ext_object_cache( true );
 		$wp_object_cache = new Object_Cache_Annihilator();
-
-		$this->pll_env = $this->get_pll_env();
-		$this->pll_env->init();
 	}
 
 	public static function wpTearDownAfterClass() {
 		self::remove_annihilator();
 
 		parent::wpTearDownAfterClass();
+	}
+
+	public function set_up() {
+		parent::set_up();
+
+		$this->pll_env = $this->get_pll_env();
+		$this->pll_env->init();
+	}
+
+	public function tear_down() {
+		Object_Cache_Annihilator::instance()->flush();
+
+		parent::tear_down();
 	}
 
 	/**
@@ -59,15 +63,6 @@ abstract class PLL_Object_Cache_TestCase extends PLL_UnitTestCase {
 		}
 
 		$wp_object_cache = self::$cache_backup;
-	}
-
-	/**
-	 * Gets the root directory of the plugin.
-	 *
-	 * @return string The root directory of the plugin.
-	 */
-	protected function get_root_dir(): string {
-		return POLYLANG_DIR;
 	}
 
 	/**
