@@ -4,14 +4,17 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 	/**
 	 * @var WP_Object_Cache
 	 */
-	private $cache_backup;
+	private static $cache_backup;
 
-	public function set_up() {
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		global $wp_object_cache;
 
-		parent::set_up();
+		parent::pllSetUpBeforeClass( $factory );
 
-		$this->cache_backup = $wp_object_cache;
+		self::$cache_backup = $wp_object_cache;
+
+		// Register shutdown function to cleanup the annihilator in case of fatal error.
+		register_shutdown_function( Closure::fromCallable( array( self::class, 'remove_annihilator' ) ) );
 
 		// Drop in the annihilator.
 		require_once POLYLANG_DIR . '/vendor/wpsyntex/object-cache-annihilator/drop-in.php';
@@ -20,6 +23,11 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		$wp_object_cache = new Object_Cache_Annihilator();
 
 		self::factory()->language->create_many( 2 );
+	}
+
+
+	public function set_up() {
+		parent::set_up();
 
 		$options = self::create_options( array( 'default_lang' => 'en' ) );
 		$model   = new PLL_Model( $options );
@@ -28,15 +36,28 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		$this->pll_env->init();
 	}
 
-	public function tear_down() {
+	public static function wpTearDownAfterClass() {
+		self::remove_annihilator();
+
+		parent::wpTearDownAfterClass();
+	}
+
+	/**
+	 * Removes the Object Cache Annihilator drop-in, its cache files and restores the original object cache.
+	 *
+	 * @return void
+	 */
+	private static function remove_annihilator() {
 		global $wp_object_cache;
 
 		// Annihilate the annihilator.
-		$wp_object_cache->die();
-		unlink( WP_CONTENT_DIR . '/object-cache.php' );
-		$wp_object_cache = $this->cache_backup;
+		Object_Cache_Annihilator::instance()->die();
 
-		parent::tear_down();
+		if ( file_exists( WP_CONTENT_DIR . '/object-cache.php' ) ) {
+			unlink( WP_CONTENT_DIR . '/object-cache.php' );
+		}
+
+		$wp_object_cache = self::$cache_backup;
 	}
 
 	public function test_object_cache_unavailable() {
@@ -88,7 +109,9 @@ class Test_Object_Cache extends PLL_UnitTestCase {
 		/**
 		 * This one in particular should fail if we don't force transient deletion in options table.
 		 */
-		$this->assertCount( 3, get_option( '_transient_pll_languages_list' ), 'The transient should be deleted from the options table.' );
+		$transient_db_value = get_option( '_transient_pll_languages_list' );
+		$this->assertIsArray( $transient_db_value );
+		$this->assertCount( 3, $transient_db_value, 'The transient should be deleted from the options table.' );
 		$this->assertCount( 3, $this->pll_env->model->languages->get_list(), 'All 3 languages should be available.' );
 
 		// Surprise, surprise, the annihilator is back. Ensure data is not lost.
