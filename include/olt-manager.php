@@ -31,7 +31,7 @@ class PLL_OLT_Manager {
 		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
 
 		// Overriding load text domain only on front since WP 4.7.
-		if ( is_admin() && ! Polylang::is_ajax_on_front() ) {
+		if ( ( is_admin() && ! Polylang::is_ajax_on_front() ) || Polylang::is_rest_request() ) {
 			return;
 		}
 
