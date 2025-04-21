@@ -89,6 +89,11 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	 * @return int
 	 */
 	public function translate_thumbnail_id( $value, $key, $lang ) {
-		return ( $this->options['media_support'] && '_thumbnail_id' === $key && $to_value = $this->model->post->get_translation( $value, $lang ) ) ? $to_value : $value;
+		if ( ! $this->options['media_support'] || '_thumbnail_id' !== $key ) {
+			return $value;
+		}
+
+		$to_value = $this->model->post->get_translation( $value, $lang );
+		return $to_value ? $to_value : $value;
 	}
 }

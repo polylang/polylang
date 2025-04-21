@@ -383,23 +383,28 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Defines the backend language and the admin language filter based on user preferences
+	 * Defines the backend language and the admin language filter based on user preferences.
 	 *
 	 * @since 1.2.3
 	 *
 	 * @return void
 	 */
 	public function init_user() {
-		// Language for admin language filter: may be empty
-		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
-		// We intentionally don't use a nonce to update the language filter
-		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' ); // phpcs:ignore WordPress.Security.NonceVerification
+		/*
+		 *  $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter.
+		 *  We intentionally don't use a nonce to update the language filter.
+		 */
+		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$user_id = get_current_user_id();
+			if ( current_user_can( 'edit_user', $user_id ) ) {
+				$lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+				update_user_meta( $user_id, 'pll_filter_content', $lang ? $lang->slug : '' );
+			}
 		}
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
-		// Set preferred language for use when saving posts and terms: must not be empty
+		// Set preferred language for use when saving posts and terms: must not be empty.
 		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_default_language() : $this->filter_lang;
 
 		/**

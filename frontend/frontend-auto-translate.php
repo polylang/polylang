@@ -109,7 +109,8 @@ class PLL_Frontend_Auto_Translate {
 			$arr = array();
 			if ( ! empty( $qv[ $key ] ) ) {
 				foreach ( $qv[ $key ] as $cat ) {
-					$arr[] = ( $tr = $this->get_term( $cat ) ) ? $tr : $cat;
+					$tr    = $this->get_term( $cat );
+					$arr[] = $tr ? $tr : $cat;
 				}
 				$qv[ $key ] = $arr;
 			}
@@ -179,7 +180,15 @@ class PLL_Frontend_Auto_Translate {
 						esc_sql( $qv['name'] )
 					)
 				);
-				$qv['name'] = ( $id && ( $tr_id = $this->get_post( $id ) ) && $tr = get_post( $tr_id ) ) ? $tr->post_name : $qv['name'];
+				if ( $id ) {
+					$tr_id = $this->get_post( $id );
+					if ( $tr_id ) {
+						$tr = get_post( $tr_id );
+						if ( $tr ) {
+							$qv['name'] = $tr->post_name;
+						}
+					}
+				}
 			}
 		}
 
@@ -203,7 +212,8 @@ class PLL_Frontend_Auto_Translate {
 				}
 
 				foreach ( $qv[ $key ] as $p ) {
-					$arr[] = ( $tr = $this->get_post( $p ) ) ? $tr : $p;
+					$tr = $this->get_post( $p );
+					$arr[] = $tr ? $tr : $p;
 				}
 
 				$qv[ $key ] = $arr;
@@ -225,7 +235,8 @@ class PLL_Frontend_Auto_Translate {
 			$arr = array();
 
 			foreach ( wp_parse_id_list( $args['include'] ) as $id ) {
-				$arr[] = ( $tr = $this->get_term( $id ) ) ? $tr : $id;
+				$tr = $this->get_term( $id );
+				$arr[] = $tr ? $tr : $id;
 			}
 
 			$args['include'] = $arr;
