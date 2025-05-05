@@ -11,7 +11,7 @@
  * @since 3.0
  */
 class PLL_Accept_Language {
-	const SUBTAG_PATTERNS = array(
+	public const SUBTAG_PATTERNS = array(
 		'language' => '(\b[a-z]{2,3}|[a-z]{4}|[a-z]{5-8}\b)',
 		'language-extension' => '(?:-(\b[a-z]{3}){1,3}\b)?',
 		'script' => '(?:-(\b[a-z]{4})\b)?',
@@ -107,6 +107,6 @@ class PLL_Accept_Language {
 	 * @return string
 	 */
 	public function get_subtag( $name ) {
-		return isset( $this->subtags[ $name ] ) ? $this->subtags[ $name ] : '';
+		return $this->subtags[ $name ] ?? '';
 	}
 }

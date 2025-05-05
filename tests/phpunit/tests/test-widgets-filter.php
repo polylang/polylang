@@ -17,7 +17,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		$this->links_model = self::$model->get_links_model();
 
-		require_once POLYLANG_DIR . '/include/api.php'; // Usually loaded only if an instance of Polylang exists
+		self::require_api(); // Usually loaded only if an instance of Polylang exists
 
 		update_option(
 			'widget_search',
@@ -141,7 +141,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		);
 		update_post_meta( $en, '_wp_attachment_image_alt', 'Alt text EN' );
 
-		$fr = $pll_admin->posts->create_media_translation( $en, 'fr' );
+		$fr = $pll_admin->model->post->create_media_translation( $en, 'fr' );
 		wp_update_post(
 			array(
 				'ID'           => $fr,
@@ -216,7 +216,11 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 	public function test_widgets_language_filter_is_not_displayed_for_page_builders() {
 		set_current_screen( 'post' );
-		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$options = self::create_options(
+			array(
+				'default_lang' => 'en',
+			)
+		);
 		$model = new PLL_Admin_Model( $options );
 		$links_model = new PLL_Links_Default( $model );
 		$polylang = new PLL_Admin( $links_model );

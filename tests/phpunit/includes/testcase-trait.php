@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * A trait to share code between several test case classes.
  *
@@ -11,9 +13,10 @@
  */
 trait PLL_UnitTestCase_Trait {
 	use PLL_Doing_It_Wrong_Trait;
+	use PLL_Options_Trait;
 
 	/**
-	 * @var array|null
+	 * @var Options|null
 	 */
 	protected $options;
 
@@ -73,7 +76,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		self::create_model_legacy();
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
@@ -102,7 +105,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @param PLL_UnitTest_Factory $factory PLL_UnitTest_Factory object.
 	 * @return void
 	 */
-	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		// Does nothing, only ensures the factory is correctly type hinted.
 	}
 
@@ -123,7 +126,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @return void
 	 */
-	public static function wpTearDownAfterClass() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public static function wpTearDownAfterClass() {
 		self::delete_all_languages();
 	}
 
@@ -136,12 +139,13 @@ trait PLL_UnitTestCase_Trait {
 	public function tear_down() {
 		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwise it is impossible to delete the transient.
 
-		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'wp_scripts', 'wp_styles' );
+		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'taxonomy', 'wp_scripts', 'wp_styles', 'pagenow', 'taxnow' );
 		foreach ( $globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
 
 		$_REQUEST = array(); // WP Cleans up only $_POST and $_GET.
+		$this->reset__SERVER();
 
 		parent::tear_down();
 	}
@@ -235,6 +239,15 @@ trait PLL_UnitTestCase_Trait {
 	}
 
 	/**
+	 * Requires the API functions.
+	 *
+	 * @return void
+	 */
+	protected static function require_api(): void {
+		require_once POLYLANG_DIR . '/include/api.php';
+	}
+
+	/**
 	 * Creates the static model used to add languages before tests.
 	 *
 	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
@@ -242,9 +255,36 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function create_model_legacy() {
-		$options                  = PLL_Install::get_default_options();
-		$options['hide_default']  = 0;
-		$options['media_support'] = 1;
-		self::$model              = new PLL_Admin_Model( $options );
+		$options = self::create_options(
+			array(
+				'hide_default'  => false,
+				'media_support' => true,
+				'version'       => POLYLANG_VERSION,
+			)
+		);
+		self::$model = new PLL_Admin_Model( $options );
+	}
+
+	/**
+	 * Verifies that a file exists.
+	 * Depending on the environment variable `GITHUB_ACTIONS`:
+	 * - If defined (value in GitHub Actions is `'true'`): does an assertion.
+	 * - If not defined: skips if the file doesn't exist.
+	 *
+	 * @see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
+	 *
+	 * @param string $path    Path to the file.
+	 * @param string $message Error message.
+	 * @return void
+	 */
+	protected static function markTestSkippedIfFileNotExists( string $path, string $message = '' ): void {
+		if ( false !== getenv( 'GITHUB_ACTIONS' ) ) {
+			self::assertFileExists( $path, $message );
+			return;
+		}
+
+		if ( ! file_exists( $path ) ) {
+			self::markTestSkipped( $message );
+		}
 	}
 }

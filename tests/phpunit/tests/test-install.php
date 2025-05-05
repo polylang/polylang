@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Options\Options;
+
 class Install_Test extends PLL_UnitTestCase {
 
 	public function test_activate() {
@@ -8,11 +10,21 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// Check a few options
 		$options = get_option( 'polylang' );
-		$this->assertEquals( 1, $options['hide_default'] );
-		$this->assertEquals( 1, $options['force_lang'] );
-		$this->assertEquals( 0, $options['uninstall'] );
+		$this->assertIsArray( $options );
+		$this->assertSame( true, $options['hide_default'] );
+		$this->assertSame( 1, $options['force_lang'] );
 		$this->assertEmpty( $options['sync'] );
-		$this->assertEquals( POLYLANG_VERSION, $options['version'] );
+		$this->assertSame( POLYLANG_VERSION, $options['version'] );
+	}
+
+	public function test_should_hide_set_language_from_content_on_activation() {
+		delete_option( 'polylang' );
+		do_action( 'activate_' . POLYLANG_BASENAME );
+
+		$options = new Options();
+
+		$this->assertSame( 'no', get_option( 'pll_language_from_content_available' ) );
+		$this->assertInstanceOf( WP_Error::class, $options->set( 'force_lang', 0 ) );
 	}
 
 	/**

@@ -49,6 +49,11 @@ class PLL_Frontend extends PLL_Base {
 	public $links;
 
 	/**
+	 * @var PLL_Default_Term|null
+	 */
+	public $default_term;
+
+	/**
 	 * @var PLL_Frontend_Nav_Menu|null
 	 */
 	public $nav_menu;
@@ -64,6 +69,11 @@ class PLL_Frontend extends PLL_Base {
 	public $filters_widgets;
 
 	/**
+	 * @var PLL_Canonical
+	 */
+	public $canonical;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -77,6 +87,9 @@ class PLL_Frontend extends PLL_Base {
 
 		// Avoids the language being the queried object when querying multiple taxonomies
 		add_action( 'parse_tax_query', array( $this, 'parse_tax_query' ), 1 );
+
+		// Prevent unnecessary queries to the DB.
+		add_action( 'parse_tax_query', array( $this, 'transform_query' ) );
 
 		// Filters posts by language
 		add_action( 'parse_query', array( $this, 'parse_query' ), 6 );
@@ -110,6 +123,9 @@ class PLL_Frontend extends PLL_Base {
 		parent::init();
 
 		$this->links = new PLL_Frontend_Links( $this );
+
+		$this->default_term = new PLL_Default_Term( $this );
+		$this->default_term->add_hooks();
 
 		// Setup the language chooser
 		$c = array( 'Content', 'Url', 'Url', 'Domain' );
@@ -164,6 +180,22 @@ class PLL_Frontend extends PLL_Base {
 		if ( ! empty( $queried_taxonomies ) && 'language' == reset( $queried_taxonomies ) ) {
 			$query->tax_query->queried_terms['language'] = array_shift( $query->tax_query->queried_terms );
 		}
+	}
+
+	/**
+	 * Prevents unnecessary queries to the database by transforming
+	 * a language query by `slug` to a language query by `term_taxonomy_id`.
+	 *
+	 * These extra queries occur when the language slug is displayed in the current's page URL, because WP wants a list
+	 * of `term_taxonomy_id`.
+	 *
+	 * @since 3.8
+	 *
+	 * @param WP_Query $query WP_Query object.
+	 * @return void
+	 */
+	public function transform_query( $query ): void {
+		( new PLL_Query( $query, $this->model ) )->transform_query();
 	}
 
 	/**
@@ -250,7 +282,7 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		$lang          = $this->model->get_language( $restore_curlang );
-		$this->curlang = $lang ? $lang : $this->model->get_default_language();
+		$this->curlang = $lang ?: $this->model->get_default_language();
 		if ( empty( $this->curlang ) ) {
 			return;
 		}

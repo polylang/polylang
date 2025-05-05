@@ -53,7 +53,7 @@ class PLL_WPML_API {
 		 * Retrieving Language Information for Content.
 		 */
 		add_filter( 'wpml_post_language_details', 'wpml_get_language_information', 10, 2 );
-		add_action( 'wpml_switch_language', array( __CLASS__, 'wpml_switch_language' ), 10, 2 );
+		add_action( 'wpml_switch_language', array( self::class, 'wpml_switch_language' ), 10, 2 );
 		add_filter( 'wpml_element_language_code', array( $this, 'wpml_element_language_code' ), 10, 2 );
 		// wpml_element_language_details           => not applicable.
 
@@ -166,6 +166,11 @@ class PLL_WPML_API {
 	 */
 	public function wpml_add_language_form_field() {
 		$lang = pll_current_language();
+
+		if ( empty( $lang ) ) {
+			return;
+		}
+
 		$field = sprintf( '<input type="hidden" name="lang" value="%s" />', esc_attr( $lang ) );
 		$field = apply_filters( 'wpml_language_form_input_field', $field, $lang );
 		echo $field; // phpcs:ignore WordPress.Security.EscapeOutput

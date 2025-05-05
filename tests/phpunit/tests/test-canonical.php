@@ -23,7 +23,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 
 		self::generate_shared_fixtures( $factory );
 		self::$model->clean_languages_cache();
@@ -136,18 +136,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		$GLOBALS['polylang'] = &$this->pll_env;
 
-		$this->options = array_merge(
-			PLL_Install::get_default_options(),
+		$this->options->merge(
 			array(
 				'default_lang' => 'en',
 				'hide_default' => 0,
-				'post_types'   => array(
-					'pllcanonical'   => 'pllcanonical',
-					'cptnotrewrited' => 'cptnotrewrited',
-				),
-				'taxonomies'   => array(
-					'custom_tax' => 'custom_tax',
-				),
+				'post_types'   => array( 'pllcanonical', 'cptnotrewrited' ),
+				'taxonomies'   => array( 'custom_tax' ),
 			)
 		);
 	}

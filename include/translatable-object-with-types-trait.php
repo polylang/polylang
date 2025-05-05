@@ -14,36 +14,48 @@ defined( 'ABSPATH' ) || exit;
 trait PLL_Translatable_Object_With_Types_Trait {
 
 	/**
-	 * Returns SQL query that fetches the IDs of the objects without language.
+	 * Fetches the IDs of the objects without language.
 	 *
-	 * @since 3.4
+	 * @since 3.7
 	 *
 	 * @param int[] $language_ids List of language `term_taxonomy_id`.
 	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
 	 * @param array $args         An array of translated object types.
-	 * @return string
+	 * @return string[]
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array<string> $args
 	 */
-	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) {
+	protected function get_raw_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) {
+		global $wpdb;
+
 		if ( empty( $args ) ) {
 			$args = $this->get_translated_object_types();
 		}
 
 		$db = $this->get_db_infos();
 
-		return sprintf(
-			"SELECT {$db['table']}.{$db['id_column']} FROM {$db['table']}
-			WHERE {$db['table']}.{$db['id_column']} NOT IN (
-				SELECT object_id FROM {$GLOBALS['wpdb']->term_relationships} WHERE term_taxonomy_id IN (%s)
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				sprintf(
+					"SELECT %%i FROM %%i
+					WHERE %%i NOT IN (
+						SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+					)
+					AND %%i IN (%s)
+					LIMIT %%d",
+					implode( ',', array_fill( 0, count( $language_ids ), '%d' ) ),
+					implode( ',', array_fill( 0, count( $args ), '%s' ) )
+				),
+				array_merge(
+					array( $db['id_column'], $db['table'], $db['id_column'] ),
+					$language_ids,
+					array( $db['type_column'] ),
+					$args,
+					array( $limit >= 1 ? $limit : 4294967295 )
+				)
 			)
-			AND {$db['type_column']} IN (%s)
-			%s",
-			PLL_Db_Tools::prepare_values_list( $language_ids ),
-			PLL_Db_Tools::prepare_values_list( $args ),
-			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
 

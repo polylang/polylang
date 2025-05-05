@@ -88,20 +88,18 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Returns the first language column in the posts, pages and media library tables
+	 * Returns the first language column in posts, pages, media, categories and tags tables.
 	 *
 	 * @since 0.9
 	 *
-	 * @return string first language column name
+	 * @return string first language column name.
 	 */
 	protected function get_first_language_column() {
-		$columns = array();
-
 		foreach ( $this->model->get_languages_list() as $language ) {
-			$columns[] = 'language_' . $language->slug;
+			return 'language_' . $language->slug;
 		}
 
-		return empty( $columns ) ? '' : reset( $columns );
+		return '';
 	}
 
 	/**
@@ -186,7 +184,7 @@ class PLL_Admin_Filters_Columns {
 						esc_attr( $post->post_title ),
 						esc_url( $link ),
 						esc_html( $s ),
-						$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+						$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					);
 				}
 			} elseif ( $id === $post_id ) {
@@ -194,7 +192,7 @@ class PLL_Admin_Filters_Columns {
 					'<span class="pll_column_flag" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
-					$this->get_flag_html( $language ) // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$this->get_flag_html( $language ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			}
 		}
@@ -300,10 +298,6 @@ class PLL_Admin_Filters_Columns {
 			return $out;
 		}
 
-		if ( $column == $this->get_first_language_column() ) {
-			$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', intval( $term_id ), esc_html( $lang->slug ) );
-		}
-
 		// Link to edit term ( or a translation )
 		if ( ( $id = $this->model->term->get( $term_id, $language ) ) && $term = get_term( $id, $taxonomy ) ) {
 			if ( $term instanceof WP_Term && $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
@@ -324,14 +318,14 @@ class PLL_Admin_Filters_Columns {
 					esc_attr( $term->name ),
 					esc_url( $link ),
 					esc_html( $s ),
-					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$flag
 				);
 			} elseif ( $id === $term_id ) {
 				$out .= sprintf(
 					'<span class="pll_column_flag"><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
-					$this->get_flag_html( $language ) // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$this->get_flag_html( $language )
 				);
 			}
 		}
@@ -339,6 +333,21 @@ class PLL_Admin_Filters_Columns {
 		// Link to add a new translation
 		else {
 			$out .= $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
+		}
+
+		if ( $this->get_first_language_column() === $column ) {
+			$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', intval( $term_id ), esc_html( $lang->slug ) );
+
+			/**
+			 * Filters the output of the first language column in the terms list table.
+			 *
+			 * @since 3.7
+			 *
+			 * @param string $output  First language column output.
+			 * @param int    $term_id Term ID.
+			 * @param string $lang    Language code.
+			 */
+			$out = apply_filters( 'pll_first_language_term_column', $out, $term_id, $lang->slug );
 		}
 
 		return $out;
@@ -446,6 +455,6 @@ class PLL_Admin_Filters_Columns {
 	 * @return string
 	 */
 	protected function get_flag_html( $language ) {
-		return $language->flag ? $language->flag : sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
+		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 }

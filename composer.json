@@ -5,16 +5,19 @@
 	"homepage": "https://polylang.pro",
 	"type": "wordpress-plugin",
 	"require": {
-		"php": ">=7.0"
+		"php": ">=7.2"
 	},
 	"require-dev": {
-		"wpsyntex/polylang-phpstan": "^1.0",
+		"wpsyntex/polylang-phpstan": "^1.2",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"behat/behat": "^3.7|^3.8",
-		"yoast/wp-test-utils": "^1.0.0"
+		"yoast/wp-test-utils": "^1.0.0",
+		"rector/rector": "^1.1",
+		"wpsyntex/wp-phpunit": "dev-master",
+		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
@@ -35,21 +38,43 @@
 		]
 	},
 	"scripts": {
+		"install-suite": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh",
+		"install-suite-with-db": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh latest true",
+		"install-plugins": "bash tests/bin/install-plugins.sh",
+		"install-tests": [
+			"@install-suite",
+			"@install-plugins"
+		],
+		"install-tests-with-db": [
+			"@install-suite-with-db",
+			"@install-plugins"
+		],
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
+		"cs-fix": "vendor/bin/phpcbf",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
+		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [
 			"@cs",
-			"@stan"
+			"@stan",
+			"@rector-dry"
 		],
+		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh"
 	},
 	"scripts-descriptions": {
+		"install-suite": "Installs the WordPress tests suite (without installing the database).",
+		"install-suite-with-db": "Installs the WordPress tests suite (with database creation).",
+		"install-plugins": "Installs dependencies needed for integration tests.",
+		"install-tests": "Installs both the WordPress tests suite (without installing the database) and the dependencies needed for integration tests.",
+		"install-tests-with-db": "Installs both the WordPress tests suite (with database creation) and the dependencies needed for integration tests, without creating the database.",
 		"test":"Runs PHPUnit tests.",
 		"cs":"Runs PHPCS linter.",
 		"stan": "Runs PHPStan analysis.",
+		"rector-dry": "Runs a preview of Rector.",
 		"lint": "Runs both PHPCS and PHPStan.",
+		"rector": "Runs Rector.",
 		"build": "Builds the project.",
 		"dist": "Make the zip file to distribute the project release."
 	},

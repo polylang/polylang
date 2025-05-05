@@ -638,7 +638,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertIsInt( $de_child['term_id'], 'German category should be created.' );
 		$this->assertSame( 'de', self::$model->term->get_language( $de_child['term_id'] )->slug, 'German child category should has its language set.' );
-		$this->assertSameSetsWithIndex( array( 'en' => $en_child, 'de' => $de_child['term_id'] ), self::$model->term->get_translations( $de_child['term_id'], 'German category has no translations group.' ) );
+		$this->assertSameSetsWithIndex( array( 'en' => $en_child, 'de' => $de_child['term_id'] ), self::$model->term->get_translations( $de_child['term_id'] ), 'German category has no translations group.' );
 		$this->assertSame( 'child-de', $de_child_obj->slug, 'German category slug should be suffixed with the language.' );
 
 		// Clean Up.
@@ -754,5 +754,16 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertSame( $new_slug, $updated_cat_obj->slug, 'The category slug should have been modified.' );
 
 		unset( $_REQUEST, $_POST );
+	}
+
+	/**
+	 * @ticket #694 {@see https://github.com/polylang/polylang-wc/issues/694}
+	 */
+	public function test_create_term_with_empty_slug_and_already_existing_name() {
+		self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Cats', 'slug' => 'cat' ) );
+
+		// Second category in English with the same name and empty slug.
+		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Cats' ) );
+		$this->assertWPError( $error, 'A term with the same name should not be created.' );
 	}
 }

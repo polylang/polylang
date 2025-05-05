@@ -17,7 +17,7 @@ class PLL_Cache_Compat {
 	 */
 	public function init() {
 		if ( PLL_COOKIE ) {
-			add_action( 'wp_print_footer_scripts', array( $this, 'add_cookie_script' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'add_cookie_script' ) );
 		}
 
 		// Since version 3.0.5, WP Rocket does not serve the cached page if our cookie is not set
@@ -34,6 +34,8 @@ class PLL_Cache_Compat {
 	 * This functions allows to create the cookie in javascript as a workaround.
 	 *
 	 * @since 2.3
+	 *
+	 * @return void
 	 */
 	public function add_cookie_script() {
 		// Embeds should not set the cookie.
@@ -68,9 +70,10 @@ class PLL_Cache_Compat {
 			esc_js( $expiration )
 		);
 
-		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
-
-		echo "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+		// Need to register prior to enqueue empty script and add extra code to it.
+		wp_register_script( 'pll_cookie_script', '', array(), POLYLANG_VERSION, true );
+		wp_enqueue_script( 'pll_cookie_script' );
+		wp_add_inline_script( 'pll_cookie_script', $js );
 	}
 
 	/**

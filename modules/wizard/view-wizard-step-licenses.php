@@ -7,16 +7,20 @@
  * @since 2.7
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
-}
+defined( 'ABSPATH' ) || exit;
 
 $licenses = apply_filters( 'pll_settings_licenses', array() );
 $is_error = isset( $_GET['activate_error'] ) && 'i18n_license_key_error' === sanitize_key( $_GET['activate_error'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 ?>
 <p>
 	<?php esc_html_e( 'You are using plugins which require a license key.', 'polylang' ); ?>
-	<?php echo esc_html( _n( 'Please enter your license key:', 'Please enter your license keys:', count( $licenses ), 'polylang' ) ); ?>
+	<?php
+	if ( 1 === count( $licenses ) ) {
+		echo esc_html( __( 'Please enter your license key:', 'polylang' ) );
+	} else {
+		echo esc_html( __( 'Please enter your license keys:', 'polylang' ) );
+	}
+	?>
 </p>
 <h2><?php esc_html_e( 'Licenses', 'polylang' ); ?></h2>
 <div id="messages">

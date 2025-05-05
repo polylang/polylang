@@ -119,60 +119,68 @@ class PLL_Admin_Site_Health {
 		switch ( $key ) {
 			case 'browser':
 				if ( ! $value ) {
-					$value = '0: ' . esc_html__( 'Detect browser language deactivated', 'polylang' );
+					$value = '0: ' . __( 'Detect browser language deactivated', 'polylang' );
 					break;
 				}
-				$value = '1: ' . esc_html__( 'Detect browser language activated', 'polylang' );
+				$value = '1: ' . __( 'Detect browser language activated', 'polylang' );
 				break;
 			case 'rewrite':
 				if ( $value ) {
-					$value = '1: ' . esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' );
+					$value = '1: ' . sprintf(
+						/* translators: %s is a URL slug: `/language/`. */
+						__( 'Remove %s in pretty permalinks', 'polylang' ),
+						'`/language/`'
+					);
 					break;
 				}
-				$value = '0: ' . esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' );
+				$value = '0: ' . sprintf(
+					/* translators: %s is a URL slug: `/language/`. */
+					__( 'Keep %s in pretty permalinks', 'polylang' ),
+					'`/language/`'
+				);
 				break;
 			case 'hide_default':
 				if ( $value ) {
-					$value = '1: ' . esc_html__( 'Hide URL language information for default language', 'polylang' );
+					$value = '1: ' . __( 'Hide URL language information for default language', 'polylang' );
 					break;
 				}
-				$value = '0: ' . esc_html__( 'Display URL language information for default language', 'polylang' );
+				$value = '0: ' . __( 'Display URL language information for default language', 'polylang' );
 				break;
 			case 'force_lang':
 				switch ( $value ) {
 					case '0':
-						$value = '0: ' . esc_html__( 'The language is set from content', 'polylang' );
+						$value = '0: ' . __( 'The language is set from content', 'polylang' );
 						break;
 					case '1':
-						$value = '1: ' . esc_html__( 'The language is set from the directory name in pretty permalinks', 'polylang' );
+						$value = '1: ' . __( 'The language is set from the directory name in pretty permalinks', 'polylang' );
 						break;
 					case '2':
-						$value = '2: ' . esc_html__( 'The language is set from the subdomain name in pretty permalinks', 'polylang' );
+						$value = '2: ' . __( 'The language is set from the subdomain name in pretty permalinks', 'polylang' );
 						break;
 					case '3':
-						$value = '3: ' . esc_html__( 'The language is set from different domains', 'polylang' );
+						$value = '3: ' . __( 'The language is set from different domains', 'polylang' );
 						break;
 				}
 				break;
 			case 'redirect_lang':
 				if ( $value ) {
-					$value = '1: ' . esc_html__( 'The front page URL contains the language code instead of the page name or page id', 'polylang' );
+					$value = '1: ' . __( 'The front page URL contains the language code instead of the page name or page id', 'polylang' );
 					break;
 				}
-				$value = '0: ' . esc_html__( 'The front page URL contains the page name or page id instead of the language code', 'polylang' );
+				$value = '0: ' . __( 'The front page URL contains the page name or page id instead of the language code', 'polylang' );
 
 				break;
 			case 'media_support':
 				if ( ! $value ) {
-					$value = '0: ' . esc_html__( 'The media are not translated', 'polylang' );
+					$value = '0: ' . __( 'The media are not translated', 'polylang' );
 					break;
 				}
-				$value = '1: ' . esc_html__( 'The media are translated', 'polylang' );
+				$value = '1: ' . __( 'The media are translated', 'polylang' );
 				break;
 
 			case 'sync':
 				if ( empty( $value ) ) {
-					$value = '0: ' . esc_html__( 'Synchronization disabled', 'polylang' );
+					$value = '0: ' . __( 'Synchronization disabled', 'polylang' );
 				}
 				break;
 		}
@@ -290,8 +298,8 @@ class PLL_Admin_Site_Health {
 			}
 
 			$debug_info[ 'pll_language_' . $language->slug ] = array(
-				/* translators: placeholder is the language name */
-				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
+				/* translators: %1$s placeholder is the language name, %2$s is the language code */
+				'label'  => sprintf( __( 'Language: %1$s - %2$s', 'polylang' ), $language->name, $language->slug ),
 				/* translators: placeholder is the flag image */
 				'description' => sprintf( esc_html__( 'Flag used in the language switcher: %s', 'polylang' ), $this->get_flag( $language ) ),
 				'fields' => $fields,
@@ -372,7 +380,7 @@ class PLL_Admin_Site_Health {
 	 */
 	public function homepage_test() {
 		$result = array(
-			'label'       => esc_html__( 'All languages have a translated homepage', 'polylang' ),
+			'label'       => __( 'All languages have a translated homepage', 'polylang' ),
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => POLYLANG,
@@ -390,7 +398,7 @@ class PLL_Admin_Site_Health {
 
 		if ( ! empty( $message ) ) {
 			$result['status']      = 'critical';
-			$result['label']       = esc_html__( 'The homepage is not translated in all languages', 'polylang' );
+			$result['label']       = __( 'The homepage is not translated in all languages', 'polylang' );
 			$result['description'] = sprintf( '<p>%s</p>', $message );
 		}
 		return $result;

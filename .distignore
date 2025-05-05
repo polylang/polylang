@@ -1,6 +1,7 @@
 # Files to exclude from the distribution.
 
 bin/
+coverage/
 css/src/
 js/src/
 node_modules/
@@ -17,4 +18,5 @@ phpstan-baseline.neon
 phpstan.neon.dist
 phpunit.xml
 readme.md
+rector.php
 webpack.config.js

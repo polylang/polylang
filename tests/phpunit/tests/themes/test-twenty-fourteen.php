@@ -9,16 +9,14 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		if ( ! file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen/style.css' ) ) {
-			self::markTestSkipped( 'This test requires the theme Twenty Seventeen' );
-		}
+		self::markTestSkippedIfFileNotExists( PLL_TEST_THEMES_DIR . 'twentyfourteen/style.css', 'This test requires the theme Twenty Fourteen.' );
 
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 
 		self::$stylesheet = get_option( 'stylesheet' ); // save default theme
 		switch_theme( 'twentyfourteen' );

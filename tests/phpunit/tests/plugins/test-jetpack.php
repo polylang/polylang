@@ -5,9 +5,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		if ( ! file_exists( DIR_TESTROOT . '/../jetpack/jetpack.php' ) ) {
-			self::markTestSkipped( 'This test requires the plugin Jetpack' );
-		}
+		self::markTestSkippedIfFileNotExists( PLL_TEST_PLUGINS_DIR . 'jetpack/jetpack.php', 'This test requires the plugin Jetpack.' );
 
 		$min_wp_version = '6.3';
 
@@ -15,7 +13,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 			self::markTestSkipped( "This test requires WordPress {$min_wp_version} or higher" );
 		}
 
-		require_once DIR_TESTROOT . '/../jetpack/functions.opengraph.php';
+		require_once PLL_TEST_PLUGINS_DIR . 'jetpack/functions.opengraph.php';
 
 		parent::wpSetUpBeforeClass( $factory );
 
@@ -26,7 +24,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
+		self::require_api(); // usually loaded only if an instance of Polylang exists
 		$this->load_jetpack();
 
 		$links_model = self::$model->get_links_model();
@@ -39,7 +37,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 		global $wp_actions;
 
 		$wp_actions['wp_default_scripts'] = 0; // Trick Jetpack to avoid a doing_it_wrong notice.
-		require_once DIR_TESTROOT . '/../jetpack/jetpack.php';
+		require_once PLL_TEST_PLUGINS_DIR . 'jetpack/jetpack.php';
 		$wp_actions['wp_default_scripts'] = 1;
 	}
 

@@ -195,7 +195,6 @@ class PLL_Settings_Module {
 	public function activate() {
 		if ( 'none' !== $this->active_option && 'preview' !== $this->active_option ) {
 			$this->options[ $this->active_option ] = true;
-			update_option( 'polylang', $this->options );
 		}
 	}
 
@@ -209,7 +208,6 @@ class PLL_Settings_Module {
 	public function deactivate() {
 		if ( 'none' !== $this->active_option && 'preview' !== $this->active_option ) {
 			$this->options[ $this->active_option ] = false;
-			update_option( 'polylang', $this->options );
 		}
 	}
 
@@ -247,15 +245,15 @@ class PLL_Settings_Module {
 	}
 
 	/**
-	 * Allows child classes to validate their options before saving.
+	 * Allows child classes to prepare the received data before saving.
 	 *
-	 * @since 1.8
+	 * @since 3.7
 	 *
-	 * @param array $options Unsanitized options to save.
-	 * @return array Options
+	 * @param array $options Raw values to save.
+	 * @return array
 	 */
-	protected function update( $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return array(); // It's responsibility of the child class to decide what is saved.
+	protected function prepare_raw_data( array $options ): array {
+		return $options;
 	}
 
 	/**
@@ -273,22 +271,19 @@ class PLL_Settings_Module {
 
 		if ( isset( $_POST['module'] ) && $this->module === $_POST['module'] ) {
 			// It's up to the child class to decide which options are saved, whether there are errors or not
-			$post = array_diff_key( $_POST, array_flip( array( 'action', 'module', 'pll_ajax_backend', '_pll_nonce' ) ) );
-			$options = $this->update( $post );
-			$this->options = array_merge( $this->options, $options );
-			update_option( 'polylang', $this->options );
+			$posted_options   = array_diff_key( $_POST, array_flip( array( 'action', 'module', 'pll_ajax_backend', 'pll_ajax_settings', '_pll_nonce' ) ) );
+			$errors           = $this->options->merge( $this->prepare_raw_data( $posted_options ) );
 
 			// Refresh language cache in case home urls have been modified
 			$this->model->clean_languages_cache();
 
-			// Refresh rewrite rules in case rewrite,  hide_default, post types or taxonomies options have been modified
+			// Refresh rewrite rules in case rewrite, hide_default, post types or taxonomies options have been modified
 			// Don't use flush_rewrite_rules as we don't have the right links model and permastruct
 			delete_option( 'rewrite_rules' );
 
-
 			ob_start();
 
-			if ( empty( get_settings_errors( 'polylang' ) ) ) {
+			if ( ! $errors->has_errors() ) {
 				// Send update message
 				pll_add_notice( new WP_Error( 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' ) );
 				settings_errors( 'polylang' );
@@ -296,6 +291,7 @@ class PLL_Settings_Module {
 				$x->send();
 			} else {
 				// Send error messages
+				pll_add_notice( $errors );
 				settings_errors( 'polylang' );
 				$x = new WP_Ajax_Response( array( 'what' => 'error', 'data' => ob_get_clean() ) );
 				$x->send();

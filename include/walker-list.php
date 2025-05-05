@@ -32,16 +32,42 @@ class PLL_Walker_List extends PLL_Walker {
 	 * @return void
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$output .= sprintf(
-			'%6$s<li class="%1$s"><a %8$s lang="%2$s" hreflang="%2$s" href="%3$s">%4$s%5$s</a></li>%7$s',
-			esc_attr( implode( ' ', $element->classes ) ),
+		// Link attributes.
+		$link_atts = sprintf(
+			'lang="%1$s" hreflang="%1$s" href="%2$s"',
 			esc_attr( $element->locale ),
-			esc_url( $element->url ),
+			esc_url( $element->url )
+		);
+
+		if ( ! empty( $element->link_classes ) ) {
+			$link_atts .= sprintf(
+				' class="%s"',
+				esc_attr( implode( ' ', $element->link_classes ) )
+			);
+		}
+		if ( ! empty( $element->current_lang ) ) {
+			$link_atts .= ' aria-current="true"';
+		}
+
+		// Text label.
+		if ( $args['show_flags'] && $args['show_names'] ) {
+			$label = sprintf(
+				'<span style="margin-%1$s:0.3em;">%2$s</span>',
+				is_rtl() ? 'right' : 'left',
+				esc_html( $element->name )
+			);
+		} else {
+			$label = esc_html( $element->name );
+		}
+
+		$output .= sprintf(
+			'%5$s<li class="%1$s"><a %2$s>%3$s%4$s</a></li>%6$s',
+			esc_attr( implode( ' ', $element->classes ) ),
+			$link_atts,
 			$element->flag,
-			$args['show_flags'] && $args['show_names'] ? sprintf( '<span style="margin-%1$s:0.3em;">%2$s</span>', is_rtl() ? 'right' : 'left', esc_html( $element->name ) ) : esc_html( $element->name ),
+			$label,
 			'discard' === $args['item_spacing'] ? '' : "\t",
-			'discard' === $args['item_spacing'] ? '' : "\n",
-			empty( $element->link_classes ) ? '' : 'class="' . esc_attr( implode( ' ', $element->link_classes ) ) . '"'
+			'discard' === $args['item_spacing'] ? '' : "\n"
 		);
 	}
 

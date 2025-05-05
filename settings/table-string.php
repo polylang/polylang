@@ -196,14 +196,16 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @since 2.6
 	 *
-	 * @param PLL_MO[] $mos An array of PLL_MO objects.
-	 * @param string   $s   Searched string.
+	 * @param PLL_Language[] $languages An array of language objects.
+	 * @param string         $s         Searched string.
 	 * @return string[] Found strings.
 	 */
-	protected function search_in_translations( $mos, $s ) {
+	protected function search_in_translations( $languages, $s ) {
 		$founds = array();
 
-		foreach ( $mos as $mo ) {
+		foreach ( $languages as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
 			foreach ( wp_list_pluck( $mo->entries, 'translations' ) as $string => $translation ) {
 				if ( false !== stripos( $translation[0], $s ) ) {
 					$founds[] = $string;
@@ -250,13 +252,6 @@ class PLL_Table_String extends WP_List_Table {
 			$languages = $this->languages;
 		}
 
-		// Load translations
-		$mo = array();
-		foreach ( $languages as $language ) {
-			$mo[ $language->slug ] = new PLL_MO();
-			$mo[ $language->slug ]->import_from_db( $language );
-		}
-
 		$data = $this->strings;
 
 		// Filter by selected group
@@ -269,7 +264,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		if ( ! empty( $s ) ) {
 			// Search in translations
-			$in_translations = $this->search_in_translations( $mo, $s );
+			$in_translations = $this->search_in_translations( $languages, $s );
 
 			foreach ( $data as $key => $row ) {
 				if ( stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false && ! in_array( $row['string'], $in_translations ) ) {
@@ -299,9 +294,11 @@ class PLL_Table_String extends WP_List_Table {
 		// Translate strings
 		// Kept for the end as it is a slow process
 		foreach ( $languages as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
 			foreach ( $this->items as $key => $row ) {
-				$this->items[ $key ]['translations'][ $language->slug ] = $mo[ $language->slug ]->translate( $row['string'] );
-				$this->items[ $key ]['row'] = $key; // Store the row number for convenience
+				$this->items[ $key ]['translations'][ $language->slug ] = $mo->translate_if_any( $row['string'] );
+				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience
 			}
 		}
 	}
@@ -393,18 +390,25 @@ class PLL_Table_String extends WP_List_Table {
 
 				foreach ( $translations as $key => $translation ) {
 					/**
-					 * Filter the string translation before it is saved in DB
-					 * Allows to sanitize strings registered with pll_register_string
+					 * Filters the string translation before it is saved in DB.
+					 * Allows to sanitize strings registered with pll_register_string().
 					 *
 					 * @since 1.6
 					 * @since 2.7 The translation passed to the filter is unslashed.
+					 * @since 3.7 Add original string as 4th parameter.
 					 *
 					 * @param string $translation The string translation.
 					 * @param string $name        The name as defined in pll_register_string.
 					 * @param string $context     The context as defined in pll_register_string.
+					 * @param string $original    The original string to translate.
 					 */
-					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'] );
-					$mo->add_entry( $mo->make_entry( $this->strings[ $key ]['string'], $translation ) );
+					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'], $this->strings[ $key ]['string'] );
+					$mo->add_entry(
+						$mo->make_entry(
+							$this->strings[ $key ]['string'],
+							$translation
+						)
+					);
 				}
 
 				// Clean database ( removes all strings which were registered some day but are no more )

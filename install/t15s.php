@@ -16,7 +16,7 @@ class PLL_T15S {
 	 *
 	 * @var string
 	 */
-	const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
+	public const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
 
 	/**
 	 * Project directory slug
@@ -58,7 +58,7 @@ class PLL_T15S {
 		$this->slug    = $slug;
 		$this->api_url = $api_url;
 
-		add_action( 'init', array( __CLASS__, 'register_clean_translations_cache' ), 9999 );
+		add_action( 'init', array( self::class, 'register_clean_translations_cache' ), 9999 );
 		add_filter( 'translations_api', array( $this, 'translations_api' ), 10, 3 );
 		add_filter( 'site_transient_update_plugins', array( $this, 'site_transient_update_plugins' ) );
 	}
@@ -137,8 +137,8 @@ class PLL_T15S {
 	 * @return void
 	 */
 	public static function register_clean_translations_cache() {
-		add_action( 'set_site_transient_update_plugins', array( __CLASS__, 'clean_translations_cache' ) );
-		add_action( 'delete_site_transient_update_plugins', array( __CLASS__, 'clean_translations_cache' ) );
+		add_action( 'set_site_transient_update_plugins', array( self::class, 'clean_translations_cache' ) );
+		add_action( 'delete_site_transient_update_plugins', array( self::class, 'clean_translations_cache' ) );
 	}
 
 	/**

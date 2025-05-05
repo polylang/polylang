@@ -22,7 +22,7 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 
 		register_taxonomy( 'custom_tax', 'post' );
 
-		$options = array( 'taxonomies' => array( 'custom_tax' => 'custom_tax' ) );
+		$options = array( 'taxonomies' => array( 'custom_tax' ) );
 		$this->pll_admin = ( new PLL_Context_Admin( array( 'options' => $options ) ) )->get();
 	}
 
@@ -244,5 +244,35 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		$this->assertNotWPError( $tags );
 		$this->assertCount( 1, $tags );
 		$this->assertSame( 'Common', reset( $tags )->name );
+	}
+
+	/**
+	 * Test a post creation with a non-existent default category to check that no category has been assigned to this post.
+	 *
+	 * @ticket 2248.
+	 * @see https://github.com/polylang/polylang-pro/issues/2249.
+	 */
+	public function test_save_post_when_no_default_category_set() {
+		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+
+		// Create an english category.
+		$en_cat = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'English category' ) );
+		$this->pll_admin->model->term->set_language( $en_cat, 'en' );
+
+		// Create a post with this category so that `get_terms()` returns terms (since `hide_empty` is `true` by default).
+		self::factory()->post->create( array( 'post_category' => array( $en_cat ) ) );
+
+		update_option( 'default_category', $en_cat + 999 ); // Use this number to make sure the category doesn't exist.
+
+		// Simulate the request that create the post and assigns language.
+		$post = get_default_post_to_edit( 'post', true );
+		$_REQUEST = $_POST = array(
+			'post_lang_choice' => 'en',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+			'post_ID'          => $post->ID,
+		);
+		edit_post();
+
+		$this->assertEmpty( wp_get_post_categories( $post->ID ) );
 	}
 }

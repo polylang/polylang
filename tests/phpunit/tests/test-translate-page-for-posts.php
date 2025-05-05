@@ -34,9 +34,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
-		$return = $this->frontend->static_pages->translate_page_for_posts( get_option( 'page_for_posts' ) );
-
-		$this->assertEquals( $en, $return );
+		$this->assertSame( $en, get_option( 'page_for_posts' ) );
 	}
 
 	public function test_translate_page_for_posts_on_secondary_language() {
@@ -54,9 +52,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 
-		$return = $this->frontend->static_pages->translate_page_for_posts( get_option( 'page_for_posts' ) );
-
-		$this->assertEquals( $fr, $return );
+		$this->assertSame( $fr, get_option( 'page_for_posts' ) );
 	}
 
 	public function test_translate_page_for_posts_when_page_for_posts_has_no_translations() {
@@ -69,8 +65,6 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 
-		$return = $this->frontend->static_pages->translate_page_for_posts( get_option( 'page_for_posts' ) );
-
-		$this->assertEquals( $en, $return );
+		$this->assertSame( $en, get_option( 'page_for_posts' ) );
 	}
 }

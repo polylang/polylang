@@ -15,7 +15,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 	}
 
 	public function set_up() {
@@ -42,7 +42,6 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
 
 		$links_model = self::$model->get_links_model();
@@ -74,7 +73,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		}
 		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
-			$req = isset( $parts['path'] ) ? $parts['path'] : '';
+			$req = $parts['path'] ?? '';
 			if ( isset( $parts['query'] ) ) {
 				$req .= '?' . $parts['query'];
 				// parse the url query vars into $_GET

@@ -13,11 +13,11 @@ parameters:
 		- settings/
 	excludePaths:
 		- **/load.php
-		- **/view*.php
 		- include/widget-calendar.php
 		- install/plugin-updater.php
-	checkMissingIterableValueType: false
+	treatPhpDocTypesAsCertain: false
 	ignoreErrors:
+		- identifier: missingType.iterableValue
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
 
 		# Temporarily ignored
@@ -35,8 +35,24 @@ parameters:
 			count: 1
 			path: frontend/frontend.php
 
-		# Ignored because the class Requests_IDNAEncoder exists in WP < 6.2.
+		# Ignored temporarily to prevent changing the type of the options everywhere in the plugin.
 		-
-			message: "#^Call to static method encode\\(\\) on an unknown class Requests_IDNAEncoder\\.$#"
+			message: "#^Cannot call method merge\\(\\) on array\\.$#"
 			count: 1
-			path: include/links-domain.php
+			path: settings/settings-module.php
+
+		# Ignored temporarily to prevent changing the type of the options everywhere in the plugin.
+		-
+			message: "#^Property .+\\:\\:\\$options \\(array\\) does not accept WP_Syntex\\\\Polylang\\\\Options\\\\Options\\.$#"
+
+		# Ignored because PHPStan is confused about the objects and method names (classes with same method names).
+		-
+			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
+			count: 1
+			path: include/model.php
+
+		# Ignored because the cache is initialized in the constructor.
+		-
+			message: "#^Static property PLL_MO\\:\\:\\$cache \\(PLL_Cache\\<array\\>\\) in empty\\(\\) is not falsy\\.$#"
+			count: 1
+			path: include/mo.php

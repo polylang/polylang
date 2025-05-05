@@ -96,7 +96,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		 *
 		 * @param PLL_Language|false $lang Language object or false if none was found.
 		 */
-		return apply_filters( 'pll_get_current_language', isset( $lang ) ? $lang : false );
+		return apply_filters( 'pll_get_current_language', $lang ?? false );
 	}
 
 	/**

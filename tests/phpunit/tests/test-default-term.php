@@ -32,6 +32,12 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 	}
 
+	public function tear_down() {
+		// Forces language deletion since they're created in `set_up()` and not `wpSetUpBeforeClass()` as usual.
+		self::delete_all_languages();
+		parent::tear_down();
+	}
+
 	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
@@ -79,7 +85,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$default = (int) get_option( 'default_category' );
 
 		// with capability
-		$column = $this->pll_admin->default_term->term_column( '', 'language_en', $default );
+		$column = $this->pll_admin->filters_columns->term_column( '', 'language_en', $default );
 		$this->assertNotFalse( strpos( $column, 'default_cat' ) );
 	}
 
@@ -148,7 +154,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 'en', $option_lang->slug );
 
-		$this->pll_admin->pref_lang = self::$model->get_language( 'es' );
+		$this->pll_admin->curlang = self::$model->get_language( 'es' );
 
 		$option = get_option( 'default_category' );
 		$option_lang = self::$model->term->get_language( $option );

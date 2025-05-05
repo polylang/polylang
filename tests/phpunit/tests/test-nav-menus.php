@@ -26,6 +26,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_nav_menu_locations() {
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
@@ -73,9 +77,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 			)
 		);
 
-
 		// assign our menus to locations
-		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
@@ -121,6 +123,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	public function test_delete_nav_menu() {
 		$theme = get_option( 'stylesheet' );
 
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
@@ -130,7 +136,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
 
 		// assign our menus to locations
-		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
@@ -142,9 +147,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // our filter update_nav_menu_locations does not run due to security checks
-
-		$options = get_option( 'polylang' );
-		$this->assertEquals( array( 'en' => $menu_en, 'fr' => $menu_fr ), $options['nav_menus'][ $theme ][ $primary_location ] );
+		$this->assertSameSetsWithIndex(
+			array( 'en' => $menu_en, 'fr' => $menu_fr ),
+			$pll_admin->options['nav_menus'][ $theme ][ $primary_location ]
+		);
 
 		// setup filters
 		$nav_menu->admin_init();
@@ -152,11 +158,17 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		// delete a nav_menu
 		wp_delete_nav_menu( $menu_en );
 
-		$options = get_option( 'polylang' );
-		$this->assertEquals( array( 'fr' => $menu_fr ), $options['nav_menus'][ $theme ][ $primary_location ] );
+		$this->assertSameSetsWithIndex(
+			array( 'fr' => $menu_fr ),
+			$pll_admin->options['nav_menus'][ $theme ][ $primary_location ]
+		);
 	}
 
 	public function test_auto_add_pages_to_menu() {
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
 		// create 2 menus
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
@@ -171,7 +183,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		// assign our menus to locations
-		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
@@ -210,6 +221,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	protected function setup_nav_menus( $options ) {
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
 		// create posts
 		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -240,7 +255,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$primary_location = reset( $locations );
 
 		// assign our menus to locations
-		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
@@ -265,7 +279,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$frontend->links = new PLL_Frontend_Links( $frontend );
 		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
-		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
+		self::require_api(); // usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
@@ -285,7 +299,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$frontend->links = new PLL_Frontend_Links( $frontend );
 		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
-		require_once POLYLANG_DIR . '/include/api.php'; // Usually loaded only if an instance of Polylang exists.
+		self::require_api(); // Usually loaded only if an instance of Polylang exists.
 		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
@@ -338,6 +352,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$frontend->curlang = self::$model->get_language( 'en' );
 		$frontend->links = new PLL_Frontend_Links( $frontend );
 		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
+		$frontend->model->set_languages_ready();
 
 		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
@@ -403,11 +418,14 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	public function test_set_theme_mod_from_edit_menus_tab() {
 		wp_set_current_user( 1 );
 
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
 		// Get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
 
-		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 		$nav_menu->create_nav_menu_locations();
@@ -427,8 +445,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
-		$options = get_option( 'polylang' );
-		$this->assertEqualSets( array( 'en' => 2, 'fr' => 3 ), $options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
+		$this->assertEqualSets( array( 'en' => 2, 'fr' => 3 ), $pll_admin->options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
 		$options = get_option( 'theme_mods_' . get_stylesheet() );
 		$this->assertEquals( 2, $options['nav_menu_locations'][ $primary_location ] );
 	}
@@ -436,11 +453,14 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	public function test_set_theme_mod_from_manage_locations_tab() {
 		wp_set_current_user( 1 );
 
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
 		// Get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
 
-		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 		$nav_menu->create_nav_menu_locations();
@@ -457,8 +477,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$_REQUEST['_wpnonce'] = wp_create_nonce( 'save-menu-locations' );
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
-		$options = get_option( 'polylang' );
-		$this->assertEqualSets( array( 'en' => 4, 'fr' => 5 ), $options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
+		$this->assertEqualSets( array( 'en' => 4, 'fr' => 5 ), $pll_admin->options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
 		$options = get_option( 'theme_mods_' . get_stylesheet() );
 		$this->assertEquals( 4, $options['nav_menu_locations'][ $primary_location ] );
 	}

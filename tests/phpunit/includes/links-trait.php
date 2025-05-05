@@ -35,7 +35,12 @@ trait PLL_Test_Links_Trait {
 					$url = str_replace( $orig_siteurl, $siteurl, $url );
 				}
 
-				return str_replace( POLYLANG_DIR . '/', '/polylang/', $url );
+				if ( empty( getenv( 'GITHUB_ACTIONS' ) ) && ! empty( getenv( 'WP_TESTS_DIR' ) ) ) {
+					// Fix side effect of running PHPUnit in wp-env.
+					$url = str_replace( '/wordpress/wp-content/plugins', '', $url );
+				}
+
+				return $url;
 			},
 			-1
 		);

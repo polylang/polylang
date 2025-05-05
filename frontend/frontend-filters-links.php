@@ -276,6 +276,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 				array( 'function' => 'login_footer' ),
 				array( 'function' => 'get_custom_logo' ),
 				array( 'function' => 'render_block_core_site_title' ),
+				array( 'function' => 'render_block_core_home_link' ),
 			);
 
 			if ( 3 === $this->options['force_lang'] ) {

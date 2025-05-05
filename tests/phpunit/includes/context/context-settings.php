@@ -1,4 +1,5 @@
 <?php
+use WP_Syntex\Polylang\Options\Options;
 
 /**
  * Settings context.
@@ -24,10 +25,10 @@ class PLL_Context_Settings extends PLL_Context_Admin {
 	 *
 	 * @since 3.6
 	 *
-	 * @param array $options Polylang options.
+	 * @param Options $options Polylang options.
 	 * @return PLL_Model
 	 */
-	protected function get_model( array $options ): PLL_Model {
+	protected function get_model( Options $options ): PLL_Model {
 		return new PLL_Admin_Model( $options );
 	}
 }
