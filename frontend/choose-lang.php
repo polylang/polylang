@@ -199,7 +199,7 @@ abstract class PLL_Choose_Lang {
 
 		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference.
 		$lang = $this->model->get_language( $slug );
-		return $lang ? $lang : $this->model->get_default_language();
+		return $lang ?: $this->model->get_default_language();
 	}
 
 	/**
