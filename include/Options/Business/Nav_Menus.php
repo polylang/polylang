@@ -117,7 +117,7 @@ class Nav_Menus extends Abstract_Option {
 					continue;
 				}
 				foreach ( $menus_by_lang as &$menu_id ) {
-					if ( null === $menu_id ) {
+					if ( empty( $menu_id ) ) {
 						// Prevent a useless validation error.
 						$menu_id = 0;
 					} elseif ( ! is_numeric( $menu_id ) || $menu_id < 0 ) {
