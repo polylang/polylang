@@ -173,6 +173,130 @@ class Set_Test extends PLL_UnitTestCase {
 		}
 	}
 
+	public function test_should_not_set_invalid_nav_menus_value_for_current_theme() {
+		$cur_theme = get_option( 'stylesheet' );
+		$settings  = array(
+			'options' => array(
+				'nav_menus' => array(
+					$cur_theme          => array(
+						'primary' => array(
+							'en' => 22,
+							'fr' => 7,
+						),
+						'footer'  => array(
+							'en' => 24,
+							'fr' => 0,
+						),
+						'social'  => array(),
+					),
+					'not_current_theme' => array(
+						'top'    => array(
+							'en' => 26,
+						),
+						'social' => array(),
+					),
+				),
+			),
+		);
+		$this->pll_env       = ( new PLL_Context_Admin( $settings ) )->get();
+		$GLOBALS['polylang'] = $this->pll_env;
+
+		$new_menus = array(
+			$cur_theme          => array(
+				'primary' => array(
+					'en' => null,
+					'fr' => 8,
+				),
+				'custom'  => array(
+					'es' => null,
+				),
+				'social'  => 'should be an array', // In current theme.
+			),
+			'not_current_theme' => array(
+				'top'    => array(
+					'en' => null,
+					'fr' => 2,
+				),
+				'social' => array(),
+			),
+		);
+		$errors    = $this->pll_env->model->options->set( 'nav_menus', $new_menus );
+		$nav_menus = $this->pll_env->model->options->get( 'nav_menus' );
+
+		$this->assertCount( 1, $errors->get_error_codes() );
+		$this->assertSame( 'rest_invalid_type', $errors->get_error_code() );
+		$this->assertSameSetsWithIndex( array( 'param' => "nav_menus[{$cur_theme}][social]" ), $errors->get_error_data() );
+
+		$expected = $settings['options']['nav_menus'];
+		$this->assertSameSetsWithIndex( $expected, $nav_menus );
+	}
+
+	public function test_should_clean_bad_nav_menus_value() {
+		$cur_theme = get_option( 'stylesheet' );
+		$settings  = array(
+			'options' => array(
+				'nav_menus' => array(
+					$cur_theme          => array(
+						'primary' => array(
+							'en' => 22,
+							'fr' => 7,
+						),
+						'footer'  => array(
+							'en' => 24,
+							'fr' => 0,
+						),
+						'social'  => array(),
+					),
+					'not_current_theme' => array(
+						'top'    => array(
+							'en' => 26,
+						),
+						'social' => array(),
+					),
+				),
+			),
+		);
+		$this->pll_env       = ( new PLL_Context_Admin( $settings ) )->get();
+		$GLOBALS['polylang'] = $this->pll_env;
+
+		$new_menus = array(
+			$cur_theme          => array(
+				'primary' => array(
+					'en' => null,
+					'fr' => 8,
+				),
+				'custom'  => array(
+					'es' => null,
+				),
+				'social'  => array(),
+			),
+			'not_current_theme' => array(
+				'top'    => array(
+					'en' => null,
+				),
+				'social' => 'should be an array', // Not in current theme.
+			),
+		);
+		$errors    = $this->pll_env->model->options->set( 'nav_menus', $new_menus );
+		$nav_menus = $this->pll_env->model->options->get( 'nav_menus' );
+
+		$this->assertCount( 0, $errors->get_error_codes() );
+
+		$expected = array(
+			$cur_theme          => array(
+				'primary' => array(
+					'fr' => 8,
+				),
+				'custom'  => array(),
+				'social'  => array(),
+			),
+			'not_current_theme' => array(
+				'top' => array(),
+			),
+		);
+		$this->assertSameSetsWithIndex( $expected, $nav_menus );
+	}
+
 	/**
 	 * @ticket #2397
 	 * @see https://github.com/polylang/polylang-pro/issues/2397
