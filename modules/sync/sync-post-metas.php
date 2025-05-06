@@ -94,6 +94,6 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 		}
 
 		$to_value = $this->model->post->get_translation( $value, $lang );
-		return $to_value ? $to_value : $value;
+		return $to_value ?: $value;
 	}
 }
