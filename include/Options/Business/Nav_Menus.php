@@ -84,57 +84,6 @@ class Nav_Menus extends Abstract_Option {
 	}
 
 	/**
-	 * Prepares a value before validation.
-	 *
-	 * @since 3.7.2
-	 *
-	 * @param mixed $value Value to format.
-	 * @return mixed
-	 */
-	protected function prepare( $value ) {
-		if ( ! is_array( $value ) ) {
-			return $value;
-		}
-
-		$cur_theme = get_option( 'stylesheet' );
-
-		foreach ( $value as $theme => &$menus_by_loc ) {
-			if ( ! is_array( $menus_by_loc ) ) {
-				if ( $theme !== $cur_theme ) {
-					// Not the current theme: prevent a validation error.
-					unset( $value[ $theme ] );
-				}
-				// Current theme: let the validation process trigger an error.
-				continue;
-			}
-			foreach ( $menus_by_loc as $location => &$menus_by_lang ) {
-				if ( ! is_array( $menus_by_lang ) ) {
-					if ( $theme !== $cur_theme ) {
-						// Not the current theme: prevent a validation error.
-						unset( $menus_by_loc[ $location ] );
-					}
-					// Current theme: let the validation process trigger an error.
-					continue;
-				}
-				foreach ( $menus_by_lang as &$menu_id ) {
-					if ( null === $menu_id ) {
-						// Prevent a useless validation error.
-						$menu_id = 0;
-					} elseif ( ! is_numeric( $menu_id ) || $menu_id < 0 ) {
-						if ( $theme !== $cur_theme ) {
-							// Not the current theme: prevent a validation error.
-							$menu_id = 0;
-						}
-						// Current theme: let the validation process trigger an error.
-					}
-				}
-			}
-		}
-
-		return $value;
-	}
-
-	/**
 	 * Sanitizes option's value.
 	 * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
 	 * the value is sanitized and can be stored.
