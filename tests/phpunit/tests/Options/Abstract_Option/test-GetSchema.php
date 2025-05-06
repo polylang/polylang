@@ -378,7 +378,9 @@ class GetSchema_Test extends PHPUnit_Adapter_TestCase {
 				'value'           => array(
 					'twentyfoobar' => 'test',
 				),
-				'sanitized_value' => array(),
+				'sanitized_value' => array(
+					'twentyfoobar' => array(),
+				),
 				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid locale'              => array(
@@ -412,7 +414,7 @@ class GetSchema_Test extends PHPUnit_Adapter_TestCase {
 					'twentyfoobar' => array(
 						'primary' => array(
 							'en' => 0,
-							'fr' => 0,
+							'fr' => -4,
 						),
 					),
 				),
