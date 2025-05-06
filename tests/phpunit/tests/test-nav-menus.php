@@ -482,6 +482,54 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 4, $options['nav_menu_locations'][ $primary_location ] );
 	}
 
+	public function test_set_theme_mod_with_invalid_values() {
+		wp_set_current_user( 1 );
+
+		$cur_theme           = get_stylesheet();
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
+		// Get the primary location of the current theme.
+		$locations        = array_keys( get_registered_nav_menus() );
+		$primary_location = reset( $locations );
+
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
+		$nav_menu->admin_init(); // Setup filters.
+		$nav_menu->create_nav_menu_locations();
+
+		$locations = array_keys( get_registered_nav_menus() );
+
+		// Assign some menu ids to locations.
+		$_GET['action']       = 'locations';
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'save-menu-locations' );
+
+		$nav_menu_locations = array(
+			$locations[0] => 4, // `primary`.
+			$locations[1] => 'foo', // `primary___fr`, invalid.
+			$locations[2] => null, // `primary___de`.
+		);
+
+		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
+		$this->assertSame( array(), $pll_admin->options['nav_menus'][ $cur_theme ], 'The menus should be empty and not be updated.' );
+
+		// Assign some menu ids to locations.
+		$nav_menu_locations = array(
+			$locations[0] => 4,
+			$locations[1] => null, // Will be converted to 0.
+		);
+
+		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
+		$this->assertArrayHasKey( $primary_location, $pll_admin->options['nav_menus'][ $cur_theme ] );
+		$this->assertSameSetsWithIndex(
+			array( 'en' => 4 ),
+			$pll_admin->options['nav_menus'][ $cur_theme ][ $primary_location ],
+			'The menu should not contain a FR translation.'
+		);
+		$options = get_option( 'theme_mods_' . get_stylesheet() );
+		$this->assertSame( 4, $options['nav_menu_locations'][ $primary_location ] );
+	}
+
 	public function test_admin_nav_menus_scripts() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
