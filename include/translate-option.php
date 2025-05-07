@@ -430,7 +430,9 @@ class PLL_Translate_Option {
 			return call_user_func( $this->sanitize_callback, $value, $name, $context, $original );
 		}
 
-		/** @var string */
-		return sanitize_option( $name, $value );
+		/** @var string $sanitized_value */
+		$sanitized_value = sanitize_option( $name, $value );
+
+		return $sanitized_value;
 	}
 }
