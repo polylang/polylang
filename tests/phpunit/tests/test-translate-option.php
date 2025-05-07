@@ -5,6 +5,7 @@
  * Registering and translating options is already tested in WPML_Config_Test
  */
 class Translate_Option_Test extends PLL_UnitTestCase {
+	use PLL_MO_Trait;
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
@@ -24,15 +25,11 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		parent::tear_down();
-
-		$mo = new PLL_MO();
-		foreach ( $this->pll_admin->model->languages->get_list() as $lang ) {
-			// Flush the cache.
-			$mo->export_to_db( $lang );
-		}
+		$this->flush_pll_mo_cache( $this->pll_admin->model->languages->get_list() );
 
 		unset( $GLOBALS['polylang'] );
+
+		parent::tear_down();
 	}
 
 	protected function add_string_translations( $lang, $translations ) {
