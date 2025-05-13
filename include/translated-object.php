@@ -503,9 +503,17 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * Creates translations groups in mass.
 	 *
 	 * @since 1.6.3
-	 * @since 3.4 Moved from PLL_Admin_Model class.
+	 * @since 3.4 Moved from PLL_Admin_Model class. The `$type` parameter is removed.
+	 * @since 3.8 The name of the translation terms can be customized.
 	 *
-	 * @param int[][] $translations Array of translations arrays.
+	 * @param int[][] $translations Array of translations arrays. The keys of the first level array can be used to
+	 *                              customize the name of the translation terms. Example:
+	 *                              array(
+	 *                                  'term_name_1' => array(
+	 *                                      'lang_slug_1' => {object ID},
+	 *                                      'lang_slug_2' => {object ID},
+	 *                                  )
+	 *                              )
 	 * @return void
 	 *
 	 * @phpstan-param array<array<string,int>> $translations
@@ -518,8 +526,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		$description = array();
 		$count       = array();
 
-		foreach ( $translations as $t ) {
-			$term = uniqid( 'pll_' ); // The term name.
+		foreach ( $translations as $k => $t ) {
+			$term = is_string( $k ) ? "pll_{$k}" : uniqid( 'pll_' ); // The term name.
 			$terms[] = array( $term, $term );
 			$slugs[] = $term;
 			$description[ $term ] = maybe_serialize( $t );
