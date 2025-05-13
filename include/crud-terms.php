@@ -159,7 +159,7 @@ class PLL_CRUD_Terms {
 	 *
 	 * @param string[] $taxonomies Queried taxonomies.
 	 * @param array    $args       WP_Term_Query arguments.
-	 * @return PLL_Language|string|false The language(s) to use in the filter, false otherwise.
+	 * @return PLL_Language|string|null The language(s) to use in the filter, null otherwise.
 	 */
 	protected function get_queried_language( $taxonomies, $args ) {
 		global $pagenow;
@@ -167,7 +167,7 @@ class PLL_CRUD_Terms {
 		// Does nothing except on taxonomies which are filterable
 		// Since WP 4.7, make sure not to filter wp_get_object_terms()
 		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
-			return false;
+			return null;
 		}
 
 		// If get_terms is queried with a 'lang' parameter
@@ -203,10 +203,24 @@ class PLL_CRUD_Terms {
 			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
 		}
 
-		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
-			$lang = is_string( $lang ) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
-			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
-			$args['cache_domain'] = empty( $args['cache_domain'] ) ? 'pll' . $key : $args['cache_domain'] . $key;
+		$queried_lang = $this->get_queried_language( $taxonomies, $args );
+
+		if ( empty( $queried_lang ) ) {
+			return $args;
+		}
+
+		$languages = is_string( $queried_lang ) ? explode( ',', $queried_lang ) : $queried_lang;
+
+		if ( ! is_array( $languages ) ) {
+			$languages = array( $languages );
+		}
+
+		foreach ( $languages as $language ) {
+			$lang = $this->model->get_language( $language );
+			if ( empty( $lang ) ) {
+				continue;
+			}
+			$args['cache_domain'] = empty( $args['cache_domain'] ) ? "pll_{$lang->slug}" : "{$args['cache_domain']},{$lang->slug}";
 		}
 		return $args;
 	}
