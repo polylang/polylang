@@ -159,9 +159,9 @@ class PLL_CRUD_Terms {
 	 *
 	 * @param string[] $taxonomies Queried taxonomies.
 	 * @param array    $args       WP_Term_Query arguments.
-	 * @return PLL_Language[] The language(s) to use in the filter, null otherwise.
+	 * @return PLL_Language[] The languages to use in the filter.
 	 */
-	protected function get_queried_languages( $taxonomies, $args ) {
+	protected function get_queried_languages( $taxonomies, $args ): array {
 		global $pagenow;
 
 		/*
@@ -224,8 +224,8 @@ class PLL_CRUD_Terms {
 	 * @return string[] Modified sql clauses.
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
-		$lang = $this->get_queried_languages( $taxonomies, $args );
-		return $this->model->terms_clauses( $clauses, $lang );
+		$languages = $this->get_queried_languages( $taxonomies, $args );
+		return $this->model->terms_clauses( $clauses, $languages );
 	}
 
 	/**

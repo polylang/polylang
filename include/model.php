@@ -214,14 +214,14 @@ class PLL_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string[]                                         $clauses The list of sql clauses in terms query.
-	 * @param PLL_Language|PLL_Language[]|string|string[]|null $lang    PLL_Language object.
+	 * @param string[]       $clauses   The list of sql clauses in terms query.
+	 * @param PLL_Language[] $languages PLL_Language object.
 	 * @return string[] Modified list of clauses.
 	 */
-	public function terms_clauses( $clauses, $lang ) {
-		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
+	public function terms_clauses( $clauses, $languages ) {
+		if ( ! empty( $languages ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
 			$clauses['join'] .= $this->term->join_clause();
-			$clauses['where'] .= $this->term->where_clause( $lang );
+			$clauses['where'] .= $this->term->where_clause( $languages );
 		}
 		return $clauses;
 	}
