@@ -159,28 +159,32 @@ class PLL_CRUD_Terms {
 	 *
 	 * @param string[] $taxonomies Queried taxonomies.
 	 * @param array    $args       WP_Term_Query arguments.
-	 * @return PLL_Language|string|null The language(s) to use in the filter, null otherwise.
+	 * @return PLL_Language[] The language(s) to use in the filter, null otherwise.
 	 */
-	protected function get_queried_language( $taxonomies, $args ) {
+	protected function get_queried_languages( $taxonomies, $args ) {
 		global $pagenow;
 
-		// Does nothing except on taxonomies which are filterable
-		// Since WP 4.7, make sure not to filter wp_get_object_terms()
+		/*
+		 * Do nothing except on taxonomies which are filterable.
+		 * Since WP 4.7, make sure not to filter wp_get_object_terms().
+		 */
 		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
-			return null;
+			return array();
 		}
 
-		// If get_terms is queried with a 'lang' parameter
+		// If get_terms() is queried with a 'lang' parameter.
 		if ( isset( $args['lang'] ) ) {
-			return $args['lang'];
+			$languages = is_string( $args['lang'] ) ? explode( ',', $args['lang'] ) : $args['lang'];
+			$languages = is_array( $languages ) ? $languages : array( $languages );
+			return array_filter( array_map( array( $this->model, 'get_language' ), $languages ) );
 		}
 
-		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
+		// On the tags page, everything should be filtered according to the admin language filter except the parent dropdown.
 		if ( 'edit-tags.php' === $pagenow && empty( $args['class'] ) ) {
-			return $this->filter_lang;
+			return ! empty( $this->filter_lang ) ? array( $this->filter_lang ) : array();
 		}
 
-		return $this->curlang;
+		return ! empty( $this->curlang ) ? array( $this->curlang ) : array();
 	}
 
 	/**
@@ -203,24 +207,8 @@ class PLL_CRUD_Terms {
 			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
 		}
 
-		$queried_lang = $this->get_queried_language( $taxonomies, $args );
-
-		if ( empty( $queried_lang ) ) {
-			return $args;
-		}
-
-		$languages = is_string( $queried_lang ) ? explode( ',', $queried_lang ) : $queried_lang;
-
-		if ( ! is_array( $languages ) ) {
-			$languages = array( $languages );
-		}
-
-		foreach ( $languages as $language ) {
-			$lang = $this->model->get_language( $language );
-			if ( empty( $lang ) ) {
-				continue;
-			}
-			$args['cache_domain'] = empty( $args['cache_domain'] ) ? "pll_{$lang->slug}" : "{$args['cache_domain']},{$lang->slug}";
+		foreach ( $this->get_queried_languages( $taxonomies, $args ) as $language ) {
+			$args['cache_domain'] = empty( $args['cache_domain'] ) ? "pll_{$language->slug}" : "{$args['cache_domain']},{$language->slug}";
 		}
 		return $args;
 	}
@@ -236,7 +224,7 @@ class PLL_CRUD_Terms {
 	 * @return string[] Modified sql clauses.
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
-		$lang = $this->get_queried_language( $taxonomies, $args );
+		$lang = $this->get_queried_languages( $taxonomies, $args );
 		return $this->model->terms_clauses( $clauses, $lang );
 	}
 

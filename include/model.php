@@ -214,8 +214,8 @@ class PLL_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string[]                          $clauses The list of sql clauses in terms query.
-	 * @param PLL_Language|string|string[]|null $lang    PLL_Language object.
+	 * @param string[]                                         $clauses The list of sql clauses in terms query.
+	 * @param PLL_Language|PLL_Language[]|string|string[]|null $lang    PLL_Language object.
 	 * @return string[] Modified list of clauses.
 	 */
 	public function terms_clauses( $clauses, $lang ) {
