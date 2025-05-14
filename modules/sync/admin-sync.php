@@ -26,7 +26,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		$this->links = &$polylang->links;
 
-		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
+		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ) );
 		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
 		add_filter( 'use_block_editor_for_post', array( $this, 'new_post_translation' ), 5000 ); // After content duplication.
 	}
@@ -35,14 +35,13 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * Translates the post parent if it exists when using "Add new" (translation).
 	 *
 	 * @since 0.6
+	 * @since 3.8 Removed second and third parameters.
 	 *
-	 * @param int   $post_parent Post parent ID.
-	 * @param int   $post_id     Post ID, unused.
-	 * @param array $postarr     Array of parsed post data.
+	 * @param int $post_parent Post parent ID.
 	 * @return int
 	 */
-	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		$context_data = $this->links->get_data_from_new_post_translation_request( $postarr['post_type'] ?? '' );
+	public function wp_insert_post_parent( $post_parent ) {
+		$context_data = $this->links->get_data_from_new_post_translation_request();
 
 		if ( empty( $context_data ) ) {
 			return $post_parent;
@@ -73,7 +72,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		$context_data = $this->links->get_data_from_new_post_translation_request( $data['post_type'] ?? '' );
+		$context_data = $this->links->get_data_from_new_post_translation_request();
 
 		if ( empty( $context_data ) ) {
 			return $data;
@@ -109,7 +108,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return $is_block_editor;
 		}
 
-		$context_data = $this->links->get_data_from_new_post_translation_request( $post->post_type );
+		$context_data = $this->links->get_data_from_new_post_translation_request();
 
 		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post']->ID ] ) ) {
 			return $is_block_editor;
@@ -145,7 +144,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $wpdb;
 
 		$postarr      = parent::get_fields_to_sync( $post );
-		$context_data = $this->links->get_data_from_new_post_translation_request( $post->post_type );
+		$context_data = $this->links->get_data_from_new_post_translation_request();
 
 		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
 		if ( ! empty( $context_data ) && in_array( 'post_date', $this->options['sync'], true ) ) {
