@@ -242,7 +242,7 @@ class PLL_Admin_Links extends PLL_Links {
 			return $this->get_data_from_new_media_translation_request();
 		}
 
-		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
+		if ( ! isset( $GLOBALS['pagenow'], $GLOBALS['post_type'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
 			return array();
 		}
 
