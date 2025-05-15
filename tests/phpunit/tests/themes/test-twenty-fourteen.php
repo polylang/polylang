@@ -2,7 +2,6 @@
 
 class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 	protected static $stylesheet;
-	protected static $tags;
 
 	/**
 	 * @param PLL_UnitTest_Factory $factory
@@ -73,7 +72,7 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 	}
 
 	protected function setup_featured_tags() {
-		self::$tags = self::factory()->tag->create_translated(
+		$tags = self::factory()->tag->create_translated(
 			array(
 				'name'     => 'featured',
 				'lang'     => 'en',
@@ -86,25 +85,27 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 
 		$options = array(
 			'hide-tag' => 1,
-			'tag-id'   => self::$tags['en'],
+			'tag-id'   => $tags['en'],
 			'tag-name' => 'featured',
 		);
 
 		update_option( 'featured-content', $options );
+
+		return $tags;
 	}
 
 	public function test_option_featured_content() {
-		$this->setup_featured_tags();
+		$tags = $this->setup_featured_tags();
 
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
 		$settings = Featured_Content::get_setting();
-		$this->assertEquals( self::$tags['en'], $settings['tag-id'] );
+		$this->assertEquals( $tags['en'], $settings['tag-id'] );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 
 		$settings = Featured_Content::get_setting();
-		$this->assertEquals( self::$tags['fr'], $settings['tag-id'] );
+		$this->assertEquals( $tags['fr'], $settings['tag-id'] );
 	}
 
 	public function test_featured_content_ids() {
