@@ -175,8 +175,7 @@ class PLL_CRUD_Terms {
 		// If get_terms() is queried with a 'lang' parameter.
 		if ( isset( $args['lang'] ) ) {
 			$languages = is_string( $args['lang'] ) ? explode( ',', $args['lang'] ) : $args['lang'];
-			$languages = is_array( $languages ) ? $languages : array( $languages );
-			return array_filter( array_map( array( $this->model, 'get_language' ), $languages ) );
+			return array_filter( array_map( array( $this->model, 'get_language' ), (array) $languages ) );
 		}
 
 		// On the tags page, everything should be filtered according to the admin language filter except the parent dropdown.
