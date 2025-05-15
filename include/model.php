@@ -213,6 +213,7 @@ class PLL_Model {
 	 * Adds terms clauses to the term query to filter them by languages.
 	 *
 	 * @since 1.2
+	 * @since 3.8 Accepts an object or an array of objects for the second param.
 	 *
 	 * @param string[]                    $clauses   The list of sql clauses in terms query.
 	 * @param PLL_Language[]|PLL_Language $languages `PLL_Language` object or array of `PLL_Language` objects.

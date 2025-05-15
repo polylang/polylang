@@ -153,13 +153,13 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Get the language(s) to filter WP_Term_Query.
+	 * Get the language(s) to filter `WP_Term_Query`.
 	 *
-	 * @since 1.7.6
+	 * @since 3.8
 	 *
 	 * @param string[] $taxonomies Queried taxonomies.
 	 * @param array    $args       WP_Term_Query arguments.
-	 * @return PLL_Language[] The languages to use in the filter.
+	 * @return PLL_Language[] The languages to filter `WP_Term_Query`.
 	 */
 	protected function get_queried_languages( $taxonomies, $args ): array {
 		global $pagenow;
