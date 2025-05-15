@@ -509,7 +509,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @param int[][] $translations Array of translations arrays. The keys of the first level array can be used to
 	 *                              customize the name of the translation terms. Example:
 	 *                              array(
-	 *                                  'term_name_1' => array(
+	 *                                  'pll_term_name_1' => array(
 	 *                                      'lang_slug_1' => {object ID},
 	 *                                      'lang_slug_2' => {object ID},
 	 *                                  )
@@ -527,7 +527,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		$count       = array();
 
 		foreach ( $translations as $k => $t ) {
-			$term = is_string( $k ) ? "pll_{$k}" : uniqid( 'pll_' ); // The term name.
+			$term = is_string( $k ) ? $k : uniqid( 'pll_' ); // The term name.
 			$terms[] = array( $term, $term );
 			$slugs[] = $term;
 			$description[ $term ] = maybe_serialize( $t );
