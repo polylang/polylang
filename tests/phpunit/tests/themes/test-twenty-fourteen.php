@@ -73,14 +73,12 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 	}
 
 	protected function setup_featured_tags() {
-		self::$tags = self::factory()->term->create_translated(
+		self::$tags = self::factory()->tag->create_translated(
 			array(
-				'taxonomy' => 'post_tag',
 				'name'     => 'featured',
 				'lang'     => 'en',
 			),
 			array(
-				'taxonomy' => 'post_tag',
 				'name'     => 'en avant',
 				'lang'     => 'fr',
 			)
