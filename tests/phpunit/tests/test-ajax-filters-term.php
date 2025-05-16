@@ -69,11 +69,11 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 		// Parent dropdown.
 		$dropdown = $xml->response[1]->parent->response_data;
-		$this->assertNotFalse( strpos( $dropdown, 'essai cat' ) );
-		$this->assertFalse( strpos( $dropdown, 'test cat' ) );
+		$this->assertStringContainsString( 'essai cat', $dropdown );
+		$this->assertStringNotContainsString( 'test cat', $dropdown );
 
 		// Flag.
-		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data, 'Français' ) );
+		$this->assertStringContainsString( 'Français', $xml->response[2]->flag->response_data );
 	}
 
 	public function test_term_lang_choice_in_new_tag() {
@@ -118,11 +118,11 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		// Tag cloud.
 		$cloud = $xml->response[1]->tag_cloud->response_data;
 
-		$this->assertNotFalse( strpos( $cloud, 'essai' ) );
-		$this->assertFalse( strpos( $cloud, 'test' ) );
+		$this->assertStringContainsString( 'essai', $cloud );
+		$this->assertStringNotContainsString( 'test', $cloud );
 
 		// Flag.
-		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data, 'Français' ) );
+		$this->assertStringContainsString( 'Français', $xml->response[2]->flag->response_data );
 	}
 
 	public function test_terms_not_translated() {
@@ -237,11 +237,13 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		self::$model->term->set_language( $en, 'en' );
 
 		// Create a category translation with the same name (i.e. the same slug).
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
+		$_REQUEST = $_POST;
+
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Test' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -252,7 +254,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertSame( 'fr', self::$model->term->get_language( $fr )->slug, 'The langue is not set correctly for the category.' );
 
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'name'               => 'More test',
 			'slug'               => 'test-fr',
 			'inline_lang_choice' => 'fr',
@@ -265,6 +267,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 			'pll_ajax_backend'   => '1',
 			'description'        => '',
 		);
+		$_REQUEST = $_POST;
 
 		try {
 			$this->_handleAjax( 'inline-save-tax' );
@@ -289,11 +292,13 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		self::$model->term->set_language( $en, 'en' );
 
 		// Create a category translation with the same name (i.e. the same slug).
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
+		$_REQUEST = $_POST;
+
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Test' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -304,7 +309,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertSame( 'fr', self::$model->term->get_language( $fr )->slug, 'The langue is not set correctly for the category.' );
 
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'name'               => 'Test',
 			'slug'               => 'test-new-fr',
 			'inline_lang_choice' => 'fr',
@@ -317,6 +322,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 			'pll_ajax_backend'   => '1',
 			'description'        => '',
 		);
+		$_REQUEST = $_POST;
 
 		try {
 			$this->_handleAjax( 'inline-save-tax' );

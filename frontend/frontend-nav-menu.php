@@ -182,16 +182,17 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 * @return stdClass[]
 	 */
 	public function wp_nav_menu_objects( $items ) {
-		$r_ids = $k_ids = array();
+		$k_ids = array();
+		$r_ids = array();
 
 		foreach ( $items as $item ) {
 			if ( ! empty( $item->classes ) && is_array( $item->classes ) ) {
 				if ( in_array( 'current-lang', $item->classes ) ) {
 					$item->current = false;
 					$item->classes = array_diff( $item->classes, array( 'current-menu-item' ) );
-					$r_ids = array_merge( $r_ids, $this->get_ancestors( $item ) ); // Remove the classes for these ancestors
+					$r_ids = array_merge( $r_ids, $this->get_ancestors( $item ) ); // Remove the classes for these ancestors.
 				} elseif ( in_array( 'current-menu-item', $item->classes ) ) {
-					$k_ids = array_merge( $k_ids, $this->get_ancestors( $item ) ); // Keep the classes for these ancestors
+					$k_ids = array_merge( $k_ids, $this->get_ancestors( $item ) ); // Keep the classes for these ancestors.
 				}
 			}
 		}
@@ -219,7 +220,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	public function nav_menu_link_attributes( $atts, $item ) {
 		if ( isset( $item->lang ) ) {
-			$atts['lang'] = $atts['hreflang'] = esc_attr( $item->lang );
+			$atts['lang']     = esc_attr( $item->lang );
+			$atts['hreflang'] = $atts['lang'];
 		}
 		return $atts;
 	}

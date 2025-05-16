@@ -230,7 +230,8 @@ class PLL_License {
 			$data = (object) json_decode( wp_remote_retrieve_body( $response ) );
 
 			if ( isset( $data->license ) && 'deactivated' !== $data->license ) {
-				$licenses[ $this->id ]['data'] = $this->license_data = $data;
+				$licenses[ $this->id ]['data'] = $data;
+				$this->license_data            = $data;
 			}
 		}
 
