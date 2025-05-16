@@ -153,7 +153,7 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Get the language(s) to filter `WP_Term_Query`.
+	 * Returns the languages to filter `WP_Term_Query`.
 	 *
 	 * @since 3.8
 	 *
