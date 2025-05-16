@@ -1,6 +1,8 @@
 <?php
 
 class Test_PLL_MO extends PLL_UnitTestCase {
+	use PLL_MO_Trait;
+
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
@@ -17,11 +19,7 @@ class Test_PLL_MO extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		$mo = new PLL_MO();
-		foreach ( $this->pll_admin->model->languages->get_list() as $lang ) {
-			// Flush the cache.
-			$mo->export_to_db( $lang );
-		}
+		$this->flush_pll_mo_cache( $this->pll_admin->model->languages->get_list() );
 
 		parent::tear_down();
 	}
