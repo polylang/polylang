@@ -324,8 +324,6 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @param PLL_Language|PLL_Language[]|string|string[] $lang A `PLL_Language` object, or a comma separated list of language slugs, or an array of language slugs or objects.
 	 * @return string The WHERE clause.
-	 *
-	 * @phpstan-param PLL_Language|PLL_Language[]|non-empty-string|non-empty-string[] $lang
 	 */
 	public function where_clause( $lang ) {
 		/*

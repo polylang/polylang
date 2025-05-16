@@ -213,15 +213,16 @@ class PLL_Model {
 	 * Adds terms clauses to the term query to filter them by languages.
 	 *
 	 * @since 1.2
+	 * @since 3.8 Accepts an object or an array of objects for the second param.
 	 *
-	 * @param string[]           $clauses The list of sql clauses in terms query.
-	 * @param PLL_Language|false $lang    PLL_Language object.
-	 * @return string[]                   Modified list of clauses.
+	 * @param string[]                    $clauses   The list of sql clauses in terms query.
+	 * @param PLL_Language[]|PLL_Language $languages `PLL_Language` object or array of `PLL_Language` objects.
+	 * @return string[] Modified list of clauses.
 	 */
-	public function terms_clauses( $clauses, $lang ) {
-		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
+	public function terms_clauses( $clauses, $languages ) {
+		if ( ! empty( $languages ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
 			$clauses['join'] .= $this->term->join_clause();
-			$clauses['where'] .= $this->term->where_clause( $lang );
+			$clauses['where'] .= $this->term->where_clause( $languages );
 		}
 		return $clauses;
 	}
