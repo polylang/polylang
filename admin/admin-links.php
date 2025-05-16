@@ -228,8 +228,8 @@ class PLL_Admin_Links extends PLL_Links {
 	 * Returns some data (`from_post` and `new_lang`) from the current request.
 	 *
 	 * @since 3.7
+	 * @since 3.8 Removed parameter.
 	 *
-	 * @param string $post_type A post type.
 	 * @return array {
 	 *     @type WP_Post      $from_post The source post.
 	 *     @type PLL_Language $new_lang  The target language.
@@ -237,20 +237,16 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
 	 */
-	public function get_data_from_new_post_translation_request( string $post_type ): array {
-		if ( 'attachment' === $post_type ) {
+	public function get_data_from_new_post_translation_request(): array {
+		if ( isset( $_GET['from_media'] ) ) {
 			return $this->get_data_from_new_media_translation_request();
 		}
 
-		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
+		if ( ! isset( $GLOBALS['pagenow'], $GLOBALS['post_type'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
 			return array();
 		}
 
-		if ( 'post-new.php' !== $GLOBALS['pagenow'] ) {
-			return array();
-		}
-
-		if ( empty( $post_type ) || $post_type !== $_GET['post_type'] || ! $this->model->is_translated_post_type( $post_type ) ) {
+		if ( 'post-new.php' !== $GLOBALS['pagenow'] || ! $this->model->is_translated_post_type( $GLOBALS['post_type'] ) ) {
 			return array();
 		}
 

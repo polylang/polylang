@@ -162,7 +162,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_post_translation() {
-		// categories
+		// Categories.
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -171,7 +171,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
-		// source post
+		// Source post.
 		$from = self::factory()->post->create( array( 'post_category' => array( $en ) ) );
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'key', 'value' );
@@ -179,23 +179,24 @@ class Sync_Test extends PLL_UnitTestCase {
 		set_post_format( $from, 'aside' );
 		stick_post( $from );
 
-		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
 
-		$_REQUEST = $_GET = array(
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+
+		$_GET = array(
 			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
+		$_REQUEST = $_GET;
 
-		$to = self::factory()->post->create();
-
-		$GLOBALS['pagenow'] = 'post-new.php';
+		$to              = self::factory()->post->create();
 		$GLOBALS['post'] = get_post( $to );
 
-		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
+		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // Fires the copy.
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
@@ -206,7 +207,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_page_translation() {
-		// parent pages
+		// Parent pages.
 		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -215,28 +216,29 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
-		// source page
-		$GLOBALS['pagenow'] = 'post-new.php';
-
+		// Source page.
 		$from = self::factory()->post->create( array( 'post_type' => 'page', 'menu_order' => 12, 'post_parent' => $en ) );
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, '_wp_page_template', 'full-width.php' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
 
-		$_REQUEST = $_GET = array(
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'page';
+
+		$_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'post_type' => 'page',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
+		$_REQUEST = $_GET;
 
-		$to = self::factory()->post->create( array( 'post_type' => 'page' ) );
-
+		$to              = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		$GLOBALS['post'] = get_post( $to );
 
-		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
+		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // Fires the copy.
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
@@ -481,25 +483,29 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_post_translation_with_sync_post_date() {
-		// source post
+		// Source post.
 		$from = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
-		self::$model->options['sync'] = array( 'post_date' ); // Sync publish date
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
+		self::$model->options['sync'] = array( 'post_date' ); // Sync publish date.
 
-		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
 
-		$_REQUEST = $_GET = array(
+		$_GET = array(
 			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
+		$_REQUEST = $_GET;
 
-		$to = self::factory()->post->create();
-		clean_post_cache( $to ); // Necessary before calling get_post() below otherwise we don't get the synchronized date
+		$to              = self::factory()->post->create();
+		$GLOBALS['post'] = get_post( $to );
+
+		clean_post_cache( $to ); // Necessary before calling get_post() below otherwise we don't get the synchronized date.
 
 		$this->assertEquals( get_post( $from )->post_date, get_post( $to )->post_date );
 		$this->assertEquals( get_post( $from )->post_date_gmt, get_post( $to )->post_date_gmt );
@@ -541,30 +547,30 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_post_translation_with_sync_date() {
-		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // Sync everything.
 
-		// source post
+		// Source post.
 		$from = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
 
-		$_REQUEST = $_GET = array(
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+
+		$_GET = array(
 			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
+		$_REQUEST = $_GET;
 
-		$GLOBALS['pagenow'] = 'post-new.php';
-
-		$to = self::factory()->post->create();
-
+		$to              = self::factory()->post->create();
 		$GLOBALS['post'] = get_post( $to );
 
-		do_action( 'add_meta_boxes', 'post', $GLOBALS['post'] ); // fires the copy
-		clean_post_cache( $to ); // Usually WordPress will do it for us when the post will be saved
+		clean_post_cache( $to ); // Usually WordPress will do it for us when the post will be saved.
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEquals( '2007-09-04 00:00:00', get_post( $to )->post_date );
