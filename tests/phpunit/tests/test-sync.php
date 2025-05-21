@@ -480,6 +480,37 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_term( $child_fr )->parent, $parent_fr );
 	}
 
+	/**
+	 * Checks that the link between a term and its parent is not lost when creating the translation of the child term (without a parent).
+	 */
+	public function test_create_child_term_translation_preserves_hierarchy() {
+		// Parent EN.
+		$parent_en = $this->factory()->term->create( array( 'taxonomy' => 'category' ) );
+		self::$model->term->set_language( $parent_en, 'en' );
+
+		// Children EN.
+		$child_en = $this->factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_en ) );;
+		self::$model->term->set_language( $child_en, 'en' );
+
+		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
+		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
+		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests.
+		$_REQUEST = $_POST = array(
+			'action'           => 'add-tag',
+			'term_lang_choice' => 'fr',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+			'term_tr_lang'     => array( 'en' => $child_en ),
+		);
+
+		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
+		$to = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+
+		$this->assertSame( 'fr', self::$model->term->get_language( $to )->slug );
+		$this->assertSameSetsWithIndex( array( 'en' => $child_en, 'fr' => $to ), self::$model->term->get_translations( $child_en ) );
+		$this->assertSame( $parent_en, get_term( $child_en )->parent );
+	}
+
 	public function test_create_post_translation_with_sync_post_date() {
 		// source post
 		$from = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
