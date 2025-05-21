@@ -201,34 +201,36 @@ class PLL_Sync {
 	public function sync_term_parent( $term_id, $tt_id, $taxonomy ) {
 		global $wpdb;
 
-		$action = explode( '_' , current_filter() ); // `created` or `edited`.
+		$action = explode( '_', current_filter() )[0]; // Either "created" or "edited".
+		if ( ! is_taxonomy_hierarchical( $taxonomy ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			return;
+		}
 
-		if ( is_taxonomy_hierarchical( $taxonomy ) && $this->model->is_translated_taxonomy( $taxonomy ) ) {
-			$term = get_term( $term_id );
+		$term = get_term( $term_id );
+		if ( ! $term instanceof WP_Term ) {
+			return;
+		}
 
-			if ( $term instanceof WP_Term ) {
-				$translations = $this->model->term->get_translations( $term_id );
+		$translations = $this->model->term->get_translations( $term_id );
 
-				foreach ( $translations as $lang => $tr_id ) {
-					if ( $tr_id !== $term_id ) {
-						$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
-						$tr_term   = get_term( (int) $tr_id, $taxonomy );
+		foreach ( $translations as $lang => $tr_id ) {
+			if ( $tr_id !== $term_id ) {
+				$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
+				$tr_term   = get_term( (int) $tr_id, $taxonomy );
 
-						if ( 'created' === $action &&  0 === $tr_parent ) {
-							// We're on a term creation and the parent of the current term is not translated, so nothing to sync.
-							continue;
-						}
+				if ( 'created' === $action && 0 === $tr_parent ) {
+					// We're on a term creation and the parent of the current term is not translated, so nothing to sync.
+					continue;
+				}
 
-						if ( $tr_term instanceof WP_Term && ! ( $term->parent && empty( $tr_parent ) ) ) {
-							$wpdb->update(
-								$wpdb->term_taxonomy,
-								array( 'parent' => $tr_parent ?: 0 ),
-								array( 'term_taxonomy_id' => $tr_term->term_taxonomy_id )
-							);
+				if ( $tr_term instanceof WP_Term && ! ( $term->parent && empty( $tr_parent ) ) ) {
+					$wpdb->update(
+						$wpdb->term_taxonomy,
+						array( 'parent' => $tr_parent ?: 0 ),
+						array( 'term_taxonomy_id' => $tr_term->term_taxonomy_id )
+					);
 
-							clean_term_cache( $tr_id, $taxonomy ); // OK since WP 3.9.
-						}
-					}
+					clean_term_cache( $tr_id, $taxonomy ); // OK since WP 3.9.
 				}
 			}
 		}
