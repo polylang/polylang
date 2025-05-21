@@ -489,7 +489,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->term->set_language( $parent_en, 'en' );
 
 		// Children EN.
-		$child_en = $this->factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_en ) );;
+		$child_en = $this->factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_en ) );
+
 		self::$model->term->set_language( $child_en, 'en' );
 
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
