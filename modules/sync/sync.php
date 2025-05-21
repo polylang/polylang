@@ -188,7 +188,7 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Synchronize term parent in translations
+	 * Synchronize term parent in translations.
 	 * Calling clean_term_cache *after* this is mandatory otherwise the $taxonomy_children option is not correctly updated
 	 *
 	 * @since 2.3
@@ -201,6 +201,8 @@ class PLL_Sync {
 	public function sync_term_parent( $term_id, $tt_id, $taxonomy ) {
 		global $wpdb;
 
+		$action = explode( '_' , current_filter() ); // `created` or `edited`.
+
 		if ( is_taxonomy_hierarchical( $taxonomy ) && $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			$term = get_term( $term_id );
 
@@ -211,6 +213,11 @@ class PLL_Sync {
 					if ( $tr_id !== $term_id ) {
 						$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 						$tr_term   = get_term( (int) $tr_id, $taxonomy );
+
+						if ( 'created' === $action &&  0 === $tr_parent ) {
+							// We're on a term creation and the parent of the current term is not translated, so nothing to sync.
+							continue;
+						}
 
 						if ( $tr_term instanceof WP_Term && ! ( $term->parent && empty( $tr_parent ) ) ) {
 							$wpdb->update(
