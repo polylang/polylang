@@ -219,7 +219,7 @@ class PLL_Sync {
 				$tr_term   = get_term( (int) $tr_id, $taxonomy );
 
 				if ( str_starts_with(current_filter(), 'created_') && 0 === $tr_parent ) {
-					// We're on a term creation and the parent of the current term is not translated, so nothing to sync.
+					// Do not remove existing hierarchy of translations when creating new term without parent.
 					continue;
 				}
 
