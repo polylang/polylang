@@ -201,7 +201,6 @@ class PLL_Sync {
 	public function sync_term_parent( $term_id, $tt_id, $taxonomy ) {
 		global $wpdb;
 
-		$action = explode( '_', current_filter() )[0]; // Either "created" or "edited".
 		if ( ! is_taxonomy_hierarchical( $taxonomy ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			return;
 		}
@@ -218,8 +217,8 @@ class PLL_Sync {
 				$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 				$tr_term   = get_term( (int) $tr_id, $taxonomy );
 
-				if ( str_starts_with(current_filter(), 'created_') && 0 === $tr_parent ) {
-					// Do not remove existing hierarchy of translations when creating new term without parent.
+				if ( str_starts_with( current_filter(), 'created_' ) && 0 === $tr_parent ) {
+					// Do not remove the existing hierarchy of translations when creating new term without parent.
 					continue;
 				}
 
