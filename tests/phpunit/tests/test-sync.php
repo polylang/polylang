@@ -497,12 +497,14 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests.
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'term_tr_lang'     => array( 'en' => $child_en ),
 		);
+		
+		$_REQUEST = $_POST;
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 		$to = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
