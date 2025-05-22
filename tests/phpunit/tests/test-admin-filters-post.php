@@ -263,8 +263,19 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 		$lang = self::$model->get_language( 'fr' );
-		$_GET['from_post'] = $en;
-		$_GET['new_lang'] = 'fr';
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $en,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+
+		$_REQUEST = $_GET;
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$GLOBALS['post']      = get_post( $en );
 
 		ob_start();
 		$this->pll_admin->classic_editor->post_language();
