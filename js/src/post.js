@@ -97,6 +97,11 @@ jQuery(
 				}
 		}
 		const table = document.getElementById( 'the-list' );
+
+		if ( ! table ) {
+			return;
+		}
+
 		const config = { childList: true, subtree: true };
 		const observer = new MutationObserver( handleQuickEditInsertion );
 
