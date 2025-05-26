@@ -146,7 +146,10 @@ class PLL_License {
 	 * @param string $license_key Activation key.
 	 * @return PLL_License Updated PLL_License object.
 	 */
-	public function activate_license( $license_key ) {
+	public function activate_license(
+		#[\SensitiveParameter]
+		string $license_key
+	): self {
 		$this->license_key = $license_key;
 		$this->api_request( 'activate_license' );
 
