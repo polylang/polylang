@@ -208,7 +208,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			$block_screens[] = 'post';
 		}
 
-		if ( $this->options->get( 'media_support' ) ) {
+		if ( $this->options['media_support'] ) {
 			$scripts['media'] = array( array( 'upload' ), array( 'jquery' ), false, true );
 		}
 
