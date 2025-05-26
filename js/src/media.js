@@ -1,4 +1,8 @@
 /**
+ * @package Polylang
+ */
+
+/**
  * Media list table
  * When clicking on attach link, filters find post list per media language
  */
