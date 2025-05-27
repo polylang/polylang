@@ -197,7 +197,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$block_screens = array( 'widgets', 'site-editor' );
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
-			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), false, true );
+			$scripts['post'] = array( array( 'edit' ), array( 'jquery', 'wp-ajax-response' ), false, true );
 
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
@@ -206,6 +206,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 			// Block editor with legacy metabox in WP 5.0+.
 			$block_screens[] = 'post';
+		}
+
+		if ( $this->options['media_support'] ) {
+			$scripts['media'] = array( array( 'upload' ), array( 'jquery' ), false, true );
 		}
 
 		if ( $this->is_block_editor( $screen ) ) {
