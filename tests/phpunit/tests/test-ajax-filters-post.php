@@ -30,16 +30,16 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_post_lang_choice() {
-		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin ); // We need this for categories and tags
+		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin ); // We need this for categories and tags.
 
-		// categories
+		// Categories.
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		// the post
+		// The post.
 		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
@@ -63,7 +63,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		}
 		$xml = simplexml_load_string( $this->_last_response, 'SimpleXMLElement', LIBXML_NOCDATA );
 
-		// translations
+		// Translations.
 		$form = $xml->response[0]->translations->response_data;
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
@@ -74,26 +74,26 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		$this->assertEmpty( $xpath->query( '//input[@id="tr_lang_fr"]' )->length );
 
-		// categories dropdown
+		// Categories dropdown.
 		$dropdown = $xml->response[1]->taxonomy->supplemental->dropdown;
-		$this->assertNotFalse( strpos( $dropdown, 'essai cat' ) );
-		$this->assertFalse( strpos( $dropdown, 'test cat' ) );
+		$this->assertStringContainsString( 'essai cat', $dropdown );
+		$this->assertStringNotContainsString( 'test cat', $dropdown );
 
-		// flag
-		$this->assertNotFalse( strpos( $flag = $xml->response[3]->flag->response_data, 'Français' ) );
+		// Flag.
+		$this->assertStringContainsString( 'Français', $xml->response[3]->flag->response_data );
 	}
 
 	public function test_page_lang_choice() {
-		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // we need this for the pages dropdown
+		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // We need this for the pages dropdown.
 
-		// possible parents
+		// Possible parents.
 		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		// the post
+		// The post.
 		$post_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 
@@ -116,7 +116,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		}
 		$xml = simplexml_load_string( $this->_last_response, 'SimpleXMLElement', LIBXML_NOCDATA );
 
-		// translations
+		// Translations.
 		$form = $xml->response[0]->translations->response_data;
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
@@ -127,13 +127,13 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		$this->assertEmpty( $xpath->query( '//input[@id="tr_lang_fr"]' )->length );
 
-		// parents
+		// Parents.
 		$dropdown = $xml->response[1]->pages->response_data;
-		$this->assertNotFalse( strpos( $dropdown, 'essai' ) );
-		$this->assertFalse( strpos( $dropdown, 'test' ) );
+		$this->assertStringContainsString( 'essai', $dropdown );
+		$this->assertStringNotContainsString( 'test', $dropdown );
 
-		// flag
-		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data, 'Français' ) );
+		// Flag.
+		$this->assertStringContainsString( 'Français', $xml->response[2]->flag->response_data );
 	}
 
 	public function test_posts_not_translated() {
@@ -254,21 +254,24 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_save_post_from_quick_edit() {
-		$post_id = $en = self::factory()->post->create();
-		self::$model->post->set_language( $post_id, 'en' );
+		$en = self::factory()->post->create();
+		self::$model->post->set_language( $en, 'en' );
 
 		$es = self::factory()->post->create();
 		self::$model->post->set_language( $es, 'es' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'es' ) );
 
-		// Switch to a free language in the translation group
-		$_REQUEST = $_POST = array(
+		$post_id = $en;
+
+		// Switch to a free language in the translation group.
+		$_POST = array(
 			'action'             => 'inline-save',
 			'post_ID'            => $post_id,
 			'inline_lang_choice' => 'fr',
 			'_inline_edit'       => wp_create_nonce( 'inlineeditnonce' ),
 		);
+		$_REQUEST = $_POST;
 
 		try {
 			$this->_handleAjax( 'inline-save' );
@@ -281,8 +284,9 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEqualSets( array( 'fr' => $post_id, 'es' => $es ), self::$model->post->get_translations( $post_id ) );
 		$this->assertEqualSets( array( 'fr' => $post_id, 'es' => $es ), self::$model->post->get_translations( $es ) );
 
-		// Switch to a *non* free language in the translation group
-		$_REQUEST['inline_lang_choice'] = $_POST['inline_lang_choice'] = 'es';
+		// Switch to a *non* free language in the translation group.
+		$_POST['inline_lang_choice']    = 'es';
+		$_REQUEST['inline_lang_choice'] = 'es';
 
 		try {
 			$this->_handleAjax( 'inline-save' );

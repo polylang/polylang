@@ -43,9 +43,9 @@ class Filters_Test extends PLL_UnitTestCase {
 
 		// request all pages
 		$pages = get_pages();
-		$fr_page_ids = $pages = wp_list_pluck( $pages, 'ID' );
-		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $pages ), 'slug' );
-		$this->assertCount( 3, $pages );
+		$fr_page_ids = wp_list_pluck( $pages, 'ID' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $fr_page_ids ), 'slug' );
+		$this->assertCount( 3, $fr_page_ids );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
 
 		// request less pages than exist

@@ -13,10 +13,11 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 	public function test_hide_notice() {
 		wp_set_current_user( 1 );
 
-		$_GET = $_REQUEST = array(
+		$_GET = array(
 			'pll-hide-notice'   => 'review',
 			'_pll_notice_nonce' => wp_create_nonce( 'review' ),
 		);
+		$_REQUEST = $_GET;
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 

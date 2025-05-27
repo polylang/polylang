@@ -171,10 +171,12 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 
 		// Redirect the language page to the homepage when using a static front page
 		if ( ( $this->options['redirect_lang'] || $this->options['hide_default'] ) && $this->is_front_page( $query ) && $lang = $this->model->get_language( get_query_var( 'lang' ) ) ) {
-			$query->is_archive = $query->is_tax = false;
+			$query->is_archive = false;
+			$query->is_tax     = false;
 			if ( 'page' === get_option( 'show_on_front' ) && ! empty( $lang->page_on_front ) ) {
 				$query->set( 'page_id', $lang->page_on_front );
-				$query->is_singular = $query->is_page = true;
+				$query->is_singular = true;
+				$query->is_page     = true;
 				unset( $query->query_vars['lang'], $query->queried_object ); // Reset queried object
 			} else {
 				// Handle case where the static front page hasn't be translated to avoid a possible infinite redirect loop.
@@ -189,8 +191,10 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 				return $lang;
 			}
 			$query->set( 'page_id', $lang->page_on_front );
-			$query->is_singular = $query->is_page = true;
-			$query->is_archive = $query->is_tax = false;
+			$query->is_singular = true;
+			$query->is_page     = true;
+			$query->is_archive  = false;
+			$query->is_tax      = false;
 			unset( $query->query_vars['lang'], $query->queried_object ); // Reset queried object
 		}
 
@@ -243,8 +247,10 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 			_prime_post_caches( $pages ); // Fill the cache with all pages for posts to avoid one query per page later.
 
 			$lang = $this->model->post->get_language( $page_id );
-			$query->is_singular = $query->is_page = false;
-			$query->is_home = $query->is_posts_page = true;
+			$query->is_singular   = false;
+			$query->is_page       = false;
+			$query->is_home       = true;
+			$query->is_posts_page = true;
 		}
 
 		return $lang;

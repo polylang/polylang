@@ -115,7 +115,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$en = $from = self::factory()->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'quantity', 1 ); // `copy`
 		add_post_meta( $from, 'custom-title', 'title' ); // `translate`
@@ -123,9 +123,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, 'date-added', 2007 ); // `ignore`
 		add_post_meta( $from, 'a_json_meta', $json ); // `translate` + encoding.
 
-		$fr = $to = self::factory()->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $from, array( 'en' => $from, 'fr' => $to ) );
 
 		// Test encodings.
 		$encodings = apply_filters( 'pll_post_meta_encodings', array(), $from, $to );
@@ -174,16 +174,16 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$en = $from = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		$from = self::factory()->category->create();
 		self::$model->term->set_language( $from, 'en' );
 		add_term_meta( $from, 'term_meta_A', 'A' ); // copy
 		add_term_meta( $from, 'term_meta_B', 'B' ); // translate
 		add_term_meta( $from, 'term_meta_C', 'C' ); // ignore
 		add_term_meta( $from, 'term_meta_D', 'D' ); // copy-once
 
-		$fr = $to = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		$to = self::factory()->category->create();
 		self::$model->term->set_language( $to, 'fr' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->save_translations( $from, array( 'en' => $from, 'fr' => $to ) );
 
 		// Copy
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
@@ -302,10 +302,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->prepare_options( 'ARRAY' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
-		$GLOBALS['polylang'] = $frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$frontend->curlang = self::$model->get_language( 'fr' );
+		$GLOBALS['polylang']->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$options = get_option( 'my_plugins_options' );
@@ -333,10 +333,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->prepare_options( 'OBJECT' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
-		$GLOBALS['polylang'] = $frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$frontend->curlang = self::$model->get_language( 'fr' );
+		$GLOBALS['polylang']->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$options = get_option( 'my_plugins_options' );

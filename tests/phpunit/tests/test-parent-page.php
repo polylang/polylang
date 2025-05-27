@@ -40,11 +40,14 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $child_page_id, 'fr' );
 		// Before the post is updated.
 		$GLOBALS['post_type'] = 'page';
-		$_REQUEST = $_POST = array(
+
+		$_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_ID'          => $child_page_id,
 		);
+		$_REQUEST = $_POST;
+
 		do_action( 'load-post.php' );
 		edit_post();
 
@@ -65,11 +68,14 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $child_page_id, 'fr' );
 		// Before the post is updated.
 		$GLOBALS['post_type'] = 'page';
-		$_REQUEST = $_POST = array(
+
+		$_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_ID'          => $child_page_id,
 		);
+		$_REQUEST = $_POST;
+
 		do_action( 'load-post.php' );
 		edit_post();
 

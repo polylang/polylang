@@ -72,13 +72,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
 		self::$model->term->set_language( self::$custom_term_en, 'en' );
 
-		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
+		self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$model->post->set_language( self::$page_for_posts_en, 'en' );
 
-		$fr = self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
+		self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
 		self::$model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
-		self::$model->post->save_translations( self::$page_for_posts_en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( self::$page_for_posts_en, array( 'en' => self::$page_for_posts_en, 'fr' => self::$page_for_posts_fr ) );
 	}
 
 	public function init_for_sitemaps() {
