@@ -202,9 +202,9 @@ class Model_Test extends PLL_UnitTestCase {
 
 	public function test_maybe_create_language_terms() {
 		// Translatable custom table.
-		require_once PLL_TEST_DATA_DIR . 'translatable-foo.php';
+		require_once PLL_TEST_DATA_DIR . 'translatable.php';
 
-		$foo = new PLLTest_Translatable_Foo( self::$model );
+		$foo = new PLLTest_Translatable( self::$model );
 		$tax = $foo->get_tax_language();
 		self::$model->translatable_objects->register( $foo );
 

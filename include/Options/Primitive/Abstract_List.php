@@ -28,7 +28,7 @@ abstract class Abstract_List extends Abstract_Option {
 	 */
 	protected function prepare( $value ) {
 		if ( is_array( $value ) ) {
-			return array_values( $value );
+			return array_values( array_unique( $value ) );
 		}
 		return $value;
 	}
