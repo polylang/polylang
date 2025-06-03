@@ -35,11 +35,11 @@ class PLL_Language_Factory {
 	 * @since 3.4
 	 * @since 3.7 The `$options` parameter is an instance of `Options`.
 	 *
-	 * @param Options $options Poylang's options passed by reference.
+	 * @param Options $options Poylang's options.
 	 * @return void
 	 */
-	public function __construct( Options &$options ) {
-		$this->options = &$options;
+	public function __construct( Options $options ) {
+		$this->options = $options;
 	}
 
 	/**
