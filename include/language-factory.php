@@ -38,7 +38,7 @@ class PLL_Language_Factory {
 	 * @param Options $options Poylang's options passed by reference.
 	 * @return void
 	 */
-	public function __construct( &$options ) {
+	public function __construct( Options &$options ) {
 		$this->options = &$options;
 	}
 

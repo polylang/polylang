@@ -26,7 +26,7 @@ class PLL_Upgrade {
 	 *
 	 * @param Options $options Polylang options.
 	 */
-	public function __construct( &$options ) {
+	public function __construct( Options &$options ) {
 		$this->options = &$options;
 	}
 
