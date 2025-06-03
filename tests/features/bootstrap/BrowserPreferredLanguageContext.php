@@ -87,7 +87,7 @@ class BrowserPreferredLanguageContext extends PLL_UnitTestCase implements Contex
 	public function polylang_will_remember( $language_code ) {
 		self::$model->clean_languages_cache();
 
-		$links_model = new PLL_Links_Model( self::$model );
+		$links_model = new PLL_Links_Default( self::$model );
 		$polylang    = new PLL_Frontend( $links_model );
 		$choose_lang = new PLL_Choose_Lang_Url( $polylang );
 
