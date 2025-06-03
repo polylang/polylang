@@ -10,6 +10,11 @@
  */
 abstract class PLL_Admin_Base extends PLL_Base {
 	/**
+	 * @var PLL_Admin_Model
+	 */
+	public $model;
+
+	/**
 	 * Current language (used to filter the content).
 	 *
 	 * @var PLL_Language|null

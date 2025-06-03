@@ -43,11 +43,11 @@ class PLL_Sync {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Base &$polylang ) {
 		$this->model   = &$polylang->model;
-		$this->options = &$polylang->options;
+		$this->options = $polylang->options;
 
 		$this->taxonomies = new PLL_Sync_Tax( $polylang );
 		$this->post_metas = new PLL_Sync_Post_Metas( $polylang );

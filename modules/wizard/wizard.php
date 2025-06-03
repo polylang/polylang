@@ -61,11 +61,11 @@ class PLL_Wizard {
 	/**
 	 * Constructor
 	 *
-	 * @param object $polylang Reference to Polylang global object.
+	 * @param PLL_Admin_Base $polylang Reference to Polylang global object.
 	 * @since 2.7
 	 */
-	public function __construct( &$polylang ) {
-		$this->options = &$polylang->options;
+	public function __construct( PLL_Admin_Base &$polylang ) {
+		$this->options = $polylang->options;
 		$this->model   = &$polylang->model;
 
 		// Display Wizard page before any other action to ensure displaying it outside the WordPress admin context.

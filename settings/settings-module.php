@@ -100,8 +100,8 @@ class PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang The Polylang object.
-	 * @param array  $args {
+	 * @param PLL_Admin_Base $polylang The Polylang object.
+	 * @param array          $args {
 	 *   @type string $module        Unique module name.
 	 *   @type string $title         The title of the settings module.
 	 *   @type string $description   The description of the settings module.
@@ -120,8 +120,8 @@ class PLL_Settings_Module {
 	 *   active_option?: non-falsy-string
 	 * } $args
 	 */
-	public function __construct( &$polylang, $args ) {
-		$this->options     = &$polylang->options;
+	public function __construct( PLL_Admin_Base &$polylang, $args ) {
+		$this->options     = $polylang->options;
 		$this->model       = &$polylang->model;
 		$this->links_model = &$polylang->links_model;
 

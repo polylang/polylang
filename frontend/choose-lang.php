@@ -42,12 +42,12 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Frontend $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Frontend &$polylang ) {
 		$this->links_model = &$polylang->links_model;
-		$this->model = &$polylang->model;
-		$this->options = &$polylang->options;
+		$this->model       = &$polylang->model;
+		$this->options     = $polylang->options;
 
 		$this->curlang = &$polylang->curlang;
 	}

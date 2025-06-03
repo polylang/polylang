@@ -23,14 +23,14 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	 *
 	 * @since 2.3
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Base &$polylang ) {
 		$this->meta_type = 'post';
 
 		parent::__construct( $polylang );
 
-		$this->options = &$polylang->options;
+		$this->options = $polylang->options;
 
 		add_filter( 'pll_translate_post_meta', array( $this, 'translate_thumbnail_id' ), 10, 3 );
 	}

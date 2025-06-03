@@ -51,9 +51,9 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
-	public function __construct( &$model ) {
+	public function __construct( PLL_Model &$model ) {
 		$this->model   = &$model;
-		$this->options = &$model->options;
+		$this->options = $model->options;
 
 		$this->home = home_url();
 

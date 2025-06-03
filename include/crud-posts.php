@@ -43,10 +43,10 @@ class PLL_CRUD_Posts {
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
-		$this->options   = &$polylang->options;
+	public function __construct( PLL_Base &$polylang ) {
+		$this->options   = $polylang->options;
 		$this->model     = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 		$this->curlang   = &$polylang->curlang;

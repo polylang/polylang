@@ -33,7 +33,7 @@ class PLL_Canonical {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $curlang;
 
@@ -42,12 +42,12 @@ class PLL_Canonical {
 	 *
 	 * @since 3.3
 	 *
-	 * @param object $polylang Main Polylang object.
+	 * @param PLL_Frontend $polylang Main Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Frontend &$polylang ) {
 		$this->links_model = &$polylang->links_model;
 		$this->model       = &$polylang->model;
-		$this->options     = &$polylang->options;
+		$this->options     = $polylang->options;
 		$this->curlang     = &$polylang->curlang;
 	}
 
@@ -126,6 +126,9 @@ class PLL_Canonical {
 		}
 
 		if ( empty( $language ) ) {
+			if ( empty( $this->curlang ) ) {
+				return $requested_url;
+			}
 			$language = $this->curlang;
 			$redirect_url = $requested_url;
 		} else {

@@ -29,11 +29,11 @@ class PLL_Sync_Tax {
 	 *
 	 * @since 2.3
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Base &$polylang ) {
 		$this->model   = &$polylang->model;
-		$this->options = &$polylang->options;
+		$this->options = $polylang->options;
 
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
 		add_action( 'pll_save_term', array( $this, 'create_term' ), 10, 3 );
