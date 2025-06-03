@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * A class to manage copy and synchronization of post metas.
  *
@@ -12,7 +14,7 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 

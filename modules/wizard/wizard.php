@@ -23,7 +23,7 @@ class PLL_Wizard {
 	/**
 	 * Reference to the Polylang options array.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 

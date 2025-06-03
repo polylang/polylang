@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages copy and synchronization of terms and post metas on front
  *
@@ -27,7 +29,7 @@ class PLL_Sync {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -216,7 +218,7 @@ class PLL_Sync {
 			if ( $tr_id === $term_id ) {
 				continue;
 			}
-			
+
 			$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 			$tr_term   = get_term( (int) $tr_id, $taxonomy );
 
