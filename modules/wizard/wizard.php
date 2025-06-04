@@ -16,7 +16,7 @@ class PLL_Wizard {
 	/**
 	 * Reference to the model object
 	 *
-	 * @var PLL_Admin_Model
+	 * @var PLL_Model
 	 */
 	protected $model;
 
