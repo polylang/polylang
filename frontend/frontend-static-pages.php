@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages the static front page and the page for posts on frontend
  *
@@ -24,7 +26,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	/**
 	 * Stores plugin's options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -33,14 +35,14 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Frontend $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Frontend &$polylang ) {
 		parent::__construct( $polylang );
 
 		$this->links_model = &$polylang->links_model;
 		$this->links       = &$polylang->links;
-		$this->options     = &$polylang->options;
+		$this->options     = $polylang->options;
 
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 

@@ -366,11 +366,6 @@ parameters:
 			path: frontend/frontend.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$options\\.$#"
-			count: 1
-			path: include/crud-posts.php
-
-		-
 			message: "#^Cannot access offset 'term_id' on array\\{term_id\\: int, term_taxonomy_id\\: int\\|string\\}\\|WP_Error\\.$#"
 			count: 1
 			path: include/default-term.php

@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages links filters needed on both frontend and admin
  *
@@ -12,7 +14,7 @@ class PLL_Filters_Links {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -45,14 +47,14 @@ class PLL_Filters_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
-		$this->links = &$polylang->links;
+	public function __construct( PLL_Base &$polylang ) {
+		$this->links       = &$polylang->links;
 		$this->links_model = &$polylang->links_model;
-		$this->model = &$polylang->model;
-		$this->options = &$polylang->options;
-		$this->curlang = &$polylang->curlang;
+		$this->model       = &$polylang->model;
+		$this->options     = $polylang->options;
+		$this->curlang     = &$polylang->curlang;
 
 		// Low priority on links filters to come after any other modifications.
 		if ( $this->options['force_lang'] ) {

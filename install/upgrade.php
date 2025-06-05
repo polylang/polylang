@@ -14,7 +14,7 @@ class PLL_Upgrade {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -22,11 +22,12 @@ class PLL_Upgrade {
 	 * Constructor
 	 *
 	 * @since 1.2
+	 * @since 3.7 The `$options` parameter is an instance of `Options`.
 	 *
-	 * @param array $options Polylang options
+	 * @param Options $options Polylang options.
 	 */
-	public function __construct( &$options ) {
-		$this->options = &$options;
+	public function __construct( Options $options ) {
+		$this->options = $options;
 	}
 
 	/**

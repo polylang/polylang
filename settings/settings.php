@@ -11,12 +11,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.2
  */
 class PLL_Settings extends PLL_Admin_Base {
-
-	/**
-	 * @var PLL_Admin_Model
-	 */
-	public $model;
-
 	/**
 	 * Name of the active module.
 	 *

@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * PLL_Language factory.
  *
@@ -23,7 +25,7 @@ class PLL_Language_Factory {
 	/**
 	 * Polylang's options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	private $options;
 
@@ -31,12 +33,13 @@ class PLL_Language_Factory {
 	 * Constructor.
 	 *
 	 * @since 3.4
+	 * @since 3.7 The `$options` parameter is an instance of `Options`.
 	 *
-	 * @param array $options Array of Poylang's options passed by reference.
+	 * @param Options $options Poylang's options.
 	 * @return void
 	 */
-	public function __construct( &$options ) {
-		$this->options = &$options;
+	public function __construct( Options $options ) {
+		$this->options = $options;
 	}
 
 	/**
