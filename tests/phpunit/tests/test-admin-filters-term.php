@@ -51,21 +51,24 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_save_term_from_edit_tags() {
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
+		$_REQUEST = $_POST;
+
 		$en = self::factory()->category->create();
 		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug );
 
-		// Set the language and translations
-		$_REQUEST = $_POST = array(
+		// Set the language and translations.
+		$_POST = array(
 			'action'           => 'add-tag',
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'term_tr_lang'     => array( 'en' => $en ),
 		);
+		$_REQUEST = $_POST;
 
 		$fr = self::factory()->category->create();
 		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug );
@@ -73,18 +76,19 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_term_from_categories_metabox() {
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'action'                   => 'add-category',
 			'term_lang_choice'         => 'fr',
 			'_ajax_nonce-add-category' => wp_create_nonce( 'add-category' ),
 		);
+		$_REQUEST = $_POST;
 
 		$fr = self::factory()->category->create();
 		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug );
 	}
 
 	public function test_save_term_from_quick_edit() {
-		$term_id = $en = self::factory()->category->create();
+		$en = self::factory()->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
 		$de = self::factory()->category->create();
@@ -95,25 +99,28 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'en', 'de', 'es' ) );
 
-		// Post quick edit
-		// + the language is free in the translation group
-		$_REQUEST = $_POST = array(
+		$term_id = $en;
+
+		// Post quick edit + the language is free in the translation group.
+		$_POST = array(
 			'action'             => 'inline-save',
 			'inline_lang_choice' => 'fr',
 			'_inline_edit'       => wp_create_nonce( 'inlineeditnonce' ),
 		);
+		$_REQUEST = $_POST;
 
-		wp_update_term( $fr = $term_id, 'category' );
+		$fr = $term_id;
+		wp_update_term( $term_id, 'category' );
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 		$this->assertEqualSetsWithIndex( compact( 'fr', 'de', 'es' ), self::$model->term->get_translations( $es ) );
 
-		// edit-tags quick edit
-		// + the language is *not* free in the translation group
-		$_REQUEST = $_POST = array(
+		// The edit-tags quick edit + the language is *not* free in the translation group.
+		$_POST = array(
 			'action'             => 'inline-save-tax',
 			'inline_lang_choice' => 'de',
 			'_inline_edit'       => wp_create_nonce( 'taxinlineeditnonce' ),
 		);
+		$_REQUEST = $_POST;
 
 		wp_update_term( $term_id, 'category' );
 		$this->assertEquals( 'de', self::$model->term->get_language( $term_id )->slug );
@@ -132,8 +139,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$test_tag = self::factory()->tag->create( array( 'name' => 'test_tag' ) );
 		self::$model->term->set_language( $test_tag, 'fr' );
 
-		// First do not modify any language
-		$_REQUEST = $_GET = array(
+		// First do not modify any language.
+		$_GET = array(
 			'inline_lang_choice' => -1,
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
 			'bulk_edit'          => 'Update',
@@ -141,6 +148,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'_status'            => 'publish',
 			'tax_input'          => array( 'post_tag' => 'new_tag,test_tag' ),
 		);
+		$_REQUEST = $_GET;
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
 
@@ -164,9 +172,10 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'en' => $new_en, 'fr' => $new_fr ), self::$model->term->get_translations( $new_en ) );
 		$this->assertEqualSetsWithIndex( array( 'en' => $test_en, 'fr' => $test_fr ), self::$model->term->get_translations( $test_en ) );
 
-		// Second modify all languages
-		$_GET['inline_lang_choice'] = $_REQUEST['inline_lang_choice'] = 'fr';
-		$_GET['tax_input']  = $_REQUEST['tax_input'] = array( 'post_tag' => 'third_tag' );
+		// Second modify all languages.
+		$_GET['inline_lang_choice'] = 'fr';
+		$_GET['tax_input']          = array( 'post_tag' => 'third_tag' );
+		$_REQUEST = $_GET;
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
 
@@ -205,11 +214,12 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
-		// Prepare all needed info before loading the entire form
+		// Prepare all needed info before loading the entire form.
 		$GLOBALS['post_type'] = 'post';
 		$tax = get_taxonomy( $taxonomy );
-		$_GET['taxonomy'] = $taxonomy;
-		$_REQUEST['tag_ID'] = $_GET['tag_ID'] = $tag_ID;
+		$_GET['taxonomy']   = $taxonomy;
+		$_GET['tag_ID']     = $tag_ID;
+		$_REQUEST['tag_ID'] = $tag_ID;
 		$tag = get_term( $tag_ID, $taxonomy, OBJECT, 'edit' );
 		$wp_http_referer = home_url( '/wp-admin/edit-tags.php?taxonomy=category' );
 		$message = '';
@@ -240,15 +250,17 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
 
-		// The admin language filter must have no impact
-		$this->pll_admin->pref_lang = $this->pll_admin->filter_lang = self::$model->get_language( 'en' );
+		// The admin language filter must have no impact.
+		$this->pll_admin->filter_lang = self::$model->get_language( 'en' );
+		$this->pll_admin->pref_lang   = $this->pll_admin->filter_lang;
 		$form = $this->get_edit_term_form( $tag_ID, 'category' );
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
 		$this->pll_admin->filter_lang = false;
 
 		// Even when we just activated the admin language filter
-		$_REQUEST['lang'] = $_GET['lang'] = 'en';
+		$_GET['lang']     = 'en';
+		$_REQUEST['lang'] = 'en';
 		$form = $this->get_edit_term_form( $tag_ID, 'category' );
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
@@ -351,9 +363,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
-		$_GET['taxonomy'] = 'category';
+		$_GET['taxonomy']     = 'category';
 		$GLOBALS['post_type'] = 'post';
-		$lang = $this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+
+		$lang = self::$model->get_language( 'en' );
+		$this->pll_admin->pref_lang = $lang;
 		$this->pll_admin->set_current_language();
 
 		ob_start();
@@ -436,8 +450,9 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $out, 'test' ) );
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
 
-		// The admin language filter is active
-		$this->pll_admin->pref_lang = $this->pll_admin->filter_lang = self::$model->get_language( 'en' );
+		// The admin language filter is active.
+		$this->pll_admin->filter_lang = self::$model->get_language( 'en' );
+		$this->pll_admin->pref_lang   = $this->pll_admin->filter_lang;
 		$this->pll_admin->set_current_language();
 
 		ob_start();
@@ -472,11 +487,12 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_terms_with_same_name() {
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
+		$_REQUEST = $_POST;
 
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug );
@@ -579,13 +595,14 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		);
 
 		// Set globals like a language change in bluk edit and update a category.
-		$_REQUEST = $_GET = array(
+		$_GET = array(
 			'inline_lang_choice' => 'fr',
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
 			'bulk_edit'          => 'Update',
 			'post'               => $en_post,
 			'_status'            => 'publish',
 		);
+		$_REQUEST = $_GET;
 
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
@@ -627,12 +644,14 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$en_child = self::factory()->category->create( array( 'name' => 'child', 'slug' => 'child', 'parent' => $en_parent ) );
 		self::$model->term->set_language( $en_child, 'en' );
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'parent'           => $de_parent,
 			'term_lang_choice' => 'de',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'term_tr_lang'     => array( 'en' => $en_child ),
 		);
+		$_REQUEST = $_POST;
+
 		$de_child     = wp_insert_term( 'child', 'category', array( 'parent' => $de_parent ) );
 		$de_child_obj = get_term( $de_child['term_id'], 'category' );
 
@@ -700,10 +719,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is well created.' );
 
 		// Add globals like an admin request.
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'term_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
+		$_REQUEST = $_POST;
 
 		// Now update the category with a new name.
 		$updated_cat = wp_update_term(
@@ -735,10 +755,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is not well created.' );
 
 		// Add globals like an admin request.
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'term_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
+		$_REQUEST = $_POST;
 
 		// Now update the category with a new slug.
 		$updated_cat = wp_update_term(

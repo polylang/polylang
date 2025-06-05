@@ -30,10 +30,11 @@ class Settings_Test extends PLL_UnitTestCase {
 	public function test_edit_language() {
 		$lang = self::$model->get_language( 'fr' );
 
-		// setup globals
-		$_GET['page'] = 'mlang';
-		$_GET['pll_action'] = $_REQUEST['pll_action'] = 'edit'; // languages_page() tests $_REQUEST
-		$_GET['lang'] = $lang->term_id;
+		// Setup globals.
+		$_GET['lang']           = $lang->term_id;
+		$_GET['page']           = 'mlang';
+		$_GET['pll_action']     = 'edit';
+		$_REQUEST['pll_action'] = 'edit'; // languages_page() tests $_REQUEST.
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
 		$GLOBALS['plugin_page'] = 'mlang';
 		get_admin_page_title();
@@ -49,7 +50,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$xpath = new DOMXpath( $doc );
 
 		$input = $xpath->query( '//input[@name="lang_id"]' );
-		$this->assertEquals( $lang->term_id, $input->item( 0 )->getAttribute( 'value' ) ); // hidden field
+		$this->assertEquals( $lang->term_id, $input->item( 0 )->getAttribute( 'value' ) ); // Hidden field.
 
 		$input = $xpath->query( '//input[@name="name"]' );
 		$this->assertEquals( 'Français', $input->item( 0 )->getAttribute( 'value' ) );

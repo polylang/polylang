@@ -43,7 +43,8 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$GLOBALS['post_type'] = 'post';
 		$tax                  = get_taxonomy( $taxonomy );
 		$_GET['taxonomy']     = $taxonomy;
-		$_REQUEST['tag_ID']   = $_GET['tag_ID'] = $tag_ID;
+		$_GET['tag_ID']       = $tag_ID;
+		$_REQUEST['tag_ID']   = $tag_ID;
 		$tag                  = get_term( $tag_ID, $taxonomy, OBJECT, 'edit' );
 		$wp_http_referer      = home_url( '/wp-admin/edit-tags.php?taxonomy=category' );
 		$message              = '';
@@ -127,7 +128,10 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$en = self::$model->term->get( $default, 'en' );
 		$fr = self::$model->term->get( $default, 'fr' );
 
-		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
+		// WP_Screen tests $_REQUEST, Polylang tests $_GET.
+		$_GET['taxonomy']       = 'category';
+		$_REQUEST['taxonomy']   = 'category';
+		$GLOBALS['taxnow']      = 'category';
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';
 		set_current_screen();
 		$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );

@@ -43,7 +43,9 @@ class PLL_Walker extends Walker {
 			$element->locale = $element->w3c ?? $element->locale;
 		}
 
-		$element->parent = $element->id = 0; // Don't care about this.
+		// Don't care about this.
+		$element->id     = 0;
+		$element->parent = 0;
 
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
