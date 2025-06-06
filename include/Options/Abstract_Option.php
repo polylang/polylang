@@ -119,7 +119,7 @@ abstract class Abstract_Option {
 	 *
 	 * @return mixed
 	 */
-	public function &get() {
+	public function get() {
 		return $this->value;
 	}
 
