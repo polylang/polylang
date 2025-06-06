@@ -14,7 +14,7 @@
  *     non-falsy-string,
  *     array{
  *         action: string,
- *         encoding: 'json'|''
+ *         encoding: string
  *     }
  * >
  */
