@@ -14,7 +14,7 @@
  *     non-falsy-string,
  *     array{
  *         action: string,
- *         encoding: 'json'|''
+ *         encoding: string
  *     }
  * >
  */
@@ -1029,14 +1029,10 @@ class PLL_WPML_Config {
 					continue;
 				}
 
-				$data = array(
+				$this->parsed_metas[ $xpath ][ $name ] = array(
 					'action'   => $this->get_field_attribute( $custom_field, 'action' ),
 					'encoding' => $this->get_field_attribute( $custom_field, 'encoding' ),
 				);
-
-				$data['encoding'] = 'json' === $data['encoding'] ? 'json' : ''; // Only JSON is supported for now.
-
-				$this->parsed_metas[ $xpath ][ $name ] = $data;
 			}
 		}
 
