@@ -57,7 +57,7 @@ class PLL_Filters {
 
 		// Filters the comments according to the current language
 		add_action( 'parse_comment_query', array( $this, 'parse_comment_query' ) );
-		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
+		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 9, 2 );
 
 		// Filters the get_pages function according to the current language
 		if ( version_compare( $wp_version, '6.3-alpha', '<' ) ) {
