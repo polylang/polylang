@@ -179,7 +179,8 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 				);
 			}
 
-			$_REQUEST = $_POST = $data;
+			$_POST    = $data;
+			$_REQUEST = $data;
 			do_action( 'load-post.php' );
 			edit_post();
 
@@ -266,11 +267,12 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 
 		// Simulate the request that create the post and assigns language.
 		$post = get_default_post_to_edit( 'post', true );
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'post_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_ID'          => $post->ID,
 		);
+		$_REQUEST = $_POST;
 		edit_post();
 
 		$this->assertEmpty( wp_get_post_categories( $post->ID ) );

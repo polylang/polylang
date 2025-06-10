@@ -385,13 +385,14 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 		$item_id = wp_update_nav_menu_item( $menu_en, 0, $args );
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'menu-item-url'         => array( $item_id => '#pll_switcher' ),
 			'menu-item-show_names'  => array( $item_id => 1 ),
 			'menu-item-show_flags'  => array( $item_id => 1 ),
 			'menu-item-pll-detect'  => array( $item_id => 1 ),
 			'update-nav-menu-nonce' => wp_create_nonce( 'update-nav_menu' ),
 		);
+		$_REQUEST = $_POST;
 
 		wp_update_nav_menu_item( $menu_en, $item_id, $args );
 
@@ -438,11 +439,12 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 			$locations[1] => 3,
 		);
 
-		$_POST = $_REQUEST = array(
+		$_POST = array(
 			'menu-locations'        => $nav_menu_locations,
 			'action'                => 'update',
 			'update-nav-menu-nonce' => wp_create_nonce( 'update-nav_menu' ),
 		);
+		$_REQUEST = $_POST;
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$this->assertEqualSets( array( 'en' => 2, 'fr' => 3 ), $pll_admin->options['nav_menus'][ get_stylesheet() ][ $primary_location ] );

@@ -58,23 +58,25 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public function test_save_post_from_metabox() {
 		$GLOBALS['post_type'] = 'post';
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'post_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_ID'          => $en = self::factory()->post->create(),
 		);
+		$_REQUEST = $_POST;
 		do_action( 'load-post.php' );
 		edit_post();
 
 		$this->assertEquals( 'en', self::$model->post->get_language( $en )->slug );
 
-		// Set the language and translations
-		$_REQUEST = $_POST = array(
+		// Set the language and translations.
+		$_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_tr_lang'     => array( 'en' => $en ),
 			'post_ID'          => $fr = self::factory()->post->create(),
 		);
+		$_REQUEST = $_POST;
 		do_action( 'load-post.php' );
 		edit_post();
 
@@ -87,22 +89,24 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $posts[0], 'en' );
 		self::$model->post->set_language( $posts[1], 'fr' );
 
-		// First do not modify any language
-		$_REQUEST = $_GET = array(
+		// First do not modify any language.
+		$_GET = array(
 			'inline_lang_choice' => -1,
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
 			'bulk_edit'          => 'Update',
 			'post'               => $posts,
 			'_status'            => 'publish',
 		);
+		$_REQUEST = $_GET;
 
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'en', self::$model->post->get_language( $posts[0] )->slug );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $posts[1] )->slug );
 
-		// Second modify all languages
-		$_REQUEST['inline_lang_choice'] = $_GET['inline_lang_choice'] = 'fr';
+		// Second modify all languages.
+		$_GET['inline_lang_choice']     = 'fr';
+		$_REQUEST['inline_lang_choice'] = 'fr';
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $posts[0] )->slug );
@@ -135,12 +139,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$fr2 = self::factory()->category->create();
 		self::$model->term->set_language( $fr2, 'fr' );
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_category'    => array( $en, $en2, $fr2 ),
 			'post_ID'          => $post_id = self::factory()->post->create(),
 		);
+		$_REQUEST = $_POST;
 		do_action( 'load-post.php' );
 		edit_post();
 
@@ -159,12 +164,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$fr = self::factory()->tag->create( array( 'name' => 'test', 'slug' => 'test-fr' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$_REQUEST = $_POST = array(
+		$_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'tax_input'        => array( 'post_tag' => array( 'test', 'new' ) ),
 			'post_ID'          => $post_id = self::factory()->post->create(),
 		);
+		$_REQUEST = $_POST;
 		do_action( 'load-post.php' );
 		edit_post();
 
@@ -230,7 +236,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public function test_languages_meta_box_for_new_post() {
 		global $post_ID;
 
-		$lang = $this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+		$lang = self::$model->get_language( 'en' );
+		$this->pll_admin->pref_lang = $lang;
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 		$post_ID = self::factory()->post->create();
 		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
@@ -256,8 +263,19 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 		$lang = self::$model->get_language( 'fr' );
-		$_GET['from_post'] = $en;
-		$_GET['new_lang'] = 'fr';
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $en,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+
+		$_REQUEST = $_GET;
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$GLOBALS['post']      = get_post( $en );
 
 		ob_start();
 		$this->pll_admin->classic_editor->post_language();
@@ -277,17 +295,17 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_languages_meta_box_for_existing_post_with_translations() {
-		global $post_ID;
-
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
 		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$post_ID = $fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
+
+		$GLOBALS['post_ID'] = $fr;
 
 		$lang = self::$model->get_language( 'fr' );
 
@@ -298,22 +316,22 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
 		$xpath = new DOMXpath( $doc );
 
-		// language is French
+		// Language is French.
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 
-		// Link to English post
+		// Link to the English post.
 		$input = $xpath->query( '//input[@name="post_tr_lang[en]"]' );
 		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
 
 		$input = $xpath->query( '//input[@id="tr_lang_en"]' );
 		$this->assertEquals( 'test', $input->item( 0 )->getAttribute( 'value' ) );
 
-		// No self link
+		// No self link.
 		$this->assertEmpty( $xpath->query( '//input[@name="post_tr_lang[fr]"]' )->length );
 		$this->assertEmpty( $xpath->query( '//input[@id="tr_lang_fr"]' )->length );
 
-		// Link to empty German post
+		// Link to empty German post.
 		$input = $xpath->query( '//input[@name="post_tr_lang[de]"]' );
 		$this->assertEquals( 0, (int) $input->item( 0 )->getAttribute( 'value' ) );
 
