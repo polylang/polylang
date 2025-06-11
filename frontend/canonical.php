@@ -126,10 +126,8 @@ class PLL_Canonical {
 		}
 
 		if ( empty( $language ) ) {
-			if ( empty( $this->curlang ) ) {
-				return $requested_url;
-			}
-			$language = $this->curlang;
+			/** @var PLL_Language $language */
+			$language     = $this->curlang;
 			$redirect_url = $requested_url;
 		} else {
 			$redirect_url = $this->redirect_canonical( $requested_url, $language );
