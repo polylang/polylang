@@ -177,7 +177,7 @@ class PLL_Filters {
 			$lang = wp_list_pluck( $lang, 'slug' );
 
 			// If this clause is not already added by WP.
-			if ( ! strpos( $clauses['join'], '.ID' ) ) {
+			if ( false === strpos( $clauses['join'], "JOIN $wpdb->posts ON $wpdb->posts.ID" ) ) {
 				$clauses['join'] .= " JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
 			}
 
