@@ -57,12 +57,7 @@ class PLL_Filters {
 
 		// Filters the comments according to the current language
 		add_action( 'parse_comment_query', array( $this, 'parse_comment_query' ) );
-		
-		/*
-		 * Prevents database errors due to a WooCommerce hardocoded alias.
-		 * See https://github.com/woocommerce/woocommerce/blob/9.9.3/plugins/woocommerce/src/Internal/Admin/ProductReviews/ReviewsUtil.php#L57-L58
-		 */
-		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 5, 2 );
+		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
 
 		// Filters the get_pages function according to the current language
 		if ( version_compare( $wp_version, '6.3-alpha', '<' ) ) {
