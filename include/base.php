@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Base class for both admin and frontend
  *
@@ -13,7 +15,7 @@ abstract class PLL_Base {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -50,10 +52,10 @@ abstract class PLL_Base {
 	 *
 	 * @param PLL_Links_Model $links_model Links Model.
 	 */
-	public function __construct( &$links_model ) {
+	public function __construct( PLL_Links_Model &$links_model ) {
 		$this->links_model = &$links_model;
-		$this->model = &$links_model->model;
-		$this->options = &$this->model->options;
+		$this->model       = &$links_model->model;
+		$this->options     = $this->model->options;
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 

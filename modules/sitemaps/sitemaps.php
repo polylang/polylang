@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Handles the core sitemaps for sites using a single domain.
  *
@@ -22,7 +24,7 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -31,12 +33,12 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 *
 	 * @since 2.8
 	 *
-	 * @param object $polylang Main Polylang object.
+	 * @param PLL_Base $polylang Main Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Base &$polylang ) {
 		$this->links_model = &$polylang->links_model;
-		$this->model = &$polylang->model;
-		$this->options = &$polylang->options;
+		$this->model       = &$polylang->model;
+		$this->options     = $polylang->options;
 	}
 
 	/**

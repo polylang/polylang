@@ -21,11 +21,11 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang polylang object
+	 * @param PLL_Settings $polylang polylang object
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Settings &$polylang ) {
 		// Needed for `$this->is_available()`, which is used before calling the parent's constructor.
-		$this->options = &$polylang->options;
+		$this->options = $polylang->options;
 
 		parent::__construct(
 			$polylang,

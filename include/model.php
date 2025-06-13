@@ -99,8 +99,8 @@ class PLL_Model {
 	 *
 	 * @param Options $options Polylang options.
 	 */
-	public function __construct( Options &$options ) {
-		$this->options              = &$options;
+	public function __construct( Options $options ) {
+		$this->options              = $options;
 		$this->cache                = new PLL_Cache();
 		$this->translatable_objects = new PLL_Translatable_Objects();
 		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects, $this->cache );

@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * A class to manage admin notices
  * displayed only to admin, based on 'manage_options' capability
@@ -15,7 +17,7 @@ class PLL_Admin_Notices {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -32,10 +34,10 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Admin_Base $polylang The Polylang object.
 	 */
-	public function __construct( $polylang ) {
-		$this->options = &$polylang->options;
+	public function __construct( PLL_Admin_Base $polylang ) {
+		$this->options = $polylang->options;
 
 		add_action( 'admin_init', array( $this, 'hide_notice' ) );
 		add_action( 'admin_notices', array( $this, 'display_notices' ) );
