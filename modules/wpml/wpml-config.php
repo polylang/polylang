@@ -17,6 +17,9 @@
  *         encoding: string
  *     }
  * >
+ * @phpstan-type BlockXPath    array<non-falsy-string, list<non-empty-string>>
+ * @phpstan-type BlockKey      array<non-falsy-string, array<array|true>>
+ * @phpstan-type BlockEncoding array<non-falsy-string, array<string, non-falsy-string>>
  */
 class PLL_WPML_Config {
 	/**
@@ -48,8 +51,9 @@ class PLL_WPML_Config {
 	 * @var array
 	 *
 	 * @phpstan-var array{
-	 *     xpath?: array<non-empty-string, list<non-empty-string>>,
-	 *     key?: array<non-empty-string, array<array|true>>
+	 *     xpath?: BlockXPath,
+	 *     key?: BlockKey,
+	 *     encoding?: BlockEncoding
 	 * }|null
 	 */
 	protected $parsing_rules = null;
@@ -138,6 +142,7 @@ class PLL_WPML_Config {
 		add_filter( 'pll_term_meta_encodings', array( $this, 'add_term_meta_encodings' ), 20 );
 		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
 		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
+		add_filter( 'pll_block_attribute_encodings', array( $this, 'decode_blocks_attributes' ) );
 
 		$matcher = new PLL_Format_Util();
 
@@ -403,27 +408,42 @@ class PLL_WPML_Config {
 	 * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
 	 * @return string[][] Rules completed with ones from wpml-config file.
 	 *
-	 * @phpstan-param array<string,array<string>> $parsing_rules
-	 * @phpstan-return array<string,array<string>>
+	 * @phpstan-param BlockXPath $parsing_rules
+	 * @phpstan-return BlockXPath
 	 */
 	public function translate_blocks( $parsing_rules ) {
 		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'xpath' ) );
 	}
 
 	/**
-	 * Translation management for blocks attributes.
+	 * Translation management for block attributes.
 	 *
 	 * @since 3.3
-	 * @since 3.6 Format changed from `array<string>` to `array<non-empty-string, array|true>`.
+	 * @since 3.6 Format changed from `array<string>` to `array<non-falsy-string, array<array|true>>`.
 	 *
 	 * @param array $parsing_rules Rules for blocks attributes to translate.
 	 * @return array Rules completed with ones from wpml-config file.
 	 *
-	 * @phpstan-param array<non-empty-string, array|true> $parsing_rules
-	 * @phpstan-return array<non-empty-string, array|true>
+	 * @phpstan-param BlockKey $parsing_rules
+	 * @phpstan-return BlockKey
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
 		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
+	}
+
+	/**
+	 * Encoding management for block attributes.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string[][] $keys An array containing attribute names to encode/decode and their format(s), by block name.
+	 * @return string[][]
+	 *
+	 * @phpstan-param BlockEncoding $keys
+	 * @phpstan-return BlockEncoding
+	 */
+	public function decode_blocks_attributes( $keys ) {
+		return array_merge( $keys, $this->get_blocks_parsing_rules( 'encoding' ) );
 	}
 
 	/**
@@ -434,9 +454,13 @@ class PLL_WPML_Config {
 	 * @param string $rule_tag Tag name to extract.
 	 * @return string[][] The rules.
 	 *
-	 * @phpstan-param 'xpath'|'key' $rule_tag
+	 * @phpstan-param 'xpath'|'key'|'encoding' $rule_tag
 	 * @phpstan-return (
-	 *     $rule_tag is 'xpath' ? array<non-empty-string, list<non-empty-string>> : array<non-empty-string, array<array|true>>
+	 *     $rule_tag is 'xpath' ? BlockXPath :
+	 *         ( $rule_tag is 'key' ? BlockKey :
+	 *             BlockEncoding
+	 *         )
+	 *     )
 	 * )
 	 */
 	protected function get_blocks_parsing_rules( $rule_tag ) {
@@ -453,11 +477,12 @@ class PLL_WPML_Config {
 	 *
 	 * @since 3.3
 	 *
-	 * @return string[][][] Rules completed with ones from wpml-config file.
+	 * @return array Rules completed with ones from wpml-config file.
 	 *
 	 * @phpstan-return array{
-	 *     xpath?: array<non-empty-string, list<non-empty-string>>,
-	 *     key?: array<non-empty-string, array<array|true>>
+	 *     xpath?: BlockXPath,
+	 *     key?: BlockKey,
+	 *     encoding?: BlockEncoding
 	 * }
 	 */
 	protected function extract_blocks_parsing_rules() {
@@ -479,7 +504,7 @@ class PLL_WPML_Config {
 
 				$block_name = $this->get_field_attribute( $block, 'type' );
 
-				if ( '' === $block_name ) {
+				if ( empty( $block_name ) ) {
 					continue;
 				}
 
@@ -491,7 +516,7 @@ class PLL_WPML_Config {
 						case 'xpath':
 							$rule = trim( (string) $child );
 
-							if ( '' !== $rule ) {
+							if ( ! empty( $rule ) ) {
 								$parsing_rules['xpath'][ $block_name ][] = $rule;
 							}
 							break;
@@ -508,6 +533,19 @@ class PLL_WPML_Config {
 							} else {
 								$parsing_rules['key'][ $block_name ] = $rule;
 							}
+
+							$encoding = trim( $this->get_field_attribute( $child, 'encoding' ), ', ' );
+
+							if ( empty( $encoding ) ) {
+								break;
+							}
+
+							if ( 'json' === $encoding ) {
+								// Compatibility with WPML: for WPML, `json` means `json,urlencode`
+								// (and is the only format supported by WPML in this context).
+								$encoding .= ',urlencode';
+							}
+							$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = $encoding;
 							break;
 					}
 				}
@@ -1031,7 +1069,7 @@ class PLL_WPML_Config {
 
 				$this->parsed_metas[ $xpath ][ $name ] = array(
 					'action'   => $this->get_field_attribute( $custom_field, 'action' ),
-					'encoding' => $this->get_field_attribute( $custom_field, 'encoding' ),
+					'encoding' => trim( $this->get_field_attribute( $custom_field, 'encoding' ), ', ' ),
 				);
 			}
 		}
