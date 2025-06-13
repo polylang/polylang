@@ -4,7 +4,9 @@ on:
   push:
     branches: master
   pull_request:
-    branches: master
+    branches:
+      - master
+      - wpml-config-multi-encodings
   workflow_dispatch:
 
 jobs:
