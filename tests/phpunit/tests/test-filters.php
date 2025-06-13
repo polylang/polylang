@@ -368,7 +368,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	 * @ticket #1682 {@see https://github.com/polylang/polylang/issues/1682}
 	 * @ticket #939  {@See https://github.com/polylang/polylang-wc/issues/939}
 	 *
-	 * @testWith ["10"]
+	 * @testWith ["1"]
 	 *           ["20"]
 	 *
 	 * @param string $priority Priority of `comments_clauses` to apply.
