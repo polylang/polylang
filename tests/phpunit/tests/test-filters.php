@@ -373,7 +373,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	 *
 	 * @param string $priority Priority of `comments_clauses` to apply.
 	 */
-	public function test_db_error_in_comments_clauses( $priority) {
+	public function test_db_error_in_comments_clauses( $priority ) {
 		global $wpdb;
 
 		// Simulates WooCommerce adds a join comments clause.
