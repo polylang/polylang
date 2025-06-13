@@ -363,4 +363,37 @@ class Filters_Test extends PLL_UnitTestCase {
 		add_action( 'pre_get_posts', array( $this, '_action_pre_get_posts' ) );
 		get_posts(); // fires the action and performs the assertions.
 	}
+
+	/**
+	 * @ticket #1682 and Polylang for WooCommerce #939
+	 *
+	 * @see https://github.com/polylang/polylang/issues/1682
+	 * @See https://github.com/polylang/polylang-wc/issues/939
+	 */
+	public function test_comments_clauses() {
+		global $wpdb;
+
+		// Simulates WooCommerce adds a join comments clause.
+		add_filter(
+			'comments_clauses',
+			function ( $clauses ) use ( $wpdb ) {
+				$clauses['join'] .= " LEFT JOIN {$wpdb->posts} AS wp_posts_to_exclude_reviews ON comment_post_ID = wp_posts_to_exclude_reviews.ID ";
+
+				return $clauses;
+			}
+		);
+
+		$this->frontend->filters = new PLL_Filters( $this->frontend );
+
+		$this->assertSame(
+			0,
+			get_comments(
+				array(
+					'count' => true,
+					'lang'  => 'en',
+				)
+			)
+		);
+		$this->assertEmpty( $wpdb->last_error, 'It should not have database error.' );
+	}
 }
