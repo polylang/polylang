@@ -416,7 +416,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			),
 		);
 		$encodings_for_attributes     = array(
-			'my-plugin/my-block' => array(
+			'my-plugin/my-block'   => array(
+				'other' => 'json,urlencode',
+			),
+			'my-plugin/my-block-7' => array(
 				'other' => 'json,urlencode',
 			),
 		);
