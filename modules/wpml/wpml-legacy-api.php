@@ -187,7 +187,7 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 		}
 
 		if ( empty( $ulanguage_code ) ) {
-			return null;
+			return $return_original_if_missing ? $element_id : null;
 		}
 
 		if ( 'nav_menu' === $element_type ) {
@@ -205,10 +205,6 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 			$tr_id = PLL()->model->post->get_translation( $element_id, $ulanguage_code );
 		} elseif ( pll_is_translated_taxonomy( $element_type ) ) {
 			$tr_id = PLL()->model->term->get_translation( $element_id, $ulanguage_code );
-		}
-
-		if ( ! isset( $tr_id ) ) {
-			return $element_id; // WPML doesn't honor $return_original_if_missing if the post type or taxonomy is not translated.
 		}
 
 		if ( empty( $tr_id ) ) {
@@ -247,15 +243,20 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 	 *
 	 * @param null $empty   optional, not used
 	 * @param int  $post_id optional, post id, defaults to current post
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	function wpml_get_language_information( $empty = null, $post_id = null ) {
-		if ( empty( $post_id ) ) {
+		if ( is_null( $post_id ) ) {
 			$post_id = get_the_ID();
 		}
-
 		if ( empty( $post_id ) ) {
-			return array();
+			return new WP_Error( 'missing_id', __( 'Missing post ID', 'polylang' ) );
+		}
+
+		$post = get_post( $post_id );
+		if ( empty( $post ) ) {
+			// translators: Post id.
+			return new WP_Error( 'missing_post', sprintf( __( 'No such post for ID = %d', 'polylang' ), $post_id ) );
 		}
 
 		$lang = PLL()->model->post->get_language( $post_id );
@@ -392,10 +393,10 @@ if ( ! function_exists( 'icl_get_default_language' ) ) {
 	 *
 	 * @since 1.0.5
 	 *
-	 * @return string default language code
+	 * @return string|false default language code
 	 */
 	function icl_get_default_language() {
-		return (string) pll_default_language();
+		return pll_default_language();
 	}
 }
 
@@ -407,10 +408,10 @@ if ( ! function_exists( 'wpml_get_default_language' ) ) {
 	 *
 	 * @since 1.8.2
 	 *
-	 * @return string default language code
+	 * @return string|false default language code
 	 */
 	function wpml_get_default_language() {
-		return (string) pll_default_language();
+		return pll_default_language();
 	}
 }
 
