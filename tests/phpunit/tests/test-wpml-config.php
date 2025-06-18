@@ -111,7 +111,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	public function test_cf() {
 		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test.
 		$json    = '{"to_translate":"Value 1","not_to_translate":"Value other"}';
-		$encoded = base64_encode( rawurlencode( wp_json_encode( array( 'to_translate' => 'Encoded value to translate', 'not_to_translate' => 'Encoded value NOT to translate.' ) ) ) );
+		$encoded = 'JTdCJTIydG9fdHJhbnNsYXRlJTIyJTNBJTIyRW5jb2RlZCUyMHZhbHVlJTIwdG8lMjB0cmFuc2xhdGUlMjIlMkMlMjJub3RfdG9fdHJhbnNsYXRlJTIyJTNBJTIyRW5jb2RlZCUyMHZhbHVlJTIwTk9UJTIwdG8lMjB0cmFuc2xhdGUuJTIyJTdE';
 
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
@@ -132,7 +132,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		// Test encodings.
 		$encodings = apply_filters( 'pll_post_meta_encodings', array(), $from, $to );
 		$this->assertIsArray( $encodings );
-		$this->assertSame( array( 'a_json_meta' => 'json', 'an_encoded_meta' => 'json, urlencode, base64' ), $encodings );
+		$this->assertSame( array( 'a_json_meta' => 'json', 'an_encoded_meta' => 'json,urlencode,base64' ), $encodings );
 
 		// Copy.
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
