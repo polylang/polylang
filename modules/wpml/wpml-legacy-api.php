@@ -205,13 +205,11 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 			$tr_id = PLL()->model->post->get_translation( $element_id, $ulanguage_code );
 		} elseif ( pll_is_translated_taxonomy( $element_type ) ) {
 			$tr_id = PLL()->model->term->get_translation( $element_id, $ulanguage_code );
+		} else {
+			return $element_id; // WPML doesn't honor $return_original_if_missing if the post type or taxonomy is not translated, @see {SitePress::get_object_id()}.
 		}
 
-		if ( empty( $tr_id ) ) {
-			return $return_original_if_missing ? $element_id : null;
-		}
-
-		return (int) $tr_id;
+		return $return_original_if_missing && empty( $tr_id ) ? $element_id : (int) $tr_id;
 	}
 }
 
