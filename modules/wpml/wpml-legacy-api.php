@@ -209,7 +209,15 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 			return $element_id; // WPML doesn't honor $return_original_if_missing if the post type or taxonomy is not translated, @see {SitePress::get_object_id()}.
 		}
 
-		return $return_original_if_missing && empty( $tr_id ) ? $element_id : (int) $tr_id;
+		if ( empty( $tr_id ) ) {
+			if ( $return_original_if_missing ) {
+				return $element_id;
+			}
+
+			return null;
+		}
+
+		return (int) $tr_id;
 	}
 }
 
