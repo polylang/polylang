@@ -253,7 +253,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<a href="http://example.org/fr/test-fr/">test fr</a>', ob_get_clean() );
 	}
 
-	public function test_wpml_object_id() {
+	public function test_wpml_object_id_with_curlang_always_set() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -276,6 +276,111 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		$this->assertNull( apply_filters( 'wpml_object_id', $cat, 'category' ) );
 		$this->assertEquals( $cat, apply_filters( 'wpml_object_id', $cat, 'category', true ) );
+	}
+
+	/**
+	 * @testWith [ "post", "post", "en", "", true ]
+	 *           [ "post", "post", "en", "fr", true ]
+	 *           [ "post", "post", "de", "fr", false ]
+	 *           [ "post", "page", "en", "", false ]
+	 *           [ "post", "page", "", "fr", true ]
+	 *           [ "post", "page", "en", "fr", false ]
+	 *           [ "term", "category", "en", "fr", false ]
+	 *           [ "term", "category", "en", "en", false ]
+	 *           [ "term", "category", "", "", false ]
+	 *           [ "term", "post_tag", "en", "de", false ]
+	 *           [ "term", "post_tag", "en", "chti", false ]
+	 *           [ "term", "post_tag", "en", "chti", true ]
+	 *           [ "post", "something", "en", "fr", true ]
+	 *           [ "post", "something", "en", "fr", false ]
+	 *
+	 * @param string $object_kind                The kind of object to test.
+	 * @param string $object_type                The type of object to test.
+	 * @param string $curlang                    The current language, empty if none.
+	 * @param string $lang                       The language to test, empty if none.
+	 * @param bool   $return_original_if_missing Whether to return the original id if the translation is missing.
+	 *
+	 * @return void
+	 */
+	public function test_wpml_object_id( $object_kind, $object_type, $curlang, $lang, $return_original_if_missing ) {
+		if ( 'something' === $object_type ) {
+			if ( 'post' === $object_kind ) {
+				register_post_type( 'something' );
+			} else {
+				register_taxonomy( 'something', 'post' );
+			}
+		}
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+		$frontend->curlang = empty( $curlang ) ? null : self::$model->get_language( $curlang );
+
+		$args = array(
+			'lang' => 'en',
+		);
+		if ( 'post' === $object_kind ) {
+			$args['post_type'] = $object_type;
+		} else {
+			$args['taxonomy'] = $object_type;
+		}
+		$object_id = self::factory()->$object_kind->create( $args );
+
+		$expect_original_id =
+			$return_original_if_missing
+			|| ( 'en' === $curlang && empty( $lang ) )
+			|| 'en' === $lang;
+
+		if ( 'something' === $object_type && ! $return_original_if_missing ) {
+			// Special case for untranslatable object types, where WPML does'n honor `$return_original_if_missing` and always returns the original id.
+			$expect_original_id = true;
+		}
+
+		$this->assertSame(
+			$expect_original_id ? $object_id : null,
+			apply_filters(
+				'wpml_object_id',
+				$object_id,
+				$object_type,
+				$return_original_if_missing,
+				empty( $lang ) ? null : $lang
+			)
+		);
+
+		if ( ! self::$model->get_language( $lang ) || 'en' === $lang || 'something' === $object_type ) {
+			// No tests needed with translated entities if no language is set, is the default one or if the object type is untranslatable.
+			return;
+		}
+
+		$args = array(
+			'lang' => $lang,
+		);
+		if ( 'post' === $object_kind ) {
+			$args['post_type'] = $object_type;
+		} else {
+			$args['taxonomy'] = $object_type;
+		}
+		$translated_object_id = self::factory()->$object_kind->create( $args );
+		self::$model->$object_kind->save_translations(
+			$translated_object_id,
+			array(
+				'en'  => $object_id,
+				$lang => $translated_object_id,
+			)
+		);
+
+		$expect_translated_id = ! empty( $lang ) && 'en' !== $lang;
+		$expect_id            = $expect_translated_id ? $translated_object_id : ( $return_original_if_missing ? $object_id : null );
+
+		$this->assertSame(
+			$expect_id,
+			apply_filters(
+				'wpml_object_id',
+				$object_id,
+				$object_type,
+				$return_original_if_missing,
+				empty( $lang ) ? null : $lang
+			)
+		);
 	}
 
 	public function test_wpml_object_id_nav_menu() {
