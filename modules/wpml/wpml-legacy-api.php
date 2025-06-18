@@ -252,7 +252,7 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 	 * @return array|WP_Error
 	 */
 	function wpml_get_language_information( $empty = null, $post_id = null ) {
-		if ( is_null( $post_id ) ) {
+		if ( null === $post_id ) {
 			$post_id = get_the_ID();
 		}
 		if ( empty( $post_id ) ) {
