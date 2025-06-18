@@ -155,6 +155,19 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertFalse( $lang['different_language'] );
 	}
 
+	public function test_wpml_post_language_details_unhappy_path() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$result = apply_filters( 'wpml_post_language_details', null, PHP_INT_MAX );
+		$this->assertWPError( $result );
+		$this->assertEquals( 'missing_post', $result->get_error_code() );
+
+		$result = apply_filters( 'wpml_post_language_details', null, null );
+		$this->assertWPError( $result );
+		$this->assertEquals( 'missing_id', $result->get_error_code() );
+	}
+
 	public function test_wpml_language_code() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
