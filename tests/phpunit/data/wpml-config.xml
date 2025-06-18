@@ -8,6 +8,7 @@
 				<custom-field action="translate">custom-description</custom-field>
 				<custom-field action="ignore">date-added</custom-field>
 				<custom-field action="translate" encoding="json">a_json_meta</custom-field>
+				<custom-field action="translate" encoding="json,urlencode,base64">an_encoded_meta</custom-field>
 		</custom-fields>
 		<custom-fields-texts>
 			<key name="custom|nested">
@@ -22,6 +23,9 @@
 				</key>
 			</key>
 			<key name="a_json_meta">
+				<key name="to_translate" />
+			</key>
+			<key name="an_encoded_meta">
 				<key name="to_translate" />
 			</key>
 			<key name="custom-nested-2">
