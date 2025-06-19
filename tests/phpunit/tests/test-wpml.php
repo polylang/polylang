@@ -342,7 +342,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		$translated_posts = self::factory()->$object_kind->create_translated(
 			array_merge( $args, array( 'lang' => 'en' ) ),
-			array_merge( $args, array( 'lang' => $lang ) ),
+			array_merge( $args, array( 'lang' => $lang ) )
 		);
 		$object_id            = $translated_posts['en'];
 		$translated_object_id = $translated_posts[ $lang ];
