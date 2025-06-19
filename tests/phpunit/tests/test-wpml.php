@@ -266,31 +266,6 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<a href="http://example.org/fr/test-fr/">test fr</a>', ob_get_clean() );
 	}
 
-	public function test_wpml_object_id_with_curlang_always_set() {
-		$frontend = new PLL_Frontend( $this->links_model );
-		$GLOBALS['polylang'] = $frontend;
-
-		$frontend->curlang = self::$model->get_language( 'fr' );
-
-		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		self::$model->post->set_language( $en, 'en' );
-
-		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		self::$model->post->set_language( $fr, 'fr' );
-
-		self::$model->post->save_translations( $en, compact( 'fr' ) );
-
-		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $fr, 'page' ) );
-		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $en, 'page' ) );
-		$this->assertEquals( $en, apply_filters( 'wpml_object_id', $fr, 'page', false, 'en' ) );
-
-		$cat = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
-		self::$model->term->set_language( $cat, 'en' );
-
-		$this->assertNull( apply_filters( 'wpml_object_id', $cat, 'category' ) );
-		$this->assertEquals( $cat, apply_filters( 'wpml_object_id', $cat, 'category', true ) );
-	}
-
 	/**
 	 * @testWith [ "post", "post", "en", "", true ]
 	 *           [ "post", "post", "en", "fr", true ]
@@ -301,6 +276,7 @@ class WPML_Test extends PLL_UnitTestCase {
 	 *           [ "term", "category", "en", "fr", false ]
 	 *           [ "term", "category", "en", "en", false ]
 	 *           [ "term", "category", "", "", false ]
+	 *           [ "term", "category", "en", "", true ]
 	 *           [ "term", "post_tag", "en", "de", false ]
 	 *           [ "term", "post_tag", "en", "chti", false ]
 	 *           [ "term", "post_tag", "en", "chti", true ]
