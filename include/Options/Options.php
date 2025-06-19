@@ -25,6 +25,16 @@ defined( 'ABSPATH' ) || exit;
  *
  * @implements ArrayAccess<non-falsy-string, mixed>
  * @implements IteratorAggregate<non-empty-string, mixed>
+ *
+ * @phpstan-import-type Schema from Abstract_Option as OptionSchema
+ * @phpstan-type Schema array{
+ *     '$schema': non-falsy-string,
+ *     title: non-falsy-string,
+ *     description: string,
+ *     type: 'object',
+ *     properties: array<non-falsy-string, OptionSchema>,
+ *     additionalProperties: false
+ * }
  */
 class Options implements ArrayAccess, IteratorAggregate {
 	public const OPTION_NAME = 'polylang';
@@ -64,6 +74,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * Cached options JSON schema by blog ID.
 	 *
 	 * @var array[]|null
+	 * @phpstan-var array<int, Schema>|null
 	 */
 	private $schema;
 
@@ -314,6 +325,8 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @since 3.7
 	 *
 	 * @return array The schema.
+	 *
+	 * @phpstan-return Schema
 	 */
 	public function get_schema(): array {
 		if ( isset( $this->schema[ $this->current_blog_id ] ) ) {
