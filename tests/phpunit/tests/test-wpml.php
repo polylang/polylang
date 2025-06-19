@@ -340,23 +340,12 @@ class WPML_Test extends PLL_UnitTestCase {
 			return;
 		}
 
-		$args = array(
-			'lang' => $lang,
+		$translated_posts = self::factory()->$object_kind->create_translated(
+			array_merge( $args, array( 'lang' => 'en' ) ),
+			array_merge( $args, array( 'lang' => $lang ) ),
 		);
-		if ( 'post' === $object_kind ) {
-			$args['post_type'] = $object_type;
-		} else {
-			$args['taxonomy'] = $object_type;
-		}
-		$translated_object_id = self::factory()->$object_kind->create( $args );
-		self::$model->$object_kind->save_translations(
-			$translated_object_id,
-			array(
-				'en'  => $object_id,
-				$lang => $translated_object_id,
-			)
-		);
-
+		$object_id            = $translated_posts['en'];
+		$translated_object_id = $translated_posts[ $lang ];
 		$expect_translated_id = ! empty( $lang ) && 'en' !== $lang;
 		$expect_id            = $expect_translated_id ? $translated_object_id : ( $return_original_if_missing ? $object_id : null );
 
