@@ -280,8 +280,8 @@ class WPML_Test extends PLL_UnitTestCase {
 	 *           [ "term", "post_tag", "en", "de", false ]
 	 *           [ "term", "post_tag", "en", "chti", false ]
 	 *           [ "term", "post_tag", "en", "chti", true ]
-	 *           [ "post", "something", "en", "fr", true ]
-	 *           [ "post", "something", "en", "fr", false ]
+	 *           [ "post", "untranslated_cpt", "en", "fr", true ]
+	 *           [ "post", "untranslated_cpt", "en", "fr", false ]
 	 *
 	 * @param string $object_kind                The kind of object to test.
 	 * @param string $object_type                The type of object to test.
@@ -292,11 +292,11 @@ class WPML_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function test_wpml_object_id( $object_kind, $object_type, $curlang, $lang, $return_original_if_missing ) {
-		if ( 'something' === $object_type ) {
+		if ( 'untranslated_cpt' === $object_type ) {
 			if ( 'post' === $object_kind ) {
-				register_post_type( 'something' );
+				register_post_type( 'untranslated_cpt' );
 			} else {
-				register_taxonomy( 'something', 'post' );
+				register_taxonomy( 'untranslated_cpt', 'post' );
 			}
 		}
 
@@ -319,7 +319,7 @@ class WPML_Test extends PLL_UnitTestCase {
 			|| ( 'en' === $curlang && empty( $lang ) )
 			|| 'en' === $lang;
 
-		if ( 'something' === $object_type && ! $return_original_if_missing ) {
+		if ( 'untranslated_cpt' === $object_type && ! $return_original_if_missing ) {
 			// Special case for untranslatable object types, where WPML does'n honor `$return_original_if_missing` and always returns the original id.
 			$expect_original_id = true;
 		}
@@ -335,7 +335,7 @@ class WPML_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		if ( ! self::$model->get_language( $lang ) || 'en' === $lang || 'something' === $object_type ) {
+		if ( ! self::$model->get_language( $lang ) || 'en' === $lang || 'untranslated_cpt' === $object_type ) {
 			// No tests needed with translated entities if no language is set, is the default one or if the object type is untranslatable.
 			return;
 		}
