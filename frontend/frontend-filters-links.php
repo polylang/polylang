@@ -73,6 +73,11 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			// Rewrites ajax url
 			add_filter( 'admin_url', array( $this, 'admin_url' ), 10, 2 );
 		}
+
+		add_filter( 'oembed_endpoint_url', array( $this, 'add_current_language_to_oembed_endpoint' ) );
+
+		add_action( 'wp_head', array( $this, 'toggle_rest_output_link_filter' ), 9 );
+		add_action( 'wp_head', array( $this, 'toggle_rest_output_link_filter' ), 11 );
 	}
 
 	/**
@@ -347,5 +352,64 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 */
 	public function admin_url( $url, $path ) {
 		return 'admin-ajax.php' === $path ? $this->links_model->switch_language_in_link( $url, $this->curlang ) : $url;
+	}
+
+	/**
+	 * Adds the current language to the oEmbed endpoint URL.
+	 *
+	 * @since 3.7.4
+	 *
+	 * @param string $url The oEmbed endpoint URL.
+	 * @return string The oEmbed endpoint URL with the language.
+	 */
+	public function add_current_language_to_oembed_endpoint( $url ) {
+		if ( empty( $this->curlang ) ) {
+			return $url;
+		}
+
+		return add_query_arg(
+			array(
+				'lang' => $this->curlang->slug,
+			),
+			$url
+		);
+	}
+
+	/**
+	 * Toggles the `rest_output_link_wp_head` filter.
+	 * Hooked to `wp_head` with priority 9 and 11
+	 * i.e. before and after `rest_output_link_wp_head`, @see {/wp-includes/default-filters.php}.
+	 *
+	 * @since 3.7.4
+	 *
+	 * @return void
+	 */
+	public function toggle_rest_output_link_filter() {
+		if ( has_filter( 'rest_url', array( $this, 'add_current_language_to_rest_output_link' ) ) ) {
+			remove_filter( 'rest_url', array( $this, 'add_current_language_to_rest_output_link' ) );
+		} else {
+			add_filter( 'rest_url', array( $this, 'add_current_language_to_rest_output_link' ) );
+		}
+	}
+
+	/**
+	 * Adds the current language to the REST output link.
+	 *
+	 * @since 3.7.4
+	 *
+	 * @param string $url The REST output link.
+	 * @return string The REST output link with the language.
+	 */
+	public function add_current_language_to_rest_output_link( $url ) {
+		if ( empty( $this->curlang ) ) {
+			return $url;
+		}
+
+		return add_query_arg(
+			array(
+				'lang' => $this->curlang->slug,
+			),
+			$url
+		);
 	}
 }
