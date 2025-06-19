@@ -44,6 +44,12 @@ class Test_Discovery_Links extends PLL_UnitTestCase {
 
 		$expected = '<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="http://example.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fexample.org%2Ffr%2Ftest%2F&#038;lang=fr" /><link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="http://example.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fexample.org%2Ffr%2Ftest%2F&#038;format=xml&#038;lang=fr" />';
 
+		if ( version_compare( $GLOBALS['wp_version'], '6.6.0', '<' ) ) {
+			// Title attribute added in 6.6.0, @see {https://core.trac.wordpress.org/ticket/59006/}.
+			$expected = '<link rel="alternate" type="application/json+oembed" href="http://example.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fexample.org%2Ffr%2Ftest%2F&#038;lang=fr" /><link rel="alternate" type="text/xml+oembed" href="http://example.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fexample.org%2Ffr%2Ftest%2F&#038;format=xml&#038;lang=fr" />';
+		}
+
+		$this->assertSame( $expected, str_replace( "\n", '', get_echo( 'wp_oembed_add_discovery_links' ) ) );
 		$this->assertSame( $expected, str_replace( "\n", '', get_echo( 'wp_oembed_add_discovery_links' ) ) );
 	}
 
@@ -61,10 +67,16 @@ class Test_Discovery_Links extends PLL_UnitTestCase {
 		$this->assertQueryTrue( 'is_page', 'is_singular' );
 		$this->assertSame( 'fr', $this->frontend->curlang->slug );
 
+		$expected = '<link rel="https://api.w.org/" href="http://example.org/wp-json/?lang=fr" /><link rel="alternate" title="JSON" type="application/json" href="http://example.org/wp-json/wp/v2/pages/' . $post_id . '?lang=fr" />';
+		if ( version_compare( $GLOBALS['wp_version'], '6.6.0', '<' ) ) {
+			// Title attribute added in 6.6.0, @see {https://core.trac.wordpress.org/ticket/59006/}.
+			$expected = '<link rel="https://api.w.org/" href="http://example.org/wp-json/?lang=fr" /><link rel="alternate" type="application/json" href="http://example.org/wp-json/wp/v2/pages/' . $post_id . '?lang=fr" />';
+		}
+
 		$this->assertGreaterThan( 0, has_action( 'wp_head', 'rest_output_link_wp_head' ) );
 		$this->assertGreaterThan( 0, has_action( 'wp_head', array( $this->frontend->filters_links, 'toggle_rest_output_link_filter' ) ) );
 		$this->assertStringContainsString(
-			'<link rel="https://api.w.org/" href="http://example.org/wp-json/?lang=fr" /><link rel="alternate" title="JSON" type="application/json" href="http://example.org/wp-json/wp/v2/pages/' . $post_id . '?lang=fr" />',
+			$expected,
 			get_echo(
 				function () {
 					do_action( 'wp_head' );
