@@ -534,7 +534,7 @@ class PLL_WPML_Config {
 								$parsing_rules['key'][ $block_name ] = $rule;
 							}
 
-							$encoding = trim( $this->get_field_attribute( $child, 'encoding' ), ', ' );
+							$encoding = $this->get_field_attribute( $child, 'encoding' );
 
 							if ( empty( $encoding ) ) {
 								break;
@@ -1069,7 +1069,7 @@ class PLL_WPML_Config {
 
 				$this->parsed_metas[ $xpath ][ $name ] = array(
 					'action'   => $this->get_field_attribute( $custom_field, 'action' ),
-					'encoding' => trim( $this->get_field_attribute( $custom_field, 'encoding' ), ', ' ),
+					'encoding' => $this->get_field_attribute( $custom_field, 'encoding' ),
 				);
 			}
 		}
