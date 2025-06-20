@@ -50,7 +50,6 @@ class Test_Discovery_Links extends PLL_UnitTestCase {
 		}
 
 		$this->assertSame( $expected, str_replace( "\n", '', get_echo( 'wp_oembed_add_discovery_links' ) ) );
-		$this->assertSame( $expected, str_replace( "\n", '', get_echo( 'wp_oembed_add_discovery_links' ) ) );
 	}
 
 	public function test_add_current_language_to_rest_output_link() {
