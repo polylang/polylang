@@ -142,7 +142,7 @@ class PLL_WPML_Config {
 		add_filter( 'pll_term_meta_encodings', array( $this, 'add_term_meta_encodings' ), 20 );
 		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
 		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
-		add_filter( 'pll_block_attribute_encodings', array( $this, 'decode_blocks_attributes' ) );
+		add_filter( 'pll_block_attribute_encodings', array( $this, 'decode_blocks_attributes' ), 20 );
 
 		$matcher = new PLL_Format_Util();
 
