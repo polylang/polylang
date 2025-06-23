@@ -536,16 +536,12 @@ class PLL_WPML_Config {
 
 							$encoding = $this->get_field_attribute( $child, 'encoding' );
 
-							if ( empty( $encoding ) ) {
+							if ( 'json' !== $encoding ) {
 								break;
 							}
 
-							if ( 'json' === $encoding ) {
-								// Compatibility with WPML: for WPML, `json` means `json,urlencode`
-								// (and is the only format supported by WPML in this context).
-								$encoding .= ',urlencode';
-							}
-							$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = $encoding;
+							// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
+							$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
 							break;
 					}
 				}
