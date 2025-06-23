@@ -420,7 +420,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'other' => 'json,urlencode',
 			),
 			'my-plugin/my-block-7' => array(
-				'other' => 'json,urlencode',
+				'other' => 'json,urlencode', // Will be discarded because not part of the config file, nor the parsing rules `$parsing_rules_for_attributes`.
 			),
 		);
 
