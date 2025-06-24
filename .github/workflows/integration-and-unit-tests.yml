@@ -10,9 +10,7 @@ on:
       - '**.yml'
       - '**.sh'
   pull_request:
-    branches:
-      - master
-      - wpml-config-multi-encodings
+    branches: master
     paths:
       - '**.php'
       - 'phpunit.xml'
