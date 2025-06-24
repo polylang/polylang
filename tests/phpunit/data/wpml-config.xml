@@ -120,6 +120,9 @@
 				<key name="first-level-2" >
 					<key name="first-level-2-second-level" />
 				</key>
+				<key name="first-level-3" encoding="json">
+					<key name="text" />
+				</key>
 			</gutenberg-block>
 		</gutenberg-blocks>
 		<language-switcher-settings>

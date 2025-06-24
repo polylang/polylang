@@ -415,6 +415,14 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'buttonText' => true,
 			),
 		);
+		$encodings_for_attributes     = array(
+			'my-plugin/my-block'   => array(
+				'other' => 'json,urlencode',
+			),
+			'my-plugin/my-block-7' => array(
+				'other' => 'json,urlencode', // Will be discarded because not part of the config file, nor the parsing rules `$parsing_rules_for_attributes`.
+			),
+		);
 
 		$expected_parsing_rules                = array(
 			'my-plugin/my-block' => array(
@@ -456,13 +464,26 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'first-level-2' => array(
 					'first-level-2-second-level' => true,
 				),
+				'first-level-3' => array(
+					'text' => true,
+				),
+			),
+		);
+		$expected_encodings_for_attributes     = array(
+			'my-plugin/my-block'   => array(
+				'other' => 'json,urlencode',
+			),
+			'my-plugin/my-block-7' => array(
+				'first-level-3' => 'json,urlencode',
 			),
 		);
 
 		$parsing_rules                = apply_filters( 'pll_blocks_xpath_rules', $parsing_rules );
 		$parsing_rules_for_attributes = apply_filters( 'pll_blocks_rules_for_attributes', $parsing_rules_for_attributes );
+		$encodings_for_attributes     = apply_filters( 'pll_block_attribute_encodings', $encodings_for_attributes );
 
 		$this->assertSameSets( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
+		$this->assertSameSetsWithIndex( $expected_encodings_for_attributes, $encodings_for_attributes, 'Encodings for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 	}
 }
