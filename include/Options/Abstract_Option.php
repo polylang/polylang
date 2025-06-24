@@ -18,7 +18,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
  * @phpstan-type Schema array{
- *     type: SchemaType
+ *     type: SchemaType,
+ *     description: string,
+ *     default: mixed
  * }
  */
 abstract class Abstract_Option {
