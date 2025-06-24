@@ -74,7 +74,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			add_filter( 'admin_url', array( $this, 'admin_url' ), 10, 2 );
 		}
 
-		add_filter( 'oembed_endpoint_url', array( $this, 'add_current_language_to_oembed_endpoint' ) );
+		add_filter( 'oembed_endpoint_url', array( $this, 'add_current_language_url_query' ) );
 	}
 
 	/**
@@ -352,23 +352,18 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * Adds the current language to the oEmbed endpoint URL.
+	 * Adds the current language to URL query.
 	 *
 	 * @since 3.7.4
 	 *
 	 * @param string $url The oEmbed endpoint URL.
 	 * @return string The oEmbed endpoint URL with the language.
 	 */
-	public function add_current_language_to_oembed_endpoint( $url ) {
+	public function add_current_language_url_query( $url ) {
 		if ( empty( $this->curlang ) ) {
 			return $url;
 		}
 
-		return add_query_arg(
-			array(
-				'lang' => $this->curlang->slug,
-			),
-			$url
-		);
+		return add_query_arg( 'lang', $this->curlang->slug, $url );
 	}
 }
