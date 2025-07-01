@@ -174,7 +174,7 @@ class PLL_Canonical {
 		$queried_terms = $tax_query->queried_terms;
 		$taxonomy = $this->get_queried_taxonomy( $tax_query );
 
-		if ( ! is_array( $queried_terms[ $taxonomy ]['terms'] ) ) {
+		if ( ! isset( $queried_terms[ $taxonomy ]['terms'] ) || ! is_array( $queried_terms[ $taxonomy ]['terms'] ) ) {
 			return 0;
 		}
 		$field = $queried_terms[ $taxonomy ]['field'];
