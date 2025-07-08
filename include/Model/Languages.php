@@ -401,7 +401,7 @@ class Languages {
 		}
 
 		// Oops! We are deleting the default language...
-		// Need to do this before loosing the information for default category translations.
+		// Need to do this before losing the information for default category translations.
 		if ( $lang->is_default ) {
 			$slugs = $this->get_list( array( 'fields' => 'slug' ) );
 			$slugs = array_diff( $slugs, array( $lang->slug ) );
