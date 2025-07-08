@@ -141,11 +141,11 @@ class PLL_REST_Request extends PLL_Base {
 	 * @return string The current locale.
 	 */
 	public function set_locale( $locale ) {
-		if ( empty( $_REQUEST['lang'] ) || ! is_string( $_REQUEST['lang'] ) ) {
+		if ( empty( $_REQUEST['lang'] ) || ! is_string( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $locale;
 		}
 
-		if ( empty( $this->curlang ) || $this->curlang !== $_REQUEST['lang'] ) {
+		if ( empty( $this->curlang ) || $this->curlang !== $_REQUEST['lang'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $locale;
 		}
 
