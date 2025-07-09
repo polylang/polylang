@@ -145,7 +145,7 @@ class PLL_REST_Request extends PLL_Base {
 			return $locale;
 		}
 
-		if ( empty( $this->curlang ) || $this->curlang !== $_REQUEST['lang'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( empty( $this->curlang ) || $this->curlang->slug !== $_REQUEST['lang'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $locale;
 		}
 
