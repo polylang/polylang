@@ -20,8 +20,6 @@ class Locale_Test extends PLL_UnitTestCase {
 	 */
 	private $server;
 
-	protected static $administrator;
-
 	/**
 	 * @param PLL_UnitTest_Factory $factory
 	 * @return void
@@ -30,8 +28,6 @@ class Locale_Test extends PLL_UnitTestCase {
 		parent::pllSetUpBeforeClass( $factory );
 
 		$factory->language->create_many( 2 );
-
-		self::$administrator = $factory->user->create( array( 'role' => 'administrator' ) );
 	}
 
 	/**
