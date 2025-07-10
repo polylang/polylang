@@ -168,6 +168,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @param string $action The action name.
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
 	public function handle_actions( $action ) {
 		switch ( $action ) {
@@ -194,7 +196,6 @@ class PLL_Settings extends PLL_Admin_Base {
 					}
 				}
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
-				break;
 
 			case 'delete':
 				check_admin_referer( 'delete-lang' );
@@ -204,7 +205,6 @@ class PLL_Settings extends PLL_Admin_Base {
 				}
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
-				break;
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
@@ -217,7 +217,6 @@ class PLL_Settings extends PLL_Admin_Base {
 				}
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
-				break;
 
 			case 'default-lang':
 				check_admin_referer( 'default-lang' );
@@ -227,7 +226,6 @@ class PLL_Settings extends PLL_Admin_Base {
 				}
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
-				break;
 
 			case 'content-default-lang':
 				check_admin_referer( 'content-default-lang' );
@@ -235,7 +233,6 @@ class PLL_Settings extends PLL_Admin_Base {
 				$this->model->set_language_in_mass();
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
-				break;
 
 			case 'activate':
 				check_admin_referer( 'pll_activate' );
@@ -245,8 +242,7 @@ class PLL_Settings extends PLL_Admin_Base {
 						$this->modules[ $module ]->activate();
 					}
 				}
-				self::redirect();
-				break;
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 
 			case 'deactivate':
 				check_admin_referer( 'pll_deactivate' );
@@ -256,8 +252,7 @@ class PLL_Settings extends PLL_Admin_Base {
 						$this->modules[ $module ]->deactivate();
 					}
 				}
-				self::redirect();
-				break;
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 
 			default:
 				/**
@@ -266,7 +261,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				 * @since 1.8
 				 */
 				do_action( "mlang_action_$action" );
-				break;
+				exit;
 		}
 	}
 
@@ -349,8 +344,10 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @param array $args query arguments to add to the url
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
-	public static function redirect( $args = array() ) {
+	public static function redirect( array $args = array() ): void {
 		$errors = get_settings_errors( 'polylang' );
 		if ( ! empty( $errors ) ) {
 			set_transient( 'settings_errors', $errors, 30 );

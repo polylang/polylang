@@ -373,6 +373,8 @@ class PLL_Table_String extends WP_List_Table {
 	 * @since 1.9
 	 *
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
 	public function save_translations() {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
