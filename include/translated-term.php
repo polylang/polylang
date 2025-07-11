@@ -92,6 +92,24 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
+	 * Conventionally, it should be hidden on edition pages.
+	 *
+	 * @since 3.8
+	 *
+	 * @return bool
+	 */
+	public function should_hide_admin_bar_menu(): bool {
+		global $pagenow, $taxnow;
+
+		if ( 'term.php' !== $pagenow ) {
+			return false;
+		}
+
+		return ! empty( $taxnow ) && $this->is_translated_object_type( $taxnow );
+	}
+
+	/**
 	 * Stores the term's language into the database.
 	 *
 	 * @since 0.6
