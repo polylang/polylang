@@ -195,7 +195,7 @@ class PLL_Settings extends PLL_Admin_Base {
 						wp_clean_plugins_cache();
 					}
 				}
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			case 'delete':
 				check_admin_referer( 'delete-lang' );
@@ -204,7 +204,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					pll_add_notice( new WP_Error( 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' ) );
 				}
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
@@ -216,7 +216,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					pll_add_notice( new WP_Error( 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'success' ) );
 				}
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			case 'default-lang':
 				check_admin_referer( 'default-lang' );
@@ -225,14 +225,14 @@ class PLL_Settings extends PLL_Admin_Base {
 					$this->model->update_default_lang( $lang->slug );
 				}
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			case 'content-default-lang':
 				check_admin_referer( 'content-default-lang' );
 
 				$this->model->set_language_in_mass();
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			case 'activate':
 				check_admin_referer( 'pll_activate' );
@@ -242,7 +242,7 @@ class PLL_Settings extends PLL_Admin_Base {
 						$this->modules[ $module ]->activate();
 					}
 				}
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			case 'deactivate':
 				check_admin_referer( 'pll_deactivate' );
@@ -252,7 +252,7 @@ class PLL_Settings extends PLL_Admin_Base {
 						$this->modules[ $module ]->deactivate();
 					}
 				}
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
+				break;
 
 			default:
 				/**
@@ -261,8 +261,10 @@ class PLL_Settings extends PLL_Admin_Base {
 				 * @since 1.8
 				 */
 				do_action( "mlang_action_$action" );
-				exit;
+				break;
 		}
+
+		self::redirect();
 	}
 
 	/**
