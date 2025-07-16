@@ -171,7 +171,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @phpstan-return never
 	 */
-	public function handle_actions( $action ) {
+	public function handle_actions( string $action ): void {
 		switch ( $action ) {
 			case 'add':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
@@ -289,8 +289,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				break;
 		}
 
-		// Handle user input
-		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		// Handle user input.
+		$action = isset( $_REQUEST['pll_action'] ) && is_string( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
