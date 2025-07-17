@@ -168,8 +168,10 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @param string $action The action name.
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
-	public function handle_actions( $action ) {
+	public function handle_actions( string $action ): void {
 		switch ( $action ) {
 			case 'add':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
@@ -193,7 +195,6 @@ class PLL_Settings extends PLL_Admin_Base {
 						wp_clean_plugins_cache();
 					}
 				}
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'delete':
@@ -203,7 +204,6 @@ class PLL_Settings extends PLL_Admin_Base {
 					pll_add_notice( new WP_Error( 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' ) );
 				}
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'update':
@@ -216,7 +216,6 @@ class PLL_Settings extends PLL_Admin_Base {
 					pll_add_notice( new WP_Error( 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'success' ) );
 				}
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'default-lang':
@@ -226,7 +225,6 @@ class PLL_Settings extends PLL_Admin_Base {
 					$this->model->update_default_lang( $lang->slug );
 				}
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'content-default-lang':
@@ -234,7 +232,6 @@ class PLL_Settings extends PLL_Admin_Base {
 
 				$this->model->set_language_in_mass();
 
-				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'activate':
@@ -245,7 +242,6 @@ class PLL_Settings extends PLL_Admin_Base {
 						$this->modules[ $module ]->activate();
 					}
 				}
-				self::redirect();
 				break;
 
 			case 'deactivate':
@@ -256,7 +252,6 @@ class PLL_Settings extends PLL_Admin_Base {
 						$this->modules[ $module ]->deactivate();
 					}
 				}
-				self::redirect();
 				break;
 
 			default:
@@ -268,6 +263,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				do_action( "mlang_action_$action" );
 				break;
 		}
+
+		self::redirect();
 	}
 
 	/**
@@ -292,8 +289,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				break;
 		}
 
-		// Handle user input
-		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		// Handle user input.
+		$action = isset( $_REQUEST['pll_action'] ) && is_string( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
@@ -349,8 +346,10 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @param array $args query arguments to add to the url
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
-	public static function redirect( $args = array() ) {
+	public static function redirect( array $args = array() ): void {
 		$errors = get_settings_errors( 'polylang' );
 		if ( ! empty( $errors ) ) {
 			set_transient( 'settings_errors', $errors, 30 );
