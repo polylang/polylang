@@ -2,7 +2,7 @@
 
 <!-- Mark checked items with an [x] -->
 
-- [ ] This is not a usage question (Those should be directed to the [community supported forum](https://wordpress.org/support/plugin/polylang), unless this is a question about Polylang Pro in which case you should [use the helpdesk](https://polylang.pro/support/)).
+- [ ] This is not a usage question (Those should be directed to the [community supported forum](https://wordpress.org/support/plugin/polylang), unless this is a question about Polylang Pro in which case you should [use the helpdesk](https://polylang.pro/documentation/support/contact-support/)).
 - [ ] I have searched for similar issues in both open and closed tickets and cannot find a duplicate.
 - [ ] The issue still exists against the latest `master` branch of Polylang and the latest WordPress version.
 - [ ] This bug happens with only Polylang plugin active
@@ -20,4 +20,3 @@
 When I follow those steps, I see...
 
 I was expecting...
-
