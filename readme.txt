@@ -76,14 +76,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 1. Make sure you are using WordPress 6.2 or later and that your server is running PHP 7.2 or later (same requirement as WordPress itself).
 1. If you tried other multilingual plugins, deactivate them before activating Polylang, otherwise, you may get unexpected results!
 1. Install and activate the plugin as usual from the 'Plugins' menu in WordPress.
-1. The [setup wizard](https://polylang.pro/doc/setup-wizard/) is automatically launched to help you get started more easily with Polylang by configuring the main features.
+1. The [setup wizard](https://polylang.pro/documentation/support/getting-started/setup-wizard/) is automatically launched to help you get started more easily with Polylang by configuring the main features.
 
 == Frequently Asked Questions ==
 
 = Where to find help ? =
 
-* First time users should read [Polylang - Getting started](https://polylang.pro/doc-category/getting-started/), which explains the basics and includes a lot of screenshots.
-* Read the [documentation](https://polylang.pro/doc/). It includes a [FAQ](https://polylang.pro/doc-category/faq/) and the [documentation for developers](https://polylang.pro/doc-category/developers/).
+* First time users should read [Polylang - Getting started](https://polylang.pro/documentation/support/getting-started/), which explains the basics and includes a lot of screenshots.
+* Read the [documentation](https://polylang.pro/documentation/support/). It includes a [FAQ](https://polylang.pro/documentation/support/faq/) and the [documentation for developers](https://polylang.pro/documentation/support/developers/).
 * Search the [community support forum](https://wordpress.org/search/). You will probably find your answers here.
 * Read the sticky posts in the [community support forum](http://wordpress.org/support/plugin/polylang).
 * If you still have a problem, open a new thread in the [community support forum](http://wordpress.org/support/plugin/polylang).
@@ -91,7 +91,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 = Is Polylang compatible with WooCommerce? =
 
-* You need [Polylang for WooCommerce](https://polylang.pro/downloads/polylang-for-woocommerce/), premium addon described above, which will make both plugins work together.
+* You need [Polylang for WooCommerce](https://polylang.pro/pricing/polylang-for-woocommerce/), premium addon described above, which will make both plugins work together.
 
 == Screenshots ==
 

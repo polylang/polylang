@@ -242,7 +242,7 @@ class PLL_Admin_Notices {
 				printf(
 					/* translators: %1$s is link start tag, %2$s is link end tag. */
 					esc_html__( 'We have noticed that you are using Polylang with WooCommerce. To ensure compatibility, we recommend you use %1$sPolylang for WooCommerce%2$s.', 'polylang' ),
-					'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
+					'<a href="https://polylang.pro/pricing/polylang-for-woocommerce/">',
 					'</a>'
 				);
 				?>
