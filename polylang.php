@@ -85,6 +85,8 @@ if ( ! $install->is_deactivation() && $install->can_activate() ) {
 		require __DIR__ . '/vendor/autoload.php';
 	}
 
+	$install::add_hooks();
+
 	new Polylang();
 }
 
