@@ -1269,7 +1269,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'cn',
 		'facebook' => 'zh_CN',
-		'deepl'    => 'ZH',
+		'deepl'    => 'ZH-HANS',
 	),
 	'zh_HK' => array(
 		'code'     => 'zh',
@@ -1278,7 +1278,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'hk',
 		'facebook' => 'zh_HK',
-		'deepl'    => 'ZH',
+		'deepl'    => 'ZH-HANT',
 	),
 	'zh_TW' => array(
 		'code'     => 'zh',
@@ -1287,6 +1287,6 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'tw',
 		'facebook' => 'zh_TW',
-		'deepl'    => 'ZH',
+		'deepl'    => 'ZH-HANT',
 	),
 );
