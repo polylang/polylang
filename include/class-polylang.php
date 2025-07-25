@@ -37,8 +37,6 @@ class Polylang {
 	public function __construct() {
 		require_once __DIR__ . '/functions.php'; // VIP functions
 
-		PLL_Install::add_hooks();
-
 		// Plugin initialization
 		// Take no action before all plugins are loaded
 		add_action( 'plugins_loaded', array( $this, 'init' ), 1 );
