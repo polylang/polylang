@@ -36,25 +36,41 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( defined( 'POLYLANG_VERSION' ) ) {
 	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro.
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	require_once ABSPATH . 'wp-includes/pluggable.php';
+
 	if ( is_plugin_active( plugin_basename( __FILE__ ) ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin.
 		// WP does not allow us to send a custom meaningful message, so just tell the plugin has been deactivated.
 		wp_safe_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
 		exit;
 	}
-} else {
-	// Go on loading the plugin.
-	define( 'POLYLANG_VERSION', '3.8-dev' );
-	define( 'PLL_MIN_WP_VERSION', '6.2' );
-	define( 'PLL_MIN_PHP_VERSION', '7.2' );
+	return;
+}
+
+// Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
+if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+	return;
+}
+
+require_once __DIR__ . '/install/install-base.php';
+require_once __DIR__ . '/install/install.php';
+$install = new PLL_Install(
+	__FILE__, // Plugin file.
+	'3.8-dev', // Plugin version.
+	'6.2', // WP version.
+	'7.2' // PHP version.
+);
+
+if ( ! $install->is_deactivation() && $install->can_activate() ) {
+	define( 'POLYLANG', $install->plugin_name );
+	define( 'POLYLANG_VERSION', $install->plugin_version );
+	define( 'PLL_MIN_WP_VERSION', $install->min_wp_version );
+	define( 'PLL_MIN_PHP_VERSION', $install->min_php_version );
 
 	define( 'POLYLANG_FILE', __FILE__ );
 	define( 'POLYLANG_DIR', __DIR__ );
@@ -65,13 +81,11 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	}
 
 	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
-		define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
+		define( 'POLYLANG_BASENAME', $install->plugin_basename ); // Plugin name as known by WP.
 		require __DIR__ . '/vendor/autoload.php';
 	}
 
-	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
-
-	if ( empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		new Polylang();
-	}
+	new Polylang();
 }
+
+unset( $install );
