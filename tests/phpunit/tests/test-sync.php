@@ -136,29 +136,29 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, 'key', 'value3' );
 
 		$sync->post_metas->copy( $from, $to, 'fr', true );
-		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_post_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_post_meta( $to, 'key', false ) );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		// Delete
 		$this->assertTrue( delete_post_meta( $from, 'key', 'value3' ) );
-		$this->assertEqualSets( array( 'value1', 'value2' ), get_post_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value2' ), get_post_meta( $to, 'key', false ) );
 
 		// Update
 		$this->assertTrue( update_post_meta( $from, 'key', 'value4', 'value2' ) );
-		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key', false ) );
 
 		// Add
 		$mid = add_post_meta( $from, 'key', 'value5' );
-		$this->assertEqualSets( array( 'value1', 'value4', 'value5' ), get_post_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value4', 'value5' ), get_post_meta( $to, 'key', false ) );
 
 		// update_metadata_by_mid
 		$this->assertTrue( update_meta( $mid, 'key', 'value6' ) );
-		$this->assertEqualSets( array( 'value1', 'value4', 'value6' ), get_post_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value4', 'value6' ), get_post_meta( $to, 'key', false ) );
 
 		// delete_metadata_by_mid
 		$this->assertTrue( delete_meta( $mid ) );
-		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key', false ) );
 	}
 
 	public function test_create_post_translation() {
@@ -296,8 +296,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$model->post->get_translations( $from ) );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
-		$this->assertEquals( array( 'value' ), get_post_meta( $to, 'key' ) );
-		$this->assertEquals( array( 'value' ), get_post_meta( $from, 'key' ) ); // Test reverse sync
+		$this->assertEquals( array( 'value' ), get_post_meta( $to, 'key', false ) );
+		$this->assertEquals( array( 'value' ), get_post_meta( $from, 'key', false ) ); // Test reverse sync
 		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 		$this->assertTrue( is_sticky( $to ) );
@@ -509,7 +509,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'term_tr_lang'     => array( 'en' => $child_en ),
 		);
-		
+
 		$_REQUEST = $_POST;
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
@@ -660,15 +660,15 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_term_meta( $from, 'key', 'value1' );
 		add_term_meta( $from, 'key', 'value2' );
 		add_term_meta( $from, 'key', 'value3' );
-		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_term_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_term_meta( $to, 'key', false ) );
 
 		// Delete
 		$this->assertTrue( delete_term_meta( $from, 'key', 'value3' ) );
-		$this->assertEqualSets( array( 'value1', 'value2' ), get_term_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value2' ), get_term_meta( $to, 'key', false ) );
 
 		// Update
 		$this->assertTrue( update_term_meta( $from, 'key', 'value4', 'value2' ) );
-		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key' ) );
+		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key', false ) );
 	}
 
 	public function test_sync_post_with_metas_to_remove() {
@@ -702,10 +702,10 @@ class Sync_Test extends PLL_UnitTestCase {
 			)
 		); // Fires the sync
 
-		$this->assertEmpty( get_post_meta( $to, 'key1' ) );
-		$this->assertEmpty( get_post_meta( $from, 'key1' ) );
-		$this->assertEqualSets( array( 'value1' ), get_post_meta( $to, 'key2' ) );
-		$this->assertEqualSets( array( 'value1' ), get_post_meta( $from, 'key2' ) );
+		$this->assertEmpty( get_post_meta( $to, 'key1', false ) );
+		$this->assertEmpty( get_post_meta( $from, 'key1', false ) );
+		$this->assertEqualSets( array( 'value1' ), get_post_meta( $to, 'key2', false ) );
+		$this->assertEqualSets( array( 'value1' ), get_post_meta( $from, 'key2', false ) );
 	}
 
 	public function test_source_post_was_sticky_before_sync_was_active() {
