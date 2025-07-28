@@ -362,7 +362,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ar',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_CL' => array(
 		'code'     => 'es',
@@ -371,7 +371,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'cl',
 		'facebook' => 'es_CL',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_CO' => array(
 		'code'     => 'es',
@@ -380,7 +380,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'co',
 		'facebook' => 'es_CO',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_CR' => array(
 		'code'     => 'es',
@@ -389,7 +389,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'cr',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_DO' => array(
 		'code'     => 'es',
@@ -398,7 +398,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'do',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_EC' => array(
 		'code'     => 'es',
@@ -407,7 +407,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ec',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_ES' => array(
 		'code'     => 'es',
@@ -425,7 +425,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'gt',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_MX' => array(
 		'code'     => 'es',
@@ -434,7 +434,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'mx',
 		'facebook' => 'es_MX',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_PE' => array(
 		'code'     => 'es',
@@ -443,7 +443,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'pe',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_PR' => array(
 		'code'     => 'es',
@@ -452,7 +452,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'pr',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_UY' => array(
 		'code'     => 'es',
@@ -461,7 +461,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'uy',
 		'facebook' => 'es_LA',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'es_VE' => array(
 		'code'     => 'es',
@@ -470,7 +470,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 've',
 		'facebook' => 'es_VE',
-		'deepl'    => 'ES',
+		'deepl'    => 'ES-419',
 	),
 	'et' => array(
 		'code'     => 'et',
