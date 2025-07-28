@@ -619,6 +619,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'il',
 		'facebook' => 'he_IL',
+		'deepl'    => 'HE',
 	),
 	'hi_IN' => array(
 		'code'     => 'hi',
@@ -1176,6 +1177,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'th',
 		'facebook' => 'th_TH',
+		'deepl'    => 'TH',
 	),
 	'tl' => array(
 		'code'     => 'tl',
@@ -1255,6 +1257,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'vn',
 		'facebook' => 'vi_VN',
+		'deepl'    => 'VI',
 	),
 	'xho' => array(
 		'facebook' => 'xh_ZA',
