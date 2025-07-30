@@ -123,6 +123,24 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
+	 * Conventionally, it should be hidden on edition pages.
+	 *
+	 * @since 3.8
+	 *
+	 * @return bool
+	 */
+	public function should_hide_admin_bar_menu(): bool {
+		global $pagenow, $typenow;
+
+		if ( ! in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
+			return false;
+		}
+
+		return ! empty( $typenow ) && $this->is_translated_object_type( $typenow );
+	}
+
+	/**
 	 * Deletes a translation of a post.
 	 *
 	 * @since 0.5
