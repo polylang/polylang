@@ -11,7 +11,7 @@ use WP_Syntex\Polylang\Options\Options;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining a wrapper option to use when Polylang is not active on the current site.
+ * Class defining a decorator for options when Polylang is not active on the current site.
  *
  * @since 3.8
  */
@@ -19,20 +19,20 @@ class Inactive_Option extends Abstract_Option {
 	public const ERROR_CODE = 'pll_not_active';
 
 	/**
-	 * The option key.
+	 * The option to decorate.
+	 *
+	 * @var Abstract_Option
+	 */
+	private $option;
+
+	/**
+	 * The key of the option to decorate.
 	 *
 	 * @var string
 	 *
 	 * @phpstan-var non-falsy-string
 	 */
-	private static $key;
-
-	/**
-	 * Default value.
-	 *
-	 * @var mixed
-	 */
-	private $default;
+	private static $key = 'not-an-option';
 
 	/**
 	 * Constructor.
@@ -42,10 +42,9 @@ class Inactive_Option extends Abstract_Option {
 	 * @param Abstract_Option $option The option to wrap.
 	 */
 	public function __construct( Abstract_Option $option ) {
-		self::$key     = $option::key();
-		$this->default = $option->get_default();
-		$this->errors  = new WP_Error();
-		$this->reset(); // Set private property `$value`.
+		$this->option = $option;
+		self::$key    = $option::key();
+		$this->errors = new WP_Error();
 	}
 
 	/**
@@ -62,7 +61,7 @@ class Inactive_Option extends Abstract_Option {
 	}
 
 	/**
-	 * Does nothing.
+	 * Does nothing except adding an error.
 	 *
 	 * @since 3.8
 	 *
@@ -74,15 +73,26 @@ class Inactive_Option extends Abstract_Option {
 		if ( ! in_array( self::ERROR_CODE, $this->errors->get_error_codes(), true ) ) {
 			$this->errors->add(
 				self::ERROR_CODE,
-				/* translators: %s is a formatted number. */
-				sprintf( __( 'Polylang is not active on site %s.', 'polylang' ), number_format_i18n( (int) get_current_blog_id() ) )
+				/* translators: %s is a blog ID. */
+				sprintf( __( 'Polylang is not active on site %s.', 'polylang' ), (int) get_current_blog_id() )
 			);
 		}
 		return false;
 	}
 
 	/**
-	 * Returns an empty JSON schema of the option.
+	 * Returns the value of the option, usually the default value for inactive options.
+	 *
+	 * @since 3.8
+	 *
+	 * @return mixed
+	 */
+	public function get() {
+		return $this->option->get();
+	}
+
+	/**
+	 * Returns an empty schema.
 	 *
 	 * @since 3.8
 	 *
@@ -100,7 +110,7 @@ class Inactive_Option extends Abstract_Option {
 	 * @return mixed
 	 */
 	protected function get_default() {
-		return $this->default;
+		return $this->option->get_default();
 	}
 
 	/**
