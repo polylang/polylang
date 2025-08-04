@@ -71,6 +71,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	private $current_blog_id;
 
 	/**
+	 * Map of memoized values of blog IDs to tell if Polylang is active.
+	 *
+	 * @var bool[]
+	 * @phpstan-var array<int, bool>
+	 */
+	private $is_plugin_active = array();
+
+	/**
 	 * Cached options JSON schema by blog ID.
 	 *
 	 * @var array[]|null
@@ -160,7 +168,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return;
 		}
 
-		$this->init_options_for_current_blog( $this->is_plugin_active() );
+		$this->init_options_for_current_blog();
 	}
 
 	/**
@@ -331,7 +339,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 
 		$properties = array();
 
-		if ( ! empty( $this->options[ $this->current_blog_id ] ) ) {
+		if ( $this->is_plugin_active() ) {
 			foreach ( $this->options[ $this->current_blog_id ] as $option ) {
 				if ( ! $option instanceof Abstract_Option || empty( $option->get_schema() ) ) {
 					continue;
@@ -551,14 +559,11 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * Initializes options for the current blog.
 	 *
 	 * @since 3.7
-	 * @since 3.8 New parameter `$is_plugin_active`.
 	 *
-	 * @param bool $is_plugin_active Optional. True if Polylang is active on the current site, false otherwise.
-	 *                               This can be false after calling `switch_to_blog()`. Default is true.
 	 * @return void
 	 */
-	private function init_options_for_current_blog( bool $is_plugin_active = true ): void {
-		if ( ! $is_plugin_active ) {
+	private function init_options_for_current_blog(): void {
+		if ( ! $this->is_plugin_active() ) {
 			// Don't try to get the options from the DB.
 			$this->options[ $this->current_blog_id ] = array();
 		} else {
@@ -584,9 +589,9 @@ class Options implements ArrayAccess, IteratorAggregate {
 		 * @param bool    $is_plugin_active True if Polylang is active on the current site, false otherwise.
 		 *                                      This can be false after calling `switch_to_blog()`.
 		 */
-		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id, $is_plugin_active );
+		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id, $this->is_plugin_active() );
 
-		if ( $is_plugin_active ) {
+		if ( $this->is_plugin_active() ) {
 			return;
 		}
 
@@ -600,13 +605,19 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
-	 * Tells if Polylang is active.
+	 * Tells if Polylang is active on the current blog.
 	 *
 	 * @since 3.7.5
 	 *
 	 * @return bool
 	 */
 	private function is_plugin_active(): bool {
-		return pll_is_plugin_active( POLYLANG_BASENAME ) || doing_action( 'activate_' . POLYLANG_BASENAME );
+		if ( isset( $this->is_plugin_active[ $this->current_blog_id ] ) ) {
+			return $this->is_plugin_active[ $this->current_blog_id ];
+		}
+
+		$this->is_plugin_active[ $this->current_blog_id ] = pll_is_plugin_active( POLYLANG_BASENAME ) || doing_action( 'activate_' . POLYLANG_BASENAME );
+
+		return $this->is_plugin_active[ $this->current_blog_id ];
 	}
 }
