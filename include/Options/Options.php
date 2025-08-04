@@ -93,8 +93,9 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 */
 	public function __construct() {
 		// Keep track of the blog ID.
-		$this->blog_id         = (int) get_current_blog_id();
-		$this->current_blog_id = $this->blog_id;
+		$this->blog_id          = (int) get_current_blog_id();
+		$this->current_blog_id  = $this->blog_id;
+		$this->is_plugin_active = array( $this->blog_id => true );
 
 		// Handle options.
 		$this->init_options_for_current_blog();
