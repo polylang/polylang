@@ -51,6 +51,11 @@ class PLL_REST_Request extends PLL_Base {
 	public $filters_widgets_options;
 
 	/**
+	 * @var PLL_Filters_Sanitization|null
+	 */
+	public $filters_sanitization;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.4
@@ -67,6 +72,9 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->model->set_languages_ready();
+
+		// Use rest_pre_dispatch_filter to get the right language locale and initialize correctly sanitization filters.
+		add_filter( 'rest_pre_dispatch', array( $this, 'set_filters_sanitization' ), 10, 3 );
 	}
 
 	/**
@@ -126,6 +134,45 @@ class PLL_REST_Request extends PLL_Base {
 		} else {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Initialize sanitization filters with the correct language locale.
+	 *
+	 * @see WP_REST_Server::dispatch()
+	 *
+	 * @since 2.9
+	 * @since 3.8 Moved from Polylang Pro.
+	 *
+	 * @param mixed           $result  Response to replace the requested version with. Can be anything
+	 *                                 a normal endpoint can return, or null to not hijack the request.
+	 * @param WP_REST_Server  $server  Server instance.
+	 * @param WP_REST_Request $request Request used to generate the response.
+	 * @return mixed
+	 *
+	 * @phpstan-template T of array
+	 * @phpstan-param WP_REST_Request<T> $request
+	 */
+	public function set_filters_sanitization( $result, $server, $request ) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return $result;
+		}
+
+		$id   = $request->get_param( 'id' );
+		$lang = $request->get_param( 'lang' );
+
+		if ( is_string( $lang ) && ! empty( $lang ) ) {
+			$language = $this->model->get_language( sanitize_key( $lang ) );
+		} elseif ( is_numeric( $id ) && ! empty( $id ) ) {
+			// Otherwise we need to get the language from the post itself.
+			$language = $this->model->post->get_language( (int) $id );
+		}
+
+		if ( ! empty( $language ) ) {
+			$this->filters_sanitization = new PLL_Filters_Sanitization( $language->locale );
 		}
 
 		return $result;
