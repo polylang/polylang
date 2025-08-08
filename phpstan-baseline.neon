@@ -366,26 +366,6 @@ parameters:
 			path: frontend/frontend.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$options\\.$#"
-			count: 1
-			path: include/crud-posts.php
-
-		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 1
-			path: include/crud-terms.php
-
-		-
-			message: "#^Method PLL_CRUD_Terms\\:\\:get_queried_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|null\\.$#"
-			count: 2
-			path: include/crud-terms.php
-
-		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Model\\:\\:terms_clauses\\(\\) expects PLL_Language\\|false, PLL_Language\\|string\\|false given\\.$#"
-			count: 1
-			path: include/crud-terms.php
-
-		-
 			message: "#^Cannot access offset 'term_id' on array\\{term_id\\: int, term_taxonomy_id\\: int\\|string\\}\\|WP_Error\\.$#"
 			count: 1
 			path: include/default-term.php
@@ -542,11 +522,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$string of function pll__ expects string, mixed given\\.$#"
-			count: 1
-			path: include/translate-option.php
-
-		-
-			message: "#^Parameter \\#2 \\$string of static method PLL_Admin_Strings\\:\\:register_string\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: include/translate-option.php
 

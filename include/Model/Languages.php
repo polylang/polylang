@@ -401,7 +401,7 @@ class Languages {
 		}
 
 		// Oops! We are deleting the default language...
-		// Need to do this before loosing the information for default category translations.
+		// Need to do this before losing the information for default category translations.
 		if ( $lang->is_default ) {
 			$slugs = $this->get_list( array( 'fields' => 'slug' ) );
 			$slugs = array_diff( $slugs, array( $lang->slug ) );
@@ -732,6 +732,19 @@ class Languages {
 	public function clean_cache(): void {
 		delete_transient( self::TRANSIENT_NAME );
 		$this->cache->clean();
+	}
+
+	/**
+	 * Deletes the transient from the options table since WordPress does not do it when using object cache.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public function delete_transient_from_options_table(): void {
+		if ( wp_using_ext_object_cache() || wp_installing() ) {
+			delete_option( '_transient_' . self::TRANSIENT_NAME );
+		}
 	}
 
 	/**

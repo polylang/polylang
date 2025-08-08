@@ -14,7 +14,7 @@ class PLL_Upgrade {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -22,11 +22,12 @@ class PLL_Upgrade {
 	 * Constructor
 	 *
 	 * @since 1.2
+	 * @since 3.7 The `$options` parameter is an instance of `Options`.
 	 *
-	 * @param array $options Polylang options
+	 * @param Options $options Polylang options.
 	 */
-	public function __construct( &$options ) {
-		$this->options = &$options;
+	public function __construct( Options $options ) {
+		$this->options = $options;
 	}
 
 	/**
@@ -57,7 +58,6 @@ class PLL_Upgrade {
 			return false;
 		}
 
-		delete_transient( 'pll_languages_list' );
 		add_action( 'admin_init', array( $this, '_upgrade' ) );
 		return true;
 	}
@@ -106,6 +106,13 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	public function _upgrade() {
+		/*
+		 * Delete the transient precisely at this point (`admin_init`)
+		 * to ensure `Model\Languages` callbacks do their job.
+		 * i.e. delete the transient from the options table when external object cache is used.
+		 */
+		delete_transient( 'pll_languages_list' );
+
 		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );

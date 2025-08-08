@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Base class to choose the language
  *
@@ -12,7 +14,7 @@ abstract class PLL_Choose_Lang {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -40,12 +42,12 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Frontend $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Frontend &$polylang ) {
 		$this->links_model = &$polylang->links_model;
-		$this->model = &$polylang->model;
-		$this->options = &$polylang->options;
+		$this->model       = &$polylang->model;
+		$this->options     = $polylang->options;
 
 		$this->curlang = &$polylang->curlang;
 	}
@@ -197,8 +199,9 @@ abstract class PLL_Choose_Lang {
 		 */
 		$slug = apply_filters( 'pll_preferred_language', $language, $cookie );
 
-		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
-		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_default_language();
+		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference.
+		$lang = $this->model->get_language( $slug );
+		return $lang ?: $this->model->get_default_language();
 	}
 
 	/**

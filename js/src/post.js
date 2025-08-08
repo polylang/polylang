@@ -97,6 +97,11 @@ jQuery(
 				}
 		}
 		const table = document.getElementById( 'the-list' );
+
+		if ( ! table ) {
+			return;
+		}
+
 		const config = { childList: true, subtree: true };
 		const observer = new MutationObserver( handleQuickEditInsertion );
 
@@ -160,22 +165,6 @@ jQuery(
 					if ( 'undefined' != typeof( data['action'] ) && 'inline-save' == data['action'] ) {
 						update_rows( data['post_ID'] );
 					}
-				}
-			}
-		);
-	}
-);
-
-/**
- * Media list table
- * When clicking on attach link, filters find post list per media language
- */
-jQuery(
-	function ( $ ) {
-		$.ajaxPrefilter(
-			function ( options, originalOptions, jqXHR ) {
-				if ( 'string' === typeof options.data && -1 !== options.data.indexOf( 'action=find_posts' ) ) {
-					options.data = 'pll_post_id=' + $( '#affected' ).val() + '&' + options.data;
 				}
 			}
 		);

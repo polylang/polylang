@@ -13,7 +13,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 	}
 
 	public function set_up() {
@@ -155,6 +155,19 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertFalse( $lang['different_language'] );
 	}
 
+	public function test_wpml_post_language_details_unhappy_path() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$result = apply_filters( 'wpml_post_language_details', null, PHP_INT_MAX );
+		$this->assertWPError( $result );
+		$this->assertEquals( 'missing_post', $result->get_error_code() );
+
+		$result = apply_filters( 'wpml_post_language_details', null, null );
+		$this->assertWPError( $result );
+		$this->assertEquals( 'missing_id', $result->get_error_code() );
+	}
+
 	public function test_wpml_language_code() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
@@ -253,29 +266,99 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<a href="http://example.org/fr/test-fr/">test fr</a>', ob_get_clean() );
 	}
 
-	public function test_wpml_object_id() {
+	/**
+	 * @testWith [ "post", "post", "en", "", true ]
+	 *           [ "post", "post", "en", "fr", true ]
+	 *           [ "post", "post", "de", "fr", false ]
+	 *           [ "post", "page", "en", "", false ]
+	 *           [ "post", "page", "", "fr", true ]
+	 *           [ "post", "page", "en", "fr", false ]
+	 *           [ "term", "category", "en", "fr", false ]
+	 *           [ "term", "category", "en", "en", false ]
+	 *           [ "term", "category", "", "", false ]
+	 *           [ "term", "category", "en", "", true ]
+	 *           [ "term", "post_tag", "en", "de", false ]
+	 *           [ "term", "post_tag", "en", "chti", false ]
+	 *           [ "term", "post_tag", "en", "chti", true ]
+	 *           [ "post", "untranslated_cpt", "en", "fr", true ]
+	 *           [ "post", "untranslated_cpt", "en", "fr", false ]
+	 *
+	 * @param string $object_kind                The kind of object to test.
+	 * @param string $object_type                The type of object to test.
+	 * @param string $curlang                    The current language, empty if none.
+	 * @param string $lang                       The language to test, empty if none.
+	 * @param bool   $return_original_if_missing Whether to return the original id if the translation is missing.
+	 *
+	 * @return void
+	 */
+	public function test_wpml_object_id( $object_kind, $object_type, $curlang, $lang, $return_original_if_missing ) {
+		if ( 'untranslated_cpt' === $object_type ) {
+			if ( 'post' === $object_kind ) {
+				register_post_type( 'untranslated_cpt' );
+			} else {
+				register_taxonomy( 'untranslated_cpt', 'post' );
+			}
+		}
+
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
+		$frontend->curlang = empty( $curlang ) ? null : self::$model->get_language( $curlang );
 
-		$frontend->curlang = self::$model->get_language( 'fr' );
+		$args = array(
+			'lang' => 'en',
+		);
+		if ( 'post' === $object_kind ) {
+			$args['post_type'] = $object_type;
+		} else {
+			$args['taxonomy'] = $object_type;
+		}
+		$object_id = self::factory()->$object_kind->create( $args );
 
-		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		self::$model->post->set_language( $en, 'en' );
+		$expect_original_id =
+			$return_original_if_missing
+			|| ( 'en' === $curlang && empty( $lang ) )
+			|| 'en' === $lang;
 
-		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		if ( 'untranslated_cpt' === $object_type && ! $return_original_if_missing ) {
+			// Special case for untranslatable object types, where WPML does'n honor `$return_original_if_missing` and always returns the original id.
+			$expect_original_id = true;
+		}
 
-		self::$model->post->save_translations( $en, compact( 'fr' ) );
+		$this->assertSame(
+			$expect_original_id ? $object_id : null,
+			apply_filters(
+				'wpml_object_id',
+				$object_id,
+				$object_type,
+				$return_original_if_missing,
+				empty( $lang ) ? null : $lang
+			)
+		);
 
-		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $fr, 'page' ) );
-		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $en, 'page' ) );
-		$this->assertEquals( $en, apply_filters( 'wpml_object_id', $fr, 'page', false, 'en' ) );
+		if ( ! self::$model->get_language( $lang ) || 'en' === $lang || 'untranslated_cpt' === $object_type ) {
+			// No tests needed with translated entities if no language is set, is the default one or if the object type is untranslatable.
+			return;
+		}
 
-		$cat = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
-		self::$model->term->set_language( $cat, 'en' );
+		$translated_posts = self::factory()->$object_kind->create_translated(
+			array_merge( $args, array( 'lang' => 'en' ) ),
+			array_merge( $args, array( 'lang' => $lang ) )
+		);
+		$object_id            = $translated_posts['en'];
+		$translated_object_id = $translated_posts[ $lang ];
+		$expect_translated_id = ! empty( $lang ) && 'en' !== $lang;
+		$expect_id            = $expect_translated_id ? $translated_object_id : ( $return_original_if_missing ? $object_id : null );
 
-		$this->assertNull( apply_filters( 'wpml_object_id', $cat, 'category' ) );
-		$this->assertEquals( $cat, apply_filters( 'wpml_object_id', $cat, 'category', true ) );
+		$this->assertSame(
+			$expect_id,
+			apply_filters(
+				'wpml_object_id',
+				$object_id,
+				$object_type,
+				$return_original_if_missing,
+				empty( $lang ) ? null : $lang
+			)
+		);
 	}
 
 	public function test_wpml_object_id_nav_menu() {

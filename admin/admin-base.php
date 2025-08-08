@@ -71,8 +71,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		add_action( 'admin_menu', array( $this, 'remove_customize_submenu' ) );
 
 		// Setup js scripts and css styles
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 
@@ -172,12 +171,16 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_script( 'pll_admin', plugins_url( "/js/build/admin{$suffix}.js", POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+		$inline_script = sprintf( 'let pll_admin = %s;', wp_json_encode( array( 'ajax_filter' => $this->get_ajax_filter_data() ) ) );
+		wp_add_inline_script( 'pll_admin', $inline_script, 'before' );
+
 		$screen = get_current_screen();
 		if ( empty( $screen ) ) {
 			return;
 		}
-
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		/*
 		 * For each script:
@@ -194,7 +197,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$block_screens = array( 'widgets', 'site-editor' );
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
-			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), false, true );
+			$scripts['post'] = array( array( 'edit' ), array( 'jquery', 'wp-ajax-response' ), false, true );
 
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
@@ -203,6 +206,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 			// Block editor with legacy metabox in WP 5.0+.
 			$block_screens[] = 'post';
+		}
+
+		if ( $this->options['media_support'] ) {
+			$scripts['media'] = array( array( 'upload' ), array( 'jquery' ), false, true );
 		}
 
 		if ( $this->is_block_editor( $screen ) ) {
@@ -215,15 +222,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->has_languages() ) ) {
-				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_ROOT_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( "pll_{$script}", plugins_url( "/js/build/{$script}{$suffix}.js", POLYLANG_ROOT_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
 				if ( 'classic-editor' === $script || 'block-editor' === $script ) {
-					wp_set_script_translations( 'pll_' . $script, 'polylang' );
+					wp_set_script_translations( "pll_{$script}", 'polylang' );
 				}
 			}
 		}
 
-		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
-		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
+		wp_register_style( 'polylang_admin', plugins_url( "/css/build/admin{$suffix}.css", POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_dialog', plugins_url( "/css/build/dialog{$suffix}.css", POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->add_inline_scripts();
 	}
@@ -285,22 +292,22 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Sets pll_ajax_backend on all backend ajax request
-	 * The final goal is to detect if an ajax request is made on admin or frontend
+	 * Returns the data to use with the AJAX filter.
+	 * The final goal is to detect if an ajax request is made on admin or frontend.
 	 *
 	 * Takes care to various situations:
-	 * when the ajax request has no options.data thanks to ScreenfeedFr
-	 * see: https://wordpress.org/support/topic/ajaxprefilter-may-not-work-as-expected
-	 * when options.data is a json string
-	 * see: https://wordpress.org/support/topic/polylang-breaking-third-party-ajax-requests-on-admin-panels
-	 * when options.data is an empty string (GET request with the method 'load')
-	 * see: https://wordpress.org/support/topic/invalid-url-during-wordpress-new-dashboard-widget-operation
+	 * - When the AJAX request has no `options.data` thanks to ScreenfeedFr.
+	 *   See: https://wordpress.org/support/topic/ajaxprefilter-may-not-work-as-expected.
+	 * - When `options.data` is a JSON string.
+	 *   See: https://wordpress.org/support/topic/polylang-breaking-third-party-ajax-requests-on-admin-panels.
+	 * - When `options.data` is an empty string (GET request with the method 'load').
+	 *   See: https://wordpress.org/support/topic/invalid-url-during-wordpress-new-dashboard-widget-operation.
 	 *
-	 * @since 1.4
+	 * @since 3.7
 	 *
-	 * @return void
+	 * @return array
 	 */
-	public function admin_print_footer_scripts() {
+	public function get_ajax_filter_data(): array {
 		global $post_ID, $tag_ID;
 
 		$params = array( 'pll_ajax_backend' => 1 );
@@ -319,65 +326,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @param array $params List of parameters to add to the admin ajax request.
 		 */
-		$params = apply_filters( 'pll_admin_ajax_params', $params );
-
-		$str = http_build_query( $params );
-		$arr = wp_json_encode( $params );
-		?>
-		<script>
-			if (typeof jQuery != 'undefined') {
-				jQuery(
-					function( $ ){
-						$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
-							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
-
-								function addPolylangParametersAsString() {
-									if ( 'undefined' === typeof options.data || '' === options.data.trim() ) {
-										// Only Polylang data need to be send. So it could be as a simple query string.
-										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
-									} else {
-										/*
-										 * In some cases data could be a JSON string like in third party plugins.
-										 * So we need not to break their process by adding polylang parameters as valid JSON data.
-										 */
-										try {
-											options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> ) );
-										} catch( exception ) {
-											// Add Polylang data to the existing query string.
-											options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
-										}
-									}
-								}
-
-								/*
-								 * options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
-								 * This step is done before applying filters. Thus here the options.data is already a string in this case.
-								 * @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
-								 * It is the most case WordPress send ajax request this way however third party plugins or themes could be send JSON string.
-								 * Use JSON format is recommended in jQuery.param() documentation to be able to send complex data structures.
-								 * @See https://api.jquery.com/jquery.param/ jQuery param function.
-								 */
-								if ( options.processData ) {
-									addPolylangParametersAsString();
-								} else {
-									/*
-									 * If options.processData is set to false data could be undefined or pass as a string.
-									 * So data as to be processed as if options.processData is set to true.
-									 */
-									if ( 'undefined' === typeof options.data || 'string' === typeof options.data ) {
-										addPolylangParametersAsString();
-									} else {
-										// Otherwise options.data is probably an object.
-										options.data = Object.assign( options.data || {} , <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
-									}
-								}
-							}
-						});
-					}
-				);
-			}
-		</script>
-		<?php
+		return (array) apply_filters( 'pll_admin_ajax_params', $params );
 	}
 
 	/**
@@ -438,23 +387,28 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Defines the backend language and the admin language filter based on user preferences
+	 * Defines the backend language and the admin language filter based on user preferences.
 	 *
 	 * @since 1.2.3
 	 *
 	 * @return void
 	 */
 	public function init_user() {
-		// Language for admin language filter: may be empty
-		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
-		// We intentionally don't use a nonce to update the language filter
-		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' ); // phpcs:ignore WordPress.Security.NonceVerification
+		/*
+		 *  $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter.
+		 *  We intentionally don't use a nonce to update the language filter.
+		 */
+		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$user_id = get_current_user_id();
+			if ( current_user_can( 'edit_user', $user_id ) ) {
+				$lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+				update_user_meta( $user_id, 'pll_filter_content', $lang ? $lang->slug : '' );
+			}
 		}
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
-		// Set preferred language for use when saving posts and terms: must not be empty
+		// Set preferred language for use when saving posts and terms: must not be empty.
 		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_default_language() : $this->filter_lang;
 
 		/**

@@ -78,8 +78,13 @@ class Upgrade_Test extends PLL_UnitTestCase {
 			$this->assertTrue( false, "Polylang admin failed with error: {$th}" );
 		}
 
-		$this->assertSameSets( $expected_transient, get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
+		$this->assertFalse( get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
 		$this->assertSame( POLYLANG_VERSION, $admin->options['version'], 'Polylang version should have been updated.' );
+
+		$admin->model->languages->clean_cache();
+		$admin->model->languages->get_list(); // Warm the cache.
+
+		$this->assertSameSets( $expected_transient, get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
 	}
 
 	public function test_should_hide_language_defined_from_content_option_on_upgrade_to_3_7() {

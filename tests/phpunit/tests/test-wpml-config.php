@@ -13,7 +13,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
 		copy( __DIR__ . '/../data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 	}
 
 	public static function wpTearDownAfterClass() {
@@ -110,27 +110,29 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 	public function test_cf() {
 		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test.
-		$json = '{"to_translate":"Value 1","not_to_translate":"Value other"}';
+		$json    = '{"to_translate":"Value 1","not_to_translate":"Value other"}';
+		$encoded = 'JTdCJTIydG9fdHJhbnNsYXRlJTIyJTNBJTIyRW5jb2RlZCUyMHZhbHVlJTIwdG8lMjB0cmFuc2xhdGUlMjIlMkMlMjJub3RfdG9fdHJhbnNsYXRlJTIyJTNBJTIyRW5jb2RlZCUyMHZhbHVlJTIwTk9UJTIwdG8lMjB0cmFuc2xhdGUuJTIyJTdE';
 
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$en = $from = self::factory()->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'quantity', 1 ); // `copy`
 		add_post_meta( $from, 'custom-title', 'title' ); // `translate`
 		add_post_meta( $from, 'bg-color', '#23282d' ); // `copy-once`
 		add_post_meta( $from, 'date-added', 2007 ); // `ignore`
 		add_post_meta( $from, 'a_json_meta', $json ); // `translate` + encoding.
+		add_post_meta( $from, 'an_encoded_meta', $encoded ); // `translate` + multi-encoding.
 
-		$fr = $to = self::factory()->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $from, array( 'en' => $from, 'fr' => $to ) );
 
 		// Test encodings.
 		$encodings = apply_filters( 'pll_post_meta_encodings', array(), $from, $to );
 		$this->assertIsArray( $encodings );
-		$this->assertSame( array( 'a_json_meta' => 'json' ), $encodings );
+		$this->assertSame( array( 'a_json_meta' => 'json', 'an_encoded_meta' => 'json,urlencode,base64' ), $encodings );
 
 		// Copy.
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
@@ -142,6 +144,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '#23282d', get_post_meta( $to, 'bg-color', true ) );
 		$this->assertEmpty( get_post_meta( $to, 'date-added', true ) );
 		$this->assertSame( $json, get_post_meta( $to, 'a_json_meta', true ) );
+		$this->assertSame( $encoded, get_post_meta( $to, 'an_encoded_meta', true ) );
 
 		// Sync.
 		update_post_meta( $to, 'quantity', 2 );
@@ -149,12 +152,14 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		update_post_meta( $to, 'bg-color', '#ffeedd' );
 		update_post_meta( $to, 'date-added', 2008 );
 		update_post_meta( $to, 'a_json_meta', $json ); // `translate` + encoding.
+		update_post_meta( $to, 'an_encoded_meta', $encoded ); // `translate` + multi-encoding.
 
 		$this->assertEquals( 2, get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 		$this->assertSame( $json, get_post_meta( $from, 'a_json_meta', true ) );
+		$this->assertSame( $encoded, get_post_meta( $from, 'an_encoded_meta', true ) );
 
 		// Remove custom field and sync.
 		delete_post_meta( $to, 'quantity' );
@@ -162,28 +167,30 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		delete_post_meta( $to, 'bg-color' );
 		delete_post_meta( $to, 'date-added' );
 		delete_post_meta( $to, 'a_json_meta' );
+		delete_post_meta( $to, 'an_encoded_meta' );
 
 		$this->assertEmpty( get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 		$this->assertSame( $json, get_post_meta( $from, 'a_json_meta', true ) );
+		$this->assertSame( $encoded, get_post_meta( $from, 'an_encoded_meta', true ) );
 	}
 
 	public function test_custom_term_field() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$en = $from = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		$from = self::factory()->category->create();
 		self::$model->term->set_language( $from, 'en' );
 		add_term_meta( $from, 'term_meta_A', 'A' ); // copy
 		add_term_meta( $from, 'term_meta_B', 'B' ); // translate
 		add_term_meta( $from, 'term_meta_C', 'C' ); // ignore
 		add_term_meta( $from, 'term_meta_D', 'D' ); // copy-once
 
-		$fr = $to = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		$to = self::factory()->category->create();
 		self::$model->term->set_language( $to, 'fr' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->save_translations( $from, array( 'en' => $from, 'fr' => $to ) );
 
 		// Copy
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
@@ -236,6 +243,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			),
 			'custom-description' => 1,
 			'a_json_meta'        => array(
+				'to_translate' => 1,
+			),
+			'an_encoded_meta'    => array(
 				'to_translate' => 1,
 			),
 		);
@@ -302,10 +312,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->prepare_options( 'ARRAY' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
-		$GLOBALS['polylang'] = $frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$frontend->curlang = self::$model->get_language( 'fr' );
+		$GLOBALS['polylang']->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$options = get_option( 'my_plugins_options' );
@@ -333,10 +343,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->prepare_options( 'OBJECT' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
-		$GLOBALS['polylang'] = $frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$frontend->curlang = self::$model->get_language( 'fr' );
+		$GLOBALS['polylang']->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$options = get_option( 'my_plugins_options' );
@@ -405,6 +415,14 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'buttonText' => true,
 			),
 		);
+		$encodings_for_attributes     = array(
+			'my-plugin/my-block'   => array(
+				'other' => 'json,urlencode',
+			),
+			'my-plugin/my-block-7' => array(
+				'other' => 'json,urlencode', // Will be discarded because not part of the config file, nor the parsing rules `$parsing_rules_for_attributes`.
+			),
+		);
 
 		$expected_parsing_rules                = array(
 			'my-plugin/my-block' => array(
@@ -446,13 +464,26 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'first-level-2' => array(
 					'first-level-2-second-level' => true,
 				),
+				'first-level-3' => array(
+					'text' => true,
+				),
+			),
+		);
+		$expected_encodings_for_attributes     = array(
+			'my-plugin/my-block'   => array(
+				'other' => 'json,urlencode',
+			),
+			'my-plugin/my-block-7' => array(
+				'first-level-3' => 'json,urlencode',
 			),
 		);
 
 		$parsing_rules                = apply_filters( 'pll_blocks_xpath_rules', $parsing_rules );
 		$parsing_rules_for_attributes = apply_filters( 'pll_blocks_rules_for_attributes', $parsing_rules_for_attributes );
+		$encodings_for_attributes     = apply_filters( 'pll_block_attribute_encodings', $encodings_for_attributes );
 
 		$this->assertSameSets( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
+		$this->assertSameSetsWithIndex( $expected_encodings_for_attributes, $encodings_for_attributes, 'Encodings for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 	}
 }

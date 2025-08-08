@@ -19,6 +19,7 @@ function configureWebpack( options ){
 
 	const commonFoldersToIgnore = [
 		'node_modules/**',
+		'coverage/**',
 		'vendor/**',
 		'tmp/**',
 		'tests/**',

@@ -155,7 +155,11 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 				'<input name="rewrite" type="radio" value="1" %s %s/> %s',
 				disabled( $this->links_model->using_permalinks, false, false ),
 				checked( $this->options['rewrite'], true, false ),
-				esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' )
+				sprintf(
+					/* translators: %s is a URL slug: `/language/`. */
+					esc_html__( 'Remove %s in pretty permalinks', 'polylang' ),
+					'<code>/language/</code>'
+				)
 			);
 			?>
 		</label>
@@ -166,7 +170,11 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 				'<input name="rewrite" type="radio" value="0" %s %s/> %s',
 				disabled( $this->links_model->using_permalinks, false, false ),
 				checked( $this->options['rewrite'], false, false ),
-				esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' )
+				sprintf(
+					/* translators: %s is a URL slug: `/language/`. */
+					esc_html__( 'Keep %s in pretty permalinks', 'polylang' ),
+					'<code>/language/</code>'
+				)
 			);
 			?>
 		</label>

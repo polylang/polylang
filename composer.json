@@ -16,7 +16,8 @@
 		"behat/behat": "^3.7|^3.8",
 		"yoast/wp-test-utils": "^1.0.0",
 		"rector/rector": "^1.1",
-		"wpsyntex/wp-phpunit": "dev-master"
+		"wpsyntex/wp-phpunit": "dev-master",
+		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
@@ -50,7 +51,8 @@
 		],
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
-		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
+		"cs-fix": "vendor/bin/phpcbf",
+		"stan": "vendor/bin/phpstan analyze --memory-limit=2000M",
 		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [
 			"@cs",

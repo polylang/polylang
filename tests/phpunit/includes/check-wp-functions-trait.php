@@ -1,6 +1,16 @@
 <?php
 
 trait PLL_Check_WP_Functions_Trait {
+	protected function compare_wp_version( $version ) {
+		// Keep only the main part of the WP version (removing alpha, beta or rc).
+		$parts = explode( '-', $GLOBALS['wp_version'] );
+		$wp_version = $parts[0];
+
+		if ( version_compare( $wp_version, $version, '<' ) ) {
+			$this->markTestSkipped( "This test requires WordPress version {$version} or higher" );
+		}
+	}
+
 	protected function md5( ...$args ) {
 		if ( empty( $args[1] ) ) {
 			// We got a function.
@@ -26,14 +36,8 @@ trait PLL_Check_WP_Functions_Trait {
 	 * @param string ...$args Function name or class and method name.
 	 */
 	protected function check_method( $md5, $version, ...$args ) {
-		// Keep only the main part of the WP version (removing alpha, beta or rc).
-		$parts = explode( '-', $GLOBALS['wp_version'] );
-		$wp_version = $parts[0];
-
-		if ( version_compare( $wp_version, $version, '<' ) ) {
-			$this->markTestSkipped( "This test requires WordPress version {$version} or higher" );
-		}
-		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() has been modified', implode( '::', $args ) ) );
+		$this->compare_wp_version( $version );
+		$this->assertSame( $md5, $this->md5( ...$args ), sprintf( 'The function %s() has been modified', implode( '::', $args ) ) );
 	}
 
 	/**
@@ -43,6 +47,19 @@ trait PLL_Check_WP_Functions_Trait {
 	 * @param string ...$args Function name or class and method name.
 	 */
 	protected function check_internal_method( $md5, ...$args ) {
-		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
+		$this->assertSame( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
+	}
+
+	/**
+	 * Checks if a file has been modified.
+	 *
+	 * @param string $md5      Expected method md5.
+	 * @param string $version  Minimum WordPress function to pass the test.
+	 * @param string $filepath Filepath of the file to check.
+	 */
+	protected function check_file( $md5, $version, $filepath ) {
+		$this->compare_wp_version( $version );
+		$this->assertFileIsReadable( $filepath, sprintf( 'The file %s is not readable', $filepath ) );
+		$this->assertSame( $md5, md5( file_get_contents( $filepath ) ), sprintf( 'The file %s has been modified', $filepath ) );
 	}
 }

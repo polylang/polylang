@@ -7,7 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Allows plugins to use their own update API.
- * Modified version with 'polylang' text domain and missing comments for translators.
+ * Modified version with:
+ * - 'polylang' text domain,
+ * - missing comments for translators,
+ * - a bug fix (https://github.com/polylang/polylang/pull/1629).
  *
  * @author Easy Digital Downloads
  * @version 1.9.4
@@ -150,6 +153,21 @@ class PLL_Plugin_Updater {
 
 			$this->set_version_info_cache( $version_info );
 		}
+
+		// Added by Polylang.
+		$defaults = array(
+			'url'          => '',
+			'package'       => '',
+			'new_version'  => '',
+			'tested'       => '',
+			'requires'     => '',
+			'requires_php' => '',
+			'icons'        => new stdClass(),
+			'banners'      => new stdClass(),
+		);
+
+		$version_info = (object) array_merge( $defaults, (array) $version_info );
+		// End of added by Polylang.
 
 		return $version_info;
 	}

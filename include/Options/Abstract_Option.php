@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options;
 
 use WP_Error;
+use WP_Term;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -17,7 +18,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
  * @phpstan-type Schema array{
- *     type: SchemaType
+ *     type: SchemaType,
+ *     description: string,
+ *     default: mixed
  * }
  */
 abstract class Abstract_Option {
@@ -118,7 +121,7 @@ abstract class Abstract_Option {
 	 *
 	 * @return mixed
 	 */
-	public function &get() {
+	public function get() {
 		return $this->value;
 	}
 
@@ -225,4 +228,58 @@ abstract class Abstract_Option {
 	 * @return string
 	 */
 	abstract protected function get_description(): string;
+
+	/**
+	 * Returns a list of language terms.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array
+	 *
+	 * @phpstan-return list<WP_Term>
+	 */
+	protected function get_language_terms(): array {
+		$language_terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+		return is_array( $language_terms ) ? $language_terms : array();
+	}
+
+	/**
+	 * Adds a non-blocking error warning about unknown language slugs.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $language_slugs List of language slugs.
+	 * @return void
+	 */
+	protected function add_unknown_languages_warning( array $language_slugs ): void {
+		if ( 1 === count( $language_slugs ) ) {
+			/* translators: %s is a language slug. */
+			$message = __( 'The language %s is unknown and has been discarded.', 'polylang' );
+		} else {
+			/* translators: %s is a list of language slugs. */
+			$message = __( 'The languages %s are unknown and have been discarded.', 'polylang' );
+		}
+
+		$this->errors->add(
+			sprintf( 'pll_unknown_%s_languages', static::key() ),
+			sprintf(
+				$message,
+				wp_sprintf_l(
+					'%l',
+					array_map(
+						function ( $slug ) {
+							return "<code>{$slug}</code>";
+						},
+						$language_slugs
+					)
+				)
+			),
+			'warning'
+		);
+	}
 }

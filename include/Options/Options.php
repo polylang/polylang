@@ -5,11 +5,10 @@
 
 namespace WP_Syntex\Polylang\Options;
 
+use WP_Error;
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
-use WP_Error;
-use WP_Site;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -26,6 +25,16 @@ defined( 'ABSPATH' ) || exit;
  *
  * @implements ArrayAccess<non-falsy-string, mixed>
  * @implements IteratorAggregate<non-empty-string, mixed>
+ *
+ * @phpstan-import-type Schema from Abstract_Option as OptionSchema
+ * @phpstan-type Schema array{
+ *     '$schema': non-falsy-string,
+ *     title: non-falsy-string,
+ *     description: string,
+ *     type: 'object',
+ *     properties: array<non-falsy-string, OptionSchema>,
+ *     additionalProperties: false
+ * }
  */
 class Options implements ArrayAccess, IteratorAggregate {
 	public const OPTION_NAME = 'polylang';
@@ -65,6 +74,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * Cached options JSON schema by blog ID.
 	 *
 	 * @var array[]|null
+	 * @phpstan-var array<int, Schema>|null
 	 */
 	private $schema;
 
@@ -75,13 +85,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 */
 	public function __construct() {
 		// Keep track of the blog ID.
-		$this->blog_id = (int) get_current_blog_id();
+		$this->blog_id         = (int) get_current_blog_id();
+		$this->current_blog_id = $this->blog_id;
 
 		// Handle options.
-		$this->init_options_for_blog( $this->blog_id );
+		$this->init_options_for_current_blog();
 
 		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
-		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), -1000 ); // Options must be ready early.
+		add_action( 'switch_blog', array( $this, 'on_blog_switch' ), -1000 ); // Options must be ready early.
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
 
@@ -135,17 +146,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
-	 * Initializes options for the given blog:
-	 * - stores the blog ID,
-	 * - stores the options.
-	 * Hooked to `switch_blog`.
+	 * Initializes options for the newly switched blog if applicable.
 	 *
 	 * @since 3.7
 	 *
 	 * @param int $blog_id The blog ID.
 	 * @return void
 	 */
-	public function init_options_for_blog( $blog_id ): void {
+	public function on_blog_switch( $blog_id ): void {
 		$this->current_blog_id = (int) $blog_id;
 
 		if ( isset( $this->options[ $blog_id ] ) ) {
@@ -156,25 +164,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return;
 		}
 
-		$options = get_option( self::OPTION_NAME );
-
-		if ( empty( $options ) || ! is_array( $options ) ) {
-			$this->options[ $blog_id ]  = array();
-			$this->modified[ $blog_id ] = true;
-		} else {
-			$this->options[ $blog_id ] = $options;
-		}
-
-		/**
-		 * Fires after the options have been init for the current blog.
-		 * This is the best place to register options.
-		 *
-		 * @since 3.7
-		 *
-		 * @param Options $options         Instance of the options.
-		 * @param int     $current_blog_id Current blog ID.
-		 */
-		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id );
+		$this->init_options_for_current_blog();
 	}
 
 	/**
@@ -194,7 +184,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return;
 		}
 
-		remove_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
+		remove_action( 'switch_blog', array( $this, 'on_blog_switch' ), -1000 );
 
 		// Handle the original blog first, maybe this will prevent the use of `switch_to_blog()`.
 		if ( isset( $modified[ $this->blog_id ] ) && $this->current_blog_id === $this->blog_id ) {
@@ -302,11 +292,18 @@ class Options implements ArrayAccess, IteratorAggregate {
 		}
 
 		// Merge all "unknown option" errors into a single error message.
+		if ( 1 === count( $values ) ) {
+			/* translators: %s is an option name. */
+			$message = __( 'Unknown option key %s.', 'polylang' );
+		} else {
+			/* translators: %s is a list of option names. */
+			$message = __( 'Unknown option keys %s.', 'polylang' );
+		}
+
 		$errors->add(
 			'pll_unknown_option_keys',
 			sprintf(
-				/* translators: %s is a list of option names. */
-				_n( 'Unknown option key %s.', 'Unknown option keys %s.', count( $values ), 'polylang' ),
+				$message,
 				wp_sprintf_l(
 					'%l',
 					array_map(
@@ -328,6 +325,8 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @since 3.7
 	 *
 	 * @return array The schema.
+	 *
+	 * @phpstan-return Schema
 	 */
 	public function get_schema(): array {
 		if ( isset( $this->schema[ $this->current_blog_id ] ) ) {
@@ -550,5 +549,34 @@ class Options implements ArrayAccess, IteratorAggregate {
 		}
 
 		return $this->modified;
+	}
+
+	/**
+	 * Initializes options for the current blog.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	private function init_options_for_current_blog(): void {
+		$options = get_option( self::OPTION_NAME );
+
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			$this->options[ $this->current_blog_id ]  = array();
+			$this->modified[ $this->current_blog_id ] = true;
+		} else {
+			$this->options[ $this->current_blog_id ] = $options;
+		}
+
+		/**
+		 * Fires after the options have been init for the current blog.
+		 * This is the best place to register options.
+		 *
+		 * @since 3.7
+		 *
+		 * @param Options $options         Instance of the options.
+		 * @param int     $current_blog_id Current blog ID.
+		 */
+		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id );
 	}
 }

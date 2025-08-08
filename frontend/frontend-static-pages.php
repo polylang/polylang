@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages the static front page and the page for posts on frontend
  *
@@ -24,7 +26,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	/**
 	 * Stores plugin's options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -33,14 +35,14 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Frontend $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Frontend &$polylang ) {
 		parent::__construct( $polylang );
 
 		$this->links_model = &$polylang->links_model;
 		$this->links       = &$polylang->links;
-		$this->options     = &$polylang->options;
+		$this->options     = $polylang->options;
 
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 
@@ -171,10 +173,12 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 
 		// Redirect the language page to the homepage when using a static front page
 		if ( ( $this->options['redirect_lang'] || $this->options['hide_default'] ) && $this->is_front_page( $query ) && $lang = $this->model->get_language( get_query_var( 'lang' ) ) ) {
-			$query->is_archive = $query->is_tax = false;
+			$query->is_archive = false;
+			$query->is_tax     = false;
 			if ( 'page' === get_option( 'show_on_front' ) && ! empty( $lang->page_on_front ) ) {
 				$query->set( 'page_id', $lang->page_on_front );
-				$query->is_singular = $query->is_page = true;
+				$query->is_singular = true;
+				$query->is_page     = true;
 				unset( $query->query_vars['lang'], $query->queried_object ); // Reset queried object
 			} else {
 				// Handle case where the static front page hasn't be translated to avoid a possible infinite redirect loop.
@@ -189,8 +193,10 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 				return $lang;
 			}
 			$query->set( 'page_id', $lang->page_on_front );
-			$query->is_singular = $query->is_page = true;
-			$query->is_archive = $query->is_tax = false;
+			$query->is_singular = true;
+			$query->is_page     = true;
+			$query->is_archive  = false;
+			$query->is_tax      = false;
 			unset( $query->query_vars['lang'], $query->queried_object ); // Reset queried object
 		}
 
@@ -243,8 +249,10 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 			_prime_post_caches( $pages ); // Fill the cache with all pages for posts to avoid one query per page later.
 
 			$lang = $this->model->post->get_language( $page_id );
-			$query->is_singular = $query->is_page = false;
-			$query->is_home = $query->is_posts_page = true;
+			$query->is_singular   = false;
+			$query->is_page       = false;
+			$query->is_home       = true;
+			$query->is_posts_page = true;
 		}
 
 		return $lang;

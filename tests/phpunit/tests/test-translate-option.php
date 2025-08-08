@@ -5,6 +5,7 @@
  * Registering and translating options is already tested in WPML_Config_Test
  */
 class Translate_Option_Test extends PLL_UnitTestCase {
+	use PLL_MO_Trait;
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
@@ -12,7 +13,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 	}
 
 	public function set_up() {
@@ -24,7 +25,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		parent::tear_down();
+		$this->flush_pll_mo_cache( $this->pll_admin->model->languages->get_list() );
 
 		$mo = new PLL_MO();
 		foreach ( $this->pll_admin->model->languages->get_list() as $lang ) {
@@ -33,6 +34,8 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		}
 
 		unset( $GLOBALS['polylang'] );
+
+		parent::tear_down();
 	}
 
 	protected function add_string_translations( $lang, $translations ) {
@@ -416,5 +419,16 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->pll_admin->load_strings_translations( 'fr' );
 		$this->assertSame( 'val_fr', get_option( 'my_option1' ), 'Translations should be kept after option update' );
 		$this->assertSame( 'val_fr', get_option( 'my_option2' ), 'Translations should be kept after option update' );
+	}
+
+	public function test_sanitization_should_no_apply_to_other_options() {
+		add_option( 'my_option1', 'val1' );
+		add_option( 'my_option2', 'val2' );
+
+		new PLL_Translate_Option( 'my_option1', array(), array( 'sanitize_callback' => '__return_empty_string' ) );
+		new PLL_Translate_Option( 'my_option2' );
+
+		$this->assertEmpty( apply_filters( 'pll_sanitize_string_translation', 'tr_val1', 'my_option1', 'Polylang', 'val1' ) ); // Sanitized.
+		$this->assertSame( 'tr_val2', apply_filters( 'pll_sanitize_string_translation', 'tr_val2', 'my_option2', 'Polylang', 'val2' ) ); // Not sanitized.
 	}
 }

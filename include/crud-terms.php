@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Adds actions and filters related to languages when creating, reading, updating or deleting posts
  * Acts both on frontend and backend
@@ -53,7 +55,7 @@ class PLL_CRUD_Terms {
 	/**
 	 * Reference to the Polylang options array.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -62,10 +64,10 @@ class PLL_CRUD_Terms {
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
-		$this->options     = &$polylang->options;
+	public function __construct( PLL_Base &$polylang ) {
+		$this->options     = $polylang->options;
 		$this->model       = &$polylang->model;
 		$this->curlang     = &$polylang->curlang;
 		$this->filter_lang = &$polylang->filter_lang;
@@ -153,34 +155,37 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Get the language(s) to filter WP_Term_Query.
+	 * Returns the languages to filter `WP_Term_Query`.
 	 *
-	 * @since 1.7.6
+	 * @since 3.8
 	 *
 	 * @param string[] $taxonomies Queried taxonomies.
 	 * @param array    $args       WP_Term_Query arguments.
-	 * @return PLL_Language|string|false The language(s) to use in the filter, false otherwise.
+	 * @return PLL_Language[] The languages to filter `WP_Term_Query`.
 	 */
-	protected function get_queried_language( $taxonomies, $args ) {
+	protected function get_queried_languages( $taxonomies, $args ): array {
 		global $pagenow;
 
-		// Does nothing except on taxonomies which are filterable
-		// Since WP 4.7, make sure not to filter wp_get_object_terms()
+		/*
+		 * Do nothing except on taxonomies which are filterable.
+		 * Since WP 4.7, make sure not to filter wp_get_object_terms().
+		 */
 		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
-			return false;
+			return array();
 		}
 
-		// If get_terms is queried with a 'lang' parameter
+		// If get_terms() is queried with a 'lang' parameter.
 		if ( isset( $args['lang'] ) ) {
-			return $args['lang'];
+			$languages = is_string( $args['lang'] ) ? explode( ',', $args['lang'] ) : $args['lang'];
+			return array_filter( array_map( array( $this->model, 'get_language' ), (array) $languages ) );
 		}
 
-		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
+		// On the tags page, everything should be filtered according to the admin language filter except the parent dropdown.
 		if ( 'edit-tags.php' === $pagenow && empty( $args['class'] ) ) {
-			return $this->filter_lang;
+			return ! empty( $this->filter_lang ) ? array( $this->filter_lang ) : array();
 		}
 
-		return $this->curlang;
+		return ! empty( $this->curlang ) ? array( $this->curlang ) : array();
 	}
 
 	/**
@@ -203,10 +208,8 @@ class PLL_CRUD_Terms {
 			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
 		}
 
-		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
-			$lang = is_string( $lang ) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
-			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
-			$args['cache_domain'] = empty( $args['cache_domain'] ) ? 'pll' . $key : $args['cache_domain'] . $key;
+		foreach ( $this->get_queried_languages( $taxonomies, $args ) as $language ) {
+			$args['cache_domain'] = empty( $args['cache_domain'] ) ? "pll_{$language->slug}" : "{$args['cache_domain']},{$language->slug}";
 		}
 		return $args;
 	}
@@ -222,8 +225,8 @@ class PLL_CRUD_Terms {
 	 * @return string[] Modified sql clauses.
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
-		$lang = $this->get_queried_language( $taxonomies, $args );
-		return $this->model->terms_clauses( $clauses, $lang );
+		$languages = $this->get_queried_languages( $taxonomies, $args );
+		return $this->model->terms_clauses( $clauses, $languages );
 	}
 
 	/**

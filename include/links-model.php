@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Links model abstract class.
  *
@@ -19,7 +21,7 @@ abstract class PLL_Links_Model {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -49,9 +51,9 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
-	public function __construct( &$model ) {
+	public function __construct( PLL_Model &$model ) {
 		$this->model   = &$model;
-		$this->options = &$model->options;
+		$this->options = $model->options;
 
 		$this->home = home_url();
 

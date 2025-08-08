@@ -1,6 +1,8 @@
 <?php
 
 class Choose_Lang_Content_Test extends PLL_UnitTestCase {
+	use PLL_Frontend_Trait;
+
 	public $structure = '/%postname%/';
 
 	/**
@@ -12,7 +14,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once POLYLANG_DIR . '/include/api.php';
+		self::require_api();
 	}
 
 	public function set_up() {
@@ -44,61 +46,6 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$wp_rewrite->flush_rules();
 
 		$this->frontend = new PLL_Frontend( $links_model );
-	}
-
-	/**
-	 * Overrides WP_UnitTestCase::go_to().
-	 *
-	 * @param string $url The URL for the request.
-	 */
-	public function go_to( $url ) {
-		// copy paste of WP_UnitTestCase::go_to
-		$_GET = $_POST = array();
-		foreach ( array( 'query_string', 'id', 'postdata', 'authordata', 'day', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'pagenow' ) as $v ) {
-			if ( isset( $GLOBALS[ $v ] ) ) {
-				unset( $GLOBALS[ $v ] );
-			}
-		}
-		$parts = wp_parse_url( $url );
-		if ( isset( $parts['scheme'] ) ) {
-			$req = $parts['path'] ?? '';
-			if ( isset( $parts['query'] ) ) {
-				$req .= '?' . $parts['query'];
-				// parse the url query vars into $_GET
-				parse_str( $parts['query'], $_GET );
-			}
-		} else {
-			$req = $url;
-		}
-		if ( ! isset( $parts['query'] ) ) {
-			$parts['query'] = '';
-		}
-
-		$_SERVER['REQUEST_URI'] = $req;
-		unset( $_SERVER['PATH_INFO'] );
-
-		$this->flush_cache();
-		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
-
-		// insert Polylang specificity
-		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
-		unset( $this->frontend->curlang );
-		$this->frontend->init();
-
-		// restart copy paste of WP_UnitTestCase::go_to
-		$GLOBALS['wp_the_query'] = new WP_Query();
-		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
-		$GLOBALS['wp'] = new WP();
-
-		/*
-		 * Instead of using `_cleanup_query_vars()` to cleanup and repopulate query vars, trigger `setup_theme` and use
-		 * `create_initial_taxonomies()`.
-		 * See `PLL_Translated_Post::add_language_taxonomy_query_var()`.
-		 */
-		do_action( 'setup_theme' );
-		create_initial_taxonomies();
-
-		$GLOBALS['wp']->main( $parts['query'] );
 	}
 
 	public function test_home_latest_posts() {

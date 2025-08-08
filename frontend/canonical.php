@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Manages canonical redirect on frontend.
  *
@@ -12,7 +14,7 @@ class PLL_Canonical {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	protected $options;
 
@@ -31,7 +33,7 @@ class PLL_Canonical {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $curlang;
 
@@ -40,12 +42,12 @@ class PLL_Canonical {
 	 *
 	 * @since 3.3
 	 *
-	 * @param object $polylang Main Polylang object.
+	 * @param PLL_Frontend $polylang Main Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Frontend &$polylang ) {
 		$this->links_model = &$polylang->links_model;
 		$this->model       = &$polylang->model;
-		$this->options     = &$polylang->options;
+		$this->options     = $polylang->options;
 		$this->curlang     = &$polylang->curlang;
 	}
 
@@ -87,7 +89,7 @@ class PLL_Canonical {
 			$requested_url = pll_get_requested_url();
 		}
 
-		if ( ( is_single() || is_page() ) && ! is_front_page() ) {
+		if ( ( is_single() && ( ! is_attachment() || get_option( 'wp_attachment_pages_enabled' ) ) ) || ( is_page() && ! is_front_page() ) ) {
 			$post = get_post();
 			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
 				$language = $this->model->post->get_language( (int) $post->ID );
@@ -124,7 +126,8 @@ class PLL_Canonical {
 		}
 
 		if ( empty( $language ) ) {
-			$language = $this->curlang;
+			/** @var PLL_Language $language */
+			$language     = $this->curlang;
 			$redirect_url = $requested_url;
 		} else {
 			$redirect_url = $this->redirect_canonical( $requested_url, $language );
@@ -171,9 +174,14 @@ class PLL_Canonical {
 		$queried_terms = $tax_query->queried_terms;
 		$taxonomy = $this->get_queried_taxonomy( $tax_query );
 
-		if ( ! is_array( $queried_terms[ $taxonomy ]['terms'] ) ) {
+		if ( ! isset( $queried_terms[ $taxonomy ]['terms'] ) || ! is_array( $queried_terms[ $taxonomy ]['terms'] ) ) {
 			return 0;
 		}
+
+		if ( ! isset( $queried_terms[ $taxonomy ]['field'] ) ) {
+			return 0;
+		}
+
 		$field = $queried_terms[ $taxonomy ]['field'];
 		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
 		$lang  = isset( $queried_terms['language']['terms'] ) ? reset( $queried_terms['language']['terms'] ) : '';

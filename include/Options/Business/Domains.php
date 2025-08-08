@@ -17,6 +17,8 @@ defined( 'ABSPATH' ) || exit;
  * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
  *
  * @since 3.7
+ *
+ * @phpstan-type DomainsValue array<non-falsy-string, string>
  */
 class Domains extends Abstract_Option {
 	/**
@@ -80,22 +82,9 @@ class Domains extends Abstract_Option {
 	 * @param Options $options All options.
 	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 *
-	 * @phpstan-return array<non-falsy-string, string>|WP_Error
+	 * @phpstan-return DomainsValue|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
-		global $polylang;
-
-		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
-			// Access to global `$polylang` is required.
-			_doing_it_wrong(
-				__METHOD__,
-				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
-				'3.7'
-			);
-			/** @phpstan-var array<non-falsy-string, string> */
-			return $this->get();
-		}
-
 		// Sanitize new URLs.
 		$value = parent::sanitize( $value, $options );
 
@@ -104,16 +93,12 @@ class Domains extends Abstract_Option {
 			return $value;
 		}
 
-		/** @phpstan-var array<non-falsy-string, string> $value */
+		/** @phpstan-var DomainsValue */
+		$current_value = $this->get();
+		/** @phpstan-var DomainsValue $value */
 		$all_values     = array(); // Previous and new values.
 		$missing_langs  = array(); // Lang names corresponding to the empty values.
-		$language_terms = get_terms(
-			array(
-				'taxonomy'   => 'language',
-				'hide_empty' => false,
-			)
-		);
-		$language_terms = is_array( $language_terms ) ? $language_terms : array();
+		$language_terms = $this->get_language_terms();
 
 		// Detect empty values, fill missing keys with previous values.
 		foreach ( $language_terms as $lang ) {
@@ -123,7 +108,7 @@ class Domains extends Abstract_Option {
 				unset( $value[ $lang->slug ] );
 			} else {
 				// Use previous value.
-				$all_values[ $lang->slug ] = $this->value[ $lang->slug ] ?? '';
+				$all_values[ $lang->slug ] = $current_value[ $lang->slug ] ?? '';
 			}
 
 			if ( empty( $all_values[ $lang->slug ] ) ) {
@@ -135,36 +120,22 @@ class Domains extends Abstract_Option {
 		// Detect invalid language slugs.
 		if ( ! empty( $value ) ) {
 			// Non-blocking error.
-			$value = array_keys( $value );
-
-			$this->errors->add(
-				'pll_unknown_domain_languages',
-				sprintf(
-					/* translators: %s is a list of language slugs. */
-					_n( 'The language %s is unknown and has been discarded.', 'The languages %s are unknown and have been discarded.', count( $value ), 'polylang' ),
-					wp_sprintf_l(
-						'%l',
-						array_map(
-							function ( $slug ) {
-								return "<code>{$slug}</code>";
-							},
-							$value
-						)
-					)
-				),
-				'warning'
-			);
+			$this->add_unknown_languages_warning( array_keys( $value ) );
 		}
 
 		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
 			// Non-blocking error.
+			if ( 1 === count( $missing_langs ) ) {
+				/* translators: %s is a native language name. */
+				$message = __( 'Please enter a valid URL for %s.', 'polylang' );
+			} else {
+				/* translators: %s is a list of native language names. */
+				$message = __( 'Please enter valid URLs for %s.', 'polylang' );
+			}
+
 			$this->errors->add(
 				'pll_empty_domains',
-				sprintf(
-					/* translators: %s is a list of native language names. */
-					_n( 'Please enter a valid URL for %s.', 'Please enter valid URLs for %s.', count( $missing_langs ), 'polylang' ),
-					wp_sprintf_l( '%l', $missing_langs )
-				),
+				sprintf( $message, wp_sprintf_l( '%l', $missing_langs ) ),
 				'warning'
 			);
 		}
@@ -185,19 +156,22 @@ class Domains extends Abstract_Option {
 
 			if ( ! empty( $failed_urls ) ) {
 				// Non-blocking error.
+				if ( 1 === count( $failed_urls ) ) {
+					/* translators: %s is a URL. */
+					$message = __( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' );
+				} else {
+					/* translators: %s is a list of URLs. */
+					$message = __( 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', 'polylang' );
+				}
 				$this->errors->add(
 					'pll_invalid_domains',
-					sprintf(
-						/* translators: %s is a list of URLs. */
-						_n( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', count( $failed_urls ), 'polylang' ),
-						wp_sprintf_l( '%l', $failed_urls )
-					),
+					sprintf( $message, wp_sprintf_l( '%l', $failed_urls ) ),
 					'warning'
 				);
 			}
 		}
 
-		/** @phpstan-var array<non-falsy-string, string> */
+		/** @phpstan-var DomainsValue */
 		return $all_values;
 	}
 

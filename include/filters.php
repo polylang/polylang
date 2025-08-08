@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Setup filters common to admin and frontend
  *
@@ -12,7 +14,7 @@ class PLL_Filters {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var Options
 	 */
 	public $options;
 
@@ -40,15 +42,15 @@ class PLL_Filters {
 	 *
 	 * @since 1.4
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct( &$polylang ) {
+	public function __construct( PLL_Base &$polylang ) {
 		global $wp_version;
 
 		$this->links_model = &$polylang->links_model;
-		$this->model = &$polylang->model;
-		$this->options = &$polylang->options;
-		$this->curlang = &$polylang->curlang;
+		$this->model       = &$polylang->model;
+		$this->options     = $polylang->options;
+		$this->curlang     = &$polylang->curlang;
 
 		// Deletes our cache for sticky posts when the list is updated.
 		add_action( 'update_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
@@ -177,7 +179,7 @@ class PLL_Filters {
 			$lang = wp_list_pluck( $lang, 'slug' );
 
 			// If this clause is not already added by WP.
-			if ( ! strpos( $clauses['join'], '.ID' ) ) {
+			if ( false === strpos( $clauses['join'], "JOIN $wpdb->posts ON $wpdb->posts.ID" ) ) {
 				$clauses['join'] .= " JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
 			}
 

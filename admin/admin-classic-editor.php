@@ -97,12 +97,18 @@ class PLL_Admin_Classic_Editor {
 		global $post_ID;
 		$post_type = get_post_type( $post_ID );
 
-		// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0;
+		$from_post_id  = 0;
+		$lang          = $this->model->post->get_language( $post_ID );
+		$new_post_data = $this->links->get_data_from_new_post_translation_request();
 
-		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
-			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification
-			$this->pref_lang );
+		if ( ! empty( $new_post_data ) ) {
+			$from_post_id = $new_post_data['from_post']->ID;
+			$lang         = $new_post_data['new_lang'];
+		}
+
+		if ( empty( $lang ) ) {
+			$lang = $this->pref_lang;
+		}
 
 		$dropdown = new PLL_Walker_Dropdown();
 

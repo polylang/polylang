@@ -17,33 +17,43 @@ class PLL_Integrations {
 	 *
 	 * @var PLL_Integrations|null
 	 */
-	protected static $instance;
+	protected static $instance = null;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 1.0
 	 */
-	protected function __construct() {
+	protected function __construct() {}
+
+	/**
+	 * Returns the single instance of the class.
+	 *
+	 * @since 1.7
+	 *
+	 * @return self
+	 */
+	public static function instance(): self {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+			self::$instance->init();
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * Requires integrations.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	protected function init(): void {
 		// Loads external integrations.
 		foreach ( glob( __DIR__ . '/*/load.php', GLOB_NOSORT ) as $load_script ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 			require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		}
-	}
-
-	/**
-	 * Access to the single instance of the class.
-	 *
-	 * @since 1.7
-	 *
-	 * @return PLL_Integrations
-	 */
-	public static function instance() {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 }
 
