@@ -680,7 +680,8 @@ class Languages extends Abstract_Controller {
 		}
 
 		// Create a language.
-		if ( empty( $request['locale'] ) ) {
+		$args = $request->get_params();
+		if ( empty( $args['locale'] ) ) {
 			// Should not happen.
 			return new WP_Error(
 				'rest_invalid_locale',
@@ -689,40 +690,17 @@ class Languages extends Abstract_Controller {
 			);
 		}
 
-		if ( isset( $request['name'], $request['slug'], $request['is_rtl'], $request['flag_code'] ) ) {
-			return (object) array(
-				'name'           => $request['name'],
-				'slug'           => $request['slug'],
-				'locale'         => $request['locale'],
-				'rtl'            => $request['is_rtl'],
-				'flag'           => $request['flag_code'],
-				'term_group'     => $request['term_group'] ?? 0,
-				'no_default_cat' => $request['no_default_cat'] ?? false,
-			);
-		}
+		$args = $this->languages->get_language_args_from_locale( $args );
 
-		// Create a language from our default list with only the locale.
-		$languages = include POLYLANG_DIR . '/settings/languages.php';
-
-		if ( empty( $languages[ $request['locale'] ] ) ) {
+		if ( false === $args ) {
 			return new WP_Error(
-				'pll_rest_invalid_locale',
+				'rest_invalid_locale',
 				__( 'The locale is invalid.', 'polylang' ),
 				array( 'status' => 400 )
 			);
 		}
 
-		$language = (object) $languages[ $request['locale'] ];
-
-		return (object) array(
-			'name'           => $request['name'] ?? $language->name,
-			'slug'           => $request['slug'] ?? $language->code,
-			'locale'         => $request['locale'],
-			'rtl'            => $request['is_rtl'] ?? 'rtl' === $language->dir,
-			'flag'           => $request['flag_code'] ?? $language->flag,
-			'term_group'     => $request['term_group'] ?? 0,
-			'no_default_cat' => $request['no_default_cat'] ?? false,
-		);
+		return (object) $args;
 	}
 
 	/**
