@@ -757,6 +757,7 @@ class Languages {
 	 * @return array|false Array of language arguments or false if the locale is invalid.
 	 *
 	 * @phpstan-param array{locale: string, name?: string, slug?: string, is_rtl?: bool, flag_code?: string, term_group?: int, no_default_cat?: bool} $args
+	 * @phpstan-return array{locale: string, name: string, slug: string, rtl: bool, flag: string, term_group: int|numeric-string, no_default_cat: bool}
 	 */
 	public function get_language_args_from_locale( array $args ) {
 		if ( isset( $args['name'], $args['slug'], $args['is_rtl'], $args['flag_code'] ) ) {
