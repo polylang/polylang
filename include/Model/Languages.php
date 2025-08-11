@@ -747,6 +747,47 @@ class Languages {
 		}
 	}
 
+
+	/**
+	 * Returns the language arguments from the locale and additional arguments.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $args Arguments to create a language.
+	 * @return array|false Array of language arguments or false if the locale is invalid.
+	 *
+	 * @phpstan-param array{locale: string, name?: string, slug?: string, is_rtl?: bool, flag_code?: string, term_group?: int, no_default_cat?: bool} $args
+	 */
+	public function get_language_args_from_locale( array $args ) {
+		if ( isset( $args['name'], $args['slug'], $args['is_rtl'], $args['flag_code'] ) ) {
+			return array(
+				'locale'         => $args['locale'],
+				'name'           => $args['name'],
+				'slug'           => $args['slug'],
+				'rtl'            => $args['is_rtl'],
+				'flag'           => $args['flag_code'],
+				'term_group'     => $args['term_group'] ?? 0,
+				'no_default_cat' => $args['no_default_cat'] ?? false,
+			);
+		}
+
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
+
+		if ( empty( $languages[ $args['locale'] ] ) ) {
+			return false;
+		}
+
+		return array(
+			'locale'         => $args['locale'],
+			'name'           => $args['name'] ?? $languages[ $args['locale'] ]['name'],
+			'slug'           => $args['slug'] ?? $languages[ $args['locale'] ]['code'],
+			'rtl'            => $args['is_rtl'] ?? 'rtl' === $languages[ $args['locale'] ]['dir'],
+			'flag'           => $args['flag_code'] ?? $languages[ $args['locale'] ]['flag'],
+			'term_group'     => $args['term_group'] ?? 0,
+			'no_default_cat' => $args['no_default_cat'] ?? false,
+		);
+	}
+
 	/**
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
