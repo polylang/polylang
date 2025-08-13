@@ -270,14 +270,14 @@ class PLL_Admin_Site_Health {
 
 		if ( ! empty( $posts_no_lang ) ) {
 			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
-			$fields['post-no-lang']['value'] = $this->format_array( $posts_no_lang );
+			$fields['post-no-lang']['value'] = $posts_no_lang;
 		}
 
 		$terms_no_lang = $this->get_term_ids_without_lang();
 
 		if ( ! empty( $terms_no_lang ) ) {
 			$fields['term-no-lang']['label'] = __( 'Terms without language', 'polylang' );
-			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
+			$fields['term-no-lang']['value'] = $terms_no_lang;
 		}
 
 		// Add WPML files.
@@ -327,6 +327,12 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
+		if ( ! empty( $posts ) ) {
+			foreach ( $posts as $post_type => $post_ids ) {
+				$posts[ $post_type ] = implode( ', ', $post_ids );
+			}
+
+		}
 		return $posts;
 	}
 
@@ -351,6 +357,13 @@ class PLL_Admin_Site_Health {
 					$terms[ $taxonomy ][] = $id;
 				}
 			}
+		}
+
+		if ( ! empty( $terms ) ) {
+			foreach ( $terms as $taxonomy => $term_ids ) {
+				$terms[ $taxonomy ] = implode( ', ', $term_ids );
+			}
+
 		}
 
 		return $terms;
