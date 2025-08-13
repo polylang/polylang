@@ -282,4 +282,62 @@ abstract class Abstract_Option {
 			'warning'
 		);
 	}
+
+
+	/**
+	 * Adds information to the site health info array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array   $info    The current site health information.
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function add_to_site_health_info( array $info, Options $options ): array {
+		return $info;
+	}
+
+	/**
+	 * Renders site health information by appending additional fields.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array  $info  An array containing existing site health information.
+	 * @param mixed $value The value to be added to the site health fields.
+	 * @param string $key   The key used to identify the added field.
+	 *
+	 * @return array Updated array of site health information including the new fields.
+	 */
+	public function render_site_health_info( array $info, mixed $value, string $key ): array {
+		$fields = array();
+		$fields[ $key ]['label'] = $key;
+		$fields[ $key ]['value'] = $value;
+
+		return array_merge( $info, $fields );
+	}
+
+	/**
+	 * Formats an array to display in options information.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $array An array of formatted data.
+	 * @return string
+	 */
+	protected function format_array( $array ) {
+		array_walk(
+			$array,
+			function ( &$value, $key ) {
+				if ( is_array( $value ) ) {
+					$ids = implode( ' , ', $value );
+					$value = "$key => $ids";
+				}
+				else {
+					$value = "$key => $value";
+				}
+			}
+		);
+		return implode( ' | ', $array );
+	}
 }

@@ -32,6 +32,24 @@ class Hide_Default extends Abstract_Boolean {
 	}
 
 	/**
+	 * Adds information to the site health info array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array   $info    The current site health information.
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function add_to_site_health_info( array $info, Options $options ): array {
+		if ( $options->get( self::key() ) ) {
+			$value = '1: ' . __( 'Hide URL language information for default language', 'polylang' );
+		}
+		$value = '0: ' . __( 'Display URL language information for default language', 'polylang' );
+
+		return $this->render_site_health_info( $info, $value, self::key() );
+	}
+	/**
 	 * Returns the default value.
 	 *
 	 * @since 3.7

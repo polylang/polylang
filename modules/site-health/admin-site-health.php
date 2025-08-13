@@ -84,175 +84,39 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Formats an array to display in options information.
-	 *
-	 * @since 2.8
-	 *
-	 * @param array $array An array of formatted data.
-	 * @return string
-	 */
-	protected function format_array( $array ) {
-		array_walk(
-			$array,
-			function ( &$value, $key ) {
-				if ( is_array( $value ) ) {
-					$ids = implode( ' , ', $value );
-					$value = "$key => $ids";
-				} else {
-					$value = "$key => $value";
-				}
-			}
-		);
-		return implode( ' | ', $array );
-	}
-
-	/**
-	 * Transforms the option value to readable human sentence.
-	 *
-	 * @since 3.3
-	 *
-	 * @param string $key   Option name.
-	 * @param mixed  $value Option value.
-	 * @return mixed Option value.
-	 */
-	public function format_value( $key, $value ) {
-		switch ( $key ) {
-			case 'browser':
-				if ( ! $value ) {
-					$value = '0: ' . __( 'Detect browser language deactivated', 'polylang' );
-					break;
-				}
-				$value = '1: ' . __( 'Detect browser language activated', 'polylang' );
-				break;
-			case 'rewrite':
-				if ( $value ) {
-					$value = '1: ' . sprintf(
-						/* translators: %s is a URL slug: `/language/`. */
-						__( 'Remove %s in pretty permalinks', 'polylang' ),
-						'`/language/`'
-					);
-					break;
-				}
-				$value = '0: ' . sprintf(
-					/* translators: %s is a URL slug: `/language/`. */
-					__( 'Keep %s in pretty permalinks', 'polylang' ),
-					'`/language/`'
-				);
-				break;
-			case 'hide_default':
-				if ( $value ) {
-					$value = '1: ' . __( 'Hide URL language information for default language', 'polylang' );
-					break;
-				}
-				$value = '0: ' . __( 'Display URL language information for default language', 'polylang' );
-				break;
-			case 'force_lang':
-				switch ( $value ) {
-					case '0':
-						$value = '0: ' . __( 'The language is set from content', 'polylang' );
-						break;
-					case '1':
-						$value = '1: ' . __( 'The language is set from the directory name in pretty permalinks', 'polylang' );
-						break;
-					case '2':
-						$value = '2: ' . __( 'The language is set from the subdomain name in pretty permalinks', 'polylang' );
-						break;
-					case '3':
-						$value = '3: ' . __( 'The language is set from different domains', 'polylang' );
-						break;
-				}
-				break;
-			case 'redirect_lang':
-				if ( $value ) {
-					$value = '1: ' . __( 'The front page URL contains the language code instead of the page name or page id', 'polylang' );
-					break;
-				}
-				$value = '0: ' . __( 'The front page URL contains the page name or page id instead of the language code', 'polylang' );
-
-				break;
-			case 'media_support':
-				if ( ! $value ) {
-					$value = '0: ' . __( 'The media are not translated', 'polylang' );
-					break;
-				}
-				$value = '1: ' . __( 'The media are translated', 'polylang' );
-				break;
-
-			case 'sync':
-				if ( empty( $value ) ) {
-					$value = '0: ' . __( 'Synchronization disabled', 'polylang' );
-				}
-				break;
-		}
-
-		return $value;
-	}
-
-	/**
 	 * Add Polylang Options to Site Health Information tab.
 	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
+	 *
+	 * @return array
 	 * @since 2.8
 	 *
-	 * @param array $debug_info The debug information to be added to the core information page.
-	 * @return array
 	 */
 	public function info_options( $debug_info ) {
-		$fields = array();
+		$fields = $this->model->options->get_site_health_info();
 
-		foreach ( $this->model->options as $key => $value ) {
-			if ( in_array( $key, $this->exclude_options_keys() ) ) {
-				continue;
-			}
-
-			$value = $this->format_value( $key, $value );
-
-			switch ( $key ) {
-				case 'domains':
-					if ( 3 === $this->model->options['force_lang'] ) {
-						$value = is_array( $value ) ? $value : array();
-						$value = $this->format_array( $value );
-
-						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = $value;
-					}
-					break;
-
-				case 'nav_menus':
-					$current_theme = get_stylesheet();
-					if ( is_array( $value ) && isset( $value[ $current_theme ] ) ) {
-						foreach ( $value[ $current_theme ] as $location => $lang ) {
-							$lang = is_array( $lang ) ? $lang : array();
-
-							$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-							$fields[ $location ]['value'] = $this->format_array( $lang );
-						}
-					}
-					break;
-
-				case 'media':
-					$value = is_array( $value ) ? $value : array();
-					foreach ( $value as $sub_key => $sub_value ) {
-						$fields[ "$key-$sub_key" ]['label'] = "$key $sub_key";
-						$fields[ "$key-$sub_key" ]['value'] = $sub_value;
-					}
-					break;
-
-				case 'post_types':
-					$fields[ $key ]['label'] = $key;
-					$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
-					break;
-
-				case 'taxonomies':
-					$fields[ $key ]['label'] = $key;
-					$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
-					break;
-
-				default:
-					$fields[ $key ]['label'] = $key;
-					$fields[ $key ]['value'] = empty( $value ) ? '0' : $value;
-					break;
-			}
+		// Add Translated Custom Post Types.
+		if ( ! empty( $this->model->get_translated_post_types() ) ) {
+			$fields['cpt']['label'] = __( 'Post Types', 'polylang' );
+			$fields['cpt']['value'] = implode( ', ', $this->model->get_translated_post_types() );
 		}
+		// Add Translated Custom Taxonomies.
+		if ( ! empty( $this->model->get_translated_taxonomies() ) ) {
+			$fields['taxonomies']['label'] = __( 'Custom Taxonomies', 'polylang' );
+			$fields['taxonomies']['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
+		}
+
+		//Multisite
+		if ( is_multisite() ) {
+			$plugin            = POLYLANG_ROOT_FILE;
+			$network_activated = __( 'No', 'polylang' );
+			if ( is_plugin_active_for_network( 'polylang/polylang.php' ) || is_plugin_active_for_network( 'polylang-pro/polylang.php' ) ) {
+				$network_activated = __( 'Yes', 'polylang' );
+			}
+			$fields['multisite']['label'] = __( 'Network Activated', 'polylang' );
+			$fields['multisite']['value'] = $network_activated;
+		}
+		error_log( print_r( $fields, true ) );
 
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
