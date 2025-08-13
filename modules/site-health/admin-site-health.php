@@ -90,7 +90,6 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @return array
 	 * @since 2.8
-	 *
 	 */
 	public function info_options( $debug_info ) {
 		$fields = $this->model->options->get_site_health_info();
@@ -310,9 +309,11 @@ class PLL_Admin_Site_Health {
 	 * @since 3.1
 	 *
 	 * @param int $limit Max number of posts to show per post type. `-1` to return all of them. Default is 5.
-	 * @return int[][] Array containing an array of post ids.
 	 *
-	 * @phpstan-param -1|positive-int $limit
+	 * @return array An associative array where the keys are post types and the values
+	 *                are comma-separated strings of post IDs without a language.
+	 *
+	 * @phpstan-param -1|positive-int $limit     *
 	 */
 	public function get_post_ids_without_lang( $limit = 5 ) {
 		$posts = array();
@@ -331,8 +332,8 @@ class PLL_Admin_Site_Health {
 			foreach ( $posts as $post_type => $post_ids ) {
 				$posts[ $post_type ] = implode( ', ', $post_ids );
 			}
-
 		}
+
 		return $posts;
 	}
 
@@ -340,10 +341,10 @@ class PLL_Admin_Site_Health {
 	 * Get an array with taxonomy as key and term ids as value.
 	 *
 	 * @since 3.1
-	 *
 	 * @param int $limit Max number of terms to show per post type. `-1` to return all of them. Default is 5.
-	 * @return int[][] Array containing an array of term ids.
 	 *
+	 * @return array An associative array where the keys are post types and the values
+	 *                 are comma-separated strings of post IDs without a language.
 	 * @phpstan-param -1|positive-int $limit
 	 */
 	public function get_term_ids_without_lang( $limit = 5 ) {
@@ -362,8 +363,7 @@ class PLL_Admin_Site_Health {
 		if ( ! empty( $terms ) ) {
 			foreach ( $terms as $taxonomy => $term_ids ) {
 				$terms[ $taxonomy ] = implode( ', ', $term_ids );
-			}
-
+			}       
 		}
 
 		return $terms;
