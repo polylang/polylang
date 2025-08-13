@@ -87,6 +87,7 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
+		add_filter( 'locale', array( $this, 'set_locale' ) );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );
@@ -129,5 +130,25 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Sets the current locale during a REST request if `lang` parameter is set.
+	 *
+	 * @since 3.7.4
+	 *
+	 * @param string $locale The current locale.
+	 * @return string The current locale.
+	 */
+	public function set_locale( $locale ) {
+		if ( empty( $_REQUEST['lang'] ) || ! is_string( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return $locale;
+		}
+
+		if ( empty( $this->curlang ) || $this->curlang->slug !== $_REQUEST['lang'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return $locale;
+		}
+
+		return $this->curlang->locale;
 	}
 }
