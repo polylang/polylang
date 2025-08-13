@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Syntex\Polylang\Options\Abstract_Option;
+use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,6 +29,35 @@ class Force_Lang extends Abstract_Option {
 		return 'force_lang';
 	}
 
+	/**
+	 * Adds information to the site health info array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array   $info    The current site health information.
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function add_to_site_health_info( array $info, Options $options ): array {
+		$value = '';
+		switch ( $options->get( self::key() ) ) {
+			case '0':
+				$value = '0: ' . __( 'The language is set from content', 'polylang' );
+				break;
+			case '1':
+				$value = '1: ' . __( 'The language is set from the directory name in pretty permalinks', 'polylang' );
+				break;
+			case '2':
+				$value = '2: ' . __( 'The language is set from the subdomain name in pretty permalinks', 'polylang' );
+				break;
+			case '3':
+				$value = '3: ' . __( 'The language is set from different domains', 'polylang' );
+				break;
+		}
+
+		return $this->render_site_health_info( $info, $value, self::key() );
+	}
 	/**
 	 * Returns the default value.
 	 *
