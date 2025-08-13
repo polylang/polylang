@@ -185,4 +185,24 @@ class Domains extends Abstract_Option {
 	protected function get_description(): string {
 		return __( 'Domains used when the language is set from different domains.', 'polylang' );
 	}
+
+	/**
+	 * Adds information to the site health info array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array   $info    The current site health information.
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function add_to_site_health_info( array $info, Options $options ): array {
+		if ( 3 === $options->get( 'force_lang' ) ) {
+			$value = $this->get();
+
+			$info = $this->render_site_health_info( $info, $value, self::key() );
+
+		}
+		return $info;
+	}
 }
