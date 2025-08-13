@@ -95,28 +95,14 @@ class PLL_Admin_Site_Health {
 	public function info_options( $debug_info ) {
 		$fields = $this->model->options->get_site_health_info();
 
-		// Add Translated Custom Post Types.
 		if ( ! empty( $this->model->get_translated_post_types() ) ) {
 			$fields['cpt']['label'] = __( 'Post Types', 'polylang' );
 			$fields['cpt']['value'] = implode( ', ', $this->model->get_translated_post_types() );
 		}
-		// Add Translated Custom Taxonomies.
 		if ( ! empty( $this->model->get_translated_taxonomies() ) ) {
 			$fields['taxonomies']['label'] = __( 'Custom Taxonomies', 'polylang' );
 			$fields['taxonomies']['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
 		}
-
-		//Multisite
-		if ( is_multisite() ) {
-			$plugin            = POLYLANG_ROOT_FILE;
-			$network_activated = __( 'No', 'polylang' );
-			if ( is_plugin_active_for_network( 'polylang/polylang.php' ) || is_plugin_active_for_network( 'polylang-pro/polylang.php' ) ) {
-				$network_activated = __( 'Yes', 'polylang' );
-			}
-			$fields['multisite']['label'] = __( 'Network Activated', 'polylang' );
-			$fields['multisite']['value'] = $network_activated;
-		}
-		error_log( print_r( $fields, true ) );
 
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
