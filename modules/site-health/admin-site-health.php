@@ -442,6 +442,11 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
+		$fields['translations'] = array(
+			'label'      => __('Translations', 'polylang'),
+			'value'    => $this->info_translations(),
+		);
+
 		// Create the section.
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
@@ -524,5 +529,98 @@ class PLL_Admin_Site_Health {
 			);
 		}
 		return $modules;
+	}
+
+	/**
+	 * Retrieves a structured array of translation update information.
+	 *
+	 * This method processes available translation updates and categorizes
+	 * them based on their states (missing or updatable) and types. The resulting
+	 * translations are returned in a formatted structure for display or further processing.
+	 *
+	 * @since 3.8
+	 *
+	 * @return array A structured array of available and required translation updates,
+	 *               categorized by type and state (e.g., missing or updatable).
+	 *
+	 *
+	 */
+	public function info_translations() {
+		// Translation updates available.
+		$translation_updates = wp_get_translation_updates();
+		$wp_languages           = get_available_languages();
+		$pll_languages       = $this->model->get_languages_list();
+		foreach ( $pll_languages as $pll_language ) {
+			$languages[] = $pll_language->get_locale();
+		}
+		$languages = array_unique( array_merge($wp_languages, $languages) );
+
+		$fields              = array();
+		foreach ( $translation_updates as $update ) {
+			$fields[ $update->type ]['label']                                                = $update->type;
+			$available_translations[ 'wp_translations_' . $update->type ][ $update->slug ][] = $update->language;
+			$is_already_installed                                                            = $this->is_wp_language_installed( $languages, $update->type, $update->slug );
+			if ( ! empty( $is_already_installed ) ) {
+				$translations['updatable'][ $update->type ][ $update->slug ][] = $update->language;
+			} else {
+				$translations['missing'][ $update->type ][ $update->slug ][] = $update->language;
+			}
+		}
+
+		foreach ( $translations as $state => $translation ) {
+			foreach ( $translation as $type => $elements ) {
+				foreach ( $elements as $name => $locales ) {
+					if ( 'missing' === $state ) {
+						/* translators: the placeholder is a WordPress locale */
+						$fields[ $type ]['value'][ $name ] = sprintf( __( 'A translation is missing for %s.' ), implode( ', ', $locales ) );
+					}
+					if ( 'updatable' === $state ) {
+						/* translators: the placeholder is a WordPress locale */
+						$fields[ $type ]['value'][ $name ] = sprintf( __( 'A translation is updatable for %s .' ), implode( ', ', $locales ) );
+					}
+				}
+			}
+		}
+
+		foreach ( $fields as $type => $value) {
+			if( ! is_array( $value ) ){
+				continue;
+			}
+			$newfields[ $type ] = ''; // add line to separate type of available translations
+			foreach ( $value['value'] as $name => $translations ) {
+				$newfields[ $name ] = $translations;
+			}
+		}
+		return $newfields;
+	}
+
+	/**
+	 * Is the language pack already installed ?
+	 *
+	 * @param array      $locales           array of WordPress locales.
+	 * @param string     $type              type of update (may be core, plugin or theme and sometimes core, plugins or themes ).
+	 * @param string     $name              name of the element (plugin/theme) currently updated. In case of Core update, it's "default"
+	 * @param array|bool $already_installed array of already installed language packs.
+	 *
+	 * @return boolean|array
+	 * @since 6.8
+	 *
+	 */
+	public function is_wp_language_installed( $locales, $type, $name, $already_installed = array() ) {
+		$installed_translations = wp_get_installed_translations( $type );
+		if ( ! is_array( $installed_translations ) ) {
+			return false;
+		}
+		foreach ( $locales as $locale ) {
+			if ( ! empty( $installed_translations[ $name ] ) && $installed_translations[ $name ][ $locale ] ) {
+				$already_installed[ $type ][ $name ][ $locale ] = $locale;
+			}
+		}
+
+		if ( ! empty( $already_installed ) ) {
+			return $already_installed;
+		}
+
+		return false;
 	}
 }
