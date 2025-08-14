@@ -515,8 +515,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Retrieves site health information based on the current blog's options.
 	 *
-	 * Iterates through the options for the current blog, processes each one that is
-	 * an instance of Abstract_Option, and adds relevant data to the site health information.
 	 *
 	 * @since 3.8
 	 *
