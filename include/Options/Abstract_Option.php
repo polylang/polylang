@@ -285,6 +285,7 @@ abstract class Abstract_Option {
 
 	/**
 	 * Adds information to the site health info array.
+	 * Does nothing by default.
 	 *
 	 * @since 3.8
 	 *
