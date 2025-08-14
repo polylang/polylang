@@ -283,7 +283,6 @@ abstract class Abstract_Option {
 		);
 	}
 
-
 	/**
 	 * Adds information to the site health info array.
 	 *
