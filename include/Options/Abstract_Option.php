@@ -310,11 +310,15 @@ abstract class Abstract_Option {
 	 * @return array Updated array of site health information including the new fields.
 	 */
 	public function render_site_health_info( array $info, mixed $value, string $key ): array {
-		$fields = array();
-		$fields[ $key ]['label'] = $key;
-		$fields[ $key ]['value'] = $value;
-
-		return array_merge( $info, $fields );
+		return array_merge(
+			$info,
+			array(
+				$key => array(
+					'label' => $key,
+					'value' => $value,
+				)
+			)
+		);
 	}
 
 	/**
