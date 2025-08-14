@@ -522,7 +522,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 *
 	 * @return array The site health information array.
 	 */
-	public function get_site_health_info() {
+	public function get_site_health_info(): array {
 		$info = array();
 		foreach ( $this->options[ $this->current_blog_id ] as $option ) {
 			if ( ! $option instanceof Abstract_Option ) {
