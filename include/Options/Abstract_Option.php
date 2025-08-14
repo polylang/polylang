@@ -329,7 +329,7 @@ abstract class Abstract_Option {
 	 * @param array $array An array of formatted data.
 	 * @return string
 	 */
-	protected function format_array( $array ) {
+	protected function format_array( array $array ): string {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
