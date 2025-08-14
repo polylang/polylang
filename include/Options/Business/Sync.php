@@ -48,7 +48,7 @@ class Sync extends Abstract_List {
 		if ( empty( $options->get( self::key() ) ) ) {
 			$value = '0: ' . __( 'Synchronization disabled', 'polylang' );
 		} else {
-			$value = implode( ', ', $options->get( self::key() ) );
+			$value = implode( ', ', $this->get() );
 		}
 
 		return $this->render_site_health_info( $info, $value, self::key() );
