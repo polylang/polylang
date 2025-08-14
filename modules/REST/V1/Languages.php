@@ -170,25 +170,18 @@ class Languages extends Abstract_Controller {
 			);
 		}
 
-		// At this point, `$request['locale']` is provided (but maybe not valid).
-		$prepared = $this->prepare_item_for_database( $request );
-
-		if ( is_wp_error( $prepared ) ) {
-			return $prepared;
-		}
-
 		/**
 		 * @phpstan-var array{
-		 *    locale: non-empty-string,
-		 *    slug: non-empty-string,
-		 *    name: non-empty-string,
-		 *    rtl: bool,
-		 *    term_group: int,
-		 *    flag: non-empty-string,
-		 *    no_default_cat: bool
+		 *    locale?: non-empty-string,
+		 *    slug?: non-empty-string,
+		 *    name?: non-empty-string,
+		 *    is_rtl?: bool,
+		 *    term_group?: int,
+		 *    flag?: non-empty-string,
+		 *    no_default_cat?: bool
 		 * } $args
 		 */
-		$args   = (array) $prepared;
+		$args   = $request->get_params();
 		$result = $this->languages->add( $args );
 
 		if ( is_wp_error( $result ) ) {
@@ -196,7 +189,7 @@ class Languages extends Abstract_Controller {
 		}
 
 		/** @var PLL_Language */
-		$language = $this->languages->get( $args['locale'] );
+		$language = $this->languages->get( $args['locale'] ); // @phpstan-ignore-line $args['locale'] is set at this point.
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -233,25 +226,24 @@ class Languages extends Abstract_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		$prepared = $this->prepare_item_for_database( $request );
-
-		if ( is_wp_error( $prepared ) ) {
-			// Should not happen, but if it does, it's our fault.
-			return $prepared;
+		$language = $this->get_language( $request );
+		if ( is_wp_error( $language ) ) {
+			return $language;
 		}
 
 		/**
 		 * @phpstan-var array{
-		 *     lang_id: int,
-		 *     locale: non-empty-string,
-		 *     slug: non-empty-string,
-		 *     name: non-empty-string,
-		 *     rtl: bool,
-		 *     term_group: int,
+		 *     term_id: int,
+		 *     locale?: non-empty-string,
+		 *     slug?: non-empty-string,
+		 *     name?: non-empty-string,
+		 *     is_rtl?: bool,
+		 *     term_group?: int,
 		 *     flag?: non-empty-string
 		 * } $args
 		 */
-		$args   = (array) $prepared;
+		$args            = $request->get_params();
+		$args['lang_id'] = $args['term_id'];
 		$update = $this->languages->update( $args );
 
 		if ( is_wp_error( $update ) ) {
@@ -683,16 +675,6 @@ class Languages extends Abstract_Controller {
 		$args = $request->get_params();
 		if ( empty( $args['locale'] ) ) {
 			// Should not happen.
-			return new WP_Error(
-				'rest_invalid_locale',
-				__( 'The locale is invalid.', 'polylang' ),
-				array( 'status' => 400 )
-			);
-		}
-
-		$args = $this->languages->get_language_args_from_locale( $args );
-
-		if ( false === $args ) {
 			return new WP_Error(
 				'rest_invalid_locale',
 				__( 'The locale is invalid.', 'polylang' ),
