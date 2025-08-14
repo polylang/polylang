@@ -641,51 +641,6 @@ class Languages extends Abstract_Controller {
 	}
 
 	/**
-	 * Prepares one language for create or update operation.
-	 *
-	 * @since 3.7
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return object|WP_Error The prepared language, or WP_Error object on failure.
-	 *
-	 * @phpstan-template T of array
-	 * @phpstan-param WP_REST_Request<T> $request
-	 */
-	protected function prepare_item_for_database( $request ) {
-		if ( isset( $request['term_id'] ) ) {
-			// Update a language.
-			$language = $this->get_language( $request );
-
-			if ( is_wp_error( $language ) ) {
-				return $language;
-			}
-
-			return (object) array(
-				'lang_id'    => $language->term_id,
-				'name'       => $request['name'] ?? $language->name,
-				'slug'       => $request['slug'] ?? $language->slug,
-				'locale'     => $request['locale'] ?? $language->locale,
-				'rtl'        => $request['is_rtl'] ?? (bool) $language->is_rtl,
-				'flag'       => $request['flag_code'] ?? $language->flag_code,
-				'term_group' => $request['term_group'] ?? $language->term_group,
-			);
-		}
-
-		// Create a language.
-		$args = $request->get_params();
-		if ( empty( $args['locale'] ) ) {
-			// Should not happen.
-			return new WP_Error(
-				'rest_invalid_locale',
-				__( 'The locale is invalid.', 'polylang' ),
-				array( 'status' => 400 )
-			);
-		}
-
-		return (object) $args;
-	}
-
-	/**
 	 * Tells if languages can be edited.
 	 *
 	 * @since 3.7
