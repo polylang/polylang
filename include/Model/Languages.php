@@ -141,26 +141,30 @@ class Languages {
 	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
 	 *                                not be loaded...
 	 *   @type bool   $rtl            True if rtl language, false otherwise.
+	 *   @type bool   $is_rtl         True if rtl language, false otherwise. Will be converted to rtl.
 	 *   @type int    $term_group     Language order when displayed.
 	 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+	 *   @type string $flag_code      Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
 	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
-	 *     name: string,
-	 *     slug: string,
-	 *     locale: string,
-	 *     rtl: bool,
-	 *     term_group: int|numeric-string,
+	 *     name?: string,
+	 *     slug?: string,
+	 *     locale?: string,
+	 *     rtl?: bool,
+	 *     is_rtl?: bool,
+	 *     term_group?: int|numeric-string,
 	 *     flag?: string,
+	 *     flag_code?: string,
 	 *     no_default_cat?: bool
 	 * } $args
 	 */
 	public function add( $args ) {
-		$errors = $this->validate_lang( $args );
-		if ( $errors->has_errors() ) {
-			return $errors;
+		$args = $this->validate_lang( $args );
+		if ( is_wp_error( $args ) && $args->has_errors() ) {
+			return $args;
 		}
 
 		/**
@@ -241,19 +245,23 @@ class Languages {
 	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
 	 *                            not be loaded...
 	 *   @type bool   $rtl        True if rtl language, false otherwise.
+	 *   @type bool   $is_rtl     True if rtl language, false otherwise. Will be converted to rtl.
 	 *   @type int    $term_group Language order when displayed.
 	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+	 *   @type string $flag_code  Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
 	 *     lang_id: int|numeric-string,
-	 *     name: string,
-	 *     slug: string,
-	 *     locale: string,
-	 *     rtl: bool,
-	 *     term_group: int|numeric-string,
-	 *     flag?: string
+	 *     name?: string,
+	 *     slug?: string,
+	 *     locale?: string,
+	 *     rtl?: bool,
+	 *     is_rtl?: bool,
+	 *     term_group?: int|numeric-string,
+	 *     flag?: string,
+	 *     flag_code?: string
 	 * } $args
 	 */
 	public function update( $args ) {
@@ -263,9 +271,9 @@ class Languages {
 			return new WP_Error( 'pll_invalid_language_id', __( 'The language does not seem to exist.', 'polylang' ) );
 		}
 
-		$errors = $this->validate_lang( $args, $lang );
-		if ( $errors->has_errors() ) {
-			return $errors;
+		$args = $this->validate_lang( $args, $lang );
+		if ( is_wp_error( $args ) && $args->has_errors() ) {
+			return $args;
 		}
 
 		/**
@@ -746,49 +754,6 @@ class Languages {
 			delete_option( '_transient_' . self::TRANSIENT_NAME );
 		}
 	}
-
-
-	/**
-	 * Returns the language arguments from the locale and additional arguments.
-	 *
-	 * @since 3.8
-	 *
-	 * @param array $args Arguments to create a language.
-	 * @return array|false Array of language arguments or false if the locale is invalid.
-	 *
-	 * @phpstan-param array{locale: string, name?: string, slug?: string, is_rtl?: bool, flag_code?: string, term_group?: int, no_default_cat?: bool} $args
-	 * @phpstan-return array{locale: string, name: string, slug: string, rtl: bool, flag: string, term_group: int|numeric-string, no_default_cat: bool}|false
-	 */
-	public function get_language_args_from_locale( array $args ) {
-		if ( isset( $args['name'], $args['slug'], $args['is_rtl'], $args['flag_code'] ) ) {
-			return array(
-				'locale'         => $args['locale'],
-				'name'           => $args['name'],
-				'slug'           => $args['slug'],
-				'rtl'            => $args['is_rtl'],
-				'flag'           => $args['flag_code'],
-				'term_group'     => $args['term_group'] ?? 0,
-				'no_default_cat' => $args['no_default_cat'] ?? false,
-			);
-		}
-
-		$languages = include POLYLANG_DIR . '/settings/languages.php';
-
-		if ( empty( $languages[ $args['locale'] ] ) ) {
-			return false;
-		}
-
-		return array(
-			'locale'         => $args['locale'],
-			'name'           => $args['name'] ?? $languages[ $args['locale'] ]['name'],
-			'slug'           => $args['slug'] ?? $languages[ $args['locale'] ]['code'],
-			'rtl'            => $args['is_rtl'] ?? 'rtl' === $languages[ $args['locale'] ]['dir'],
-			'flag'           => $args['flag_code'] ?? $languages[ $args['locale'] ]['flag'],
-			'term_group'     => $args['term_group'] ?? 0,
-			'no_default_cat' => $args['no_default_cat'] ?? false,
-		);
-	}
-
 	/**
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
@@ -885,25 +850,55 @@ class Languages {
 	 *
 	 * @param array             $args Parameters of {@see WP_Syntex\Polylang\Model\Languages::add() or @see WP_Syntex\Polylang\Model\Languages::update()}.
 	 * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
-	 * @return WP_Error
+	 * @return WP_Error|array Error object or array of language arguments.
 	 *
 	 * @phpstan-param array{
-	 *     locale: string,
-	 *     slug: string,
-	 *     name: string,
-	 *     flag?: string
+	 *     locale?: string,
+	 *     slug?: string,
+	 *     name?: string,
+	 *     flag?: string,
+	 *     flag_code?: string,
+	 *     is_rtl?: bool,
+	 *     rtl?: bool,
+	 *     term_group?: int|numeric-string,
+	 *     no_default_cat?: bool
 	 * } $args
 	 */
-	protected function validate_lang( $args, ?PLL_Language $lang = null ): WP_Error {
+	protected function validate_lang( $args, ?PLL_Language $lang = null ) {
 		$errors = new WP_Error();
 
+		if ( empty( $lang ) ) {
+			// Create a new language.
+			if ( ! isset( $args['locale'] ) ) {
+				$errors->add( 'pll_missing_locale', __( 'Locale is required', 'polylang' ) );
+			} else {
+				$languages = include POLYLANG_DIR . '/settings/languages.php';
+				if ( ! empty( $languages[ $args['locale'] ] ) ) {
+					$args['name']       = $args['name'] ?? $languages[ $args['locale'] ]['name'];
+					$args['slug']       = $args['slug'] ?? $languages[ $args['locale'] ]['code'];
+					$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? 'rtl' === $languages[ $args['locale'] ]['dir'];
+					$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? $languages[ $args['locale'] ]['flag'];
+					$args['term_group'] = $args['term_group'] ?? 0;
+				} elseif ( ! isset( $args['name'] ) || ! isset( $args['slug'] ) || ! isset( $args['rtl'] ) ) {
+					$errors->add( 'pll_missing_args', __( 'Missing required arguments', 'polylang' ) );
+				}
+			}
+		} else {
+			// Update an existing language.
+			$args['name']       = $args['name'] ?? $lang->name;
+			$args['slug']       = $args['slug'] ?? $lang->slug;
+			$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? $lang->is_rtl;
+			$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? $lang->flag_code;
+			$args['term_group'] = $args['term_group'] ?? $lang->term_group;
+		}
+
 		// Validate locale with the same pattern as WP 4.3. See #28303.
-		if ( ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
+		if ( isset( $args['locale'] ) && ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
 			$errors->add( 'pll_invalid_locale', __( 'Enter a valid WordPress locale', 'polylang' ) );
 		}
 
 		// Validate slug characters.
-		if ( ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
+		if ( isset( $args['slug'] ) && ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
 			$errors->add( 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
 		}
 
@@ -933,7 +928,12 @@ class Languages {
 			}
 		}
 
-		return $errors;
+		if ( $errors->has_errors() ) {
+			return $errors;
+		}
+
+		/** @var array $args */
+		return $args;
 	}
 
 	/**
