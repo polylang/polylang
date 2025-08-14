@@ -558,6 +558,12 @@ class PLL_Admin_Site_Health {
 	 */
 	public function get_translations_update_list( array $updates ): array {
 		$pll_locales = $this->model->get_languages_list();
+		foreach ( $pll_locales as $key => $locale ) {
+			if ( $locale->get_locale() === 'en_US' ) {
+				unset( $pll_locales[ $key ] );
+			}
+		}
+		$update_list = array();
 		$locales     = array();
 		foreach ( $pll_locales as $locale ) {
 			$locales[ $locale->locale ] = $locale->locale;
