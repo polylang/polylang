@@ -443,20 +443,18 @@ class PLL_Admin_Site_Health {
 		}
 
 		$fields['translations'] = array(
-			'label'      => __('Translations', 'polylang'),
+			'label'      => __( 'Translations', 'polylang' ),
 			'value'    => $this->info_translations(),
 		);
 
-		// Create the section.
-		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
 				/* translators: placeholder is the plugin name */
 				'label'  => sprintf( __( '%s information', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
-		}
 
-		return $debug_info;
+
+			return $debug_info;
 	}
 
 	/**
@@ -542,24 +540,30 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @return array A structured array of available and required translation updates,
 	 *               categorized by type and state (e.g., missing or updatable).
-	 *
-	 *
 	 */
 	public function info_translations() {
 		// Translation updates available.
 		$translation_updates = wp_get_translation_updates();
 		$wp_languages           = get_available_languages();
 		$pll_languages       = $this->model->get_languages_list();
+		$languages            = array();
 		foreach ( $pll_languages as $pll_language ) {
 			$languages[] = $pll_language->get_locale();
 		}
-		$languages = array_unique( array_merge($wp_languages, $languages) );
+
+		if ( empty( $languages ) ) {
+			return array();
+		}
+		$languages = array_unique( array_merge( $wp_languages, $languages ) );
 
 		$fields              = array();
+		$translations = array();
 		foreach ( $translation_updates as $update ) {
-			$fields[ $update->type ]['label']                                                = $update->type;
-			$available_translations[ 'wp_translations_' . $update->type ][ $update->slug ][] = $update->language;
-			$is_already_installed                                                            = $this->is_wp_language_installed( $languages, $update->type, $update->slug );
+			if ( empty( $update->type ) || empty( $update->slug ) || empty( $update->language ) ) {
+				return array();
+			}
+			$fields[ $update->type ]['label'] = $update->type;
+			$is_already_installed = $this->is_wp_language_installed( $languages, $update->type, $update->slug );
 			if ( ! empty( $is_already_installed ) ) {
 				$translations['updatable'][ $update->type ][ $update->slug ][] = $update->language;
 			} else {
@@ -572,18 +576,19 @@ class PLL_Admin_Site_Health {
 				foreach ( $elements as $name => $locales ) {
 					if ( 'missing' === $state ) {
 						/* translators: the placeholder is a WordPress locale */
-						$fields[ $type ]['value'][ $name ] = sprintf( __( 'A translation is missing for %s.' ), implode( ', ', $locales ) );
+						$fields[ $type ]['value'][ $name ] = sprintf( __( 'A translation is missing for %s.', 'polylang' ), implode( ', ', $locales ) );
 					}
 					if ( 'updatable' === $state ) {
 						/* translators: the placeholder is a WordPress locale */
-						$fields[ $type ]['value'][ $name ] = sprintf( __( 'A translation is updatable for %s .' ), implode( ', ', $locales ) );
+						$fields[ $type ]['value'][ $name ] = sprintf( __( 'A translation is updatable for %s .', 'polylang' ), implode( ', ', $locales ) );
 					}
 				}
 			}
 		}
 
-		foreach ( $fields as $type => $value) {
-			if( ! is_array( $value ) ){
+		$newfields = array();
+		foreach ( $fields as $type => $value ) {
+			if ( ! is_array( $value ) ) {
 				continue;
 			}
 			$newfields[ $type ] = ''; // add line to separate type of available translations
@@ -597,30 +602,33 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Is the language pack already installed ?
 	 *
+	 * @since 3.8
+	 *
 	 * @param array      $locales           array of WordPress locales.
 	 * @param string     $type              type of update (may be core, plugin or theme and sometimes core, plugins or themes ).
 	 * @param string     $name              name of the element (plugin/theme) currently updated. In case of Core update, it's "default"
 	 * @param array|bool $already_installed array of already installed language packs.
 	 *
 	 * @return boolean|array
-	 * @since 6.8
-	 *
 	 */
 	public function is_wp_language_installed( $locales, $type, $name, $already_installed = array() ) {
 		$installed_translations = wp_get_installed_translations( $type );
 		if ( ! is_array( $installed_translations ) ) {
 			return false;
 		}
+
 		foreach ( $locales as $locale ) {
-			if ( ! empty( $installed_translations[ $name ] ) && $installed_translations[ $name ][ $locale ] ) {
-				$already_installed[ $type ][ $name ][ $locale ] = $locale;
+			// First check if $name index exists and is an array
+			if ( isset( $installed_translations[ $name ] ) &&
+				is_array( $installed_translations[ $name ] ) ) {
+
+				// Then check if the locale exists in the array
+				if ( isset( $installed_translations[ $name ][ $locale ] ) ) {
+					$already_installed[ $type ][ $name ][ $locale ] = $locale;
+				}
 			}
 		}
 
-		if ( ! empty( $already_installed ) ) {
-			return $already_installed;
-		}
-
-		return false;
+		return ! empty( $already_installed ) ? $already_installed : false;
 	}
 }
