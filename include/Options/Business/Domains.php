@@ -200,7 +200,7 @@ class Domains extends Abstract_Option {
 		if ( 3 === $options->get( 'force_lang' ) ) {
 			$value = $this->get();
 
-			$info = $this->get_site_health_info( $info, $value, self::key() );
+			$info = $this->get_site_health_info( $info, $this->get(), self::key() );
 
 		}
 		return $info;
