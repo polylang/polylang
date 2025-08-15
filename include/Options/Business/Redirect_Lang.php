@@ -43,8 +43,9 @@ class Redirect_Lang extends Abstract_Boolean {
 	public function add_to_site_health_info( array $info, Options $options ): array {
 		if ( $options->get( self::key() ) ) {
 			$value = '1: ' . __( 'The front page URL contains the language code instead of the page name or page id', 'polylang' );
+		} else {
+		    $value = '0: ' . __( 'The front page URL contains the page name or page id instead of the language code', 'polylang' );
 		}
-		$value = '0: ' . __( 'The front page URL contains the page name or page id instead of the language code', 'polylang' );
 
 		return $this->get_site_health_info( $info, $value, self::key() );
 	}
