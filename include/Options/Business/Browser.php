@@ -48,7 +48,7 @@ class Browser extends Abstract_Boolean {
 			$value = '1: ' . __( 'Detect browser language activated', 'polylang' );
 		}
 
-		return $this->render_site_health_info( $info, $value, self::key() );
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 
 	/**

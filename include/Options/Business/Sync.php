@@ -51,7 +51,7 @@ class Sync extends Abstract_List {
 			$value = implode( ', ', $this->get() );
 		}
 
-		return $this->render_site_health_info( $info, $value, self::key() );
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 
 	/**

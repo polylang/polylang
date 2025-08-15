@@ -47,7 +47,7 @@ class Hide_Default extends Abstract_Boolean {
 		}
 		$value = '0: ' . __( 'Display URL language information for default language', 'polylang' );
 
-		return $this->render_site_health_info( $info, $value, self::key() );
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 	/**
 	 * Returns the default value.

@@ -46,7 +46,7 @@ class Redirect_Lang extends Abstract_Boolean {
 		}
 		$value = '0: ' . __( 'The front page URL contains the page name or page id instead of the language code', 'polylang' );
 
-		return $this->render_site_health_info( $info, $value, self::key() );
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 
 	/**

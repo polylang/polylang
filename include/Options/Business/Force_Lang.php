@@ -56,7 +56,7 @@ class Force_Lang extends Abstract_Option {
 				break;
 		}
 
-		return $this->render_site_health_info( $info, $value, self::key() );
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 	/**
 	 * Returns the default value.

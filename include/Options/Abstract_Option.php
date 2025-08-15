@@ -309,7 +309,7 @@ abstract class Abstract_Option {
 	 *
 	 * @return array Updated array of site health information including the new fields.
 	 */
-	public function render_site_health_info( array $info, mixed $value, string $key ): array {
+	public function get_site_health_info( array $info, mixed $value, string $key ): array {
 		return array_merge(
 			$info,
 			array(
