@@ -46,7 +46,7 @@ class Media_Support extends Abstract_Boolean {
 			$value = '1: ' . __( 'The media are translated', 'polylang' );
 		}
 
-		return $this->render_site_health_info( $info, $value, self::key() );
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 
 	/**
