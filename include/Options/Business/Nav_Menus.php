@@ -52,7 +52,7 @@ class Nav_Menus extends Abstract_Option {
 	 */
 	public function add_to_site_health_info( array $info, Options $options ): array {
 		$current_theme = get_stylesheet();
-		$nav_menus     = $options->get( 'nav_menus' );
+		$nav_menus     = $this->get();
 		$fields        = array();
 		if ( is_array( $nav_menus ) && isset( $nav_menus[ $current_theme ] ) ) {
 			foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
