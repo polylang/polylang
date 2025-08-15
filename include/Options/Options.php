@@ -513,6 +513,26 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
+	 * Retrieves site health information based on the current blog's options.
+	 *
+	 *
+	 * @since 3.8
+	 *
+	 * @return array The site health information array.
+	 */
+	public function get_site_health_info(): array {
+		$info = array();
+		foreach ( $this->options[ $this->current_blog_id ] as $option ) {
+			if ( ! $option instanceof Abstract_Option ) {
+				continue;
+			}
+			$info = $option->add_to_site_health_info( $info, $this );
+		}
+
+		return $info;
+	}
+
+	/**
 	 * Returns the list of modified sites.
 	 * On multisite, sites are cached.
 	 * /!\ At this point, some sites may have been deleted. They are removed from `$this->modified` here.
