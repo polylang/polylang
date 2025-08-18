@@ -58,7 +58,7 @@ class PLL_Install extends PLL_Install_Base {
 	 * @param string $min_wp_version  Minimal WP version required to run the plugin.
 	 * @param string $min_php_version Minimal php version required to run the plugin.
 	 */
-	public function __construct( $plugin_file, $plugin_version, $min_wp_version, $min_php_version ) {
+	public function __construct( string $plugin_file, string $plugin_version, string $min_wp_version, string $min_php_version ) {
 		$this->plugin_version  = $plugin_version;
 		$this->min_wp_version  = $min_wp_version;
 		$this->min_php_version = $min_php_version;
