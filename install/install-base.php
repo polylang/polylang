@@ -144,12 +144,12 @@ class PLL_Install_Base {
 			// Network.
 			foreach ( self::get_sites() as $blog_id ) {
 				switch_to_blog( $blog_id );
-				'activate' == $what ? static::_activate() : static::_deactivate();
+				'activate' === $what ? static::_activate() : static::_deactivate();
 			}
 			restore_current_blog();
 		} else {
 			// Single blog.
-			'activate' == $what ? static::_activate() : static::_deactivate();
+			'activate' === $what ? static::_activate() : static::_deactivate();
 		}
 	}
 
