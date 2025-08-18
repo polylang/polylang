@@ -86,7 +86,7 @@ class PLL_Install_Base {
 	 * @return void
 	 */
 	protected static function _activate() {
-		// Can be overridden in child class
+		// Can be overridden in child class.
 	}
 
 	/**
@@ -111,7 +111,7 @@ class PLL_Install_Base {
 	 * @return void
 	 */
 	protected static function _deactivate() {
-		// Can be overridden in child class
+		// Can be overridden in child class.
 	}
 
 	/**
@@ -160,7 +160,7 @@ class PLL_Install_Base {
 	 *
 	 * @return array
 	 */
-	protected static function get_sites() {
+	protected static function get_sites(): array {
 		global $wpdb;
 
 		if ( empty( self::$sites ) ) {
