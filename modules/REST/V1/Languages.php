@@ -172,7 +172,7 @@ class Languages extends Abstract_Controller {
 
 		/**
 		 * @phpstan-var array{
-		 *    locale?: non-empty-string,
+		 *    locale: non-empty-string,
 		 *    slug?: non-empty-string,
 		 *    name?: non-empty-string,
 		 *    is_rtl?: bool,
@@ -461,7 +461,6 @@ class Languages extends Abstract_Controller {
 					'type'        => 'string',
 					'pattern'     => Languages_Model::LOCALE_PATTERN,
 					'context'     => array( 'view', 'edit' ),
-					'required'    => true,
 				),
 				'w3c'             => array(
 					'description' => __( 'W3C Locale for the language (for example: en-US).', 'polylang' ),
@@ -635,6 +634,7 @@ class Languages extends Abstract_Controller {
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
 		$schema = $this->get_item_schema();
 		if ( WP_REST_Server::CREATABLE !== $method ) {
+			$schema['properties']['locale']['required'] = true;
 			unset( $schema['properties']['no_default_cat'] );
 		}
 		return rest_get_endpoint_args_for_schema( $schema, $method );
