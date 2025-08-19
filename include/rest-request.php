@@ -94,7 +94,7 @@ class PLL_REST_Request extends PLL_Base {
 		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
 
 		// Use rest_pre_dispatch_filter to get the right language locale and initialize correctly sanitization filters.
-		add_filter( 'rest_pre_dispatch', array( $this, 'set_filters_sanitization' ), 10, 3 );
+		add_filter( 'rest_request_before_callbacks', array( $this, 'set_filters_sanitization' ), 10, 3 );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );
@@ -145,32 +145,35 @@ class PLL_REST_Request extends PLL_Base {
 	 * @see WP_REST_Server::dispatch()
 	 *
 	 * @since 2.9
-	 * @since 3.8 Moved from Polylang Pro.
+	 * @since 3.8 Moved from Polylang Pro and hooked on 'rest_request_before_callbacks' instead of 'rest_pre_dispatch'.
 	 *
-	 * @param mixed           $result  Response to replace the requested version with. Can be anything
-	 *                                 a normal endpoint can return, or null to not hijack the request.
-	 * @param WP_REST_Server  $server  Server instance.
-	 * @param WP_REST_Request $request Request used to generate the response.
+	 * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Result to send to the client.
+	 * @param array                                            $handler  Route handler used for the request.
+	 * @param WP_REST_Request                                  $request Request used to generate the response.
 	 * @return mixed
 	 *
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function set_filters_sanitization( $result, $server, $request ) {
+	public function set_filters_sanitization( $response, $handler, $request ) {
 		$id   = $request->get_param( 'id' );
 		$lang = $request->get_param( 'lang' );
 
 		if ( is_string( $lang ) && ! empty( $lang ) ) {
 			$language = $this->model->get_language( sanitize_key( $lang ) );
 		} elseif ( is_numeric( $id ) && ! empty( $id ) ) {
-			// Otherwise we need to get the language from the post itself.
-			$language = $this->model->post->get_language( (int) $id );
+			$controller = $handler['callback'][0] ?? null;
+			if ( $controller instanceof WP_REST_Posts_Controller ) {
+				$language = $this->model->post->get_language( (int) $id );
+			} elseif ( $controller instanceof WP_REST_Terms_Controller ) {
+				$language = $this->model->term->get_language( (int) $id );
+			}
 		}
 
 		if ( ! empty( $language ) ) {
 			$this->filters_sanitization = new PLL_Filters_Sanitization( $language->locale );
 		}
 
-		return $result;
+		return $response;
 	}
 }
