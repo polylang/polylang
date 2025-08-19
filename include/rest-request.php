@@ -72,9 +72,6 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->model->set_languages_ready();
-
-		// Use rest_pre_dispatch_filter to get the right language locale and initialize correctly sanitization filters.
-		add_filter( 'rest_pre_dispatch', array( $this, 'set_filters_sanitization' ), 10, 3 );
 	}
 
 	/**
@@ -95,6 +92,9 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
+
+		// Use rest_pre_dispatch_filter to get the right language locale and initialize correctly sanitization filters.
+		add_filter( 'rest_pre_dispatch', array( $this, 'set_filters_sanitization' ), 10, 3 );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );
@@ -157,10 +157,6 @@ class PLL_REST_Request extends PLL_Base {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function set_filters_sanitization( $result, $server, $request ) {
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return $result;
-		}
-
 		$id   = $request->get_param( 'id' );
 		$lang = $request->get_param( 'lang' );
 
