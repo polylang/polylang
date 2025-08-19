@@ -189,7 +189,7 @@ class Languages extends Abstract_Controller {
 		}
 
 		/** @var PLL_Language */
-		$language = $this->languages->get( $args['locale'] ); // @phpstan-ignore-line $args['locale'] is set at this point.
+		$language = $this->languages->get( $args['locale'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
