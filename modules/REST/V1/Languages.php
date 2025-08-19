@@ -634,9 +634,11 @@ class Languages extends Abstract_Controller {
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
 		$schema = $this->get_item_schema();
 		if ( WP_REST_Server::CREATABLE !== $method ) {
-			$schema['properties']['locale']['required'] = true;
 			unset( $schema['properties']['no_default_cat'] );
+		} else {
+			$schema['properties']['locale']['required'] = true;
 		}
+
 		return rest_get_endpoint_args_for_schema( $schema, $method );
 	}
 
