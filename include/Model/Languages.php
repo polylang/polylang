@@ -871,6 +871,8 @@ class Languages {
 			// Create a new language.
 			if ( ! isset( $args['locale'] ) ) {
 				$errors->add( 'pll_missing_locale', __( 'Locale is required', 'polylang' ) );
+
+				return $errors;
 			} else {
 				$languages = include POLYLANG_DIR . '/settings/languages.php';
 				if ( ! empty( $languages[ $args['locale'] ] ) ) {
