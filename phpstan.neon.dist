@@ -47,8 +47,3 @@ parameters:
 			count: 1
 			path: include/mo.php
 
-		# Ignored because the locale is always set at end of create_item() method.
-		-
-			message: "#^Offset 'locale' does not exist on array{locale\\?: non-empty-string, slug\\?: non-empty-string, name\\?: non-empty-string, is_rtl\\?: bool, term_group\\?: int, flag\\?: non-empty-string, no_default_cat\\?: bool}\\.$#"
-			count: 1
-			path: modules/REST/V1/Languages.php
