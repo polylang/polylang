@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\REST\Request;
-
 /**
  * Main Polylang class for REST API requests, accessible from @see PLL().
  *
@@ -58,11 +56,6 @@ class PLL_REST_Request extends PLL_Base {
 	public $filters_sanitization;
 
 	/**
-	 * @var Request
-	 */
-	public $request;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 3.4
@@ -79,7 +72,6 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->model->set_languages_ready();
-		$this->request = new Request( $this->model );
 	}
 
 	/**
