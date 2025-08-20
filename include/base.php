@@ -3,6 +3,7 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Options\Options;
 
 /**
@@ -46,6 +47,11 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
+	 * @var Request
+	 */
+	public $request;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -56,6 +62,7 @@ abstract class PLL_Base {
 		$this->links_model = &$links_model;
 		$this->model       = &$links_model->model;
 		$this->options     = $this->model->options;
+		$this->request     = new Request( $this->model );
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 

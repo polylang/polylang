@@ -51,6 +51,11 @@ class PLL_REST_Request extends PLL_Base {
 	public $filters_widgets_options;
 
 	/**
+	 * @var PLL_Filters_Sanitization|null
+	 */
+	public $filters_sanitization;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.4
@@ -87,6 +92,7 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
+		add_filter( 'rest_request_before_callbacks', array( $this, 'set_filters_sanitization' ) );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );
@@ -129,5 +135,30 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Initialize sanitization filters with the correct language locale.
+	 *
+	 * @see WP_REST_Server::dispatch()
+	 *
+	 * @since 2.9
+	 * @since 3.8 Moved from Polylang Pro and hooked on 'rest_request_before_callbacks' instead of 'rest_pre_dispatch'.
+	 *
+	 * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Result to send to the client.
+	 * @return WP_REST_Response|WP_HTTP_Response|WP_Error|mixed
+	 */
+	public function set_filters_sanitization( $response ) {
+		$language = $this->request->get_language();
+		if ( empty( $language ) ) {
+			$type     = $this->request->get_object_type();
+			$language = $type ? $this->model->$type->get_language( $this->request->get_id() ) : null;
+		}
+
+		if ( ! empty( $language ) ) {
+			$this->filters_sanitization = new PLL_Filters_Sanitization( $language->locale );
+		}
+
+		return $response;
 	}
 }
