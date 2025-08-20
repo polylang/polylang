@@ -92,8 +92,6 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
-
-		// Use rest_pre_dispatch_filter to get the right language locale and initialize correctly sanitization filters.
 		add_filter( 'rest_request_before_callbacks', array( $this, 'set_filters_sanitization' ) );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
