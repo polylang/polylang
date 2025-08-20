@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\REST\Request;
+
 /**
  * Main Polylang class for REST API requests, accessible from @see PLL().
  *
@@ -56,6 +58,11 @@ class PLL_REST_Request extends PLL_Base {
 	public $filters_sanitization;
 
 	/**
+	 * @var Request
+	 */
+	public $request;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.4
@@ -72,6 +79,7 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->model->set_languages_ready();
+		$this->request = new Request( $this->model );
 	}
 
 	/**
@@ -162,12 +170,8 @@ class PLL_REST_Request extends PLL_Base {
 		if ( is_string( $lang ) && ! empty( $lang ) ) {
 			$language = $this->model->get_language( sanitize_key( $lang ) );
 		} elseif ( is_numeric( $id ) && ! empty( $id ) ) {
-			$controller = $handler['callback'][0] ?? null;
-			if ( $controller instanceof WP_REST_Posts_Controller ) {
-				$language = $this->model->post->get_language( (int) $id );
-			} elseif ( $controller instanceof WP_REST_Terms_Controller ) {
-				$language = $this->model->term->get_language( (int) $id );
-			}
+			$type     = $this->request->get_object_type();
+			$language = $type ? $this->model->$type->get_language( (int) $id ) : null;
 		}
 
 		if ( ! empty( $language ) ) {
