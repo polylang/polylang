@@ -203,11 +203,11 @@ class Request {
 		 * @since 3.8
 		 *
 		 * @param string|null     $type    Object type of the current request, or null if not defined.
-		 *                                 Accepted values are 'post' and 'term'.
-		 * @param WP_REST_Request $request Request used to generate the response.
 		 * @param array           $handler Route handler used for the request.
+		 * @param WP_REST_Request $request Request used to generate the response.
+		 *                                 Accepted values are 'post' and 'term'.
 		 */
-		$type = apply_filters( 'pll_rest_request_object_type', null, $this->request, $this->handler );
+		$type = apply_filters( 'pll_rest_request_object_type', null, $this->handler, $this->request );
 
 		if ( in_array( $type, array( 'post', 'term' ), true ) ) {
 			return $type;
