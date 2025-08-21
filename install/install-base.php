@@ -19,13 +19,6 @@ class PLL_Install_Base {
 	public $plugin_basename;
 
 	/**
-	 * Used to cache the list of sites on multi-site.
-	 *
-	 * @var array
-	 */
-	private static $sites = array();
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.7
@@ -142,7 +135,7 @@ class PLL_Install_Base {
 	protected static function do_for_all_blogs( $what, $networkwide ) {
 		if ( is_multisite() && $networkwide ) {
 			// Network.
-			foreach ( self::get_sites() as $blog_id ) {
+			foreach ( get_sites( array( 'fields' => 'ids', 'number' => 0 ) ) as $blog_id ) {
 				switch_to_blog( $blog_id );
 				'activate' === $what ? static::_activate() : static::_deactivate();
 			}
@@ -151,22 +144,5 @@ class PLL_Install_Base {
 			// Single blog.
 			'activate' === $what ? static::_activate() : static::_deactivate();
 		}
-	}
-
-	/**
-	 * Returns (and cache) the list of sites on multi-site.
-	 *
-	 * @since 3.8
-	 *
-	 * @return array
-	 */
-	protected static function get_sites(): array {
-		global $wpdb;
-
-		if ( empty( self::$sites ) ) {
-			self::$sites = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-		}
-
-		return self::$sites;
 	}
 }
