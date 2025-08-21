@@ -56,3 +56,13 @@ parameters:
 
 		# Ignored because the function wp_slash accepts mixed although not documented.
 		- "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
+
+		# Ignored because there is no dynamic return type extension for WP_Syntex\Polylang\Options\Abstract_Option::get()
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/Sync.php
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\|null, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/Sync.php
