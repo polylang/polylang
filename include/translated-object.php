@@ -191,7 +191,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			$existing_translations = array_filter( $existing_data, 'is_numeric' );
 			$removed_translations  = array_diff_key( $existing_translations, $translations );
 			foreach ( $removed_translations as $id ) {
-				$this->delete_translation( (int) $id );
+				$this->delete_translation( $id );
 			}
 
 			// Update the term description with the new translations + preserve sync data.
