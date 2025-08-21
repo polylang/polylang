@@ -52,7 +52,6 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	return;
 }
 
-// Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
 if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 	return;
 }
@@ -66,6 +65,7 @@ $install = new PLL_Install(
 	'7.2' // PHP version.
 );
 
+// Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
 if ( ! $install->is_deactivation() && $install->can_activate() ) {
 	require_once __DIR__ . '/include/functions.php';
 
