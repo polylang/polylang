@@ -169,7 +169,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			$this->delete_translation( $tr_id );
 		}
 
-		// Check if we need to create or update the translation group.
+		// Check ID we need to create or update the translation group.
 		if ( ! $this->should_update_translation_group( $id, $translations ) ) {
 			return $translations;
 		}
@@ -184,17 +184,10 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		} else {
 			// Take care not to overwrite extra data stored in the description field, if any.
 			$group = (int) $term->term_id;
-			$existing_translations = maybe_unserialize( $term->description );
-			$existing_translations = is_array( $existing_translations ) ? $existing_translations : array();
-
-			// Find and unlink translations that are part of the old group but not the new one.
-			$removed_translations = array_diff_assoc( $existing_translations, $translations );
-			foreach ( $removed_translations as $id ) {
-				$this->delete_translation( $id );
-			}
-
-			// Update the term description with the new, correct set of translations.
-			wp_update_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
+			$descr = maybe_unserialize( $term->description );
+			$descr = is_array( $descr ) ? array_diff_key( $descr, $old_translations ) : array(); // Remove old translations.
+			$descr = array_merge( $descr, $translations ); // Add new one.
+			wp_update_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $descr ) ) );
 		}
 
 		// Link all translations to the new term.
