@@ -398,13 +398,14 @@ class PLL_Plugin_Updater {
 		if ( empty( $edd_api_request_transient ) ) {
 
 			$api_response = $this->api_request( 'plugin_information', $to_send );
+			if ( empty( $api_response ) ) {
+				return $_data;
+			}
 
 			// Expires in 3 hours
 			$this->set_version_info_cache( $api_response );
 
-			if ( false !== $api_response ) {
-				$_data = $api_response;
-			}
+			$_data = $api_response;
 		} else {
 			$_data = $edd_api_request_transient;
 		}
