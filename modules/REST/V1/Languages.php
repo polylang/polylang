@@ -188,15 +188,6 @@ class Languages extends Abstract_Controller {
 			return $this->add_status_to_error( $result );
 		}
 
-		// Ensure locale exists before accessing it
-		if ( ! isset( $args['locale'] ) ) {
-			return new WP_Error(
-				'rest_missing_locale',
-				__( 'Locale is required', 'polylang' ),
-				array( 'status' => 400 )
-			);
-		}
-
 		/** @var PLL_Language */
 		$language = $this->languages->get( $args['locale'] );
 		return $this->prepare_item_for_response( $language, $request );
