@@ -76,7 +76,7 @@ class PLL_Install extends PLL_Install_Base {
 	public function can_activate() {
 		global $wp_version;
 
-		if ( version_compare( PHP_VERSION, $this->min_php_version, '<' ) ) {
+		if ( version_compare( pll_get_constant( 'PHP_VERSION', PHP_INT_MAX ), $this->min_php_version, '<' ) ) {
 			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
 			return false;
 		}
@@ -105,7 +105,7 @@ class PLL_Install extends PLL_Install_Base {
 				/* translators: 1: Plugin name 2: Current PHP version 3: Required PHP version */
 				esc_html__( '%1$s has deactivated itself because you are using an old version of PHP. You are using using PHP %2$s. %1$s requires PHP %3$s.', 'polylang' ),
 				esc_html( $this->plugin_name ),
-				PHP_VERSION,
+				esc_html( pll_get_constant( 'PHP_VERSION', PHP_INT_MAX ) ),
 				esc_html( $this->min_php_version )
 			)
 		);
