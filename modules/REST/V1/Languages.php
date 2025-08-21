@@ -252,7 +252,7 @@ class Languages extends Abstract_Controller {
 		 * } $args
 		 */
 		$args            = $request->get_params();
-		$args['lang_id'] = $args['term_id'];
+		$args['lang_id'] = $language->term_id;
 		$update = $this->languages->update( $args );
 
 		if ( is_wp_error( $update ) ) {
