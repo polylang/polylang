@@ -183,24 +183,18 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			wp_insert_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
 		} else {
 			// Take care not to overwrite extra data stored in the description field, if any.
-			$group         = (int) $term->term_id;
-			$existing_data = maybe_unserialize( $term->description );
-			$existing_data = is_array( $existing_data ) ? $existing_data : array();
+			$group = (int) $term->term_id;
+			$existing_translations = maybe_unserialize( $term->description );
+			$existing_translations = is_array( $existing_translations ) ? $existing_translations : array();
 
 			// Find and unlink translations that are part of the old group but not the new one.
-			$existing_translations = array_filter( $existing_data, 'is_numeric' );
-			$removed_translations  = array_diff_key( $existing_translations, $translations );
+			$removed_translations = array_diff_assoc( $existing_translations, $translations );
 			foreach ( $removed_translations as $id ) {
 				$this->delete_translation( $id );
 			}
 
-			// Update the term description with the new translations + preserve sync data.
-			$extra_data = array_diff_key( $existing_data, $existing_translations );
-			wp_update_term(
-				$group,
-				$this->tax_translations,
-				array( 'description' => maybe_serialize( array_merge( $extra_data, $translations ) ) )
-			);
+			// Update the term description with the new, correct set of translations.
+			wp_update_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
 		}
 
 		// Link all translations to the new term.
