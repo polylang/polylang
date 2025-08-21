@@ -166,16 +166,20 @@ class Languages {
 			return new WP_Error( 'pll_missing_locale', __( 'Locale is required', 'polylang' ) );
 		}
 
-		$languages = include POLYLANG_DIR . '/settings/languages.php';
-		if ( ! empty( $languages[ $args['locale'] ] ) ) {
-			$args['name']       = $args['name'] ?? $languages[ $args['locale'] ]['name'];
-			$args['slug']       = $args['slug'] ?? $languages[ $args['locale'] ]['code'];
-			$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? 'rtl' === $languages[ $args['locale'] ]['dir'];
-			$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? $languages[ $args['locale'] ]['flag'];
-			$args['term_group'] = $args['term_group'] ?? 0;
-		} elseif ( ! isset( $args['name'] ) || ! isset( $args['slug'] ) || ! isset( $args['rtl'] ) ) {
-			return new WP_Error( 'pll_missing_args', __( 'Missing required arguments', 'polylang' ) );
+		if ( ! empty( $args['locale'] ) && ( ! isset( $args['name'] ) || ! isset( $args['slug'] ) ) ) {
+			$languages = include POLYLANG_DIR . '/settings/languages.php';
+			if ( ! empty( $languages[ $args['locale'] ] ) ) {
+				$found        = $languages[ $args['locale'] ];
+				$args['name'] = $args['name'] ?? $found['name'];
+				$args['slug'] = $args['slug'] ?? $found['code'];
+				$args['rtl']  = $args['rtl'] ?? 'rtl' === $found['dir'];
+				$args['flag'] = $args['flag'] ?? $found['flag'];
+			}
 		}
+
+		$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? false;
+		$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? '';
+		$args['term_group'] = $args['term_group'] ?? 0;
 
 		$errors = $this->validate_lang( $args );
 		if ( $errors->has_errors() ) {
@@ -875,9 +879,9 @@ class Languages {
 	 * @return WP_Error
 	 *
 	 * @phpstan-param array{
-	 *     locale: string,
-	 *     slug: string,
-	 *     name: string,
+	 *     locale?: string,
+	 *     slug?: string,
+	 *     name?: string,
 	 *     flag?: string
 	 * } $args
 	 */
@@ -885,18 +889,18 @@ class Languages {
 		$errors = new WP_Error();
 
 		// Validate locale with the same pattern as WP 4.3. See #28303.
-		if ( ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
+		if ( empty( $args['locale'] ) || ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
 			$errors->add( 'pll_invalid_locale', __( 'Enter a valid WordPress locale', 'polylang' ) );
 		}
 
 		// Validate slug characters.
-		if ( ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
+		if ( empty( $args['slug'] ) || ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
 			$errors->add( 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
 		}
 
 		// Validate slug is unique.
 		foreach ( $this->get_list() as $language ) {
-			if ( $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
+			if ( ! empty( $args['slug'] ) && $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
 				$errors->add( 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
 			}
 		}
