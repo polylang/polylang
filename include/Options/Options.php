@@ -525,7 +525,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Retrieves site health information based on the current blog's options.
 	 *
-	 *
 	 * @since 3.8
 	 *
 	 * @return array The site health information array.

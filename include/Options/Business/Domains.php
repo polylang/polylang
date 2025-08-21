@@ -196,12 +196,9 @@ class Domains extends Abstract_Option {
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array {
+	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( 3 === $options->get( 'force_lang' ) ) {
-			$value = $this->get();
-
 			$info = $this->get_site_health_info( $info, $this->get(), self::key() );
-
 		}
 		return $info;
 	}

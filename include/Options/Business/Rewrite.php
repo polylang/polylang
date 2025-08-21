@@ -48,11 +48,11 @@ class Rewrite extends Abstract_Boolean {
 				'`/language/`'
 			);
 		} else {
-		    $value = '0: ' . sprintf(
-			    /* translators: %s is a URL slug: `/language/`. */
-			    __( 'Keep %s in pretty permalinks', 'polylang' ),
-			    '`/language/`'
-		    );
+			$value = '0: ' . sprintf(
+				/* translators: %s is a URL slug: `/language/`. */
+				__( 'Keep %s in pretty permalinks', 'polylang' ),
+				'`/language/`'
+			);
 		}
 
 		return $this->get_site_health_info( $info, $value, self::key() );

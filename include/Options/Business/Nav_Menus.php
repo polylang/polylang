@@ -50,7 +50,7 @@ class Nav_Menus extends Abstract_Option {
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array {
+	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$current_theme = get_stylesheet();
 		$nav_menus     = $this->get();
 		$fields        = array();
