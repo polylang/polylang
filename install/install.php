@@ -62,14 +62,8 @@ class PLL_Install extends PLL_Install_Base {
 		$this->plugin_version  = $plugin_version;
 		$this->min_wp_version  = $min_wp_version;
 		$this->min_php_version = $min_php_version;
-
-		if ( defined( 'POLYLANG_BASENAME' ) ) {
-			$this->plugin_basename = POLYLANG_BASENAME;
-		} else {
-			$this->plugin_basename = plugin_basename( $plugin_file );
-		}
-
-		$this->plugin_name = ucwords( str_replace( '-', ' ', dirname( $this->plugin_basename ) ) );
+		$this->plugin_basename = pll_get_constant( 'POLYLANG_BASENAME', plugin_basename( $plugin_file ) );
+		$this->plugin_name     = ucwords( str_replace( '-', ' ', dirname( $this->plugin_basename ) ) );
 	}
 
 	/**
