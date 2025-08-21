@@ -67,21 +67,21 @@ $install = new PLL_Install(
 );
 
 if ( ! $install->is_deactivation() && $install->can_activate() ) {
-	define( 'POLYLANG', $install->plugin_name );
-	define( 'POLYLANG_VERSION', $install->plugin_version );
-	define( 'PLL_MIN_WP_VERSION', $install->min_wp_version );
-	define( 'PLL_MIN_PHP_VERSION', $install->min_php_version );
+	require_once __DIR__ . '/include/functions.php';
 
-	define( 'POLYLANG_FILE', __FILE__ );
-	define( 'POLYLANG_DIR', __DIR__ );
+	pll_set_constant( 'POLYLANG', $install->plugin_name );
+	pll_set_constant( 'POLYLANG_VERSION', $install->plugin_version );
+	pll_set_constant( 'PLL_MIN_WP_VERSION', $install->min_wp_version );
+	pll_set_constant( 'PLL_MIN_PHP_VERSION', $install->min_php_version );
+
+	pll_set_constant( 'POLYLANG_FILE', __FILE__ );
+	pll_set_constant( 'POLYLANG_DIR', __DIR__ );
 
 	// Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
-	if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
-		define( 'POLYLANG_ROOT_FILE', __FILE__ );
-	}
+	pll_maybe_set_constant( 'POLYLANG_ROOT_FILE', __FILE__ );
 
-	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
-		define( 'POLYLANG_BASENAME', $install->plugin_basename ); // Plugin name as known by WP.
+	if ( ! pll_has_constant( 'POLYLANG_BASENAME' ) ) {
+		pll_set_constant( 'POLYLANG_BASENAME', $install->plugin_basename ); // Plugin name as known by WP.
 		require __DIR__ . '/vendor/autoload.php';
 	}
 
