@@ -20,7 +20,7 @@ class PLL_Domain_Mapping {
 			$options = get_option( 'polylang' );
 
 			if ( is_array( $options ) && $options['force_lang'] < 2 ) {
-				pll_maybe_set_constant( 'PLL_CACHE_HOME_URL', false );
+				pll_set_constant( 'PLL_CACHE_HOME_URL', false );
 			}
 
 			if ( ! get_site_option( 'dm_no_primary_domain' ) ) {

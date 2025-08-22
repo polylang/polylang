@@ -9,7 +9,7 @@ trait PLL_Mocks_Trait {
 
 	/**
 	 * Mocks constants (`pll_get_constant()` and `pll_has_constant()`).
-	 * Note: `pll_set_constant()` and `pll_maybe_set_constant()` are not mocked.
+	 * Note: `pll_set_constant()` is not mocked.
 	 *
 	 * @param array $constants Array keys are constant names, array values are constant values (use `null` to tell
 	 *                         a constant is not defined).
