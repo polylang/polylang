@@ -52,42 +52,45 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	return;
 }
 
+// Go on loading the plugin.
+define( 'POLYLANG_VERSION', '3.8-dev' );
+define( 'PLL_MIN_WP_VERSION', '6.2' );
+define( 'PLL_MIN_PHP_VERSION', '7.2' );
+
+define( 'POLYLANG_FILE', __FILE__ );
+define( 'POLYLANG_DIR', __DIR__ );
+
+// Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
+if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
+	define( 'POLYLANG_ROOT_FILE', __FILE__ );
+}
+
+if ( ! defined( 'POLYLANG_BASENAME' ) ) {
+	define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
+	require __DIR__ . '/vendor/autoload.php';
+}
+
+define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
+
 if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 	return;
 }
 
 require_once __DIR__ . '/install/install-base.php';
 require_once __DIR__ . '/install/install.php';
-$install = new PLL_Install(
-	__FILE__, // Plugin file.
-	'3.8-dev', // Plugin version.
-	'6.2', // WP version.
-	'7.2' // PHP version.
+PLL_Install::init(
+	array(
+		'plugin_name'     => POLYLANG,
+		'plugin_basename' => POLYLANG_BASENAME,
+		'plugin_version'  => POLYLANG_VERSION,
+		'min_wp_version'  => PLL_MIN_WP_VERSION,
+		'min_php_version' => PLL_MIN_PHP_VERSION,
+	)
 );
 
 // Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
-if ( ! $install->is_deactivation() && $install->can_activate() ) {
-	require_once __DIR__ . '/include/functions.php';
-
-	pll_set_constant( 'POLYLANG', $install->plugin_name );
-	pll_set_constant( 'POLYLANG_VERSION', $install->plugin_version );
-	pll_set_constant( 'PLL_MIN_WP_VERSION', $install->min_wp_version );
-	pll_set_constant( 'PLL_MIN_PHP_VERSION', $install->min_php_version );
-
-	pll_set_constant( 'POLYLANG_FILE', __FILE__ );
-	pll_set_constant( 'POLYLANG_DIR', __DIR__ );
-
-	// Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
-	pll_maybe_set_constant( 'POLYLANG_ROOT_FILE', __FILE__ );
-
-	if ( ! pll_has_constant( 'POLYLANG_BASENAME' ) ) {
-		pll_set_constant( 'POLYLANG_BASENAME', $install->plugin_basename ); // Plugin name as known by WP.
-		require __DIR__ . '/vendor/autoload.php';
-	}
-
-	$install::add_hooks();
+if ( ! PLL_Install::is_deactivation() && PLL_Install::can_activate() ) {
+	PLL_Install::add_hooks();
 
 	new Polylang();
 }
-
-unset( $install );

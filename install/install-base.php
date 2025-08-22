@@ -1,44 +1,27 @@
 <?php
 /**
  * @package Polylang
+ *
+ * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 5.6.
  */
 
 /**
  * A generic activation/de-activation class compatible with multisite.
  *
  * @since 1.7
+ * @since 3.8 Abstract class, reworked.
  */
-class PLL_Install_Base {
-	/**
-	 * The plugin basename.
-	 *
-	 * @since 3.8 Changed visibility to public.
-	 *
-	 * @var string
-	 */
-	public $plugin_basename;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.7
-	 * @since 3.8 Doesn't add hooks anymore.
-	 *
-	 * @param string $plugin_basename Plugin basename.
-	 */
-	public function __construct( $plugin_basename ) {
-		$this->plugin_basename = $plugin_basename;
-	}
-
+abstract class PLL_Install_Base {
 	/**
 	 * Allows to detect plugin deactivation.
 	 *
 	 * @since 1.7
+	 * @since 3.8 Static method.
 	 *
 	 * @return bool True if the plugin is currently being deactivated.
 	 */
-	public function is_deactivation() {
-		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && $this->plugin_basename === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
+	public static function is_deactivation() {
+		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && static::get_plugin_basename() === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	/**
@@ -50,8 +33,8 @@ class PLL_Install_Base {
 	 */
 	public static function add_hooks() {
 		// Manages plugin activation and deactivation
-		register_activation_hook( POLYLANG_BASENAME, array( static::class, 'activate' ) );
-		register_deactivation_hook( POLYLANG_BASENAME, array( static::class, 'deactivate' ) );
+		register_activation_hook( static::get_plugin_basename(), array( static::class, 'activate' ) );
+		register_deactivation_hook( static::get_plugin_basename(), array( static::class, 'deactivate' ) );
 
 		// Site creation on multisite.
 		add_action( 'wp_initialize_site', array( static::class, 'new_site' ), 50 ); // After WP (prio 10).
@@ -67,7 +50,7 @@ class PLL_Install_Base {
 	 * @return void
 	 */
 	public static function activate( $networkwide ) {
-		static::do_for_all_blogs( 'activate', $networkwide );
+		static::do_for_all_blogs( 'activate', (bool) $networkwide );
 	}
 
 	/**
@@ -92,7 +75,7 @@ class PLL_Install_Base {
 	 * @return void
 	 */
 	public static function deactivate( $networkwide ) {
-		static::do_for_all_blogs( 'deactivate', $networkwide );
+		static::do_for_all_blogs( 'deactivate', (bool) $networkwide );
 	}
 
 	/**
@@ -145,4 +128,13 @@ class PLL_Install_Base {
 			'activate' === $what ? static::_activate() : static::_deactivate();
 		}
 	}
+
+	/**
+	 * Returns the plugin basename.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	abstract protected static function get_plugin_basename();
 }
