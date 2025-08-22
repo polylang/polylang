@@ -297,7 +297,7 @@ class Languages {
 		$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? $lang->flag_code;
 		$args['term_group'] = $args['term_group'] ?? $lang->term_group;
 
-		$errors = $this->validate_lang( $args );
+		$errors = $this->validate_lang( $args, $lang );
 		if ( $errors->has_errors() ) {
 			return $errors;
 		}
