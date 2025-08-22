@@ -99,6 +99,12 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( 0, self::$model->post->get_translation( $de, 'fr' ) ); // fails
 	}
 
+	/**
+	 * Checks that the translations group are kept unique when linking several translations together.
+	 *
+	 * @ticket #2717 see {https://github.com/polylang/polylang-pro/issues/2717}.
+	 * @covers @covers PLL_Translated_Object::save_translations()
+	 */
 	public function test_save_translations() {
 		$posts = self::factory()->post->create_translated(
 			array( 'lang' => 'en' ),
