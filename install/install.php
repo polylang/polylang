@@ -102,7 +102,7 @@ class PLL_Install extends PLL_Install_Base {
 		static::$plugin_version  = $info['plugin_version'];
 		static::$min_wp_version  = $info['min_wp_version'];
 		static::$min_php_version = $info['min_php_version'];
-		static::$cur_php_version = $info['cur_php_version'] ?? PHP_VERSION;
+		static::$cur_php_version = ! empty( $info['cur_php_version'] ) ? $info['cur_php_version'] : PHP_VERSION;
 	}
 
 	/**
