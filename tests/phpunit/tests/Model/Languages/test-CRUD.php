@@ -4,7 +4,6 @@ namespace WP_Syntex\Polylang\Tests\Model\Languages;
 
 use PLL_UnitTestCase;
 use WP_Syntex\Polylang\Model\Languages;
-use WP_Syntex\Polylang\Options\Options;
 use PLL_Translatable_Objects;
 use PLL_Cache;
 use PLL_Language;
@@ -134,6 +133,38 @@ class Test_CRUD extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'pll_non_unique_slug', $result->get_error_code() );
+	}
+
+	public function test_create_language_with_invalid_data() {
+		$args = array(
+			'name'       => '',
+			'slug'       => 'en',
+			'locale'     => 'en_US',
+			'rtl'        => 0,
+			'flag'       => 'us',
+			'term_group' => 1,
+		);
+
+		$this->assertWPError( $this->languages->add( $args ), 'The language must have a name' );
+
+		$args['name']   = 'English';
+		$args['locale'] = 'EN';
+
+		$this->assertWPError( $this->languages->add( $args ), 'Enter a valid WordPress locale' );
+
+		$args['locale'] = 'en-US';
+
+		$this->assertWPError( $this->languages->add( $args ), 'Enter a valid WordPress locale' );
+
+		$args['locale'] = 'en_US';
+		$args['slug']   = 'EN';
+
+		$this->assertWPError( $this->languages->add( $args ), 'The language code contains invalid characters' );
+
+		$args['slug'] = 'en';
+		$args['flag'] = 'en';
+
+		$this->assertWPError( $this->languages->add( $args ), 'The flag does not exist' );
 	}
 
 	public function test_read_language_by_slug() {
@@ -277,6 +308,29 @@ class Test_CRUD extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'pll_invalid_locale', $result->get_error_code() );
+	}
+
+	/**
+	 * Bug fixed in 2.3.
+	 */
+	public function test_update_language_with_code_same_as_locale() {
+		// First language.
+		$args = array(
+			'name'       => 'العربية',
+			'slug'       => 'a', // Intentional mistake.
+			'locale'     => 'ar',
+			'rtl'        => 1,
+			'flag'       => 'arab',
+			'term_group' => 1,
+		);
+
+		$this->assertTrue( $this->languages->add( $args ) );
+
+		$lang            = $this->languages->get( 'ar' );
+		$args['lang_id'] = $lang->term_id;
+		$args['slug']    = 'ar';
+
+		$this->assertTrue( $this->languages->update( $args ) );
 	}
 
 	public function test_delete_language() {
