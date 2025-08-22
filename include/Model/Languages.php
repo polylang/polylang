@@ -162,7 +162,7 @@ class Languages {
 	 * } $args
 	 */
 	public function add( $args ) {
-		$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? false;
+		$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? null;
 		$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? null;
 		$args['term_group'] = $args['term_group'] ?? 0;
 
