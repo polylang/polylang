@@ -1,134 +1,140 @@
 <?php
 /**
  * @package Polylang
+ *
+ * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 5.6.
  */
 
 /**
- * A generic activation / de-activation class compatible with multisite
+ * A generic activation/de-activation class compatible with multisite.
  *
  * @since 1.7
+ * @since 3.8 Abstract class, reworked.
  */
-class PLL_Install_Base {
+abstract class PLL_Install_Base {
 	/**
-	 * The plugin basename.
-	 *
-	 * @var string
-	 */
-	protected $plugin_basename;
-
-	/**
-	 * Constructor
+	 * Allows to detect plugin deactivation.
 	 *
 	 * @since 1.7
+	 * @since 3.8 Static method.
 	 *
-	 * @param string $plugin_basename Plugin basename
+	 * @return bool True if the plugin is currently being deactivated.
 	 */
-	public function __construct( $plugin_basename ) {
-		$this->plugin_basename = $plugin_basename;
-
-		// Manages plugin activation and deactivation
-		register_activation_hook( $plugin_basename, array( $this, 'activate' ) );
-		register_deactivation_hook( $plugin_basename, array( $this, 'deactivate' ) );
-
-		// Site creation on multisite.
-		add_action( 'wp_initialize_site', array( $this, 'new_site' ), 50 ); // After WP (prio 10).
+	public static function is_deactivation() {
+		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && static::get_plugin_basename() === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	/**
-	 * Allows to detect plugin deactivation
+	 * Adds the required hooks.
 	 *
-	 * @since 1.7
+	 * @since 3.8
 	 *
-	 * @return bool true if the plugin is currently being deactivated
-	 */
-	public function is_deactivation() {
-		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && $this->plugin_basename === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
-	}
-
-	/**
-	 * Activation or deactivation for all blogs.
-	 *
-	 * @since 1.2
-	 *
-	 * @param string $what        Either 'activate' or 'deactivate'.
-	 * @param bool   $networkwide Whether the plugin is (de)activated for all sites in the network or just the current site.
 	 * @return void
 	 */
-	protected function do_for_all_blogs( $what, $networkwide ) {
-		// Network
-		if ( is_multisite() && $networkwide ) {
-			global $wpdb;
+	public static function add_hooks() {
+		// Manages plugin activation and deactivation
+		register_activation_hook( static::get_plugin_basename(), array( static::class, 'activate' ) );
+		register_deactivation_hook( static::get_plugin_basename(), array( static::class, 'deactivate' ) );
 
-			foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
-				switch_to_blog( $blog_id );
-				'activate' == $what ? $this->_activate() : $this->_deactivate();
-			}
-			restore_current_blog();
-		}
-
-		// Single blog
-		else {
-			'activate' == $what ? $this->_activate() : $this->_deactivate();
-		}
+		// Site creation on multisite.
+		add_action( 'wp_initialize_site', array( static::class, 'new_site' ), 50 ); // After WP (prio 10).
 	}
 
 	/**
 	 * Plugin activation for multisite.
 	 *
 	 * @since 1.7
+	 * @since 3.8 Static method.
 	 *
 	 * @param bool $networkwide Whether the plugin is activated for all sites in the network or just the current site.
 	 * @return void
 	 */
-	public function activate( $networkwide ) {
-		$this->do_for_all_blogs( 'activate', $networkwide );
+	public static function activate( $networkwide ) {
+		static::do_for_all_blogs( 'activate', (bool) $networkwide );
 	}
 
 	/**
-	 * Plugin activation
+	 * Plugin activation.
 	 *
 	 * @since 0.5
+	 * @since 3.8 Static method.
 	 *
 	 * @return void
 	 */
-	protected function _activate() {
-		// Can be overridden in child class
+	protected static function _activate() {
+		// Can be overridden in child class.
 	}
 
 	/**
 	 * Plugin deactivation for multisite.
 	 *
 	 * @since 0.1
+	 * @since 3.8 Static method.
 	 *
 	 * @param bool $networkwide Whether the plugin is deactivated for all sites in the network or just the current site.
 	 * @return void
 	 */
-	public function deactivate( $networkwide ) {
-		$this->do_for_all_blogs( 'deactivate', $networkwide );
+	public static function deactivate( $networkwide ) {
+		static::do_for_all_blogs( 'deactivate', (bool) $networkwide );
 	}
 
 	/**
-	 * Plugin deactivation
+	 * Plugin deactivation.
 	 *
 	 * @since 0.5
+	 * @since 3.8 Static method.
 	 *
 	 * @return void
 	 */
-	protected function _deactivate() {
-		// Can be overridden in child class
+	protected static function _deactivate() {
+		// Can be overridden in child class.
 	}
 
 	/**
-	 * Site creation on multisite ( to set default options )
+	 * Site creation on multisite (to set default options).
 	 *
 	 * @since 2.6.8
+	 * @since 3.8 Static method.
 	 *
 	 * @param WP_Site $new_site New site object.
 	 * @return void
 	 */
-	public function new_site( $new_site ) {
+	public static function new_site( $new_site ) {
 		switch_to_blog( $new_site->id );
-		$this->_activate();
+		static::_activate();
 		restore_current_blog();
 	}
+
+	/**
+	 * Activation or deactivation for all blogs.
+	 *
+	 * @since 1.2
+	 * @since 3.8 Static method.
+	 *
+	 * @param string $what        Either 'activate' or 'deactivate'.
+	 * @param bool   $networkwide Whether the plugin is (de)activated for all sites in the network or just the current site.
+	 * @return void
+	 */
+	protected static function do_for_all_blogs( $what, $networkwide ) {
+		if ( is_multisite() && $networkwide ) {
+			// Network.
+			foreach ( get_sites( array( 'fields' => 'ids', 'number' => 0 ) ) as $blog_id ) {
+				switch_to_blog( $blog_id );
+				'activate' === $what ? static::_activate() : static::_deactivate();
+			}
+			restore_current_blog();
+		} else {
+			// Single blog.
+			'activate' === $what ? static::_activate() : static::_deactivate();
+		}
+	}
+
+	/**
+	 * Returns the plugin basename.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	abstract protected static function get_plugin_basename();
 }
