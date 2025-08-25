@@ -88,11 +88,17 @@ PLL_Install::init(
 	)
 );
 
-// Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
-if ( ! PLL_Install::is_deactivation() && PLL_Install::can_activate() ) {
-	define( 'POLYLANG_ACTIVE', true );
-
-	PLL_Install::add_hooks();
-
-	new Polylang();
+if ( ! PLL_Install::can_activate() ) {
+	// WP version or php version is too old.
+	return;
 }
+
+define( 'POLYLANG_ACTIVE', true );
+PLL_Install::add_hooks();
+
+if ( PLL_Install::is_deactivation() ) {
+	// Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
+	return;
+}
+
+new Polylang();
