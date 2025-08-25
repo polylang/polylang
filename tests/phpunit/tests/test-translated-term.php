@@ -169,18 +169,18 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
 		$this->assertCount( 1, $translations_terms );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'en' ), $terms['en'] );
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'fr' ), $terms['fr'] );
-		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'de' ), $terms['de'] );
+		$this->assertSame( $terms['en'], self::$model->term->get_translation( $terms['en'], 'en' ) );
+		$this->assertSame( $terms['fr'], self::$model->term->get_translation( $terms['fr'], 'fr' ) );
+		$this->assertSame( $terms['de'], self::$model->term->get_translation( $terms['de'], 'de' ) );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'fr' ), $terms['fr'] );
-		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'de' ), $terms['de'] );
+		$this->assertSame( $terms['fr'], self::$model->term->get_translation( $terms['en'], 'fr' ) );
+		$this->assertSame( $terms['de'], self::$model->term->get_translation( $terms['en'], 'de' ) );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'en' ), $terms['en'] );
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'de' ), $terms['de'] );
+		$this->assertSame( $terms['en'], self::$model->term->get_translation( $terms['fr'], 'en' ) );
+		$this->assertSame( $terms['de'], self::$model->term->get_translation( $terms['fr'], 'de' ) );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'fr' ), $terms['fr'] );
-		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'en' ), $terms['en'] );
+		$this->assertSame( $terms['fr'], self::$model->term->get_translation( $terms['de'], 'fr' ) );
+		$this->assertSame( $terms['en'], self::$model->term->get_translation( $terms['de'], 'en' ) );
 
 		// Removes the translations from the group by updating the German term.
 		self::$model->term->save_translations( $terms['de'], array() );
@@ -189,14 +189,14 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$term_id = $translations_terms[0]->term_id;
 		$this->assertCount( 3, $terms );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'fr' ), 0 );
-		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'de' ), 0 );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['en'], 'fr' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['en'], 'de' ) );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'en' ), 0 );
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'de' ), 0 );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['fr'], 'en' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['fr'], 'de' ) );
 
-		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'fr' ), 0 );
-		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'en' ), 0 );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['de'], 'fr' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['de'], 'en' ) );
 
 		// Links again the French and English terms.
 		self::$model->term->save_translations( $terms['fr'], array( 'fr' => $terms['fr'], 'en' => $terms['en'] ) );
@@ -211,12 +211,12 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertCount( 2, $translations_terms ); // Is correct because each term has a translations group event if it isn't translated.
 		$this->assertSame( $term_id, $translations_terms[0]->term_id ); // The term is the same as the German term when we unlinked translations.
 
-		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'en' ), $terms['en'] );
-		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'de' ), $terms['de'] );
+		$this->assertSame( $terms['en'], self::$model->term->get_translation( $terms['de'], 'en' ) );
+		$this->assertSame( $terms['de'], self::$model->term->get_translation( $terms['en'], 'de' ) );
 
 		// The French term is no longer in the translations group.
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'en' ), 0 );
-		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'de' ), 0 );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['fr'], 'en' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $terms['fr'], 'de' ) );
 	}
 
 	/**
