@@ -116,7 +116,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertCount( 1, $terms );
 
 		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['en'], 'en' ) );
-		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['fr'], 'fr' )  );
+		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['fr'], 'fr' ) );
 		$this->assertSame( $posts['de'], self::$model->post->get_translation( $posts['de'], 'de' ) );
 
 		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['en'], 'fr' ) );
