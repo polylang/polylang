@@ -151,8 +151,12 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertCount( 1, $terms );
 		$this->assertSame( $term_id, $terms[0]->term_id ); // The term is the same as the latest save_translations().
 
+		$this->assertSame( self::$model->post->get_translation( $posts['de'], 'en' ), $posts['en'] );
+		$this->assertSame( self::$model->post->get_translation( $posts['en'], 'de' ), $posts['de'] );
+
 		// The French post is no longer in the translations group.
 		$this->assertSame( self::$model->post->get_translation( $posts['fr'], 'en' ), 0 );
+		$this->assertSame( self::$model->post->get_translation( $posts['fr'], 'de' ), 0 );
 	}
 
 	public function test_current_user_can_synchronize() {
