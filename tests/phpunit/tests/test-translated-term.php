@@ -154,6 +154,72 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	/**
+	 * Checks that the translations group are correctly updated when linking several translations together.
+	 *
+	 * @ticket #2717 see {https://github.com/polylang/polylang-pro/issues/2717}.
+	 * @covers PLL_Translated_Object::save_translations()
+	 */
+	public function test_save_translations() {
+		$terms = self::factory()->term->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' ),
+			array( 'lang' => 'de' )
+		);
+
+		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
+		$this->assertCount( 1, $translations_terms );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'en' ), $terms['en'] );
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'fr' ), $terms['fr'] );
+		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'de' ), $terms['de'] );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'fr' ), $terms['fr'] );
+		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'de' ), $terms['de'] );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'en' ), $terms['en'] );
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'de' ), $terms['de'] );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'fr' ), $terms['fr'] );
+		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'en' ), $terms['en'] );
+
+		// Removes the translations from the group by updating the German post.
+		self::$model->term->save_translations( $terms['de'], array() );
+
+		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
+		$term_id = $translations_terms[0]->term_id;
+		$this->assertCount( 3, $terms );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'fr' ), 0 );
+		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'de' ), 0 );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'en' ), 0 );
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'de' ), 0 );
+
+		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'fr' ), 0 );
+		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'en' ), 0 );
+
+		// Links again the French and English terms.
+		self::$model->term->save_translations( $terms['fr'], array( 'fr' => $terms['fr'], 'en' => $terms['en'] ) );
+
+		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
+		$this->assertCount( 2, $translations_terms ); // Is correct at this step because the German post isn't translated into either English or French.
+
+		// Links again the German and English terms but not with the French one.
+		self::$model->term->save_translations( $terms['de'], array( 'de' => $terms['de'], 'en' => $terms['en'] ) );
+
+		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
+		$this->assertCount( 2, $translations_terms ); // Is correct because each term has a translations group event if it isn't translated.
+		$this->assertSame( $term_id, $translations_terms[0]->term_id ); // The term is the same as the German term when we unlinked translations.
+
+		$this->assertSame( self::$model->term->get_translation( $terms['de'], 'en' ), $terms['en'] );
+		$this->assertSame( self::$model->term->get_translation( $terms['en'], 'de' ), $terms['de'] );
+
+		// The French term is no longer in the translations group.
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'en' ), 0 );
+		$this->assertSame( self::$model->term->get_translation( $terms['fr'], 'de' ), 0 );
+	}
+
+	/**
 	 * Checks that updating a term translations group is done only once when we unlink all translations.
 	 */
 	public function test_should_not_update_translations_group_when_removing_all_translations() {
