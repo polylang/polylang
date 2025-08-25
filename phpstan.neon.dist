@@ -46,3 +46,4 @@ parameters:
 			message: "#^Static property PLL_MO\\:\\:\\$cache \\(PLL_Cache\\<array\\>\\) in empty\\(\\) is not falsy\\.$#"
 			count: 1
 			path: include/mo.php
+

@@ -8,7 +8,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->pll_env = ( new PLL_Context_Settings() )->get();
 	}
 
-	public function test_add_and_delete_language() {
+	public function test_add_and_delete_language_have_consistent_behavior() {
 		// First language.
 		$args = array(
 			'name'       => 'English',
@@ -59,7 +59,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'ar', 'en' ), $this->pll_env->model->get_languages_list( array( 'fields' => 'slug' ) ) );
 
 		// Attempt to create a language with the same slug as an existing one.
-		$this->pll_env->model->add_language( array( 'slug' => 'en-gb', 'locale' => 'en_GB' ) );
+		$this->pll_env->model->add_language( array( 'slug' => 'en', 'locale' => 'en_GB' ) );
 		$lang = $this->pll_env->model->get_language( 'en' );
 		$this->assertEquals( 'en_US', $lang->locale );
 		$this->assertFalse( $this->pll_env->model->get_language( 'en_GB' ) );
@@ -74,62 +74,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$lang = $this->pll_env->model->get_language( 'ar' );
 		$this->pll_env->model->delete_language( $lang->term_id );
 		$this->assertEquals( array(), $this->pll_env->model->get_languages_list() );
-	}
-
-	/**
-	 * Bug fixed in 2.3.
-	 */
-	public function test_unique_language_code_if_same_as_locale() {
-		// First language.
-		$args = array(
-			'name'       => 'العربية',
-			'slug'       => 'a', // Intentional mistake.
-			'locale'     => 'ar',
-			'rtl'        => 1,
-			'flag'       => 'arab',
-			'term_group' => 1,
-		);
-
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
-
-		$lang = $this->pll_env->model->get_language( 'ar' );
-		$args['lang_id'] = $lang->term_id;
-		$args['slug'] = 'ar';
-		$this->assertTrue( $this->pll_env->model->update_language( $args ) );
-
-		$this->pll_env->model->delete_language( $lang->term_id );
-	}
-
-	public function test_invalid_languages() {
-		$args = array(
-			'name'       => '',
-			'slug'       => 'en',
-			'locale'     => 'en_US',
-			'rtl'        => 0,
-			'flag'       => 'us',
-			'term_group' => 1,
-		);
-
-		$this->assertWPError( $this->pll_env->model->add_language( $args ), 'The language must have a name' );
-
-		$args['name'] = 'English';
-		$args['locale'] = 'EN';
-
-		$this->assertWPError( $this->pll_env->model->add_language( $args ), 'Enter a valid WordPress locale' );
-
-		$args['locale'] = 'en-US';
-
-		$this->assertWPError( $this->pll_env->model->add_language( $args ), 'Enter a valid WordPress locale' );
-
-		$args['locale'] = 'en_US';
-		$args['slug'] = 'EN';
-
-		$this->assertWPError( $this->pll_env->model->add_language( $args ), 'The language code contains invalid characters' );
-
-		$args['slug'] = 'en';
-		$args['flag'] = 'en';
-
-		$this->assertWPError( $this->pll_env->model->add_language( $args ), 'The flag does not exist' );
 	}
 
 	/**

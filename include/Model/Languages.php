@@ -136,28 +136,47 @@ class Languages {
 	 * @param array $args {
 	 *   Arguments used to create the language.
 	 *
-	 *   @type string $name           Language name (used only for display).
-	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
 	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
 	 *                                not be loaded...
-	 *   @type bool   $rtl            True if rtl language, false otherwise.
-	 *   @type int    $term_group     Language order when displayed.
+	 *   @type string $name           Optional. Language name (used only for display). Default to the language name from {@see settings/languages.php}.
+	 *   @type string $slug           Optional. Language code (ideally 2-letters ISO 639-1 language code). Default to the language code from {@see settings/languages.php}.
+	 *   @type bool   $rtl            Optional. True if rtl language, false otherwise. Default is false.
+	 *   @type bool   $is_rtl         Optional. True if rtl language, false otherwise. Will be converted to rtl. Default is false.
+	 *   @type int    $term_group     Optional. Language order when displayed. Default is 0.
 	 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
-	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
+	 *   @type string $flag_code      Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
+	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language. Default is false.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
-	 *     name: string,
-	 *     slug: string,
-	 *     locale: string,
-	 *     rtl: bool,
-	 *     term_group: int|numeric-string,
+	 *     name?: string,
+	 *     slug?: string,
+	 *     locale?: string,
+	 *     rtl?: bool,
+	 *     is_rtl?: bool,
+	 *     term_group?: int|numeric-string,
 	 *     flag?: string,
+	 *     flag_code?: string,
 	 *     no_default_cat?: bool
 	 * } $args
 	 */
 	public function add( $args ) {
+		$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? null;
+		$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? null;
+		$args['term_group'] = $args['term_group'] ?? 0;
+
+		if ( ! empty( $args['locale'] ) && ( ! isset( $args['name'] ) || ! isset( $args['slug'] ) ) ) {
+			$languages = include POLYLANG_DIR . '/settings/languages.php';
+			if ( ! empty( $languages[ $args['locale'] ] ) ) {
+				$found        = $languages[ $args['locale'] ];
+				$args['name'] = $args['name'] ?? $found['name'];
+				$args['slug'] = $args['slug'] ?? $found['code'];
+				$args['rtl']  = $args['rtl'] ?? 'rtl' === $found['dir'];
+				$args['flag'] = $args['flag'] ?? $found['flag'];
+			}
+		}
+
 		$errors = $this->validate_lang( $args );
 		if ( $errors->has_errors() ) {
 			return $errors;
@@ -236,24 +255,28 @@ class Languages {
 	 *   Arguments used to modify the language.
 	 *
 	 *   @type int    $lang_id    ID of the language to modify.
-	 *   @type string $name       Language name (used only for display).
-	 *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *   @type string $name       Optional. Language name (used only for display).
+	 *   @type string $slug       Optional. Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale     Optional. WordPress locale. If something wrong is used for the locale, the .mo files will
 	 *                            not be loaded...
-	 *   @type bool   $rtl        True if rtl language, false otherwise.
-	 *   @type int    $term_group Language order when displayed.
+	 *   @type bool   $rtl        Optional. True if rtl language, false otherwise.
+	 *   @type bool   $is_rtl     Optional. True if rtl language, false otherwise. Will be converted to rtl.
+	 *   @type int    $term_group Optional. Language order when displayed.
 	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+	 *   @type string $flag_code  Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
 	 *     lang_id: int|numeric-string,
-	 *     name: string,
-	 *     slug: string,
-	 *     locale: string,
-	 *     rtl: bool,
-	 *     term_group: int|numeric-string,
-	 *     flag?: string
+	 *     name?: string,
+	 *     slug?: string,
+	 *     locale?: string,
+	 *     rtl?: bool,
+	 *     is_rtl?: bool,
+	 *     term_group?: int|numeric-string,
+	 *     flag?: string,
+	 *     flag_code?: string
 	 * } $args
 	 */
 	public function update( $args ) {
@@ -262,6 +285,13 @@ class Languages {
 		if ( empty( $lang ) ) {
 			return new WP_Error( 'pll_invalid_language_id', __( 'The language does not seem to exist.', 'polylang' ) );
 		}
+
+		$args['locale']     = $args['locale'] ?? $lang->locale;
+		$args['name']       = $args['name'] ?? $lang->name;
+		$args['slug']       = $args['slug'] ?? $lang->slug;
+		$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? $lang->is_rtl;
+		$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? $lang->flag_code;
+		$args['term_group'] = $args['term_group'] ?? $lang->term_group;
 
 		$errors = $this->validate_lang( $args, $lang );
 		if ( $errors->has_errors() ) {
@@ -746,7 +776,6 @@ class Languages {
 			delete_option( '_transient_' . self::TRANSIENT_NAME );
 		}
 	}
-
 	/**
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
@@ -846,9 +875,9 @@ class Languages {
 	 * @return WP_Error
 	 *
 	 * @phpstan-param array{
-	 *     locale: string,
-	 *     slug: string,
-	 *     name: string,
+	 *     locale?: string,
+	 *     slug?: string,
+	 *     name?: string,
 	 *     flag?: string
 	 * } $args
 	 */
@@ -856,18 +885,18 @@ class Languages {
 		$errors = new WP_Error();
 
 		// Validate locale with the same pattern as WP 4.3. See #28303.
-		if ( ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
+		if ( empty( $args['locale'] ) || ! preg_match( '#' . self::LOCALE_PATTERN . '#', $args['locale'], $matches ) ) {
 			$errors->add( 'pll_invalid_locale', __( 'Enter a valid WordPress locale', 'polylang' ) );
 		}
 
 		// Validate slug characters.
-		if ( ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
+		if ( empty( $args['slug'] ) || ! preg_match( '#' . self::SLUG_PATTERN . '#', $args['slug'] ) ) {
 			$errors->add( 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
 		}
 
 		// Validate slug is unique.
 		foreach ( $this->get_list() as $language ) {
-			if ( $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
+			if ( ! empty( $args['slug'] ) && $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
 				$errors->add( 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
 			}
 		}
