@@ -452,6 +452,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return void
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
+		if ( $this->should_hide_admin_bar_menu() ) {
+			return;
+		}
+
 		$all_item = (object) array(
 			'slug' => 'all',
 			'name' => __( 'Show all languages', 'polylang' ),
@@ -535,5 +539,34 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
+	 * Conventionally, it should be hidden on edition pages.
+	 *
+	 * @since 3.8
+	 *
+	 * @return bool
+	 */
+	public function should_hide_admin_bar_menu(): bool {
+		global $pagenow, $typenow, $taxnow;
+
+		if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
+			return ! empty( $typenow ) && $this->model->post->is_translated_object_type( $typenow );
+		}
+
+		if ( 'term.php' === $pagenow ) {
+			return ! empty( $taxnow ) && $this->model->term->is_translated_object_type( $taxnow );
+		}
+
+		/**
+		 * Tells if the Polylang's admin bar menu should be hidden.
+		 *
+		 * @since 3.8
+		 *
+		 * @param bool $hide Should the admin bar menu be hidden? Default is `false`.
+		 */
+		return (bool) apply_filters( 'pll_should_hide_admin_bar_menu', false );
 	}
 }
