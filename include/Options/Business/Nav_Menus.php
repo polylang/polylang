@@ -54,18 +54,19 @@ class Nav_Menus extends Abstract_Option {
 		$current_theme = get_stylesheet();
 		$nav_menus     = $this->get();
 		$fields        = array();
-		if ( is_array( $nav_menus ) && isset( $nav_menus[ $current_theme ] ) ) {
-			foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
-				if ( empty( $lang ) ) {
-					/* translators: default value when a menu location is not used. */
-					$lang = __( 'Not used', 'polylang' );
-				}
-
-				$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-				$fields[ $location ]['value'] = is_array( $lang ) ? $this->format_array( $lang ) : $lang;
-			}
-			$info = array_merge( $info, $fields );
+		if ( empty( $nav_menus[ $current_theme ] ) ) {
+			return $info;
 		}
+		foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
+			if ( empty( $lang ) ) {
+				/* translators: default value when a menu location is not used. */
+				$lang = __( 'Not used', 'polylang' );
+			}
+
+			$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
+			$fields[ $location ]['value'] = is_array( $lang ) ? $this->format_array( $lang ) : $lang;
+		}
+		$info = array_merge( $info, $fields );
 
 		return $info;
 	}
