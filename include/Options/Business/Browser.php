@@ -41,7 +41,7 @@ class Browser extends Abstract_Boolean {
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array {
+	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( ! $this->get() ) {
 			$value = '0: ' . __( 'Detect browser language deactivated', 'polylang' );
 		} else {

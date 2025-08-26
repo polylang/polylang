@@ -40,7 +40,7 @@ class Redirect_Lang extends Abstract_Boolean {
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array {
+	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( $this->get() ) {
 			$value = '1: ' . __( 'The front page URL contains the language code instead of the page name or page id', 'polylang' );
 		} else {

@@ -39,7 +39,7 @@ class Force_Lang extends Abstract_Option {
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array {
+	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		switch ( $this->get() ) {
 			case '0':
 				$value = '0: ' . __( 'The language is set from content', 'polylang' );

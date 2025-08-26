@@ -52,6 +52,7 @@ class Nav_Menus extends Abstract_Option {
 	 */
 	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$current_theme = get_stylesheet();
+		/** @phpstan-var NavMenusValue $nav_menus */
 		$nav_menus     = $this->get();
 		$fields        = array();
 		if ( empty( $nav_menus[ $current_theme ] ) ) {
