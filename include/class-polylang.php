@@ -281,11 +281,19 @@ class Polylang {
 		require_once POLYLANG_DIR . '/include/api.php';
 
 		// Loads the modules.
-		$load_scripts = glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT );
-		if ( is_array( $load_scripts ) ) {
-			foreach ( $load_scripts as $load_script ) {
-				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-			}
+		$load_scripts = array(
+			'machine-translation',
+			'REST',
+			'share-slug',
+			'site-health',
+			'sitemaps',
+			'sync',
+			'translate-slugs',
+			'wizard',
+			'wpml',
+		);
+		foreach ( $load_scripts as $load_script ) {
+			require_once POLYLANG_DIR . "/modules/{$load_script}/load.php";
 		}
 
 		$polylang->init();
