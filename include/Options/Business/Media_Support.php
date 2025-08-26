@@ -42,7 +42,7 @@ class Media_Support extends Abstract_Boolean {
 	 */
 	public function add_to_site_health_info( array $info, Options $options ): array {
 		$value = '0: ' . __( 'The media are not translated', 'polylang' );
-		if ( $options->get( self::key() ) ) {
+		if ( $this->get() ) {
 			$value = '1: ' . __( 'The media are translated', 'polylang' );
 		}
 
