@@ -198,8 +198,9 @@ class Domains extends Abstract_Option {
 	 */
 	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( 3 === $options->get( 'force_lang' ) ) {
-			$info = $this->get_site_health_info( $info, $this->get(), self::key() );
+			return $this->get_site_health_info( $info, $this->get(), self::key() );
 		}
+		
 		return $info;
 	}
 }
