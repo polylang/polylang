@@ -44,7 +44,7 @@ class Hide_Default extends Abstract_Boolean {
 	public function add_to_site_health_info( array $info, Options $options ): array {
 		if ( $this->get() ) {
 			$value = '1: ' . __( 'Hide URL language information for default language', 'polylang' );
-		} esle {
+		} else {
 			$value = '0: ' . __( 'Display URL language information for default language', 'polylang' );
 		}
 
