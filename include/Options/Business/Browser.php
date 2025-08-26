@@ -42,7 +42,7 @@ class Browser extends Abstract_Boolean {
 	 * @return array The updated site health information.
 	 */
 	public function add_to_site_health_info( array $info, Options $options ): array {
-		if ( ! $options->get( self::key() ) ) {
+		if ( ! $this->get() ) {
 			$value = '0: ' . __( 'Detect browser language deactivated', 'polylang' );
 		} else {
 			$value = '1: ' . __( 'Detect browser language activated', 'polylang' );
