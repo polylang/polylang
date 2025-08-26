@@ -550,11 +550,23 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return bool
 	 */
 	public function should_hide_admin_bar_menu(): bool {
-		foreach ( $this->model->translatable_objects as $object ) {
-			if ( $object->should_hide_admin_bar_menu() ) {
-				return true;
-			}
+		global $pagenow, $typenow, $taxnow;
+
+		if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
+			return ! empty( $typenow ) && $this->model->post->is_translated_object_type( $typenow );
 		}
-		return false;
+
+		if ( 'term.php' === $pagenow ) {
+			return ! empty( $taxnow ) && $this->model->term->is_translated_object_type( $taxnow );
+		}
+
+		/**
+		 * Tells if the Polylang's admin bar menu should be hidden.
+		 *
+		 * @since 3.8
+		 *
+		 * @param bool $hide Should the admin bar menu be hidden? Default is `false`.
+		 */
+		return (bool) apply_filters( 'pll_should_hide_admin_bar_menu', false );
 	}
 }

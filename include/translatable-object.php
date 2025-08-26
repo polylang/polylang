@@ -167,18 +167,6 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
-	 * Conventionally, it should be hidden on edition pages.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public function should_hide_admin_bar_menu(): bool {
-		return false;
-	}
-
-	/**
 	 * Stores the object's language into the database.
 	 *
 	 * @since 3.4
