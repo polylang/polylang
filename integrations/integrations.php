@@ -50,9 +50,23 @@ class PLL_Integrations {
 	 * @return void
 	 */
 	protected function init(): void {
-		// Loads external integrations.
-		foreach ( glob( __DIR__ . '/*/load.php', GLOB_NOSORT ) as $load_script ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
-			require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+		$load_scripts = array(
+			'aqua-resizer',
+			'cache',
+			'custom-field-template',
+			'domain-mapping',
+			'duplicate-post',
+			'jetpack',
+			'no-category-base',
+			'twenty-seventeen',
+			'wp-importer',
+			'wp-offload-media',
+			'wp-sweep',
+			'wpseo',
+			'yarpp',
+		);
+		foreach ( $load_scripts as $load_script ) {
+			require_once __DIR__ . "/{$load_script}/load.php";
 		}
 	}
 }
