@@ -3,6 +3,8 @@
  * @package Polylang
  *
  * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 5.6.
+ *
+ * /!\ THE CONSTANT `POLYLANG_BASENAME` MUST BE DEFINED.
  */
 
 /**
@@ -21,7 +23,7 @@ abstract class PLL_Install_Base {
 	 * @return bool True if the plugin is currently being deactivated.
 	 */
 	public static function is_deactivation() {
-		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && static::get_plugin_basename() === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
+		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && pll_get_constant( 'POLYLANG_BASENAME', '' ) === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	/**
@@ -33,8 +35,8 @@ abstract class PLL_Install_Base {
 	 */
 	public static function add_hooks() {
 		// Manages plugin activation and deactivation
-		register_activation_hook( static::get_plugin_basename(), array( static::class, 'activate' ) );
-		register_deactivation_hook( static::get_plugin_basename(), array( static::class, 'deactivate' ) );
+		register_activation_hook( pll_get_constant( 'POLYLANG_BASENAME', '' ), array( static::class, 'activate' ) );
+		register_deactivation_hook( pll_get_constant( 'POLYLANG_BASENAME', '' ), array( static::class, 'deactivate' ) );
 
 		// Site creation on multisite.
 		add_action( 'wp_initialize_site', array( static::class, 'new_site' ), 50 ); // After WP (prio 10).
@@ -128,13 +130,4 @@ abstract class PLL_Install_Base {
 			'activate' === $what ? static::_activate() : static::_deactivate();
 		}
 	}
-
-	/**
-	 * Returns the plugin basename.
-	 *
-	 * @since 3.8
-	 *
-	 * @return string
-	 */
-	abstract protected static function get_plugin_basename();
 }

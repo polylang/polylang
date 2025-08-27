@@ -1,9 +1,17 @@
 <?php
 
+use Brain\Monkey;
 use WP_Syntex\Polylang\Options\Options;
 
 class Install_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
+
 	private $orig_wp_version;
+
+	public function set_up() {
+		parent::set_up();
+		Monkey\setUp();
+	}
 
 	public function tear_down() {
 		global $wp_version;
@@ -12,6 +20,8 @@ class Install_Test extends PLL_UnitTestCase {
 			$wp_version = $this->orig_wp_version;
 			$this->orig_wp_version = null;
 		}
+
+		Monkey\tearDown();
 		parent::tear_down();
 	}
 
@@ -23,14 +33,9 @@ class Install_Test extends PLL_UnitTestCase {
 	 * @param bool   $pass            Tells if the check is expected to pass.
 	 */
 	public function test_php_version_check( string $cur_php_version, bool $pass ): void {
-		PLL_Install::init(
+		$this->mock_constants(
 			array(
-				'plugin_name'     => POLYLANG,
-				'plugin_basename' => POLYLANG_BASENAME,
-				'plugin_version'  => POLYLANG_VERSION,
-				'min_wp_version'  => PLL_MIN_WP_VERSION,
-				'min_php_version' => PLL_MIN_PHP_VERSION,
-				'cur_php_version' => $cur_php_version,
+				'PHP_VERSION' => $cur_php_version,
 			)
 		);
 
@@ -67,16 +72,6 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->orig_wp_version = $wp_version;
 		$wp_version            = $cur_wp_version;
 
-		PLL_Install::init(
-			array(
-				'plugin_name'     => POLYLANG,
-				'plugin_basename' => POLYLANG_BASENAME,
-				'plugin_version'  => POLYLANG_VERSION,
-				'min_wp_version'  => PLL_MIN_WP_VERSION,
-				'min_php_version' => PLL_MIN_PHP_VERSION,
-			)
-		);
-
 		// Test if pass.
 		if ( $pass ) {
 			$this->assertTrue( PLL_Install::can_activate() );
@@ -99,16 +94,6 @@ class Install_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_is_deactivation(): void {
-		PLL_Install::init(
-			array(
-				'plugin_name'     => POLYLANG,
-				'plugin_basename' => POLYLANG_BASENAME,
-				'plugin_version'  => POLYLANG_VERSION,
-				'min_wp_version'  => PLL_MIN_WP_VERSION,
-				'min_php_version' => PLL_MIN_PHP_VERSION,
-			)
-		);
-
 		$_GET['action'] = 'deactivate';
 		$_GET['plugin'] = 'mew/mew.php';
 

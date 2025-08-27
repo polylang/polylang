@@ -76,16 +76,7 @@ if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Secur
 	return;
 }
 
-PLL_Install::init(
-	array(
-		'plugin_name'     => POLYLANG,
-		'plugin_basename' => POLYLANG_BASENAME,
-		'plugin_version'  => POLYLANG_VERSION,
-		'min_wp_version'  => PLL_MIN_WP_VERSION,
-		'min_php_version' => PLL_MIN_PHP_VERSION,
-	)
-);
-
+require __DIR__ . '/include/constant-functions.php';
 if ( ! PLL_Install::can_activate() ) {
 	// WP version or php version is too old.
 	return;
