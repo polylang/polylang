@@ -126,9 +126,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 		$key = $class_name::key();
 
 		if ( ! $this->is_plugin_active() && ! array_key_exists( $key, $this->default ) ) {
-			$inst = new $class_name();
-			$this->default[ $key ] = $inst->get();
-			unset( $inst );
+			$this->default[ $key ] = $class_name::get_default();
 		}
 
 		foreach ( $this->options as &$options ) {
