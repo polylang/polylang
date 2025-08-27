@@ -162,9 +162,16 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Sanitize and validate the translations array.
 		$translations = $this->validate_translations( $translations, $id );
 
-		// Unlink removed translations.
-		$old_translations = $this->get_translations( $id );
+		/*
+		 * Gather all existing translations from objects we're about to link together.
+		 * This is needed to clean up old translation groups when merging them.
+		*/
+		$old_translations = array();
+		foreach ( $translations as $tr_id ) {
+			$old_translations = array_merge( $old_translations, $this->get_translations( $tr_id ) );
+		}
 
+		// Unlink removed translations.
 		foreach ( array_diff_assoc( $old_translations, $translations ) as $id ) {
 			$this->delete_translation( $id );
 		}
