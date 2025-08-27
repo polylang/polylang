@@ -76,8 +76,6 @@ if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Secur
 	return;
 }
 
-require_once __DIR__ . '/install/install-base.php';
-require_once __DIR__ . '/install/install.php';
 PLL_Install::init(
 	array(
 		'plugin_name'     => POLYLANG,
