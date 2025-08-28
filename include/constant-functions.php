@@ -17,7 +17,7 @@
  *
  * @phpstan-param non-falsy-string $constant_name
  */
-function pll_has_constant( string $constant_name ) {
+function pll_has_constant( $constant_name ) {
 	return defined( $constant_name ); // phpcs:ignore WordPressVIPMinimum.Constants.ConstantString.NotCheckingConstantName
 }
 
