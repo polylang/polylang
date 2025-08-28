@@ -74,7 +74,7 @@ class PLL_Filters {
 		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'posts_where' ), 10, 5 );
 
-		// Converts the locale to a valid W3C locale except on log in page.
+		// Converts the locale to a valid W3C locale.
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 
 		// Translate the site title in emails sent to users
@@ -332,13 +332,7 @@ class PLL_Filters {
 	 * @return string
 	 */
 	public function language_attributes( $output ) {
-		if (
-			isset( $GLOBALS['pagenow'] ) && 'wp-login.php' === $GLOBALS['pagenow']
-			&& ( ! empty( $_GET['wp_lang'] ) || ! empty( $_COOKIE['wp_lang'] ) )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		) {
-			return $output;
-		}
-		if ( $language = $this->model->get_language( is_admin() ? get_user_locale() : get_locale() ) ) {
+		if ( $language = $this->model->get_language( is_admin() ? get_user_locale() : determine_locale() ) ) {
 			$output = str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
 		}
 		return $output;
