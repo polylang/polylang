@@ -8,9 +8,8 @@
 	<arg name="cache"/>
 
 	<file>./polylang.php</file>
-	<file>./include/constant-functions.php</file>
-	<file>./install/install.php</file>
-	<file>./install/install-base.php</file>
+	<file>./install/usable.php</file>
+	<file>./vendor/autoload.php</file>
 
 	<config name="testVersion" value="5.6-"/>
 

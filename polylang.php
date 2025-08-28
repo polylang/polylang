@@ -77,17 +77,18 @@ if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Secur
 }
 
 require __DIR__ . '/include/constant-functions.php';
-if ( ! PLL_Install::can_activate() ) {
+if ( ! PLL_Usable::can_activate() ) {
 	// WP version or php version is too old.
 	return;
 }
 
 define( 'POLYLANG_ACTIVE', true );
-PLL_Install::add_hooks();
 
-if ( PLL_Install::is_deactivation() ) {
+if ( PLL_Deactivate::is_deactivation() ) {
 	// Stopping here if we are going to deactivate the plugin (avoids breaking rewrite rules).
+	PLL_Deactivate::add_hooks();
 	return;
 }
 
+PLL_Activate::add_hooks();
 new Polylang();

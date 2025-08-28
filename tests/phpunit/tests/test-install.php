@@ -41,9 +41,9 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// Test if pass.
 		if ( $pass ) {
-			$this->assertTrue( PLL_Install::can_activate() );
+			$this->assertTrue( PLL_Usable::can_activate() );
 		} else {
-			$this->assertFalse( PLL_Install::can_activate() );
+			$this->assertFalse( PLL_Usable::can_activate() );
 		}
 
 		// Test the admin notice.
@@ -74,9 +74,9 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// Test if pass.
 		if ( $pass ) {
-			$this->assertTrue( PLL_Install::can_activate() );
+			$this->assertTrue( PLL_Usable::can_activate() );
 		} else {
-			$this->assertFalse( PLL_Install::can_activate() );
+			$this->assertFalse( PLL_Usable::can_activate() );
 		}
 
 		ob_start();
@@ -97,11 +97,11 @@ class Install_Test extends PLL_UnitTestCase {
 		$_GET['action'] = 'deactivate';
 		$_GET['plugin'] = 'mew/mew.php';
 
-		$this->assertFalse( PLL_Install::is_deactivation() );
+		$this->assertFalse( PLL_Deactivate::is_deactivation() );
 
 		$_GET['plugin'] = POLYLANG_BASENAME;
 
-		$this->assertTrue( PLL_Install::is_deactivation() );
+		$this->assertTrue( PLL_Deactivate::is_deactivation() );
 	}
 
 	public function test_activate() {
