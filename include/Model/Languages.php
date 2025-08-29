@@ -194,7 +194,7 @@ class Languages {
 		 * } $args
 		 */
 		// First the language taxonomy.
-		$r = wp_insert_term(
+		$result = wp_insert_term(
 			$args['name'],
 			'language',
 			array(
@@ -202,11 +202,15 @@ class Languages {
 				'description' => $this->build_metas( $args ),
 			)
 		);
-		if ( is_wp_error( $r ) ) {
+		if ( is_wp_error( $result ) ) {
 			// Avoid an ugly fatal error if something went wrong (reported once in the forum).
 			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
 		}
-		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
+
+		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
+		if ( is_wp_error( $result ) ) {
+			return new WP_Error( 'pll_add_language', __( 'Impossible to set the term group.', 'polylang' ) );
+		}
 
 		// The other language taxonomies.
 		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
@@ -316,7 +320,7 @@ class Languages {
 		// Update the language itself.
 		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
 
-		wp_update_term(
+		$result = wp_update_term(
 			$lang->get_tax_prop( 'language', 'term_id' ),
 			'language',
 			array(
@@ -326,6 +330,9 @@ class Languages {
 				'term_group'  => (int) $args['term_group'],
 			)
 		);
+		if ( is_wp_error( $result ) ) {
+			return new WP_Error( 'pll_update_language', __( 'Impossible to update the language.', 'polylang' ) );
+		}
 
 		if ( $old_slug !== $slug ) {
 			// Update the language slug in translations.
