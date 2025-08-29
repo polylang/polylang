@@ -47,3 +47,12 @@ parameters:
 			count: 1
 			path: include/mo.php
 
+		# Ignored because there is no dynamic return type extension for WP_Syntex\Polylang\Options\Abstract_Option::get()
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/Sync.php
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\|null, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/Sync.php
