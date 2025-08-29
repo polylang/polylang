@@ -1,6 +1,10 @@
 <?php
 
-class Term_Translations_Group_Test extends PLL_Translated_Object_UnitTestCase {
+namespace WP_Syntex\Polylang\Tests\Integration\Performances;
+
+use PLL_UnitTestCase;
+use PLL_UnitTest_Factory;
+class Term_Translations_Group_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @param PLL_UnitTest_Factory $factory

@@ -1,5 +1,9 @@
 <?php
 
+namespace WP_Syntex\Polylang\Tests\Integration\Performances;
+
+use PLL_UnitTestCase;
+use PLL_UnitTest_Factory;
 class Post_Translations_Group_Test extends PLL_UnitTestCase {
 
 	/**
