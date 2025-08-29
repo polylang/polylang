@@ -67,7 +67,6 @@ if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
 
 if ( ! defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
-	require __DIR__ . '/vendor/autoload.php';
 }
 
 define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
@@ -77,9 +76,15 @@ if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Secur
 }
 
 require __DIR__ . '/include/constant-functions.php';
+require __DIR__ . '/install/usable.php';
+
 if ( ! PLL_Usable::can_activate() ) {
 	// WP version or php version is too old.
 	return;
+}
+
+if ( ! defined( 'POLYLANG_PRO' ) ) {
+	require __DIR__ . '/vendor/autoload.php';
 }
 
 define( 'POLYLANG_ACTIVE', true );
