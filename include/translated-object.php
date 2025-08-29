@@ -165,8 +165,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Unlink removed translations.
 		$old_translations = $this->get_translations( $id );
 
-		foreach ( array_diff_assoc( $old_translations, $translations ) as $id ) {
-			$this->delete_translation( $id );
+		foreach ( array_diff_assoc( $old_translations, $translations ) as $tr_id ) {
+			$this->delete_translation( $tr_id );
 		}
 
 		// Check ID we need to create or update the translation group.
