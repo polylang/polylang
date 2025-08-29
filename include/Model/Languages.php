@@ -342,7 +342,10 @@ class Languages {
 
 		if ( $old_slug !== $slug ) {
 			// Update the language slug in translations.
-			$this->update_translations( $old_slug, $slug );
+			$errors = $this->update_translations( $old_slug, $slug );
+			if ( $errors->has_errors() ) {
+				return $errors;
+			}
 
 			// Update language option in widgets.
 			foreach ( $GLOBALS['wp_registered_widgets'] as $widget ) {
@@ -945,17 +948,18 @@ class Languages {
 	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
-	 * @return void
+	 * @return WP_Error
 	 *
 	 * @phpstan-param non-empty-string $old_slug
 	 */
-	protected function update_translations( $old_slug, $new_slug = '' ): void {
+	protected function update_translations( $old_slug, $new_slug = '' ): WP_Error {
 		global $wpdb;
 
 		$term_ids = array();
 		$dr       = array();
 		$dt       = array();
 		$ut       = array();
+		$errors   = new WP_Error();
 
 		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
 		$terms      = get_terms( array( 'taxonomy' => $taxonomies ) );
@@ -1006,7 +1010,7 @@ class Languages {
 
 		// Delete relationships.
 		if ( ! empty( $dr ) ) {
-			$wpdb->query(
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"DELETE FROM {$wpdb->term_relationships} WHERE object_id IN (%s) AND term_taxonomy_id IN (%s)",
@@ -1016,11 +1020,14 @@ class Languages {
 					array_merge( $dr['id'], $dr['tt'] )
 				)
 			);
+			if ( false === $result ) {
+				$errors->add( 'pll_delete_relationships', __( 'Impossible to delete the relationships.', 'polylang' ) );
+			}
 		}
 
 		// Delete terms.
 		if ( ! empty( $dt ) ) {
-			$wpdb->query(
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"DELETE FROM {$wpdb->terms} WHERE term_id IN (%s)",
@@ -1029,7 +1036,11 @@ class Languages {
 					$dt['t']
 				)
 			);
-			$wpdb->query(
+			if ( false === $result ) {
+				$errors->add( 'pll_delete_terms', __( 'Impossible to delete the terms.', 'polylang' ) );
+			}
+
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"DELETE FROM {$wpdb->term_taxonomy} WHERE term_taxonomy_id IN (%s)",
@@ -1038,11 +1049,14 @@ class Languages {
 					$dt['tt']
 				)
 			);
+			if ( false === $result ) {
+				$errors->add( 'pll_delete_term_taxonomy', __( 'Impossible to delete the term taxonomy.', 'polylang' ) );
+			}
 		}
 
 		// Update terms.
 		if ( ! empty( $ut ) ) {
-			$wpdb->query(
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"UPDATE {$wpdb->term_taxonomy} SET description = ( CASE term_id %s END ) WHERE term_id IN (%s)",
@@ -1052,6 +1066,9 @@ class Languages {
 					array_merge( array_merge( ...$ut['case'] ), $ut['in'] )
 				)
 			);
+			if ( false === $result ) {
+				$errors->add( 'pll_update_term_taxonomy', __( 'Impossible to update the term taxonomy.', 'polylang' ) );
+			}
 		}
 
 		if ( ! empty( $term_ids ) ) {
@@ -1059,6 +1076,8 @@ class Languages {
 				clean_term_cache( $ids, $taxonomy );
 			}
 		}
+
+		return $errors;
 	}
 
 	/**
