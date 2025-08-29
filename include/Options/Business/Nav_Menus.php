@@ -65,7 +65,7 @@ class Nav_Menus extends Abstract_Option {
 			}
 
 			$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-			$fields[ $location ]['value'] = is_array( $lang ) ? $this->format_array( $lang ) : $lang;
+			$fields[ $location ]['value'] = is_array( $lang ) ? $this->format_array_for_site_health_info( $lang ) : $lang;
 		}
 		$info = array_merge( $info, $fields );
 
