@@ -213,7 +213,10 @@ class Languages {
 		}
 
 		// The other language taxonomies.
-		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
+		$errors = $this->update_secondary_language_terms( $args['slug'], $args['name'] );
+		if ( $errors->has_errors() ) {
+			return $errors;
+		}
 
 		if ( empty( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
@@ -318,7 +321,10 @@ class Languages {
 		$old_slug = $lang->slug;
 
 		// Update the language itself.
-		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
+		$errors = $this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
+		if ( $errors->has_errors() ) {
+			return $errors;
+		}
 
 		$result = wp_update_term(
 			$lang->get_tax_prop( 'language', 'term_id' ),
@@ -1066,14 +1072,15 @@ class Languages {
 	 * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
 	 * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
 	 *                                      all of them. Defaults to all taxonomies.
-	 * @return void
+	 * @return WP_Error
 	 *
 	 * @phpstan-param non-empty-string $slug
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
+	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): WP_Error {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
+		$errors = new WP_Error();
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
 			if ( ! empty( $taxonomies ) && ! in_array( $object->get_tax_language(), $taxonomies, true ) ) {
@@ -1089,16 +1096,24 @@ class Languages {
 
 			if ( empty( $term_id ) ) {
 				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
-				wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
+				$result = wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
+				if ( is_wp_error( $result ) ) {
+					$errors->add( 'pll_add_secondary_language_terms', $result->get_error_message() );
+				}
 				continue;
 			}
 
 			/** @var PLL_Language $language */
 			if ( "pll_{$language->slug}" !== $slug || $language->name !== $name ) {
 				// Something has changed.
-				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
+				$result = wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
+				if ( is_wp_error( $result ) ) {
+					$errors->add( 'pll_update_secondary_language_terms', $result->get_error_message() );
+				}
 			}
 		}
+
+		return $errors;
 	}
 
 	/**
