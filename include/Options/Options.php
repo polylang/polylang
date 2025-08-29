@@ -530,15 +530,20 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return array The site health information array.
 	 */
 	public function get_site_health_info(): array {
-		$info = array();
+		$infos = array();
 		foreach ( $this->options[ $this->current_blog_id ] as $option ) {
 			if ( ! $option instanceof Abstract_Option ) {
 				continue;
 			}
-			$info = $option->add_to_site_health_info( $info, $this );
+			
+			$info = $option->get_site_health_info( $this );
+			
+			if ( ! empty( $info ) ) {
+				$infos[ $option::key() ] = $info;
+			}
 		}
 
-		return $info;
+		return $infos;
 	}
 
 	/**
