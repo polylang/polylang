@@ -332,10 +332,13 @@ class PLL_Filters {
 	 * @return string
 	 */
 	public function language_attributes( $output ) {
-		if ( $language = $this->model->get_language( is_admin() ? get_user_locale() : determine_locale() ) ) {
-			$output = str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
+		$language = $this->model->get_language( is_admin() ? get_user_locale() : determine_locale() );
+
+		if ( ! $language ) {
+			return $output;
 		}
-		return $output;
+
+		return str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
 	}
 
 	/**
