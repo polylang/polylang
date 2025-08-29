@@ -324,7 +324,7 @@ abstract class Abstract_Option {
 	 * @param array $array An array of formatted data.
 	 * @return string
 	 */
-	protected function format_array( array $array ): string {
+	protected function format_array_for_site_health_info( array $array ): string {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
