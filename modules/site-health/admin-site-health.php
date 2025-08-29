@@ -94,6 +94,7 @@ class PLL_Admin_Site_Health {
 	public function info_options( $debug_info ) {
 		$fields = $this->model->options->get_site_health_info();
 
+		// Get effective translated post types and taxonomies. The options doesn't show all translated ones.
 		if ( ! empty( $this->model->get_translated_post_types() ) ) {
 			$fields['cpt']['label'] = __( 'Post Types', 'polylang' );
 			$fields['cpt']['value'] = implode( ', ', $this->model->get_translated_post_types() );
@@ -376,7 +377,7 @@ class PLL_Admin_Site_Health {
 		if ( ! empty( $terms ) ) {
 			foreach ( $terms as $taxonomy => $term_ids ) {
 				$terms[ $taxonomy ] = implode( ', ', $term_ids );
-			}       
+			}
 		}
 
 		return $terms;
