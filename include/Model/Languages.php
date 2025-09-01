@@ -946,6 +946,8 @@ class Languages {
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
 	 *            Visibility changed from public to protected.
 	 *
+	 * @global $wpdb wpdb global instance.
+	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
 	 * @return WP_Error
@@ -1021,7 +1023,8 @@ class Languages {
 				)
 			);
 			if ( false === $result ) {
-				$errors->add( 'pll_delete_relationships', __( 'Impossible to delete the relationships.', 'polylang' ) );
+				/* translators: %s is the error message from the database */
+				$errors->add( 'pll_delete_relationships', __( 'Impossible to delete the relationships, database error: %s.', 'polylang' ), $wpdb->last_error );
 			}
 		}
 
@@ -1037,7 +1040,8 @@ class Languages {
 				)
 			);
 			if ( false === $result ) {
-				$errors->add( 'pll_delete_terms', __( 'Impossible to delete the terms.', 'polylang' ) );
+				/* translators: %s is the error message from the database */
+				$errors->add( 'pll_delete_terms', __( 'Impossible to delete the terms, database error: %s.', 'polylang' ), $wpdb->last_error );
 			}
 
 			$result = $wpdb->query(
@@ -1050,7 +1054,8 @@ class Languages {
 				)
 			);
 			if ( false === $result ) {
-				$errors->add( 'pll_delete_term_taxonomy', __( 'Impossible to delete the term taxonomy.', 'polylang' ) );
+				/* translators: %s is the error message from the database */
+				$errors->add( 'pll_delete_term_taxonomy', __( 'Impossible to delete the term taxonomy, database error: %s.', 'polylang' ), $wpdb->last_error );
 			}
 		}
 
@@ -1067,7 +1072,8 @@ class Languages {
 				)
 			);
 			if ( false === $result ) {
-				$errors->add( 'pll_update_term_taxonomy', __( 'Impossible to update the term taxonomy.', 'polylang' ) );
+				/* translators: %s is the error message from the database */
+				$errors->add( 'pll_update_term_taxonomy', __( 'Impossible to update the term taxonomy, database error: %s.', 'polylang' ), $wpdb->last_error );
 			}
 		}
 
