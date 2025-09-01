@@ -46,18 +46,18 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $en, 'en' ), $en );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'de' ), $de );
+		$this->assertSame( $en, self::$model->term->get_translation( $en, 'en' ) );
+		$this->assertSame( $fr, self::$model->term->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $fr, 'de' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'en' ), $en );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'de' ), $de );
+		$this->assertSame( $en, self::$model->term->get_translation( $fr, 'en' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $fr, 'de' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $en, 'de' ), $de );
+		$this->assertSame( $fr, self::$model->term->get_translation( $en, 'fr' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $en, 'de' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $de, 'en' ), $en );
-		$this->assertEquals( self::$model->term->get_translation( $de, 'fr' ), $fr );
+		$this->assertSame( $en, self::$model->term->get_translation( $de, 'en' ) );
+		$this->assertSame( $fr, self::$model->term->get_translation( $de, 'fr' ) );
 	}
 
 	public function test_delete_term_translation() {
@@ -73,9 +73,9 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 		self::$model->term->delete_translation( $fr );
 
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $en, 'de' ), $de );
-		$this->assertEquals( self::$model->term->get_translation( $de, 'en' ), $en );
+		$this->assertSame( $fr, self::$model->term->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $en, 'de' ) );
+		$this->assertSame( $en, self::$model->term->get_translation( $de, 'en' ) );
 
 		$this->assertSame( 0, self::$model->term->get_translation( $en, 'fr' ) );
 		$this->assertSame( 0, self::$model->term->get_translation( $fr, 'en' ) );
@@ -92,8 +92,8 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'en' ), $en );
+		$this->assertSame( $fr, self::$model->term->get_translation( $en, 'fr' ) );
+		$this->assertSame( $en, self::$model->term->get_translation( $fr, 'en' ) );
 
 		self::$model->term->save_translations( $en, compact( 'en' ) );
 

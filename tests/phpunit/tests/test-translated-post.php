@@ -62,18 +62,18 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		$this->assertEquals( self::$model->post->get_translation( $en, 'en' ), $en );
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->post->get_translation( $de, 'de' ), $de );
+		$this->assertSame( $en, self::$model->post->get_translation( $en, 'en' ) );
+		$this->assertSame( $fr, self::$model->post->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $de, 'de' ) );
 
-		$this->assertEquals( self::$model->post->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$model->post->get_translation( $en, 'de' ), $de );
+		$this->assertSame( $fr, self::$model->post->get_translation( $en, 'fr' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $en, 'de' ) );
 
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'en' ), $en );
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'de' ), $de );
+		$this->assertSame( $en, self::$model->post->get_translation( $fr, 'en' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $fr, 'de' ) );
 
-		$this->assertEquals( self::$model->post->get_translation( $de, 'en' ), $en );
-		$this->assertEquals( self::$model->post->get_translation( $de, 'fr' ), $fr );
+		$this->assertSame( $en, self::$model->post->get_translation( $de, 'en' ) );
+		$this->assertSame( $fr, self::$model->post->get_translation( $de, 'fr' ) );
 	}
 
 	public function test_delete_post_translation() {
@@ -89,9 +89,9 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 		self::$model->post->delete_translation( $fr );
 
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->post->get_translation( $en, 'de' ), $de );
-		$this->assertEquals( self::$model->post->get_translation( $de, 'en' ), $en );
+		$this->assertSame( $fr, self::$model->post->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $en, 'de' ) );
+		$this->assertSame( $en, self::$model->post->get_translation( $de, 'en' ) );
 
 		$this->assertSame( 0, self::$model->post->get_translation( $en, 'fr' ) ); // fails
 		$this->assertSame( 0, self::$model->post->get_translation( $fr, 'en' ) );
