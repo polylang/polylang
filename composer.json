@@ -61,7 +61,10 @@
 		],
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
-		"dist": "bin/distribute.sh"
+		"dist": "bin/distribute.sh",
+		"pre-autoload-dump": [
+			"php ./tests/build/generate-globs.php"
+		]
 	},
 	"scripts-descriptions": {
 		"install-suite": "Installs the WordPress tests suite (without installing the database).",

@@ -50,21 +50,8 @@ class PLL_Integrations {
 	 * @return void
 	 */
 	protected function init(): void {
-		$load_scripts = array(
-			'aqua-resizer',
-			'cache',
-			'custom-field-template',
-			'domain-mapping',
-			'duplicate-post',
-			'jetpack',
-			'no-category-base',
-			'twenty-seventeen',
-			'wp-importer',
-			'wp-offload-media',
-			'wp-sweep',
-			'wpseo',
-			'yarpp',
-		);
+		$load_scripts = require __DIR__ . '/integration-files.php';
+
 		foreach ( $load_scripts as $load_script ) {
 			require_once __DIR__ . "/{$load_script}/load.php";
 		}
