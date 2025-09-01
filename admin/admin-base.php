@@ -479,8 +479,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @since 2.6
 		 *
-		 * @param object[] $items     The items of the admin languages filter.
-		 * @param object[] $all_items All the items of the admin languages filter.
+		 * @param array $items     The items of the admin languages filter.
+		 * @param array $all_items All the items of the admin languages filter.
 		 */
 		$items = apply_filters( 'pll_admin_languages_filter', $items, $all_items );
 
