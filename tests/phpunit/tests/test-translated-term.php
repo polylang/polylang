@@ -46,11 +46,18 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $en, 'en' ), $en );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'en' ), $en );
-		$this->assertEquals( self::$model->term->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $de, 'fr' ), $fr );
+		$this->assertSame( $en, self::$model->term->get_translation( $en, 'en' ) );
+		$this->assertSame( $fr, self::$model->term->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $fr, 'de' ) );
+
+		$this->assertSame( $en, self::$model->term->get_translation( $fr, 'en' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $fr, 'de' ) );
+
+		$this->assertSame( $fr, self::$model->term->get_translation( $en, 'fr' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $en, 'de' ) );
+
+		$this->assertSame( $en, self::$model->term->get_translation( $de, 'en' ) );
+		$this->assertSame( $fr, self::$model->term->get_translation( $de, 'fr' ) );
 	}
 
 	public function test_delete_term_translation() {
@@ -66,9 +73,9 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 		self::$model->term->delete_translation( $fr );
 
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $en, 'de' ), $de );
-		$this->assertEquals( self::$model->term->get_translation( $de, 'en' ), $en );
+		$this->assertSame( $fr, self::$model->term->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->term->get_translation( $en, 'de' ) );
+		$this->assertSame( $en, self::$model->term->get_translation( $de, 'en' ) );
 
 		$this->assertSame( 0, self::$model->term->get_translation( $en, 'fr' ) );
 		$this->assertSame( 0, self::$model->term->get_translation( $fr, 'en' ) );
@@ -85,8 +92,8 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$this->assertEquals( self::$model->term->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$model->term->get_translation( $fr, 'en' ), $en );
+		$this->assertSame( $fr, self::$model->term->get_translation( $en, 'fr' ) );
+		$this->assertSame( $en, self::$model->term->get_translation( $fr, 'en' ) );
 
 		self::$model->term->save_translations( $en, compact( 'en' ) );
 
@@ -144,5 +151,34 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->assertSame( $GLOBALS['wpdb']->term_taxonomy, $multi_db_infos['table'], 'get_db_infos() does not return the right table name.' );
 		$this->assertNotSame( $db_infos['table'], $multi_db_infos['table'], 'The table name should be different between blogs.' );
+	}
+
+	/**
+	 * Checks that updating a term translations group is done only once when we unlink all translations.
+	 */
+	public function test_should_not_update_translations_group_when_removing_all_translations() {
+		$terms = self::factory()->term->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' )
+		);
+
+		$saved_term_count = did_action( 'saved_term_translations' );
+
+		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
+		$this->assertCount( 1, $translations_terms );
+
+		// Removes the translations from the group by updating the English term.
+		self::$model->term->save_translations( $terms['en'], array() );
+
+		/**
+		 * Checks we updated translations group only once when removing all the translations.
+		 * Because removing a term translations group creates a new one for the term being removed,
+		 * see PLL_Translated_Term::delete_translation(): https://github.com/polylang/polylang/blob/3.7.3/include/translated-term.php#L180,
+		 * `saved_term_translations` action is triggered twice.
+		 */
+		$this->assertSame( 2, did_action( 'saved_term_translations' ) - $saved_term_count );
+
+		$this->assertSame( self::$model->post->get_translation( $terms['en'], 'fr' ), 0 );
+		$this->assertSame( self::$model->post->get_translation( $terms['fr'], 'en' ), 0 );
 	}
 }

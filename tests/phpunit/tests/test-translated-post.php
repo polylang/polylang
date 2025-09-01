@@ -62,11 +62,18 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		$this->assertEquals( self::$model->post->get_translation( $en, 'en' ), $en );
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'en' ), $en );
-		$this->assertEquals( self::$model->post->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$model->post->get_translation( $de, 'fr' ), $fr );
+		$this->assertSame( $en, self::$model->post->get_translation( $en, 'en' ) );
+		$this->assertSame( $fr, self::$model->post->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $de, 'de' ) );
+
+		$this->assertSame( $fr, self::$model->post->get_translation( $en, 'fr' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $en, 'de' ) );
+
+		$this->assertSame( $en, self::$model->post->get_translation( $fr, 'en' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $fr, 'de' ) );
+
+		$this->assertSame( $en, self::$model->post->get_translation( $de, 'en' ) );
+		$this->assertSame( $fr, self::$model->post->get_translation( $de, 'fr' ) );
 	}
 
 	public function test_delete_post_translation() {
@@ -82,9 +89,9 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 		self::$model->post->delete_translation( $fr );
 
-		$this->assertEquals( self::$model->post->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$model->post->get_translation( $en, 'de' ), $de );
-		$this->assertEquals( self::$model->post->get_translation( $de, 'en' ), $en );
+		$this->assertSame( $fr, self::$model->post->get_translation( $fr, 'fr' ) );
+		$this->assertSame( $de, self::$model->post->get_translation( $en, 'de' ) );
+		$this->assertSame( $en, self::$model->post->get_translation( $de, 'en' ) );
 
 		$this->assertSame( 0, self::$model->post->get_translation( $en, 'fr' ) ); // fails
 		$this->assertSame( 0, self::$model->post->get_translation( $fr, 'en' ) );
@@ -268,5 +275,29 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( $GLOBALS['wpdb']->posts, $multi_db_infos['default_alias'], 'get_db_infos() does not return the right field alias.' );
 		$this->assertNotSame( $db_infos['table'], $multi_db_infos['table'], 'The table name should be different between blogs.' );
 		$this->assertNotSame( $db_infos['default_alias'], $multi_db_infos['default_alias'], 'The field alias should be different between blogs.' );
+	}
+
+	/**
+	 * Checks that updating a post translations group is done only once when we unlink all translations.
+	 */
+	public function test_should_not_update_translations_group_when_removing_all_translations() {
+		$posts = self::factory()->post->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' )
+		);
+
+		$saved_term_count = did_action( 'saved_post_translations' );
+
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 1, $terms );
+
+		// Removes the translations from the group by updating the English post.
+		self::$model->post->save_translations( $posts['en'], array() );
+
+		// Checks we updated translations group only once when removing all the translations.
+		$this->assertSame( 1, did_action( 'saved_post_translations' ) - $saved_term_count );
+
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['en'], 'fr' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['fr'], 'en' ) );
 	}
 }
