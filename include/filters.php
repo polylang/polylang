@@ -74,7 +74,7 @@ class PLL_Filters {
 		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'posts_where' ), 10, 5 );
 
-		// Converts the locale to a valid W3C locale
+		// Converts the locale to a valid W3C locale.
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 
 		// Translate the site title in emails sent to users
@@ -332,10 +332,13 @@ class PLL_Filters {
 	 * @return string
 	 */
 	public function language_attributes( $output ) {
-		if ( $language = $this->model->get_language( is_admin() ? get_user_locale() : get_locale() ) ) {
-			$output = str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
+		$language = $this->model->get_language( determine_locale() );
+
+		if ( ! $language ) {
+			return $output;
 		}
-		return $output;
+
+		return str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
 	}
 
 	/**
