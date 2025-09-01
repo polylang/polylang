@@ -264,7 +264,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	/**
 	 * @ticket #2420
 	 * @see https://github.com/polylang/polylang-pro/issues/2420
-	*/
+	 */
 	public function test_language_attributes_for_login_page() {
 		$this->frontend->curlang = self::$model->get_language( 'de' );
 		new PLL_Frontend_Filters( $this->frontend );
