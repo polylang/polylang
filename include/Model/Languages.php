@@ -338,7 +338,8 @@ class Languages {
 			)
 		);
 		if ( is_wp_error( $result ) ) {
-			return new WP_Error( 'pll_update_language', __( 'Impossible to update the language.', 'polylang' ) );
+			/* translators: %s is the error message from the database */
+			return new WP_Error( 'pll_update_language', __( 'Impossible to update the language, database error: %s.', 'polylang' ), $result->get_error_message() );
 		}
 
 		if ( $old_slug !== $slug ) {
