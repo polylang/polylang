@@ -261,6 +261,20 @@ class Filters_Test extends PLL_UnitTestCase {
 		language_attributes();
 	}
 
+	/**
+	 * @ticket #2420
+	 * @see https://github.com/polylang/polylang-pro/issues/2420
+	 */
+	public function test_language_attributes_for_login_page() {
+		$this->frontend->curlang = self::$model->get_language( 'de' );
+		new PLL_Frontend_Filters( $this->frontend );
+		$GLOBALS['pagenow'] = 'wp-login.php';
+		$_GET['wp_lang']    = 'fr_FR';
+
+		$this->expectOutputString( 'lang="fr-FR"' );
+		language_attributes();
+	}
+
 	public function test_save_post() {
 		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
