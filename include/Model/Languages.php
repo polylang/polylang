@@ -203,13 +203,13 @@ class Languages {
 			)
 		);
 		if ( is_wp_error( $result ) ) {
-			/* translators: %s is the error message from the database */
+			/* translators: %s is the detailed error message */
 			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language, database error: %s.', 'polylang' ), $result->get_error_message() ); // Avoid an ugly fatal error if something went wrong (reported once in the forum).
 		}
 
 		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
 		if ( is_wp_error( $result ) ) {
-			/* translators: %s is the error message from the database */
+			/* translators: %s is the detailed error message */
 			return new WP_Error( 'pll_add_language', __( 'Impossible to set the term group, database error: %s.', 'polylang' ), $result->get_error_message() );
 		}
 
