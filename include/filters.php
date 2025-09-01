@@ -332,7 +332,7 @@ class PLL_Filters {
 	 * @return string
 	 */
 	public function language_attributes( $output ) {
-		$language = $this->model->get_language( is_admin() ? get_user_locale() : determine_locale() );
+		$language = $this->model->get_language( determine_locale() );
 
 		if ( ! $language ) {
 			return $output;
