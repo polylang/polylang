@@ -63,7 +63,7 @@
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh",
 		"pre-autoload-dump": [
-			"php ./tests/build/generate-globs.php"
+			"php ./bin/generate-globs.php"
 		]
 	},
 	"scripts-descriptions": {
