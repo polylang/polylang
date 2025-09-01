@@ -162,6 +162,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Sanitize and validate the translations array.
 		$translations = $this->validate_translations( $translations, $id );
 
+		// Unlink removed translations.
 		$old_translations = $this->get_old_translations( $translations );
 
 		foreach ( array_diff_assoc( $old_translations, $translations ) as $tr_id ) {
@@ -508,7 +509,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @param int[] $translations An array of object IDs.
 	 * @return int[] An array of object IDs of translations to be removed.
 	 */
-	protected function get_old_translations( $translations ) {
+	protected function get_old_translations( array $translations ) {
 		$old_translations = array();
 
 		$terms = wp_get_object_terms( $translations, $this->tax_translations );
