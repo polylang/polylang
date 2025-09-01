@@ -48,8 +48,15 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->assertEquals( self::$model->term->get_translation( $en, 'en' ), $en );
 		$this->assertEquals( self::$model->term->get_translation( $fr, 'fr' ), $fr );
+		$this->assertEquals( self::$model->term->get_translation( $fr, 'de' ), $de );
+
 		$this->assertEquals( self::$model->term->get_translation( $fr, 'en' ), $en );
+		$this->assertEquals( self::$model->term->get_translation( $fr, 'de' ), $de );
+
 		$this->assertEquals( self::$model->term->get_translation( $en, 'fr' ), $fr );
+		$this->assertEquals( self::$model->term->get_translation( $en, 'de' ), $de );
+
+		$this->assertEquals( self::$model->term->get_translation( $de, 'en' ), $en );
 		$this->assertEquals( self::$model->term->get_translation( $de, 'fr' ), $fr );
 	}
 
