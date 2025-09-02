@@ -638,7 +638,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 		 * @param Options $options          Instance of the options.
 		 * @param int     $current_blog_id  Current blog ID.
 		 * @param bool    $is_plugin_active True if Polylang is active on the current site, false otherwise.
-		 *                                      This can be false after calling `switch_to_blog()`.
+		 *                                  This can be false after calling `switch_to_blog()`.
 		 */
 		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id, $this->is_plugin_active() );
 	}
