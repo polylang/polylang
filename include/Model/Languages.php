@@ -1142,7 +1142,7 @@ class Languages {
 					$errors->add(
 						'pll_update_secondary_language_terms',
 						/* translators: %s is a taxonomy name */
-						sprintf( __( 'Could not update secondary %s lanuage taxonomy term.', 'polylang' ), $object->get_tax_language() )
+						sprintf( __( 'Could not update secondary %s language taxonomy term.', 'polylang' ), $object->get_tax_language() )
 					);
 				}
 			}
