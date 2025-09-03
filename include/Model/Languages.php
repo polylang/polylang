@@ -204,13 +204,13 @@ class Languages {
 		);
 		if ( is_wp_error( $result ) ) {
 			/* translators: %s is the detailed error message */
-			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language, error: %s.', 'polylang' ), $result->get_error_message() ); // Avoid an ugly fatal error if something went wrong (reported once in the forum).
+			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) ); // Avoid an ugly fatal error if something went wrong (reported once in the forum).
 		}
 
 		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
 		if ( is_wp_error( $result ) ) {
 			/* translators: %s is the detailed error message */
-			return new WP_Error( 'pll_add_language', __( 'Impossible to set the term group, error: %s.', 'polylang' ), $result->get_error_message() );
+			return new WP_Error( 'pll_add_language', __( 'Impossible to set the language order.', 'polylang' ) );
 		}
 
 		// The other language taxonomies.
@@ -1026,7 +1026,7 @@ class Languages {
 			);
 			if ( false === $result ) {
 				/* translators: %s is the error message from the database */
-				$errors->add( 'pll_delete_relationships', __( 'Impossible to delete the relationships, database error: %s.', 'polylang' ), $wpdb->last_error );
+				$errors->add( 'pll_delete_relationships', __( 'Could not delete relationships.', 'polylang' ) );
 			}
 		}
 
@@ -1043,7 +1043,7 @@ class Languages {
 			);
 			if ( false === $result ) {
 				/* translators: %s is the error message from the database */
-				$errors->add( 'pll_delete_terms', __( 'Impossible to delete the terms, database error: %s.', 'polylang' ), $wpdb->last_error );
+				$errors->add( 'pll_delete_terms', __( 'Could not delete translation groups.', 'polylang' ) );
 			}
 
 			$result = $wpdb->query(
@@ -1057,7 +1057,7 @@ class Languages {
 			);
 			if ( false === $result ) {
 				/* translators: %s is the error message from the database */
-				$errors->add( 'pll_delete_term_taxonomy', __( 'Impossible to delete the term taxonomy, database error: %s.', 'polylang' ), $wpdb->last_error );
+				$errors->add( 'pll_delete_term_taxonomy', __( 'Could not delete translation groups.', 'polylang' ) );
 			}
 		}
 
@@ -1075,7 +1075,7 @@ class Languages {
 			);
 			if ( false === $result ) {
 				/* translators: %s is the error message from the database */
-				$errors->add( 'pll_update_term_taxonomy', __( 'Impossible to update the term taxonomy, database error: %s.', 'polylang' ), $wpdb->last_error );
+				$errors->add( 'pll_update_term_taxonomy', __( 'Could not update translation groups.', 'polylang' ), $wpdb->last_error );
 			}
 		}
 
@@ -1125,7 +1125,11 @@ class Languages {
 				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
 				$result = wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
 				if ( is_wp_error( $result ) ) {
-					$errors->add( 'pll_add_secondary_language_terms', $result->get_error_message() );
+					$errors->add(
+						'pll_add_secondary_language_terms',
+						/* translators: %s is a taxonomy name */
+						sprintf( __( 'Could not add secondary %s language taxonomy term.', 'polylang' ), $object->get_tax_language() )
+					);
 				}
 				continue;
 			}
@@ -1135,7 +1139,11 @@ class Languages {
 				// Something has changed.
 				$result = wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
 				if ( is_wp_error( $result ) ) {
-					$errors->add( 'pll_update_secondary_language_terms', $result->get_error_message() );
+					$errors->add(
+						'pll_update_secondary_language_terms',
+						/* translators: %s is a taxonomy name */
+						sprintf( __( 'Could not update secondary %s lanuage taxonomy term.', 'polylang' ), $object->get_tax_language() )
+					);
 				}
 			}
 		}
