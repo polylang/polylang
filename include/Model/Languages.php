@@ -194,7 +194,7 @@ class Languages {
 		 * } $args
 		 */
 		// First the language taxonomy.
-		$r = wp_insert_term(
+		$result = wp_insert_term(
 			$args['name'],
 			'language',
 			array(
@@ -202,14 +202,20 @@ class Languages {
 				'description' => $this->build_metas( $args ),
 			)
 		);
-		if ( is_wp_error( $r ) ) {
-			// Avoid an ugly fatal error if something went wrong (reported once in the forum).
-			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
+		if ( is_wp_error( $result ) ) {
+			return new WP_Error( 'pll_add_language', __( 'Could not add the language.', 'polylang' ) );
 		}
-		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
+
+		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
+		if ( is_wp_error( $result ) ) {
+			return new WP_Error( 'pll_add_language', __( 'Could not set the language order.', 'polylang' ) );
+		}
 
 		// The other language taxonomies.
-		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
+		$errors = $this->update_secondary_language_terms( $args['slug'], $args['name'] );
+		if ( $errors->has_errors() ) {
+			return $errors;
+		}
 
 		if ( empty( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
@@ -314,9 +320,12 @@ class Languages {
 		$old_slug = $lang->slug;
 
 		// Update the language itself.
-		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
+		$errors = $this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
+		if ( $errors->has_errors() ) {
+			return $errors;
+		}
 
-		wp_update_term(
+		$result = wp_update_term(
 			$lang->get_tax_prop( 'language', 'term_id' ),
 			'language',
 			array(
@@ -326,10 +335,16 @@ class Languages {
 				'term_group'  => (int) $args['term_group'],
 			)
 		);
+		if ( is_wp_error( $result ) ) {
+			return new WP_Error( 'pll_update_language', __( 'Could not update the language.', 'polylang' ) );
+		}
 
 		if ( $old_slug !== $slug ) {
 			// Update the language slug in translations.
-			$this->update_translations( $old_slug, $slug );
+			$errors = $this->update_translations( $old_slug, $slug );
+			if ( $errors->has_errors() ) {
+				return $errors;
+			}
 
 			// Update language option in widgets.
 			foreach ( $GLOBALS['wp_registered_widgets'] as $widget ) {
@@ -930,19 +945,22 @@ class Languages {
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
 	 *            Visibility changed from public to protected.
 	 *
+	 * @global $wpdb wpdb global instance.
+	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
-	 * @return void
+	 * @return WP_Error
 	 *
 	 * @phpstan-param non-empty-string $old_slug
 	 */
-	protected function update_translations( $old_slug, $new_slug = '' ): void {
+	protected function update_translations( $old_slug, $new_slug = '' ): WP_Error {
 		global $wpdb;
 
 		$term_ids = array();
 		$dr       = array();
 		$dt       = array();
 		$ut       = array();
+		$errors   = new WP_Error();
 
 		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
 		$terms      = get_terms( array( 'taxonomy' => $taxonomies ) );
@@ -993,7 +1011,7 @@ class Languages {
 
 		// Delete relationships.
 		if ( ! empty( $dr ) ) {
-			$wpdb->query(
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"DELETE FROM {$wpdb->term_relationships} WHERE object_id IN (%s) AND term_taxonomy_id IN (%s)",
@@ -1003,11 +1021,14 @@ class Languages {
 					array_merge( $dr['id'], $dr['tt'] )
 				)
 			);
+			if ( false === $result ) {
+				$errors->add( 'pll_delete_relationships', __( 'Could not delete relationships.', 'polylang' ) );
+			}
 		}
 
 		// Delete terms.
 		if ( ! empty( $dt ) ) {
-			$wpdb->query(
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"DELETE FROM {$wpdb->terms} WHERE term_id IN (%s)",
@@ -1016,7 +1037,11 @@ class Languages {
 					$dt['t']
 				)
 			);
-			$wpdb->query(
+			if ( false === $result ) {
+				$errors->add( 'pll_delete_terms', __( 'Could not delete translation groups.', 'polylang' ) );
+			}
+
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"DELETE FROM {$wpdb->term_taxonomy} WHERE term_taxonomy_id IN (%s)",
@@ -1025,11 +1050,14 @@ class Languages {
 					$dt['tt']
 				)
 			);
+			if ( false === $result ) {
+				$errors->add( 'pll_delete_term_taxonomy', __( 'Could not delete translation groups.', 'polylang' ) );
+			}
 		}
 
 		// Update terms.
 		if ( ! empty( $ut ) ) {
-			$wpdb->query(
+			$result = $wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"UPDATE {$wpdb->term_taxonomy} SET description = ( CASE term_id %s END ) WHERE term_id IN (%s)",
@@ -1039,6 +1067,9 @@ class Languages {
 					array_merge( array_merge( ...$ut['case'] ), $ut['in'] )
 				)
 			);
+			if ( false === $result ) {
+				$errors->add( 'pll_update_term_taxonomy', __( 'Could not update translation groups.', 'polylang' ) );
+			}
 		}
 
 		if ( ! empty( $term_ids ) ) {
@@ -1046,6 +1077,8 @@ class Languages {
 				clean_term_cache( $ids, $taxonomy );
 			}
 		}
+
+		return $errors;
 	}
 
 	/**
@@ -1059,14 +1092,15 @@ class Languages {
 	 * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
 	 * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
 	 *                                      all of them. Defaults to all taxonomies.
-	 * @return void
+	 * @return WP_Error
 	 *
 	 * @phpstan-param non-empty-string $slug
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
+	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): WP_Error {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
+		$errors = new WP_Error();
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
 			if ( ! empty( $taxonomies ) && ! in_array( $object->get_tax_language(), $taxonomies, true ) ) {
@@ -1082,16 +1116,32 @@ class Languages {
 
 			if ( empty( $term_id ) ) {
 				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
-				wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
+				$result = wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
+				if ( is_wp_error( $result ) ) {
+					$errors->add(
+						'pll_add_secondary_language_terms',
+						/* translators: %s is a taxonomy name */
+						sprintf( __( 'Could not add secondary language term for taxonomy %s.', 'polylang' ), $object->get_tax_language() )
+					);
+				}
 				continue;
 			}
 
 			/** @var PLL_Language $language */
 			if ( "pll_{$language->slug}" !== $slug || $language->name !== $name ) {
 				// Something has changed.
-				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
+				$result = wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
+				if ( is_wp_error( $result ) ) {
+					$errors->add(
+						'pll_update_secondary_language_terms',
+						/* translators: %s is a taxonomy name */
+						sprintf( __( 'Could not update secondary language term for taxonomy %s.', 'polylang' ), $object->get_tax_language() )
+					);
+				}
 			}
 		}
+
+		return $errors;
 	}
 
 	/**
