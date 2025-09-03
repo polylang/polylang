@@ -203,7 +203,7 @@ class Languages {
 			)
 		);
 		if ( is_wp_error( $result ) ) {
-			return new WP_Error( 'pll_add_language', __( 'Could not add the language.', 'polylang' ) ); // Avoid an ugly fatal error if something went wrong (reported once in the forum).
+			return new WP_Error( 'pll_add_language', __( 'Could not add the language.', 'polylang' ) );
 		}
 
 		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
