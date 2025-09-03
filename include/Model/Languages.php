@@ -203,13 +203,11 @@ class Languages {
 			)
 		);
 		if ( is_wp_error( $result ) ) {
-			/* translators: %s is the detailed error message */
 			return new WP_Error( 'pll_add_language', __( 'Could not add the language.', 'polylang' ) ); // Avoid an ugly fatal error if something went wrong (reported once in the forum).
 		}
 
 		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
 		if ( is_wp_error( $result ) ) {
-			/* translators: %s is the detailed error message */
 			return new WP_Error( 'pll_add_language', __( 'Could not set the language order.', 'polylang' ) );
 		}
 
@@ -1070,7 +1068,7 @@ class Languages {
 				)
 			);
 			if ( false === $result ) {
-				$errors->add( 'pll_update_term_taxonomy', __( 'Could not update translation groups.', 'polylang' ), $wpdb->last_error );
+				$errors->add( 'pll_update_term_taxonomy', __( 'Could not update translation groups.', 'polylang' ) );
 			}
 		}
 
