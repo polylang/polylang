@@ -320,7 +320,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		if ( ! empty( $tag_ID ) ) {
 			$term = get_term( (int) $tag_ID );
-			if ( $term instanceof WP_Term && $this->model->->taxonomies->is_translated( $term->taxonomy ) ) {
+			if ( $term instanceof WP_Term && $this->model->taxonomies->is_translated( $term->taxonomy ) ) {
 				$params['pll_term_id'] = (int) $tag_ID;
 			}
 		}
