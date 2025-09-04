@@ -102,6 +102,10 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= TBD =
+
+* Add: filter `pll_admin_columns_visibility` to show/hide language translations on admin page.
+
 = 3.7.3 (2025-06-16) =
 
 * Pro: Always display ACF translation settings for field groups formerly translated in versions older than 3.7
