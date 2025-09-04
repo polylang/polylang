@@ -104,7 +104,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 = TBD =
 
-* Add: filter `pll_admin_columns_visibility` to show/hide language translations on admin page.
+* Add: filter `pll_admin_columns_visibility` to show/hide language translations on admin page #1723.
 
 = 3.7.3 (2025-06-16) =
 
