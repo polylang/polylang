@@ -42,12 +42,25 @@ class PLL_Admin_Filters_Columns {
 		// Hide the column of the filtered language.
 		add_filter( 'hidden_columns', array( $this, 'hidden_columns' ) ); // Since WP 4.4.
 
-		// Add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels.
-		foreach ( $this->model->get_translated_post_types() as $type ) {
-			// Use the latest filter late as some plugins purely overwrite what's done by others :(
-			// Specific case for media.
-			add_filter( 'manage_' . ( 'attachment' == $type ? 'upload' : 'edit-' . $type ) . '_columns', array( $this, 'add_post_column' ), 100 );
-			add_action( 'manage_' . ( 'attachment' == $type ? 'media' : $type . '_posts' ) . '_custom_column', array( $this, 'post_column' ), 10, 2 );
+		/**
+		 * Filters the admin columns, decides if they
+		 * should be visible or not. Useful for admin pages with
+		 * lots of language translations.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $visibility True or false.
+		 */
+		$is_admin_columns_visible = (bool) apply_filters( 'pll_admin_columns_visibility', true );
+
+		if ( $is_admin_columns_visible ) {
+			// Add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels.
+			foreach ( $this->model->get_translated_post_types() as $type ) {
+				// Use the latest filter late as some plugins purely overwrite what's done by others :(
+				// Specific case for media.
+				add_filter( 'manage_' . ( 'attachment' == $type ? 'upload' : 'edit-' . $type ) . '_columns', array( $this, 'add_post_column' ), 100 );
+				add_action( 'manage_' . ( 'attachment' == $type ? 'media' : $type . '_posts' ) . '_custom_column', array( $this, 'post_column' ), 10, 2 );
+			}
 		}
 
 		// Quick edit and bulk edit.
