@@ -35,7 +35,10 @@
 	"autoload-dev": {
 		"classmap": [
 			"tests/phpunit/"
-		]
+		],
+		"psr-4": {
+			"WP_Syntex\\Polylang\\Script\\": "bin/"
+		}
 	},
 	"scripts": {
 		"install-suite": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh",
@@ -62,8 +65,10 @@
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh",
+		"glob": "WP_Syntex\\Polylang\\Script\\Globber::hard_code",
 		"pre-autoload-dump": [
-			"php ./bin/generate-globs.php"
+			"@glob ./integrations integration Polylang",
+			"@glob ./modules module Polylang"
 		]
 	},
 	"scripts-descriptions": {
@@ -79,7 +84,8 @@
 		"lint": "Runs both PHPCS and PHPStan.",
 		"rector": "Runs Rector.",
 		"build": "Builds the project.",
-		"dist": "Make the zip file to distribute the project release."
+		"dist": "Make the zip file to distribute the project release.",
+		"glob": "Hard-code calls to glob()."
 	},
 	"config": {
 		"allow-plugins": {
