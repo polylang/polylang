@@ -19,7 +19,7 @@ class Globber {
 	 *
 	 * @since 3.8
 	 *
-	 * @throws RuntimeException If arguments are missing.
+	 * @throws RuntimeException If arguments are missing or the operation fails.
 	 *
 	 * @param Event $event The Composer event. Expects three arguments.
 	 *     - Absolute path to the folder containing the files to load.
@@ -45,12 +45,8 @@ class Globber {
 		$plugin_name = $args[2];
 		$file_paths  = glob( "{$base_path}/*/load.php", \GLOB_NOSORT );
 
-		if ( ! is_array( $file_paths ) ) {
-			echo "\e[91mError while retrieving the {$type} files in {$plugin_name}\e[0m\n";
-			return;
-		}
-		if ( empty( $file_paths ) ) {
-			echo "\e[91mCould not find {$type} files in {$plugin_name}\e[0m\n";
+		if ( ! is_array( $file_paths ) || empty( $file_paths ) ) {
+			throw new RuntimeException( "Could not retrieve the {$type} files in {$plugin_name}" );
 		}
 
 		sort( $file_paths, \SORT_STRING | \SORT_FLAG_CASE );
@@ -70,8 +66,7 @@ return array(\n";
 		$write .= ");\n";
 
 		if ( false === file_put_contents( "{$base_path}/{$type}-files.php", $write ) ) {
-			echo "\e[91mError while writing the data file for {$type}s in {$plugin_name}\e[0m\n";
-			return;
+			throw new RuntimeException( "Error while writing the data file for {$type}s in {$plugin_name}" );
 		}
 
 		echo "\e[32mGenerated {$type}s data file for {$plugin_name}\e[0m\n";
