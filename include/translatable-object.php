@@ -246,6 +246,71 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
+	 * Wraps wp_get_object_terms() to cache it for multiple objects.
+	 * Similar to get_object_term() but for multiple objects.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int[]  $ids      Array of object IDs.
+	 * @param string $taxonomy Taxonomy name.
+	 * @return array<int,WP_Term|false> Array of terms with object ID as key.
+	 */
+	protected function get_object_terms( array $ids, $taxonomy ) {
+		$ids = $this->sanitize_int_ids_list( $ids );
+		if ( empty( $ids ) ) {
+			return array();
+		}
+
+		$terms = array();
+		$to_query = array();
+
+		// Checks the cache first.
+		foreach ( $ids as $id ) {
+			$cached = get_object_term_cache( $id, $taxonomy );
+			if ( is_wp_error( $cached ) ) {
+				$terms[ $id ] = false;
+			} elseif ( empty( $cached ) ) {
+				$to_query[] = $id;
+			} else {
+				/** @var WP_Term[] $cached */
+				$terms[ $id ] = reset( $cached );
+			}
+		}
+
+		if ( empty( $to_query ) ) {
+			return $terms;
+		}
+
+		// Query only non-cached terms
+		foreach ( $to_query as $id ) {
+			$object_terms = wp_get_object_terms( $id, $this->tax_to_cache, array( 'update_term_meta_cache' => false ) );
+
+			if ( ! is_array( $object_terms ) ) {
+				continue;
+			}
+
+			$terms_by_tax = array();
+			foreach ( $object_terms as $term ) {
+				$terms_by_tax[ $term->taxonomy ] = $term;
+				if ( $term->taxonomy === $taxonomy ) {
+					$terms[ $id ] = $term;
+				}
+			}
+
+			foreach ( $this->tax_to_cache as $tax ) {
+				if ( empty( $terms_by_tax[ $tax ] ) ) {
+					$to_cache = array();
+				} else {
+					$to_cache = array( $terms_by_tax[ $tax ]->term_id );
+				}
+				wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
+			}
+		}
+
+		return $terms;
+	}
+
+	/**
 	 * Wraps `wp_get_object_terms()` to cache it and return only one object.
 	 * Inspired by the WordPress function `get_the_terms()`.
 	 *
@@ -256,43 +321,8 @@ abstract class PLL_Translatable_Object {
 	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
 	 */
 	public function get_object_term( $id, $taxonomy ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) ) {
-			return false;
-		}
-
-		$term = get_object_term_cache( $id, $taxonomy );
-
-		if ( is_array( $term ) ) {
-			return ! empty( $term ) ? reset( $term ) : false;
-		}
-
-		// Query terms.
-		$terms        = array();
-		$term         = false;
-		$object_terms = wp_get_object_terms( $id, $this->tax_to_cache, array( 'update_term_meta_cache' => false ) );
-
-		if ( is_array( $object_terms ) ) {
-			foreach ( $object_terms as $t ) {
-				$terms[ $t->taxonomy ] = $t;
-				if ( $t->taxonomy === $taxonomy ) {
-					$term = $t;
-				}
-			}
-		}
-
-		foreach ( $this->tax_to_cache as $tax ) {
-			if ( empty( $terms[ $tax ] ) ) {
-				$to_cache = array();
-			} else {
-				$to_cache = array( $terms[ $tax ]->term_id );
-			}
-
-			wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
-		}
-
-		return $term;
+		$terms = $this->get_object_terms( array( $id ), $taxonomy );
+		return isset( $terms[ $id ] ) ? $terms[ $id ] : false;
 	}
 
 	/**
