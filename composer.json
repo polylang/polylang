@@ -67,8 +67,8 @@
 		"dist": "bin/distribute.sh",
 		"glob": "WP_Syntex\\Polylang\\Script\\Globber::hard_code",
 		"pre-autoload-dump": [
-			"@glob ./integrations integration Polylang",
-			"@glob ./modules module Polylang"
+			"@glob ./integrations",
+			"@glob ./modules"
 		]
 	},
 	"scripts-descriptions": {

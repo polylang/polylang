@@ -21,10 +21,8 @@ class Globber {
 	 *
 	 * @throws RuntimeException If arguments are missing or the operation fails.
 	 *
-	 * @param Event $event The Composer event. Expects three arguments.
+	 * @param Event $event The Composer event. Expects one argument.
 	 *     - Absolute path to the folder containing the files to load.
-	 *     - Name to use in the messages and the name of the resulting file (`module` or `integration`).
-	 *     - Name of the package.
 	 * @return void
 	 */
 	public static function hard_code( Event $event ): void {
@@ -33,16 +31,10 @@ class Globber {
 		if ( empty( $args[0] ) ) {
 			throw new RuntimeException( 'No path to folder provided' );
 		}
-		if ( empty( $args[1] ) ) {
-			throw new RuntimeException( 'No type provided' );
-		}
-		if ( empty( $args[2] ) ) {
-			throw new RuntimeException( 'No package name provided' );
-		}
 
-		$base_path   = $args[0];
-		$type        = $args[1];
-		$plugin_name = $args[2];
+		$base_path   = realpath( $args[0] );
+		$type        = rtrim( basename( $base_path ), 's' );
+		$plugin_name = ucwords( str_replace( '-', ' ', basename( dirname( $base_path ) ) ) );
 		$file_paths  = glob( "{$base_path}/*/load.php", \GLOB_NOSORT );
 
 		if ( ! is_array( $file_paths ) || empty( $file_paths ) ) {
