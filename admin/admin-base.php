@@ -557,11 +557,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		global $pagenow, $typenow, $taxnow;
 
 		if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
-			return ! empty( $typenow ) && $this->model->post->is_translated_object_type( $typenow );
+			return ! empty( $typenow );
 		}
 
 		if ( 'term.php' === $pagenow ) {
-			return ! empty( $taxnow ) && $this->model->term->is_translated_object_type( $taxnow );
+			return ! empty( $taxnow );
 		}
 
 		return false;
