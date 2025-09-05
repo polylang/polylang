@@ -8,6 +8,8 @@ tmp
 vendor/
 
 # Files
+integrations/integration-files.php
+modules/module-files.php
 .phpunit.result.cache
 *.map
 *.min.js
