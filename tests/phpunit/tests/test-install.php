@@ -1,8 +1,108 @@
 <?php
 
+use Brain\Monkey;
 use WP_Syntex\Polylang\Options\Options;
 
 class Install_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
+
+	private $orig_wp_version;
+
+	public function set_up() {
+		parent::set_up();
+		Monkey\setUp();
+	}
+
+	public function tear_down() {
+		global $wp_version;
+
+		if ( ! empty( $this->orig_wp_version ) ) {
+			$wp_version = $this->orig_wp_version;
+			$this->orig_wp_version = null;
+		}
+
+		Monkey\tearDown();
+		parent::tear_down();
+	}
+
+	/**
+	 * @testWith ["100.6.3", true]
+	 *           ["5.6.0", false]
+	 *
+	 * @param string $cur_php_version Current php version.
+	 * @param bool   $pass            Tells if the check is expected to pass.
+	 */
+	public function test_php_version_check( string $cur_php_version, bool $pass ): void {
+		$this->mock_constants(
+			array(
+				'PHP_VERSION' => $cur_php_version,
+			)
+		);
+
+		// Test if pass.
+		if ( $pass ) {
+			$this->assertTrue( PLL_Usable::can_activate() );
+		} else {
+			$this->assertFalse( PLL_Usable::can_activate() );
+		}
+
+		// Test the admin notice.
+		ob_start();
+		do_action( 'admin_notices' );
+		$buffer = ob_get_clean();
+
+		if ( $pass ) {
+			$this->assertStringNotContainsString( PLL_MIN_PHP_VERSION, $buffer );
+			$this->assertStringNotContainsString( $cur_php_version, $buffer );
+		} else {
+			$this->assertStringContainsString( PLL_MIN_PHP_VERSION, $buffer );
+			$this->assertStringContainsString( $cur_php_version, $buffer );
+		}
+	}
+
+	/**
+	 * @testWith ["100.6.3", true]
+	 *           ["4.2.0", false]
+	 *
+	 * @param string $cur_wp_version Current WP version.
+	 * @param bool   $pass           Tells if the check is expected to pass.
+	 */
+	public function test_wp_version_check( string $cur_wp_version, bool $pass ): void {
+		global $wp_version;
+		$this->orig_wp_version = $wp_version;
+		$wp_version            = $cur_wp_version;
+
+		// Test if pass.
+		if ( $pass ) {
+			$this->assertTrue( PLL_Usable::can_activate() );
+		} else {
+			$this->assertFalse( PLL_Usable::can_activate() );
+		}
+
+		ob_start();
+		do_action( 'admin_notices' );
+		$buffer = ob_get_clean();
+
+		// Test the admin notice.
+		if ( $pass ) {
+			$this->assertStringNotContainsString( PLL_MIN_WP_VERSION, $buffer );
+			$this->assertStringNotContainsString( $cur_wp_version, $buffer );
+		} else {
+			$this->assertStringContainsString( PLL_MIN_WP_VERSION, $buffer );
+			$this->assertStringContainsString( $cur_wp_version, $buffer );
+		}
+	}
+
+	public function test_is_deactivation(): void {
+		$_GET['action'] = 'deactivate';
+		$_GET['plugin'] = 'mew/mew.php';
+
+		$this->assertFalse( PLL_Deactivate::is_deactivation() );
+
+		$_GET['plugin'] = POLYLANG_BASENAME;
+
+		$this->assertTrue( PLL_Deactivate::is_deactivation() );
+	}
 
 	public function test_activate() {
 		delete_option( 'polylang' );
