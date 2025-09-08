@@ -560,40 +560,6 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	}
 
 	/**
-	 * Retrieves old translations from the description field of translation terms.
-	 * This is used to clean up old translation groups when merging them.
-	 *
-	 * @since 3.8
-	 *
-	 * @param int[] $translations An array of object IDs.
-	 * @return int[] An array of object IDs of translations to be removed.
-	 */
-	protected function get_old_translations( array $translations ) {
-		$old_translations = array();
-
-		$terms = wp_get_object_terms( $translations, $this->tax_translations );
-
-		if ( ! is_array( $terms ) ) {
-			return $old_translations;
-		}
-
-		foreach ( $terms as $term ) {
-			if ( empty( $term->description ) ) {
-				continue;
-			}
-
-			$trans = maybe_unserialize( $term->description );
-			if ( ! is_array( $trans ) ) {
-				continue;
-			}
-
-			$old_translations = array_merge( $old_translations, $trans );
-		}
-
-		return $old_translations;
-	}
-
-	/**
 	 * Creates translations groups in mass.
 	 *
 	 * @since 1.6.3
