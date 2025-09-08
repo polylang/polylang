@@ -163,7 +163,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		$translations = $this->validate_translations( $translations, $id );
 
 		// Unlink removed translations.
-		$old_translations = $this->get_old_translations( $translations );
+		$old_translations = $this->get_objects_translations( $translations );
 
 		foreach ( array_diff_assoc( $old_translations, $translations ) as $tr_id ) {
 			$this->delete_translation( $tr_id );
@@ -174,7 +174,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return $translations;
 		}
 
-		$terms = wp_get_object_terms( $translations, $this->tax_translations );
+		$terms = $this->get_object_terms( $translations, $this->tax_translations );
 		$term  = is_array( $terms ) && ! empty( $terms ) ? reset( $terms ) : false;
 
 		if ( empty( $term ) ) {
@@ -200,6 +200,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		}
 
 		// Clean now unused translation groups.
+		$terms = array_filter( $terms );
 		foreach ( $terms as $term ) {
 			// Get fresh count value.
 			$term = get_term( $term->term_id, $this->tax_translations );
@@ -423,6 +424,55 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	}
 
 	/**
+	 * Returns an array of valid translations for multiple objects.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int[] $ids Array of object IDs.
+	 * @return int[] An associative array of translations with language code as key and translation ID as value.
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
+	 */
+	protected function get_objects_translations( array $ids ) {
+		$translations = $this->get_raw_objects_translations( $ids );
+
+		return $this->validate_objects_translations( $translations );
+	}
+
+	/**
+	 * Returns an unvalidated array of translations for multiple objects.
+	 * It is generally preferable to use `get_objects_translations()`.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int[] $ids Array of object IDs.
+	 * @return int[][] An associative array of translations arrays with language code as key and translation ID as value.
+	 */
+	protected function get_raw_objects_translations( array $ids ) {
+		$terms = $this->get_object_terms( $ids, $this->tax_translations );
+
+		$translations = array();
+		foreach ( $ids as $id ) {
+			if ( empty( $terms[ $id ]->description ) ) {
+				$lang = $this->get_language( $id );
+
+				if ( empty( $lang ) ) {
+					$translations[ $id ] = array();
+					continue;
+				}
+
+				$translations[ $id ] = array( $lang->slug => $id );
+				continue;
+			}
+
+			$trans = maybe_unserialize( $terms[ $id ]->description );
+			$translations[ $id ] = is_array( $trans ) ? $trans : array();
+		}
+
+		return $translations;
+	}
+
+	/**
 	 * Validates and sanitizes translations.
 	 * This will:
 	 * - Make sure to return only translations in existing languages (and only translations).
@@ -498,6 +548,24 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		/** @phpstan-var array<non-empty-string, positive-int> $translations */
 		return array_merge( array( $lang->slug => $id ), $translations );
+	}
+
+	/**
+	 * Validates and sanitizes multiple translations arrays.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int[][] $translations_arrays An array of translations arrays.
+	 * @return int[]
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
+	 */
+	protected function validate_objects_translations( array $translations_arrays ) {
+		$validated = array();
+		foreach ( $translations_arrays as $id => $translations ) {
+			$validated = array_merge( $validated, $this->validate_translations( $translations, $id, 'display' ) );
+		}
+		return $validated;
 	}
 
 	/**
