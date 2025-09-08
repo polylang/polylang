@@ -45,8 +45,6 @@ class Loader_Paths_Finder {
 
 		$write = "<?php
 /**
- * @package {$plugin_name}
- *
  * /!\ DO NOT DIRECTLY EDIT THIS FILE, THIS FILE IS AUTO-GENERATED AS PART OF THE BUILD PROCESS.
  */
 
