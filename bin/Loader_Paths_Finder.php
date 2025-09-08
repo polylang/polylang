@@ -41,8 +41,6 @@ class Loader_Paths_Finder {
 			throw new RuntimeException( "Could not retrieve the {$type} files in {$plugin_name}" );
 		}
 
-		sort( $file_paths, \SORT_STRING | \SORT_FLAG_CASE );
-
 		$write = "<?php
 /**
  * /!\ DO NOT DIRECTLY EDIT THIS FILE, THIS FILE IS AUTO-GENERATED AS PART OF THE BUILD PROCESS.
