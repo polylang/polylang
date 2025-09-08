@@ -65,7 +65,7 @@
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh",
-		"glob": "WP_Syntex\\Polylang\\Script\\Globber::hard_code",
+		"glob": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
 		"pre-autoload-dump": [
 			"@glob ./integrations",
 			"@glob ./modules"

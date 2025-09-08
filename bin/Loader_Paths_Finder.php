@@ -13,7 +13,7 @@ use Composer\Script\Event;
  *
  * @since 3.8
  */
-class Globber {
+class Loader_Paths_Finder {
 	/**
 	 * Hard-codes `glob()`s.
 	 *
