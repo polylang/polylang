@@ -64,9 +64,11 @@ class PLL_Activate extends PLL_Abstract_Activate {
 			update_option( 'polylang_wpml_strings', array() );
 		}
 
-		// Don't use flush_rewrite_rules at network activation. See #32471.
-		// Thanks to RavanH for the trick. See https://polylang.wordpress.com/2015/06/10/polylang-1-7-6-and-multisite/.
-		// Rewrite rules are created at next page load.
+		/*
+		 * Don't use flush_rewrite_rules at network activation. See #32471.
+		 * Thanks to RavanH for the trick. See https://polylang.wordpress.com/2015/06/10/polylang-1-7-6-and-multisite/.
+		 * Rewrite rules are created at next page load.
+		 */
 		delete_option( 'rewrite_rules' );
 	}
 }
