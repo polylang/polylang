@@ -268,9 +268,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return array();
 		}
 
-		$translations = $this->get_raw_translations( $id );
-
-		return $this->validate_translations( $translations, $id, 'display' );
+		return $this->get_objects_translations( array( $id ) );
 	}
 
 	/**
@@ -291,16 +289,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return array();
 		}
 
-		$term = $this->get_object_term( $id, $this->tax_translations );
-
-		if ( empty( $term->description ) ) {
-			return array();
-		}
-
-		$translations = maybe_unserialize( $term->description );
-		$translations = is_array( $translations ) ? $translations : array();
-
-		return $translations;
+		return $this->get_raw_objects_translations( array( $id ) )[ $id ] ?? array();
 	}
 
 	/**
@@ -447,6 +436,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param int[] $ids Array of object IDs.
 	 * @return int[][] An associative array of translations arrays with language code as key and translation ID as value.
+	 *
+	 * @phpstan-return array<int,array<non-empty-string, positive-int>>
 	 */
 	protected function get_raw_objects_translations( array $ids ) {
 		$terms = $this->get_object_terms( $ids, $this->tax_translations );
