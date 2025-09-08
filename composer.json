@@ -30,15 +30,15 @@
 			"install/",
 			"modules/",
 			"settings/"
-		]
-	},
-	"autoload-dev": {
-		"classmap": [
-			"tests/phpunit/"
 		],
 		"psr-4": {
 			"WP_Syntex\\Polylang\\Script\\": "bin/"
 		}
+	},
+	"autoload-dev": {
+		"classmap": [
+			"tests/phpunit/"
+		]
 	},
 	"scripts": {
 		"install-suite": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh",
