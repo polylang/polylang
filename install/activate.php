@@ -30,7 +30,10 @@ class PLL_Activate extends PLL_Abstract_Activate {
 	/**
 	 * The process to run on plugin activation.
 	 *
-	 * @since 3.8
+	 * @since 0.5
+	 * @since 3.8 Moved from the class `PLL_Install`.
+	 *            Renamed from `_activate()`.
+	 *            Made it `static`.
 	 *
 	 * @return void
 	 */

@@ -25,7 +25,8 @@ abstract class PLL_Abstract_Deactivate extends PLL_Abstract_Activable {
 	/**
 	 * Detects plugin deactivation.
 	 *
-	 * @since 3.8
+	 * @since 1.7
+	 * @since 3.8 Moved from the class `PLL_Install_Base`.
 	 *
 	 * @return bool True if the plugin is currently being deactivated.
 	 */

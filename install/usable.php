@@ -16,7 +16,9 @@ class PLL_Usable {
 	/**
 	 * Checks min PHP and WP version, displays a notice if a requirement is not met.
 	 *
-	 * @since 3.8
+	 * @since 2.6.7
+	 * @since 3.8 Moved from the class `PLL_Install`.
+	 *            Made it `static`.
 	 *
 	 * @return bool
 	 */
@@ -39,7 +41,9 @@ class PLL_Usable {
 	/**
 	 * Displays a notice if PHP min version is not met.
 	 *
-	 * @since 3.8
+	 * @since 2.6.7
+	 * @since 3.8 Moved from the class `PLL_Install`.
+	 *            Made it `static`.
 	 *
 	 * @return void
 	 */
@@ -61,7 +65,9 @@ class PLL_Usable {
 	/**
 	 * Displays a notice if WP min version is not met.
 	 *
-	 * @since 3.8
+	 * @since 2.6.7
+	 * @since 3.8 Moved from the class `PLL_Install`.
+	 *            Made it `static`.
 	 *
 	 * @return void
 	 */

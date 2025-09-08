@@ -29,7 +29,8 @@ abstract class PLL_Abstract_Activate extends PLL_Abstract_Activable {
 	/**
 	 * Site creation on multisite (to set default options).
 	 *
-	 * @since 3.8
+	 * @since 2.6.8
+	 * @since 3.8 Moved from the class `PLL_Install_Base`.
 	 *
 	 * @param WP_Site $new_site New site object.
 	 * @return void

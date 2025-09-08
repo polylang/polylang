@@ -14,7 +14,10 @@ class PLL_Deactivate extends PLL_Abstract_Deactivate {
 	/**
 	 * The process to run on plugin deactivation.
 	 *
-	 * @since 3.8
+	 * @since 0.5
+	 * @since 3.8 Moved from the class `PLL_Install`.
+	 *            Renamed from `_deactivate()`.
+	 *            Made it `static`.
 	 *
 	 * @return void
 	 */

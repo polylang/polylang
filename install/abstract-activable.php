@@ -12,7 +12,11 @@ abstract class PLL_Abstract_Activable {
 	/**
 	 * (De)Activation for all blogs.
 	 *
-	 * @since 3.8
+	 * @since 1.2
+	 * @since 3.8 Moved from the class `PLL_Install_Base`.
+	 *            Visibility changed from `protected`.
+	 *            Made it `static`.
+	 *            Removed first parameter `$what`.
 	 *
 	 * @param bool $networkwide Whether the plugin is (de)activated for all sites in the network or just the current site.
 	 * @return void
@@ -34,7 +38,10 @@ abstract class PLL_Abstract_Activable {
 	/**
 	 * The process to run on plugin (de)activation.
 	 *
-	 * @since 3.8
+	 * @since 0.5
+	 * @since 3.8 Moved from the class `PLL_Install_Base`.
+	 *            Renamed from `_activate()`/`_deactivate()`.
+	 *            Made it `static` and `abstract`.
 	 *
 	 * @return void
 	 */
