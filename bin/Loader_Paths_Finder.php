@@ -21,9 +21,8 @@ class Loader_Paths_Finder {
 	 *
 	 * @throws RuntimeException If arguments are missing or the operation fails.
 	 *
-	 * @param Event $event The Composer event. Expects two arguments.
+	 * @param Event $event The Composer event. Expects one argument.
 	 *     - Absolute path to the folder containing the files to load.
-	 *     - Name of the package.
 	 * @return void
 	 */
 	public static function hard_code( Event $event ): void {
@@ -34,8 +33,8 @@ class Loader_Paths_Finder {
 		}
 
 		$base_path   = realpath( $args[0] );
-		$plugin_name = $args[1];
 		$type        = rtrim( basename( $base_path ), 's' );
+		$plugin_name = ucwords( str_replace( '-', ' ', basename( dirname( $base_path ) ) ) );
 		$file_paths  = glob( "{$base_path}/*/load.php", \GLOB_NOSORT );
 
 		if ( ! is_array( $file_paths ) || empty( $file_paths ) ) {
