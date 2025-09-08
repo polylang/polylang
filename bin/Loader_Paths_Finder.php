@@ -38,7 +38,7 @@ class Loader_Paths_Finder {
 		$file_paths  = glob( "{$base_path}/*/load.php", \GLOB_NOSORT );
 
 		if ( ! is_array( $file_paths ) || empty( $file_paths ) ) {
-			throw new RuntimeException( "Could not retrieve the {$type} files in {$plugin_name}" );
+			throw new RuntimeException( "Could not retrieve the files in {$base_path}" );
 		}
 
 		$write = "<?php
@@ -54,9 +54,9 @@ return array(\n";
 		$write .= ");\n";
 
 		if ( false === file_put_contents( "{$base_path}/{$type}-build.php", $write ) ) {
-			throw new RuntimeException( "Error while writing the data file for {$type}s in {$plugin_name}" );
+			throw new RuntimeException( "Error while writing the loader file in {$base_path}" );
 		}
 
-		echo "\e[32mGenerated {$type}s data file for {$plugin_name}\e[0m\n";
+		echo "\e[32mGenerated loader file in {$base_path}\e[0m\n";
 	}
 }
