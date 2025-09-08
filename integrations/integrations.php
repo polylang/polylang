@@ -50,7 +50,7 @@ class PLL_Integrations {
 	 * @return void
 	 */
 	protected function init(): void {
-		$load_scripts = require __DIR__ . '/integration-files.php';
+		$load_scripts = require __DIR__ . '/integration-build.php';
 
 		foreach ( $load_scripts as $load_script ) {
 			require_once __DIR__ . "/{$load_script}/load.php";

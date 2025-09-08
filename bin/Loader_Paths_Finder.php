@@ -57,7 +57,7 @@ return array(\n";
 		}
 		$write .= ");\n";
 
-		if ( false === file_put_contents( "{$base_path}/{$type}-files.php", $write ) ) {
+		if ( false === file_put_contents( "{$base_path}/{$type}-build.php", $write ) ) {
 			throw new RuntimeException( "Error while writing the data file for {$type}s in {$plugin_name}" );
 		}
 

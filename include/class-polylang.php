@@ -281,7 +281,7 @@ class Polylang {
 		require_once POLYLANG_DIR . '/include/api.php';
 
 		// Loads the modules.
-		$load_scripts = require POLYLANG_DIR . '/modules/module-files.php';
+		$load_scripts = require POLYLANG_DIR . '/modules/module-build.php';
 
 		foreach ( $load_scripts as $load_script ) {
 			require_once POLYLANG_DIR . "/modules/{$load_script}/load.php";
