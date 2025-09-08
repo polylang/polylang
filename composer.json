@@ -65,10 +65,10 @@
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh",
-		"glob": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
+		"build-loader": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
 		"post-autoload-dump": [
-			"@glob ./integrations",
-			"@glob ./modules"
+			"@build-loader ./integrations",
+			"@build-loader ./modules"
 		]
 	},
 	"scripts-descriptions": {
@@ -85,7 +85,7 @@
 		"rector": "Runs Rector.",
 		"build": "Builds the project.",
 		"dist": "Makes the zip file to distribute the project release.",
-		"glob": "Generates a list of files to load."
+		"build-loader": "Builds a list of files to load."
 	},
 	"config": {
 		"allow-plugins": {
