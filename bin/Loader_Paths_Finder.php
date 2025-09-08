@@ -32,9 +32,6 @@ class Loader_Paths_Finder {
 		if ( empty( $args[0] ) ) {
 			throw new RuntimeException( 'No path to folder provided' );
 		}
-		if ( empty( $args[1] ) ) {
-			throw new RuntimeException( 'No package name provided' );
-		}
 
 		$base_path   = realpath( $args[0] );
 		$plugin_name = $args[1];
