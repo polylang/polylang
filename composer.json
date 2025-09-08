@@ -84,8 +84,8 @@
 		"lint": "Runs both PHPCS and PHPStan.",
 		"rector": "Runs Rector.",
 		"build": "Builds the project.",
-		"dist": "Make the zip file to distribute the project release.",
-		"glob": "Hard-code calls to glob()."
+		"dist": "Makes the zip file to distribute the project release.",
+		"glob": "Generates a list of files to load."
 	},
 	"config": {
 		"allow-plugins": {
