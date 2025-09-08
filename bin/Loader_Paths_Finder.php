@@ -37,7 +37,7 @@ class Loader_Paths_Finder {
 		}
 
 		$base_path   = realpath( $args[0] );
-		$plugin_name = $args[1];
+		$plugin_name = str_replace( '-', ' ', $args[1] );
 		$type        = rtrim( basename( $base_path ), 's' );
 		$file_paths  = glob( "{$base_path}/*/load.php", \GLOB_NOSORT );
 
