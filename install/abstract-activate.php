@@ -2,7 +2,7 @@
 /**
  * @package Polylang
  *
- * /!\ THE CONSTANT `POLYLANG_BASENAME` MUST BE DEFINED.
+ * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
  */
 
 /**
@@ -20,7 +20,7 @@ abstract class PLL_Abstract_Activate extends PLL_Abstract_Activable {
 	 */
 	public static function add_hooks(): void {
 		// Plugin activation.
-		register_activation_hook( pll_get_constant( 'POLYLANG_BASENAME', '' ), array( static::class, 'do_for_all_blogs' ) );
+		register_activation_hook( static::get_plugin_basename(), array( static::class, 'do_for_all_blogs' ) );
 
 		// Site creation on multisite.
 		add_action( 'wp_initialize_site', array( static::class, 'new_site' ), 50 ); // After WP (prio 10).

@@ -22,7 +22,7 @@ class PLL_Activate extends PLL_Abstract_Activate {
 	 * @return void
 	 */
 	public static function add_hooks(): void {
-		register_activation_hook( pll_get_constant( 'POLYLANG_BASENAME', '' ), array( PLL_Wizard::class, 'start_wizard' ) );
+		register_activation_hook( static::get_plugin_basename(), array( PLL_Wizard::class, 'start_wizard' ) );
 
 		parent::add_hooks();
 	}
@@ -43,11 +43,11 @@ class PLL_Activate extends PLL_Abstract_Activate {
 
 		if ( ! empty( $options['version'] ) ) {
 			// Check if we will be able to upgrade.
-			if ( version_compare( $options['version'], pll_get_constant( 'POLYLANG_VERSION', '' ), '<' ) ) {
+			if ( version_compare( $options['version'], static::get_plugin_version(), '<' ) ) {
 				( new PLL_Upgrade( $options ) )->can_activate();
 			}
 		} else {
-			$options['version'] = pll_get_constant( 'POLYLANG_VERSION', '' );
+			$options['version'] = static::get_plugin_version();
 		}
 
 		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.

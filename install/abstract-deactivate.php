@@ -2,7 +2,7 @@
 /**
  * @package Polylang
  *
- * /!\ THE CONSTANT `POLYLANG_BASENAME` MUST BE DEFINED.
+ * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
  */
 
 /**
@@ -19,7 +19,7 @@ abstract class PLL_Abstract_Deactivate extends PLL_Abstract_Activable {
 	 * @return void
 	 */
 	public static function add_hooks(): void {
-		register_deactivation_hook( pll_get_constant( 'POLYLANG_BASENAME', '' ), array( static::class, 'do_for_all_blogs' ) );
+		register_deactivation_hook( static::get_plugin_basename(), array( static::class, 'do_for_all_blogs' ) );
 	}
 
 	/**
@@ -31,6 +31,6 @@ abstract class PLL_Abstract_Deactivate extends PLL_Abstract_Activable {
 	 * @return bool True if the plugin is currently being deactivated.
 	 */
 	public static function is_deactivation(): bool {
-		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && pll_get_constant( 'POLYLANG_BASENAME', '' ) === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
+		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && static::get_plugin_basename() === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 }

@@ -1,6 +1,8 @@
 <?php
 /**
  * @package Polylang
+ *
+ * /!\ THE CONSTANTS `POLYLANG_BASENAME` AND `POLYLANG_VERSION` MUST BE DEFINED.
  */
 
 /**
@@ -33,6 +35,28 @@ abstract class PLL_Abstract_Activable {
 			// Single blog.
 			static::process();
 		}
+	}
+
+	/**
+	 * Returns the plugin's basename.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public static function get_plugin_basename(): string {
+		return pll_get_constant( 'POLYLANG_BASENAME', '' );
+	}
+
+	/**
+	 * Returns the plugin's version.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public static function get_plugin_version(): string {
+		return pll_get_constant( 'POLYLANG_VERSION', '' );
 	}
 
 	/**
