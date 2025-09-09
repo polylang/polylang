@@ -35,7 +35,7 @@ class Loader_Paths_Finder {
 		$base_path   = realpath( $args[0] );
 		$type        = rtrim( basename( $base_path ), 's' );
 		$plugin_name = ucwords( str_replace( '-', ' ', basename( dirname( $base_path ) ) ) );
-		$file_paths  = glob( "{$base_path}/*/load.php", \GLOB_NOSORT );
+		$file_paths  = glob( "{$base_path}/*/load.php" );
 
 		if ( ! is_array( $file_paths ) || empty( $file_paths ) ) {
 			throw new RuntimeException( "Could not retrieve the files in {$base_path}" );
