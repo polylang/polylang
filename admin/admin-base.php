@@ -312,11 +312,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		$params = array( 'pll_ajax_backend' => 1 );
 		if ( $post instanceof WP_Post && $this->model->post_types->is_translated( $post->post_type ) ) {
-			$params['pll_post_id'] = (int) $post->ID;
+			$params['pll_post_id'] = $post->ID;
 		}
 
 		if ( $tag instanceof WP_Term && $this->model->taxonomies->is_translated( $tag->taxonomy ) ) {
-			$params['pll_term_id'] = (int) $tag->term_id;
+			$params['pll_term_id'] = $tag->term_id;
 		}
 
 		/**
