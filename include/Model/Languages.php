@@ -66,6 +66,13 @@ class Languages {
 	private $languages_ready = false;
 
 	/**
+	 * Languages list filters.
+	 *
+	 * @var Abstract_Languages_Filter[]
+	 */
+	private $list_filters = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -547,9 +554,10 @@ class Languages {
 	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_list()`.
 	 *
 	 * @param array $args {
-	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
-	 *   @type bool   $hide_default Hides default language from the list (default to `false`).
-	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 *   @type bool   $hide_empty    Hides languages with no posts if set to `true` (defaults to `false`).
+	 *   @type bool   $hide_default  Hides default language from the list (default to `false`).
+	 *   @type string $fields        Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 *   @type int    $translator_id Optional. ID of the user. `0` for the current user. Used only in Polylang Pro.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
@@ -608,6 +616,11 @@ class Languages {
 			 */
 			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4' );
 
+			// Filters that don't depend on arguments can be cached.
+			foreach ( $this->list_filters as $filter ) {
+				$languages = $filter->apply_before_cache( $languages );
+			}
+
 			if ( $this->are_ready() ) {
 				$this->cache->set( self::CACHE_KEY, $languages );
 			}
@@ -623,6 +636,11 @@ class Languages {
 				return $keep_empty && $keep_default;
 			}
 		);
+
+		// Filters that depend on arguments must be applied after the cache.
+		foreach ( $this->list_filters as $filter ) {
+			$languages = $filter->apply_after_cache( $languages, $args );
+		}
 
 		$languages = array_values( $languages ); // Re-index.
 
@@ -791,6 +809,19 @@ class Languages {
 			delete_option( '_transient_' . self::TRANSIENT_NAME );
 		}
 	}
+
+	/**
+	 * Registers languages list filters.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Abstract_Languages_Filter $filter Filter.
+	 * @return void
+	 */
+	public function register_list_filter( Abstract_Languages_Filter $filter ): void {
+		$this->list_filters[] = $filter;
+	}
+
 	/**
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
