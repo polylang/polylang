@@ -279,12 +279,7 @@ abstract class PLL_Translatable_Object {
 			}
 
 			$term = reset( $cached );
-			if ( ! $term instanceof WP_Term ) {
-				$terms[ $id ] = false;
-				continue;
-			}
-
-			$terms[ $id ] = $term;
+			$terms[ $id ] = $term instanceof WP_Term ? $term : false;
 		}
 
 		if ( empty( $to_query ) ) {
