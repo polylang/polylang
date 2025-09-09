@@ -308,15 +308,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return array
 	 */
 	public function get_ajax_filter_data(): array {
-		global $post_ID, $tag_ID;
+		global $post, $tag;
 
 		$params = array( 'pll_ajax_backend' => 1 );
-		if ( ! empty( $post_ID ) ) {
-			$params = array_merge( $params, array( 'pll_post_id' => (int) $post_ID ) );
+		if ( $post instanceof WP_Post && $this->model->post_types->is_translated( $post->post_type ) ) {
+			$params['pll_post_id'] = $post->ID;
 		}
 
-		if ( ! empty( $tag_ID ) ) {
-			$params = array_merge( $params, array( 'pll_term_id' => (int) $tag_ID ) );
+		if ( $tag instanceof WP_Term && $this->model->taxonomies->is_translated( $tag->taxonomy ) ) {
+			$params['pll_term_id'] = $tag->term_id;
 		}
 
 		/**
