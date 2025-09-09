@@ -267,14 +267,24 @@ abstract class PLL_Translatable_Object {
 		// Checks the cache first.
 		foreach ( $ids as $id ) {
 			$cached = get_object_term_cache( $id, $taxonomy );
+
 			if ( is_wp_error( $cached ) ) {
 				$terms[ $id ] = false;
-			} elseif ( empty( $cached ) ) {
-				$to_query[] = $id;
-			} else {
-				/** @var WP_Term[] $cached */
-				$terms[ $id ] = reset( $cached );
+				continue;
 			}
+
+			if ( ! is_array( $cached ) ) {
+				$to_query[] = $id;
+				continue;
+			}
+
+			$term = reset( $cached );
+			if ( ! $term instanceof WP_Term ) {
+				$terms[ $id ] = false;
+				continue;
+			}
+
+			$terms[ $id ] = $term;
 		}
 
 		if ( empty( $to_query ) ) {
