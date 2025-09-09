@@ -444,7 +444,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		$translations = array();
 		foreach ( $ids as $id ) {
-			if ( empty( $terms[ $id ]->description ) ) {
+			if ( empty( $terms[ $id ] ) || empty( $terms[ $id ]->description ) ) {
 				$lang = $this->get_language( $id );
 
 				if ( empty( $lang ) ) {
