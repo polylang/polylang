@@ -30,7 +30,10 @@
 			"install/",
 			"modules/",
 			"settings/"
-		]
+		],
+		"psr-4": {
+			"WP_Syntex\\Polylang\\Script\\": "bin/"
+		}
 	},
 	"autoload-dev": {
 		"classmap": [
@@ -65,7 +68,12 @@
 		],
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
-		"dist": "bin/distribute.sh"
+		"dist": "bin/distribute.sh",
+		"build-loader": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
+		"post-autoload-dump": [
+			"@build-loader ./integrations",
+			"@build-loader ./modules"
+		]
 	},
 	"scripts-descriptions": {
 		"install-suite": "Installs the WordPress tests suite (without installing the database).",
@@ -81,7 +89,8 @@
 		"lint": "Runs both PHPCS and PHPStan.",
 		"rector": "Runs Rector.",
 		"build": "Builds the project.",
-		"dist": "Make the zip file to distribute the project release."
+		"dist": "Makes the zip file to distribute the project release.",
+		"build-loader": "Builds a list of files to load."
 	},
 	"config": {
 		"allow-plugins": {

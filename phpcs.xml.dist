@@ -167,6 +167,10 @@
 	#############################################################################
 	-->
 
+	<rule ref="Squiz.Commenting.FileComment.MissingPackageTag">
+		<exclude-pattern>*-build.php</exclude-pattern>
+	</rule>
+
 	<exclude-pattern>js/*.min.js</exclude-pattern>
 	<exclude-pattern>js/build</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>
@@ -176,6 +180,7 @@
 	<exclude-pattern>rector.php</exclude-pattern>
 
 	<!-- Specific to Polylang -->
+	<exclude-pattern>bin/*.php</exclude-pattern>
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
 </ruleset>
