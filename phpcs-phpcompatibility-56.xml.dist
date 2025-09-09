@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="Polylang php 5.6">
+	<description>PHP compatibility for files that require php 5.6</description>
+
+	<arg name="colors"/>
+	<arg value="ps"/>
+	<arg name="parallel" value="20"/>
+	<arg name="cache"/>
+
+	<file>./polylang.php</file>
+	<file>./install/usable.php</file>
+	<file>./vendor/autoload.php</file>
+
+	<config name="testVersion" value="5.6-"/>
+
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>
