@@ -442,6 +442,17 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
+		// Multisite
+		if ( is_multisite() ) {
+			if ( is_plugin_active_for_network( 'POLYLANG_BASENAME' ) ) {
+				$network_activated = __( 'Yes', 'polylang' );
+			} else {
+				$network_activated = __( 'No', 'polylang' );
+			}
+			$fields['multisite']['label'] = __( 'Network Activated', 'polylang' );
+			$fields['multisite']['value'] = $network_activated;
+		}
+
 		// Create the section.
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
