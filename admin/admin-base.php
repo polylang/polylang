@@ -475,13 +475,13 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		/**
-		 * Filters the admin languages filter submenu items.
+		 * Filters the admin bar language filter submenu items.
 		 *
 		 * @since 2.6
-		 * @since 3.8 New parameter `$all_items`.
+		 * @since 3.8 Added `$all_items` parameter.
 		 *
-		 * @param array $items     The items of the admin languages filter.
-		 * @param array $all_items All the items of the admin languages filter.
+		 * @param array $items     The items of the admin languages filter to display (may be empty if menu hidden).
+		 * @param array $all_items Complete unfiltered list of all available language items.
 		 */
 		$items = apply_filters( 'pll_admin_languages_filter', $items, $all_items );
 
