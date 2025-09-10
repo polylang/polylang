@@ -467,31 +467,39 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			esc_html( $selected->name )
 		);
 
+		$all_items = array_merge( array( $all_item ), $this->model->get_languages_list() );
+		$items     = $all_items;
+
+		if ( $this->should_hide_admin_bar_menu() ) {
+			$items = array();
+		}
+
 		/**
-		 * Filters the admin languages filter submenu items
+		 * Filters the admin bar language filter submenu items.
 		 *
 		 * @since 2.6
+		 * @since 3.8 Added `$all_items` parameter.
 		 *
-		 * @param array $items The admin languages filter submenu items.
+		 * @param array $items     The items of the admin languages filter to display (may be empty if menu hidden).
+		 * @param array $all_items Complete unfiltered list of all available language items.
 		 */
-		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $this->model->get_languages_list() ) );
+		$items = apply_filters( 'pll_admin_languages_filter', $items, $all_items );
 
-		$menu = array(
-			'id'    => 'languages',
-			'title' => $selected->flag . $title,
-			'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
-			'meta'  => array(
-				'title' => __( 'Filters content by language', 'polylang' ),
-			),
+		if ( empty( $items ) ) {
+			return;
+		}
+
+		$wp_admin_bar->add_menu(
+			array(
+				'id'    => 'languages',
+				'title' => $selected->flag . $title,
+				'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
+				'meta'  => array(
+					'title' => __( 'Filters content by language', 'polylang' ),
+					'class' => 'all' === $selected->slug ? '' : 'pll-filtered-languages',
+				),
+			)
 		);
-
-		if ( 'all' !== $selected->slug ) {
-			$menu['meta']['class'] = 'pll-filtered-languages';
-		}
-
-		if ( ! empty( $items ) ) {
-			$wp_admin_bar->add_menu( $menu );
-		}
 
 		foreach ( $items as $lang ) {
 			if ( $selected->slug === $lang->slug ) {
@@ -535,5 +543,27 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
+	 * Conventionally, it should be hidden on edition pages.
+	 *
+	 * @since 3.8
+	 *
+	 * @return bool
+	 */
+	public function should_hide_admin_bar_menu(): bool {
+		global $pagenow, $typenow, $taxnow;
+
+		if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
+			return ! empty( $typenow );
+		}
+
+		if ( 'term.php' === $pagenow ) {
+			return ! empty( $taxnow );
+		}
+
+		return false;
 	}
 }

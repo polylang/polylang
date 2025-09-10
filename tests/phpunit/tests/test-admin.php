@@ -24,7 +24,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		switch_theme( 'default' ); // Restore the default theme.
 	}
 
-	public function test_admin_bar_menu() {
+	public function test_admin_bar_menu_should_show() {
 		global $wp_admin_bar;
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
@@ -47,6 +47,25 @@ class Admin_Test extends PLL_UnitTestCase {
 		$fr = $wp_admin_bar->get_node( 'fr' );
 		$this->assertEquals( 'languages', $fr->parent );
 		$this->assertEquals( '/wp-admin/edit.php?lang=fr', $fr->href );
+	}
+
+	public function test_admin_bar_menu_should_hide() {
+		global $wp_admin_bar;
+		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		$this->go_to( admin_url( 'post-new.php?post_type=page' ) );
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['typenow'] = 'page';
+
+		$links_model = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$pll_admin->init();
+
+		_wp_admin_bar_init();
+		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
+
+		$languages = $wp_admin_bar->get_node( 'languages' );
+		$this->assertEmpty( $languages, 'Languages admin bar menu should be hidden on post edit pages' );
 	}
 
 	public function test_remove_customize_submenu_with_block_base_theme() {
