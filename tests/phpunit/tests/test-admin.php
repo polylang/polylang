@@ -65,7 +65,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
 
 		$languages = $wp_admin_bar->get_node( 'languages' );
-		$this->assertEmpty( $languages );
+		$this->assertEmpty( $languages, 'Languages admin bar menu should be hidden on post edit pages' );
 	}
 
 	public function test_remove_customize_submenu_with_block_base_theme() {
