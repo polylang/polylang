@@ -66,8 +66,6 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 *
 	 * @param string|string[] $object_type Object type (taxonomy name) name or array of object type names.
 	 * @return bool
-	 *
-	 * @phpstan-param non-empty-string|non-empty-string[] $object_type
 	 */
 	public function is_translated_object_type( $object_type ) {
 		$object_types = $this->get_translated_object_types( false );

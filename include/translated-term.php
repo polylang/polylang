@@ -235,7 +235,6 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @return WP_Term[]|int[] Unmodified $terms.
 	 *
 	 * @phpstan-param array<WP_Term|positive-int> $terms
-	 * @phpstan-param array<non-empty-string> $taxonomies
 	 * @phpstan-return array<WP_Term|positive-int>
 	 */
 	public function _prime_terms_cache( $terms, $taxonomies ) {
