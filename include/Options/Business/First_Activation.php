@@ -32,12 +32,13 @@ class First_Activation extends Abstract_Option {
 	 * Returns the default value.
 	 *
 	 * @since 3.7
+	 * @since 3.8 Made `public` and `static`.
 	 *
 	 * @return int
 	 *
 	 * @phpstan-return int<0, max>
 	 */
-	protected function get_default() {
+	public static function get_default() {
 		return time();
 	}
 
