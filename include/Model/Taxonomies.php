@@ -63,7 +63,6 @@ class Taxonomies {
 			return false;
 		}
 
-		/** @phpstan-var non-empty-array<non-empty-string>|non-empty-string $tax */
 		return $this->translated_object->is_translated_object_type( $tax );
 	}
 

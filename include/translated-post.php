@@ -199,8 +199,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @param string|string[] $object_type Object type (post type) name or array of object type names.
 	 * @return bool
-	 *
-	 * @phpstan-param non-empty-string|non-empty-string[] $object_type
 	 */
 	public function is_translated_object_type( $object_type ) {
 		$post_types = $this->get_translated_object_types( false );
@@ -214,8 +212,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @param string $post_type Post type name.
 	 * @return void
-	 *
-	 * @phpstan-param non-empty-string $post_type
 	 */
 	public function registered_post_type( $post_type ) {
 		if ( $this->is_translated_object_type( $post_type ) ) {
