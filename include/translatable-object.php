@@ -268,11 +268,6 @@ abstract class PLL_Translatable_Object {
 		foreach ( $ids as $id ) {
 			$cached = get_object_term_cache( $id, $taxonomy );
 
-			if ( is_wp_error( $cached ) ) {
-				$terms[ $id ] = null;
-				continue;
-			}
-
 			if ( ! is_array( $cached ) ) {
 				$to_query[] = $id;
 				continue;
