@@ -120,7 +120,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function add_menus(): void {
 		global $admin_page_hooks;
 
-		$parent = false;
+		$parent    = false;
+		$page_type = 'languages';
 
 		foreach ( $this->get_sub_menu_items() as $tab => $tab_data ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
@@ -128,11 +129,52 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			if ( empty( $parent ) ) {
 				$parent = $page;
 				add_menu_page( $tab_data['label'], __( 'Languages', 'polylang' ), $tab_data['capability'], $page, '__return_null', 'dashicons-translation' );
-				$admin_page_hooks[ $page ] = 'languages'; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
+				$admin_page_hooks[ $page ] = $page_type; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
 			add_submenu_page( $parent, $tab_data['label'], $tab_data['label'], $tab_data['capability'], $page, array( $this, 'languages_page' ) );
 		}
+
+		/*
+		 * Get rid of the `toplevel` prefix in hook names.
+		 *
+		 * In the WP admin, if an admin screen is the first of its menu (like the PLL's "Languages" screen), the hooks
+		 * fired in the screen get a `toplevel` prefix (ex: `toplevel_page_mlang`) while all the other screens get a
+		 * slug based on the parent screen title (ex: `languages_page_mlang_strings`, where `languages` is the parent
+		 * screen's slug). This will not prevent the `toplevel` hooks to fire, but it will fire the `languages` hooks in
+		 * addition: this way, screens can be removed or moved around without the need of hooking both prefixes: using
+		 * the hooks with the `languages` prefix will work in both cases.
+		 *
+		 * @see get_plugin_page_hookname()
+		 */
+		foreach ( array( 'load-', 'admin_print_styles-', 'admin_print_scripts-', 'admin_head-', '', 'admin_print_footer_scripts-', 'admin_footer-' ) as $prefix ) {
+			add_action(
+				"{$prefix}toplevel_page_{$parent}",
+				function () use ( $prefix, $page_type, $parent ) {
+					do_action( "{$prefix}{$page_type}_page_{$parent}" );
+				}
+			);
+		}
+
+		/*
+		 * Ensure a common CSS class to the `<body>` tag.
+		 *
+		 * Due to the `toplevel` "issue" described earlier, the CSS class `toplevel_page_mlang` (for example) is added
+		 * to the body. This adds a class with the `languages` prefix. This ensures we have a common CSS class, even if
+		 * the screen is moved to the 1st position in the menu.
+		 */
+		add_action(
+			// Target the screen in 1st position only.
+			"admin_head-toplevel_page_{$parent}",
+			function () use ( $page_type, $parent ) {
+				add_filter(
+					'admin_body_class',
+					function ( $admin_body_classes ) use ( $page_type, $parent ) {
+						return "{$admin_body_classes} {$page_type}_page_{$parent}";
+					}
+				);
+			}
+		);
 	}
 
 	/**
