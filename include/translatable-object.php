@@ -253,7 +253,7 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @param int[]  $ids      Array of object IDs.
 	 * @param string $taxonomy Taxonomy name.
-	 * @return array<int,WP_Term|false> Array of terms with object ID as key.
+	 * @return array<int,WP_Term|null> Array of terms with object ID as key.
 	 */
 	protected function get_object_terms( array $ids, $taxonomy ) {
 		$ids = $this->sanitize_int_ids_list( $ids );
@@ -269,7 +269,7 @@ abstract class PLL_Translatable_Object {
 			$cached = get_object_term_cache( $id, $taxonomy );
 
 			if ( is_wp_error( $cached ) ) {
-				$terms[ $id ] = false;
+				$terms[ $id ] = null;
 				continue;
 			}
 
@@ -279,7 +279,7 @@ abstract class PLL_Translatable_Object {
 			}
 
 			$term = reset( $cached );
-			$terms[ $id ] = $term instanceof WP_Term ? $term : false;
+			$terms[ $id ] = $term instanceof WP_Term ? $term : null;
 		}
 
 		if ( empty( $to_query ) ) {
@@ -322,11 +322,11 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @param int    $id       Object ID.
 	 * @param string $taxonomy Polylang taxonomy depending if we are looking for a post (or term, or else) language.
-	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
+	 * @return WP_Term|null The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
 	 */
 	public function get_object_term( $id, $taxonomy ) {
 		$terms = $this->get_object_terms( array( $id ), $taxonomy );
-		return isset( $terms[ $id ] ) ? $terms[ $id ] : false;
+		return isset( $terms[ $id ] ) ? $terms[ $id ] : null;
 	}
 
 	/**
