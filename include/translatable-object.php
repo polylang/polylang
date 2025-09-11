@@ -317,7 +317,6 @@ abstract class PLL_Translatable_Object {
 
 	/**
 	 * Wraps `wp_get_object_terms()` to cache it and return only one object.
-	 * Inspired by the WordPress function `get_the_terms()`.
 	 *
 	 * @since 1.2
 	 *
