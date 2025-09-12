@@ -16,18 +16,6 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_Languages_Filter {
 	/**
-	 * Filters a list of languages before putting it into local cache.
-	 *
-	 * @since 3.8
-	 *
-	 * @param PLL_Language[] $languages List of languages to filter.
-	 * @return PLL_Language[]
-	 */
-	public function apply_before_cache( array $languages ): array {
-		return $languages;
-	}
-
-	/**
 	 * Filters a list of languages after putting it into local cache.
 	 *
 	 * @since 3.8

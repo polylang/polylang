@@ -616,11 +616,6 @@ class Languages {
 			 */
 			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4' );
 
-			// Filters that don't depend on arguments can be cached.
-			foreach ( $this->list_filters as $filter ) {
-				$languages = $filter->apply_before_cache( $languages );
-			}
-
 			if ( $this->are_ready() ) {
 				$this->cache->set( self::CACHE_KEY, $languages );
 			}
