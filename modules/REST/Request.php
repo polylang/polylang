@@ -213,7 +213,11 @@ class Request {
 			return $type;
 		}
 
-		$controller = $this->handler['callback'][0] ?? null;
+		if ( ! is_array( $this->handler['callback'] ) ) {
+			return null;
+		}
+
+		$controller = reset( $this->handler['callback'] );
 		if ( $controller instanceof WP_REST_Posts_Controller ) {
 			return 'post';
 		} elseif ( $controller instanceof WP_REST_Terms_Controller ) {
