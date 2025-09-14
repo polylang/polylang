@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean;
 
 defined( 'ABSPATH' ) || exit;
@@ -27,6 +28,26 @@ class Media_Support extends Abstract_Boolean {
 	 */
 	public static function key(): string {
 		return 'media_support';
+	}
+
+	/**
+	 * Adds information to the site health info array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array   $info    The current site health information.
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		if ( $this->get() ) {
+			$value = '1: ' . __( 'The media are translated', 'polylang' );
+		} else {
+			$value = '0: ' . __( 'The media are not translated', 'polylang' );
+		}
+
+		return $this->get_site_health_info( $info, $value, self::key() );
 	}
 
 	/**
