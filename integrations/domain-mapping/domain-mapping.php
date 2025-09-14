@@ -41,6 +41,7 @@ class PLL_Domain_Mapping {
 		if ( ! function_exists( 'PLL' ) ) {
 			// Rely on MU Domain Mapping.
 			redirect_to_mapped_domain();
+			return;
 		}
 
 		// The language is set from the subdomain or domain name
