@@ -261,53 +261,75 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$terms = array();
-		$to_query = array();
+		$cached_data = wp_cache_get_multiple( $ids, "{$taxonomy}_relationships" );
+		$cached_ids  = array_unique( array_keys( array_filter( $cached_data ) ) );
 
-		// Checks the cache first.
-		foreach ( $ids as $id ) {
-			$cached = get_object_term_cache( $id, $taxonomy );
+		$non_cached_ids = array_diff( $ids, $cached_ids );
 
-			if ( ! is_array( $cached ) ) {
-				$to_query[] = $id;
-				continue;
-			}
+		$results = array();
 
-			$term = reset( $cached );
-			$terms[ $id ] = $term instanceof WP_Term ? $term : null;
+		foreach ( $cached_ids as $id ) {
+			$term = get_term( $cached_data[ $id ][0] );
+
+			$results[ $id ] = $term instanceof WP_Term ? $term : null;
 		}
 
-		if ( empty( $to_query ) ) {
-			return $terms;
+		if ( empty( $non_cached_ids ) ) {
+			return $results;
 		}
 
 		// Query only non-cached terms
-		foreach ( $to_query as $id ) {
-			$object_terms = wp_get_object_terms( $id, $this->tax_to_cache, array( 'update_term_meta_cache' => false ) );
+		$_object_terms = wp_get_object_terms(
+			$non_cached_ids,
+			$this->tax_to_cache,
+			array(
+				'fields'                 => 'all_with_object_id',
+				'orderby'                => 'name',
+				'update_term_meta_cache' => false,
+			)
+		);
 
-			if ( ! is_array( $object_terms ) ) {
+		if ( ! is_array( $_object_terms ) ) {
+			return $results;
+		}
+
+		$object_terms = array();
+		foreach ( $_object_terms as $term ) {
+			if ( ! isset( $term->object_id ) ) {
 				continue;
 			}
 
-			$terms_by_tax = array();
-			foreach ( $object_terms as $term ) {
-				$terms_by_tax[ $term->taxonomy ] = $term;
-				if ( $term->taxonomy === $taxonomy ) {
-					$terms[ $id ] = $term;
-				}
-			}
+			$object_terms[ $term->object_id ][ $term->taxonomy ][] = $term->term_id;
+		}
 
+		foreach ( $non_cached_ids as $id ) {
+			$object_terms[ $id ] = $object_terms[ $id ] ?? array();
 			foreach ( $this->tax_to_cache as $tax ) {
-				if ( empty( $terms_by_tax[ $tax ] ) ) {
-					$to_cache = array();
-				} else {
-					$to_cache = array( $terms_by_tax[ $tax ]->term_id );
-				}
-				wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
+					$object_terms[ $id ][ $tax ] = $object_terms[ $id ][ $tax ] ?? array();
 			}
 		}
 
-		return $terms;
+		$cache_values = array();
+		foreach ( $object_terms as $id => $value ) {
+			foreach ( $value as $tax => $terms ) {
+				$cache_values[ $tax ][ $id ] = $terms;
+
+				if ( empty( $terms ) ) {
+					continue;
+				}
+
+				$term = get_term( $terms[0] );
+				if ( $term instanceof WP_Term && $term->taxonomy === $taxonomy ) {
+					$results[ $id ] = $term;
+				}
+			}
+		}
+
+		foreach ( $cache_values as $tax => $data ) {
+			wp_cache_add_multiple( $data, "{$tax}_relationships" );
+		}
+
+		return $results;
 	}
 
 	/**
