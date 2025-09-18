@@ -150,7 +150,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		foreach ( array( 'load-', 'admin_print_styles-', 'admin_print_scripts-', 'admin_head-', '', 'admin_print_footer_scripts-', 'admin_footer-' ) as $prefix ) {
 			add_action(
 				"{$prefix}toplevel_page_{$parent}",
-				function () use ( $prefix, $page_type, $parent ) {
+				static function () use ( $prefix, $page_type, $parent ) {
 					do_action( "{$prefix}{$page_type}_page_{$parent}" );
 				}
 			);
@@ -166,10 +166,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		add_action(
 			// Target the screen in 1st position only.
 			"admin_head-toplevel_page_{$parent}",
-			function () use ( $page_type, $parent ) {
+			static function () use ( $page_type, $parent ) {
 				add_filter(
 					'admin_body_class',
-					function ( $admin_body_classes ) use ( $page_type, $parent ) {
+					static function ( $admin_body_classes ) use ( $page_type, $parent ) {
 						return "{$admin_body_classes} {$page_type}_page_{$parent}";
 					}
 				);
