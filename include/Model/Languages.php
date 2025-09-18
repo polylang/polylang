@@ -27,8 +27,12 @@ class Languages {
 	public const LOCALE_PATTERN = '^' . self::INNER_LOCALE_PATTERN . '$';
 	public const SLUG_PATTERN   = '^' . self::INNER_SLUG_PATTERN . '$';
 
-	public const TRANSIENT_NAME = 'pll_languages_list';
-	private const CACHE_KEY     = 'languages';
+	public const TRANSIENT_NAME      = 'pll_languages_list';
+	public const TRANSFORMATIVE_ARGS = array(
+		'fields' => false,
+	);
+
+	private const CACHE_KEY = 'languages';
 
 	/**
 	 * Polylang's options.
@@ -66,11 +70,13 @@ class Languages {
 	private $languages_ready = false;
 
 	/**
-	 * Languages list filters.
+	 * Languages list proxies.
 	 *
-	 * @var Abstract_Languages_Filter[]
+	 * @var string[]
+	 *
+	 * @phpstan-var array<non-falsy-string, class-string<Abstract_Languages_Proxy>>
 	 */
-	private $list_filters = array();
+	private $proxies = array();
 
 	/**
 	 * Constructor.
@@ -554,10 +560,9 @@ class Languages {
 	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_list()`.
 	 *
 	 * @param array $args {
-	 *   @type bool   $hide_empty    Hides languages with no posts if set to `true` (defaults to `false`).
-	 *   @type bool   $hide_default  Hides default language from the list (default to `false`).
-	 *   @type string $fields        Returns only that field if set; {@see PLL_Language} for a list of fields.
-	 *   @type int    $translator_id Optional. ID of the user. `0` for the current user. Used only in Polylang Pro.
+	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
+	 *   @type bool   $hide_default Hides default language from the list (default to `false`).
+	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
@@ -632,14 +637,9 @@ class Languages {
 			}
 		);
 
-		// Filters that depend on arguments must be applied after the cache.
-		foreach ( $this->list_filters as $filter ) {
-			$languages = $filter->apply_after_cache( $languages, $args );
-		}
-
 		$languages = array_values( $languages ); // Re-index.
 
-		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
+		return $this->apply_transformative_args( $languages, $args );
 	}
 
 	/**
@@ -806,16 +806,54 @@ class Languages {
 	}
 
 	/**
-	 * Registers languages list filters.
+	 * Applies arguments that change the type of the elements of the given list of languages.
 	 *
 	 * @since 3.8
 	 *
-	 * @param Abstract_Languages_Filter $filter Filter.
-	 * @return self
+	 * @param PLL_Language[] $languages The list of language objects.
+	 * @param array          $args {
+	 *   @type string $fields Optional. Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 * }
+	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
-	public function register_list_filter( Abstract_Languages_Filter $filter ): self {
-		$this->list_filters[] = $filter;
+	public function apply_transformative_args( array $languages, array $args ): array {
+		if ( ! empty( $args['fields'] ) ) {
+			return wp_list_pluck( $languages, $args['fields'] );
+		}
+		return $languages;
+	}
+
+	/**
+	 * Registers languages proxies.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $proxy Proxy class name.
+	 * @return self
+	 *
+	 * @phpstan-param class-string<Abstract_Languages_Proxy> $proxy
+	 */
+	public function register_proxy( string $proxy ): self {
+		$this->proxies[ $proxy::key() ] = $proxy;
 		return $this;
+	}
+
+	/**
+	 * Returns a proxy that allows to filter `get_list()`.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key Proxy's key.
+	 * @return Abstract_Languages_Proxy
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function proxy( string $key ): Abstract_Languages_Proxy {
+		if ( isset( $this->proxies[ $key ] ) ) {
+			$proxy = $this->proxies[ $key ];
+			return new $proxy( $this );
+		}
+		return new Default_Languages_Proxy( $this );
 	}
 
 	/**
