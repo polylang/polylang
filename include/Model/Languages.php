@@ -811,10 +811,11 @@ class Languages {
 	 * @since 3.8
 	 *
 	 * @param Abstract_Languages_Filter $filter Filter.
-	 * @return void
+	 * @return self
 	 */
-	public function register_list_filter( Abstract_Languages_Filter $filter ): void {
+	public function register_list_filter( Abstract_Languages_Filter $filter ): self {
 		$this->list_filters[] = $filter;
+		return $this;
 	}
 
 	/**
