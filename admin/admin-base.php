@@ -612,7 +612,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		// Only if at least one language has been created.
 		if ( $this->model->has_languages() ) {
-			// For better backward compatibility, the new capability is not added here.
+			// For better backward compatibility with Polylang < 3.8, the capability is not added here.
 			$tabs['strings'] = __( 'Translations', 'polylang' );
 		}
 
