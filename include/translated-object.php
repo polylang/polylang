@@ -423,9 +423,13 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	protected function get_objects_translations( array $object_ids ) {
-		$translations = $this->get_raw_objects_translations( $object_ids );
+		$translations_arrays = $this->get_raw_objects_translations( $object_ids );
 
-		return $this->validate_objects_translations( $translations );
+		$validated = array();
+		foreach ( $translations_arrays as $id => $translations ) {
+			$validated = array_merge( $validated, $this->validate_translations( $translations, $id, 'display' ) );
+		}
+		return $validated;
 	}
 
 	/**
@@ -533,25 +537,6 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		/** @phpstan-var array<non-empty-string, positive-int> $translations */
 		return array_merge( array( $lang->slug => $id ), $translations );
-	}
-
-	/**
-	 * Validates and sanitizes multiple translations arrays and flattens the result.
-	 *
-	 * @since 3.8
-	 *
-	 * @param int[][] $translations_arrays An array of an associative array of translations with language code as key and translation ID as value.
-	 *                First level key is the id of the object that translations are related to.
-	 * @return int[]
-	 *
-	 * @phpstan-return array<non-empty-string, positive-int>
-	 */
-	protected function validate_objects_translations( array $translations_arrays ) {
-		$validated = array();
-		foreach ( $translations_arrays as $id => $translations ) {
-			$validated = array_merge( $validated, $this->validate_translations( $translations, $id, 'display' ) );
-		}
-		return $validated;
 	}
 
 	/**
