@@ -27,8 +27,12 @@ class Languages {
 	public const LOCALE_PATTERN = '^' . self::INNER_LOCALE_PATTERN . '$';
 	public const SLUG_PATTERN   = '^' . self::INNER_SLUG_PATTERN . '$';
 
-	public const TRANSIENT_NAME = 'pll_languages_list';
-	private const CACHE_KEY     = 'languages';
+	public const TRANSIENT_NAME      = 'pll_languages_list';
+	public const TRANSFORMATIVE_ARGS = array(
+		'fields' => false,
+	);
+
+	private const CACHE_KEY = 'languages';
 
 	/**
 	 * Polylang's options.
@@ -64,6 +68,15 @@ class Languages {
 	 * @var bool
 	 */
 	private $languages_ready = false;
+
+	/**
+	 * Languages list proxies.
+	 *
+	 * @var string[]
+	 *
+	 * @phpstan-var array<non-falsy-string, class-string<Abstract_Languages_Proxy>>
+	 */
+	private $proxies = array();
 
 	/**
 	 * Constructor.
@@ -626,7 +639,7 @@ class Languages {
 
 		$languages = array_values( $languages ); // Re-index.
 
-		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
+		return $this->apply_transformative_args( $languages, $args );
 	}
 
 	/**
@@ -791,6 +804,58 @@ class Languages {
 			delete_option( '_transient_' . self::TRANSIENT_NAME );
 		}
 	}
+
+	/**
+	 * Applies arguments that change the type of the elements of the given list of languages.
+	 *
+	 * @since 3.8
+	 *
+	 * @param PLL_Language[] $languages The list of language objects.
+	 * @param array          $args {
+	 *   @type string $fields Optional. Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 * }
+	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
+	 */
+	public function apply_transformative_args( array $languages, array $args ): array {
+		if ( ! empty( $args['fields'] ) ) {
+			return wp_list_pluck( $languages, $args['fields'] );
+		}
+		return $languages;
+	}
+
+	/**
+	 * Registers languages proxies.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $proxy Proxy class name.
+	 * @return self
+	 *
+	 * @phpstan-param class-string<Abstract_Languages_Proxy> $proxy
+	 */
+	public function register_proxy( string $proxy ): self {
+		$this->proxies[ $proxy::key() ] = $proxy;
+		return $this;
+	}
+
+	/**
+	 * Returns a proxy that allows to filter `get_list()`.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key Proxy's key.
+	 * @return Abstract_Languages_Proxy
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function proxy( string $key ): Abstract_Languages_Proxy {
+		if ( isset( $this->proxies[ $key ] ) ) {
+			$proxy = $this->proxies[ $key ];
+			return new $proxy( $this );
+		}
+		return new Default_Languages_Proxy( $this );
+	}
+
 	/**
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
