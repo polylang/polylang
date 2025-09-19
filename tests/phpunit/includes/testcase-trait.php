@@ -289,6 +289,9 @@ trait PLL_UnitTestCase_Trait {
 		}
 	}
 
+	/**
+	 * Resets PLL_Translatable_Objects::$objects static property to avoid conflict in tests.
+	 */
 	protected static function reset_translatable_objects_registry() {
 		$reflection = new ReflectionClass( PLL_Translatable_Objects::class );
 		$property   = $reflection->getProperty('objects');
