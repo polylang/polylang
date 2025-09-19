@@ -275,9 +275,11 @@ abstract class PLL_Translatable_Object {
 		$terms = array();
 		foreach ( $cached_values as $object_id => $term_ids ) {
 			if ( ! empty( $term_ids ) ) {
-				$term_id             = reset( $term_ids ); // There is only one term for language or translation groups.
+				$term_id = reset( $term_ids ); // There is only one term for language or translation groups.
+
+				/** @var WP_Term $term */
 				$term                = get_term( $term_id );
-				$terms[ $object_id ] = $term instanceof WP_Term ? $term : null;
+				$terms[ $object_id ] = $term;
 			}
 		}
 
