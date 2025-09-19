@@ -417,13 +417,13 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int[] $ids Array of object IDs.
+	 * @param int[] $object_ids Array of object IDs.
 	 * @return int[] An associative array of translations with language code as key and translation ID as value.
 	 *
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
-	protected function get_objects_translations( array $ids ) {
-		$translations = $this->get_raw_objects_translations( $ids );
+	protected function get_objects_translations( array $object_ids ) {
+		$translations = $this->get_raw_objects_translations( $object_ids );
 
 		return $this->validate_objects_translations( $translations );
 	}
@@ -434,16 +434,16 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int[] $ids Array of object IDs.
+	 * @param int[] $object_ids Array of object IDs.
 	 * @return array[] An associative array of translations arrays with language code as key and translation ID as value.
 	 *
 	 * @phpstan-return array<int,array<non-empty-string, positive-int>>
 	 */
-	protected function get_raw_objects_translations( array $ids ) {
-		$terms = $this->get_object_terms( $ids, $this->tax_translations );
+	protected function get_raw_objects_translations( array $object_ids ) {
+		$terms = $this->get_object_terms( $object_ids, $this->tax_translations );
 
 		$translations = array();
-		foreach ( $ids as $id ) {
+		foreach ( $object_ids as $id ) {
 			if ( empty( $terms[ $id ] ) || empty( $terms[ $id ]->description ) ) {
 				$translations[ $id ] = array();
 				continue;
