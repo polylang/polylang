@@ -294,8 +294,8 @@ trait PLL_UnitTestCase_Trait {
 	 */
 	protected static function reset_translatable_objects_registry() {
 		$reflection = new ReflectionClass( PLL_Translatable_Objects::class );
-		$property   = $reflection->getProperty('objects');
-		$property->setAccessible(true);
+		$property   = $reflection->getProperty( 'objects' );
+		$property->setAccessible( true );
 		$property->setValue( null, array() );
 	}
 }
