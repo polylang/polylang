@@ -435,7 +435,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @since 3.8
 	 *
 	 * @param int[] $object_ids Array of object IDs.
-	 * @return array[] An associative array of translations arrays with language code as key and translation ID as value.
+	 * @return int[][] An array of an associative array of translations with language code as key and translation ID as value.
+	 *                 First level key is the id of the object that translations are related to.
 	 *
 	 * @phpstan-return array<int,array<non-empty-string, positive-int>>
 	 */
@@ -535,11 +536,12 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	}
 
 	/**
-	 * Validates and sanitizes multiple translations arrays.
+	 * Validates and sanitizes multiple translations arrays and flattens the result.
 	 *
 	 * @since 3.8
 	 *
-	 * @param array[] $translations_arrays An associative array of translations arrays with language code as key and translation ID as value.
+	 * @param int[][] An array of an associative array of translations with language code as key and translation ID as value.
+	 *                First level key is the id of the object that translations are related to.
 	 * @return int[]
 	 *
 	 * @phpstan-return array<non-empty-string, positive-int>
