@@ -47,3 +47,9 @@ parameters:
 			count: 1
 			path: include/mo.php
 
+		# Ignored because $object_id isn't declared and documented in WP_Term class.
+		-
+			message: "#^Access to an undefined property WP_Term\\:\\:\\$object_id\\.$#"
+			count: 1
+			path: include/translatable-object.php
+

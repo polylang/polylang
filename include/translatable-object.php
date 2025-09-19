@@ -318,10 +318,6 @@ abstract class PLL_Translatable_Object {
 
 		$object_terms = array();
 		foreach ( $terms as $term ) {
-			if ( ! isset( $term->object_id ) ) {
-				continue;
-			}
-
 			$object_terms[ $term->taxonomy ][ $term->object_id ][] = $term->term_id;
 		}
 
