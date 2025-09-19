@@ -111,7 +111,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Adds the links to Polylang's admin panels in the WordPress admin menu.
+	 * Adds links to Polylang's admin panels to the WordPress admin menu.
 	 *
 	 * @since 0.1
 	 *
