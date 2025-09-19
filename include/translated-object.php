@@ -540,7 +540,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int[][] An array of an associative array of translations with language code as key and translation ID as value.
+	 * @param int[][] $translations_arrays An array of an associative array of translations with language code as key and translation ID as value.
 	 *                First level key is the id of the object that translations are related to.
 	 * @return int[]
 	 *
