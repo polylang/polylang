@@ -5,6 +5,8 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
+use PLL_Translatable_Objects;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -36,11 +38,16 @@ class Language_Taxonomies extends Abstract_Object_Types {
 	 * @phpstan-return array<non-falsy-string>
 	 */
 	protected function get_object_types(): array {
+		$translatable_objects = new PLL_Translatable_Objects();
+
 		/** @phpstan-var array<non-falsy-string> */
 		return array_diff(
-			PLL()->model->translatable_objects->get_taxonomy_names( array( 'language' ) ),
+			$translatable_objects->get_taxonomy_names( array( 'language' ) ),
 			// Exclude the post and term language taxonomies from the list.
-			array( PLL()->model->post->get_tax_language(), PLL()->model->term->get_tax_language() )
+			array(
+				$translatable_objects->get( 'post' )->get_tax_language(),
+				$translatable_objects->get( 'term' )->get_tax_language(),
+			)
 		);
 	}
 
