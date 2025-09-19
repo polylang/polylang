@@ -341,13 +341,13 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 1.2
 	 *
-	 * @param int    $id       Object ID.
-	 * @param string $taxonomy Polylang taxonomy depending if we are looking for a post (or term, or else) language.
+	 * @param int    $object_id Object ID.
+	 * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post (or term, or else) language.
 	 * @return WP_Term|null The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
 	 */
-	public function get_object_term( $id, $taxonomy ) {
-		$terms = $this->get_object_terms( array( $id ), $taxonomy );
-		return isset( $terms[ $id ] ) ? $terms[ $id ] : null;
+	public function get_object_term( $object_id, $taxonomy ) {
+		$terms = $this->get_object_terms( array( $object_id ), $taxonomy );
+		return isset( $terms[ $object_id ] ) ? $terms[ $object_id ] : null;
 	}
 
 	/**
