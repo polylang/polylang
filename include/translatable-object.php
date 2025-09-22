@@ -246,8 +246,7 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Wraps wp_get_object_terms() to cache it for multiple objects.
-	 * Similar to get_object_term() but for multiple objects.
+	 * Wraps `wp_get_object_terms()` to cache it for multiple objects.
 	 *
 	 * @since 3.8
 	 *
