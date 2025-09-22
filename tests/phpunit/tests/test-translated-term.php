@@ -185,7 +185,8 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->term->save_translations( $terms['de'], array() );
 
 		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
-		/**
+		
+		/*
 		 * Keeps the the translation group term_id corresponding to the German term which has just been updated.
 		 * The goal is to be able to compare it when we will link again the German term with either the English term later.
 		 */

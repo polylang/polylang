@@ -103,7 +103,6 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * Checks that the translations group are kept unique when linking several translations together.
 	 *
 	 * @ticket #2717 see {https://github.com/polylang/polylang-pro/issues/2717}.
-	 * @covers PLL_Translated_Object::save_translations()
 	 */
 	public function test_save_translations() {
 		$posts = self::factory()->post->create_translated(
@@ -128,7 +127,12 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['de'], 'fr' ) );
 		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['de'], 'en' ) );
 
-		// Removes the translations from the group by updating the German post.
+		/*
+		.* Removes the translations from the group by updating the German post.
+		.* It keeps a translations group only for German.
+		.* Translations in English and French are also unlinked.
+		.* See `PLL_Translated_Post::delete_translation()`.
+		 */
 		self::$model->post->save_translations( $posts['de'], array() );
 
 		$terms = wp_get_object_terms( $posts, 'post_translations' );
