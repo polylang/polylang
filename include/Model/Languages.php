@@ -72,9 +72,9 @@ class Languages {
 	/**
 	 * Languages list proxies.
 	 *
-	 * @var string[]
+	 * @var Abstract_Languages_Proxy[]
 	 *
-	 * @phpstan-var array<non-falsy-string, class-string<Abstract_Languages_Proxy>>
+	 * @phpstan-var array<non-falsy-string, Abstract_Languages_Proxy>
 	 */
 	private $proxies = array();
 
@@ -828,12 +828,10 @@ class Languages {
 	 *
 	 * @since 3.8
 	 *
-	 * @param string $proxy Proxy class name.
+	 * @param Abstract_Languages_Proxy $proxy Proxy instance.
 	 * @return self
-	 *
-	 * @phpstan-param class-string<Abstract_Languages_Proxy> $proxy
 	 */
-	public function register_proxy( string $proxy ): self {
+	public function register_proxy( Abstract_Languages_Proxy $proxy ): self {
 		$this->proxies[ $proxy::key() ] = $proxy;
 		return $this;
 	}
@@ -845,15 +843,9 @@ class Languages {
 	 *
 	 * @param string $key Proxy's key.
 	 * @return Abstract_Languages_Proxy
-	 *
-	 * @phpstan-param non-falsy-string $key
 	 */
 	public function proxy( string $key ): Abstract_Languages_Proxy {
-		if ( isset( $this->proxies[ $key ] ) ) {
-			$proxy = $this->proxies[ $key ];
-			return new $proxy( $this );
-		}
-		return new Default_Languages_Proxy( $this );
+		return $this->proxies[ $key ] ?? new Default_Languages_Proxy( $this );
 	}
 
 	/**
