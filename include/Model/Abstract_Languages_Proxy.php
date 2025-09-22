@@ -52,7 +52,7 @@ abstract class Abstract_Languages_Proxy {
 	 */
 	public function get_list( array $args = array() ): array {
 		$languages = $this->languages->get_list(
-			array_diff_key( $args, $this->languages::TRANSFORMATIVE_ARGS )
+			array_diff_key( $args, array( 'fields' => null ) )
 		);
 		$languages = $this->filter_list( $languages, $args );
 		$languages = array_values( $languages ); // Re-index.

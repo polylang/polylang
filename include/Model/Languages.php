@@ -27,12 +27,8 @@ class Languages {
 	public const LOCALE_PATTERN = '^' . self::INNER_LOCALE_PATTERN . '$';
 	public const SLUG_PATTERN   = '^' . self::INNER_SLUG_PATTERN . '$';
 
-	public const TRANSIENT_NAME      = 'pll_languages_list';
-	public const TRANSFORMATIVE_ARGS = array(
-		'fields' => false,
-	);
-
-	private const CACHE_KEY = 'languages';
+	public const TRANSIENT_NAME = 'pll_languages_list';
+	private const CACHE_KEY     = 'languages';
 
 	/**
 	 * Polylang's options.
