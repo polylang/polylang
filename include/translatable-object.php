@@ -337,7 +337,7 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Wraps `wp_get_object_terms()` to cache it and return only one object.
+	 * Return terms associated to the given object in the given taxonomy.
 	 *
 	 * @since 1.2
 	 *
@@ -347,7 +347,7 @@ abstract class PLL_Translatable_Object {
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
 		$terms = $this->get_object_terms( array( $object_id ), $taxonomy );
-		return isset( $terms[ $object_id ] ) ? $terms[ $object_id ] : null;
+		return $terms[ $object_id ] ?? null;
 	}
 
 	/**

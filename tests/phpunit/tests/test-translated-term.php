@@ -157,7 +157,6 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	 * Checks that the translations group are correctly updated when linking several translations together.
 	 *
 	 * @ticket #2717 see {https://github.com/polylang/polylang-pro/issues/2717}.
-	 * @covers PLL_Translated_Object::save_translations()
 	 */
 	public function test_save_translations() {
 		$terms = self::factory()->term->create_translated(
