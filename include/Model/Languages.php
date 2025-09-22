@@ -639,7 +639,7 @@ class Languages {
 
 		$languages = array_values( $languages ); // Re-index.
 
-		return $this->apply_transformative_args( $languages, $args );
+		return $this->convert_list( $languages, $args );
 	}
 
 	/**
@@ -816,7 +816,7 @@ class Languages {
 	 * }
 	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
-	public function apply_transformative_args( array $languages, array $args ): array {
+	public function convert_list( array $languages, array $args ): array {
 		if ( ! empty( $args['fields'] ) ) {
 			return wp_list_pluck( $languages, $args['fields'] );
 		}

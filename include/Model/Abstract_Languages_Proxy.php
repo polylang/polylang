@@ -57,7 +57,7 @@ abstract class Abstract_Languages_Proxy {
 		$languages = $this->filter_list( $languages, $args );
 		$languages = array_values( $languages ); // Re-index.
 
-		return $this->languages->apply_transformative_args( $languages, $args );
+		return $this->languages->convert_list( $languages, $args );
 	}
 
 	/**
