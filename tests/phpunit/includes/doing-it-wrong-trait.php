@@ -36,6 +36,14 @@ trait PLL_Doing_It_Wrong_Trait {
 	 * @return void
 	 */
 	public function doing_it_wrong_run( $function, $message = '', $version = '' ) {
+		if ( 'WP_Syntex\Polylang\Model\Languages::get_objects()' === $function ) {
+			return;
+		}
+
+		/*
+		 * Backward compatibility with Polylang < 3.8, useful to use the latest test library
+		 * when testing Polylang for WooCommerce with older versions of Polylang.
+		 */
 		if ( 'WP_Syntex\Polylang\Model\Languages::get_list()' === $function ) {
 			return;
 		}
