@@ -563,6 +563,26 @@ class Languages {
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
 	public function get_list( $args = array() ): array {
+		return $this->convert_list(
+			$this->get_objects( $args ),
+			$args
+		);
+	}
+
+	/**
+	 * Returns the list of available languages.
+	 * - Stores the list in a db transient (except flags), unless `PLL_CACHE_LANGUAGES` is set to false.
+	 * - Caches the list (with flags) in a `PLL_Cache` object.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $args {
+	 *   @type bool $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
+	 *   @type bool $hide_default Hides default language from the list (default to `false`).
+	 * }
+	 * @return PLL_Language[]
+	 */
+	public function get_objects( $args = array() ): array {
 		if ( ! $this->are_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
@@ -633,9 +653,7 @@ class Languages {
 			}
 		);
 
-		$languages = array_values( $languages ); // Re-index.
-
-		return $this->convert_list( $languages, $args );
+		return array_values( $languages ); // Re-index.
 	}
 
 	/**
