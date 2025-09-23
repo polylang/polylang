@@ -50,24 +50,5 @@ abstract class Abstract_Languages_Proxy {
 	 * @param array $args Optional arguments to pass to `Languages::get_list()`.
 	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
-	public function get_list( array $args = array() ): array {
-		$languages = $this->languages->get_list(
-			array_diff_key( $args, array( 'fields' => null ) )
-		);
-		$languages = $this->filter_list( $languages, $args );
-		$languages = array_values( $languages ); // Re-index.
-
-		return $this->languages->convert_list( $languages, $args );
-	}
-
-	/**
-	 * Filters the given list of languages, according to this proxy.
-	 *
-	 * @since 3.8
-	 *
-	 * @param PLL_Language[] $languages The list of language objects.
-	 * @param array          $args      Optional arguments passed to `get_list()`.
-	 * @return PLL_Language[]
-	 */
-	abstract protected function filter_list( array $languages, array $args ): array;
+	abstract public function get_list( array $args = array() ): array;
 }

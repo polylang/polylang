@@ -29,15 +29,14 @@ class Default_Languages_Proxy extends Abstract_Languages_Proxy {
 	}
 
 	/**
-	 * Filters the given list of languages, according to this proxy.
+	 * Returns the list of available languages after passing it through this proxy.
 	 *
 	 * @since 3.8
 	 *
-	 * @param PLL_Language[] $languages The list of language objects.
-	 * @param array          $args      Optional arguments passed to `get_list()`.
-	 * @return PLL_Language[]
+	 * @param array $args Optional arguments to pass to `Languages::get_list()`.
+	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
-	protected function filter_list( array $languages, array $args ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return $languages;
+	public function get_list( array $args = array() ): array {
+		return $this->languages->get_list( $args );
 	}
 }
