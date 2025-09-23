@@ -562,7 +562,7 @@ class Languages {
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
-	public function get_list( $args = array() ): array {
+	public function get_list( array $args = array() ): array {
 		return $this->convert_list(
 			$this->get_objects( $args ),
 			$args
@@ -582,7 +582,7 @@ class Languages {
 	 * }
 	 * @return PLL_Language[]
 	 */
-	public function get_objects( $args = array() ): array {
+	public function get_objects( array $args = array() ): array {
 		if ( ! $this->are_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',

@@ -27,7 +27,7 @@ abstract class Abstract_Languages_Proxy {
 	 *
 	 * @param Languages $languages The object to proxy.
 	 */
-	public function __construct( $languages ) {
+	public function __construct( Languages $languages ) {
 		$this->languages = $languages;
 	}
 
