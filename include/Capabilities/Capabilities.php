@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.8
  */
-class Hooks {
+class Capabilities {
 	/**
 	 * Constructor.
 	 *

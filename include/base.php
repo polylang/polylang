@@ -3,9 +3,9 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities;
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Options\Options;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
  * Base class for both admin and frontend
@@ -19,7 +19,7 @@ abstract class PLL_Base {
 	 *
 	 * @since 3.8
 	 *
-	 * @var Capabilities\Hooks
+	 * @var Capabilities
 	 */
 	public $capabilities;
 
@@ -69,7 +69,7 @@ abstract class PLL_Base {
 	 * @param PLL_Links_Model $links_model Links Model.
 	 */
 	public function __construct( PLL_Links_Model &$links_model ) {
-		$this->capabilities = new Capabilities\Hooks();
+		$this->capabilities = new Capabilities();
 		$this->links_model  = &$links_model;
 		$this->model        = &$links_model->model;
 		$this->options      = $this->model->options;
