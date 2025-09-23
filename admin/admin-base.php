@@ -624,7 +624,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * @since 1.5.1
 		 *
 		 * @param string[] $tabs List of sub-menu items with page slugs as array keys and titles as array values.
-		 * @phpstan-param array<non-empty-string, string> $tabs
 		 */
 		$tabs   = apply_filters( 'pll_settings_tabs', $tabs );
 		$return = array();
