@@ -123,16 +123,17 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$parent    = false;
 		$page_type = 'languages';
 
-		foreach ( $this->get_sub_menu_items() as $tab => $tab_data ) {
+		foreach ( $this->get_sub_menu_items() as $tab => $label ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
 
 			if ( empty( $parent ) ) {
 				$parent = $page;
-				add_menu_page( $tab_data['label'], __( 'Languages', 'polylang' ), $tab_data['capability'], $page, '__return_null', 'dashicons-translation' );
+				add_menu_page( $label, __( 'Languages', 'polylang' ), $capa, $page, '__return_null', 'dashicons-translation' );
 				$admin_page_hooks[ $page ] = $page_type; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
-			add_submenu_page( $parent, $tab_data['label'], $tab_data['label'], $tab_data['capability'], $page, array( $this, 'languages_page' ) );
+			add_submenu_page( $parent, $label, $label, $capa, $page, array( $this, 'languages_page' ) );
 		}
 
 		/*
@@ -603,7 +604,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *     @type string $capability Optional. User capability. Default is `manage_options`.
 	 * }
 	 *
-	 * @phpstan-return array<non-empty-string, array{label: string, capability: non-empty-string}>
+	 * @phpstan-return array<non-empty-string, string>
 	 */
 	protected function get_sub_menu_items(): array {
 		$tabs = array(
@@ -612,7 +613,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		// Only if at least one language has been created.
 		if ( $this->model->has_languages() ) {
-			// For better backward compatibility with Polylang < 3.8, the capability is not added here.
 			$tabs['strings'] = __( 'Translations', 'polylang' );
 		}
 
@@ -622,49 +622,19 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * Filter the list of sub-menu items in Polylang settings.
 		 *
 		 * @since 1.5.1
-		 * @since 3.8 Added the possibility to pass user capabilities.
 		 *
-		 * @param string[]|string[][] $tabs {
-		 *     List of sub-menu items with page slugs as array keys. Can be an array of titles, or an array of arrays as follow:
-		 *
-		 *     @type string $label      Tab title.
-		 *     @type string $capability Optional. User capability. Default is `manage_options`.
-		 * }
-		 * @phpstan-param array<non-empty-string, string|array{label: string, capability: non-empty-string}> $tabs
+		 * @param string[] $tabs List of sub-menu items with page slugs as array keys and titles as array values.
+		 * @phpstan-param array<non-empty-string, string> $tabs
 		 */
-		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
-
-		if ( isset( $tabs['strings'] ) && is_string( $tabs['strings'] ) ) {
-			$tabs['strings'] = array(
-				'label'      => $tabs['strings'],
-				'capability' => 'manage_translations',
-			);
-		}
-
+		$tabs   = apply_filters( 'pll_settings_tabs', $tabs );
 		$return = array();
 
-		foreach ( $tabs as $tab => $label_or_data ) {
-			if ( is_array( $label_or_data ) ) {
-				$menu_data = array_merge(
-					array(
-						'label'      => '',
-						'capability' => 'manage_options',
-					),
-					$label_or_data
-				);
-			} elseif ( is_string( $label_or_data ) ) {
-				// Backard compatibility.
-				$menu_data = array(
-					'label'      => $label_or_data,
-					'capability' => 'manage_options',
-				);
-			} else {
-				continue;
-			}
+		foreach ( $tabs as $tab => $label ) {
+			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
 
-			if ( current_user_can( $menu_data['capability'] ) ) {
+			if ( current_user_can( $capa ) ) {
 				// Keep only useful tabs to ease `add_menu_page()` in `PLL_Admin_Base::add_menus()`.
-				$return[ $tab ] = $menu_data;
+				$return[ $tab ] = $label;
 			}
 		}
 
