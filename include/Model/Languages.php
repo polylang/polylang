@@ -840,7 +840,7 @@ class Languages {
 	 * @return Abstract_Languages_Proxy
 	 */
 	public function proxy( string $key ): Abstract_Languages_Proxy {
-		return $this->proxies[ $key ] ?? new Default_Languages_Proxy( $this );
+		return $this->proxies[ $key ] ?? new Pass_Through_Proxy( $this );
 	}
 
 	/**

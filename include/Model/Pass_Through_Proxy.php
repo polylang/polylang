@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.8
  */
-class Default_Languages_Proxy extends Abstract_Languages_Proxy {
+class Pass_Through_Proxy extends Abstract_Languages_Proxy {
 	/**
 	 * Returns the proxy's key.
 	 *
