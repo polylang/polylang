@@ -8,7 +8,7 @@ namespace WP_Syntex\Polylang\Capabilities;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * A class allowing to determine if a user can translate content.
+ * A class allowing to map Polylang's custom user capabilities to WP's native ones.
  *
  * @since 3.8
  */
