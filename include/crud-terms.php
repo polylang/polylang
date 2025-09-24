@@ -79,9 +79,6 @@ class PLL_CRUD_Terms {
 		add_filter( 'pre_term_name', array( $this, 'set_pre_term_name' ) );
 		add_filter( 'pre_term_slug', array( $this, 'set_pre_term_slug' ), 10, 2 );
 
-		// Adds cache domain when querying terms
-		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
-
 		// Filters terms by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 		add_action( 'pre_get_posts', array( $this, 'set_tax_query_lang' ), 999 );
@@ -186,32 +183,6 @@ class PLL_CRUD_Terms {
 		}
 
 		return ! empty( $this->curlang ) ? array( $this->curlang ) : array();
-	}
-
-	/**
-	 * Adds language dependent cache domain when querying terms.
-	 * Useful as the 'lang' parameter is not included in cache key by WordPress.
-	 *
-	 * @since 1.3
-	 *
-	 * @param array    $args       WP_Term_Query arguments.
-	 * @param string[] $taxonomies Queried taxonomies.
-	 * @return array Modified arguments.
-	 */
-	public function get_terms_args( $args, $taxonomies ) {
-		// Don't break _get_term_hierarchy().
-		if ( 'all' === $args['get'] && 'id' === $args['orderby'] && 'id=>parent' === $args['fields'] ) {
-			$args['lang'] = '';
-		}
-
-		if ( isset( $this->tax_query_lang ) ) {
-			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
-		}
-
-		foreach ( $this->get_queried_languages( $taxonomies, $args ) as $language ) {
-			$args['cache_domain'] = empty( $args['cache_domain'] ) ? "pll_{$language->slug}" : "{$args['cache_domain']},{$language->slug}";
-		}
-		return $args;
 	}
 
 	/**
