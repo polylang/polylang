@@ -562,7 +562,7 @@ class Languages {
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
-	public function get_list( array $args = array() ): array {
+	public function get_list( $args = array() ): array {
 		if ( ! $this->are_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
@@ -811,7 +811,7 @@ class Languages {
 	 * }
 	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
-	public function convert_list( array $languages, array $args ): array {
+	public function convert_list( array $languages, $args ): array {
 		if ( ! empty( $args['fields'] ) ) {
 			return wp_list_pluck( $languages, $args['fields'] );
 		}
