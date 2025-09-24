@@ -40,7 +40,7 @@ abstract class Abstract_Languages_Proxy {
 	 *
 	 * @phpstan-return non-falsy-string
 	 */
-	abstract public static function key(): string;
+	abstract public function key(): string;
 
 	/**
 	 * Returns the list of available languages after passing it through this proxy.

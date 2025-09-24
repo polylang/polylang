@@ -24,7 +24,7 @@ class Default_Languages_Proxy extends Abstract_Languages_Proxy {
 	 *
 	 * @phpstan-return non-falsy-string
 	 */
-	public static function key(): string {
+	public function key(): string {
 		return 'default';
 	}
 

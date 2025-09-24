@@ -827,7 +827,7 @@ class Languages {
 	 * @return self
 	 */
 	public function register_proxy( Abstract_Languages_Proxy $proxy ): self {
-		$this->proxies[ $proxy::key() ] = $proxy;
+		$this->proxies[ $proxy->key() ] = $proxy;
 		return $this;
 	}
 
