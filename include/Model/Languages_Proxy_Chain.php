@@ -55,7 +55,7 @@ class Languages_Proxy_Chain {
 	 * @param array $args Optional arguments to pass to `Languages::get_list()`.
 	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
-	public function get_list( $args = array() ): array {
+	public function get_list( array $args = array() ): array {
 		$fields = $args['fields'] ?? null;
 		unset( $args['fields'] );
 
@@ -71,7 +71,7 @@ class Languages_Proxy_Chain {
 		$languages      = array_values( $languages ); // Re-index.
 		$args['fields'] = $fields;
 
-		return $this->languages->convert_list( $languages, (array) $args );
+		return $this->languages->convert_list( $languages, $args );
 	}
 
 	/**
