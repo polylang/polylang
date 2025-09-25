@@ -74,7 +74,7 @@ class Languages_Proxies {
 	}
 
 	/**
-	 * Returns proxies chain.
+	 * Stacks a proxy that will filter the list of languages.
 	 *
 	 * @since 3.8
 	 *

@@ -832,7 +832,7 @@ class Languages {
 	}
 
 	/**
-	 * Returns a proxy that allows to filter `get_list()`.
+	 * Stacks a proxy that will filter the list of languages.
 	 *
 	 * @since 3.8
 	 *
