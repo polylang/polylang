@@ -81,7 +81,7 @@ class Languages_Proxies {
 	 * @param string $key Proxy's key.
 	 * @return Languages_Proxies
 	 */
-	public function proxy( string $key ): Languages_Proxies {
+	public function filter( string $key ): Languages_Proxies {
 		$this->stack[] = $key;
 		return $this;
 	}

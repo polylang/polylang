@@ -839,7 +839,7 @@ class Languages {
 	 * @param string $key Proxy's key.
 	 * @return Languages_Proxies
 	 */
-	public function proxy( string $key ): Languages_Proxies {
+	public function filter( string $key ): Languages_Proxies {
 		return new Languages_Proxies( $this, $this->proxies, $key );
 	}
 
