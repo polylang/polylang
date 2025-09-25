@@ -31,10 +31,14 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 			array( 'lang' => 'de' )
 		);
 
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 1, $terms );
+
 		$pll_admin = ( new PLL_Context_Admin() )->get();
 		// To avoid an extra query due to the Privacy policy page translation management.
 		remove_filter( 'map_meta_cap', array( $pll_admin->filters, 'fix_privacy_policy_page_editing' ), 10 );
 
+		wp_cache_flush();
 		$this->startQueryCount();
 
 		$post_ID = $posts['en'];
@@ -44,27 +48,9 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 
 		$this->stopQueryCount();
 
-		$this->assertSame( 2, $this->query_counter, 'Number of queries when loading post language meta box should be 3.' );
-	}
+		$this->writeResultToFile( array( 'posts' => $posts, 'translations' => reset( $terms ) ) );
 
-	/**
-	 * Starts counting database queries.
-	 */
-	protected function startQueryCount() {
-		$this->query_counter     = 0;
-		$this->captured_queries  = array();
-		$this->monitoring_active = true;
-		$this->start_time        = microtime( true );
-
-		add_filter( 'query', array( $this, 'countQuery' ), 10, 1 );
-	}
-
-	/**
-	 * Ends counting database queries.
-	 */
-	protected function stopQueryCount() {
-		$this->monitoring_active = false;
-		remove_filter( 'query', array( $this, 'countQuery' ), 10 );
+		$this->assertSame( 10, $this->query_counter, 'Number of queries when loading post language meta box should be 3.' );
 	}
 
 	/**
@@ -88,5 +74,91 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 		);
 
 		return $query;
+	}
+
+	/**
+	 * Starts counting database queries.
+	 */
+	private function startQueryCount() {
+		$this->query_counter     = 0;
+		$this->captured_queries  = array();
+		$this->monitoring_active = true;
+		$this->start_time        = microtime( true );
+
+		add_filter( 'query', array( $this, 'countQuery' ), 10, 1 );
+	}
+
+	/**
+	 * Ends counting database queries.
+	 */
+	private function stopQueryCount() {
+		$this->monitoring_active = false;
+		remove_filter( 'query', array( $this, 'countQuery' ), 10 );
+	}
+
+	private function writeResultToFile( array $objects ) {
+		global $wpdb;
+
+		$content  = "=== POLYLANG DB QUERIES LOG ===\n";
+		$content .= 'Test: ' . $this->getName() . "\n";
+		$content .= 'Total queries: ' . $this->query_counter . "\n";
+		$content .= 'Total execution time: ' . number_format( microtime( true ) - $this->start_time, 4 ) . " seconds\n";
+		$content .= str_repeat( '=', 50 ) . "\n\n";
+
+		$content .= "--- Posts ---\n";
+
+		$callback = function ( $key, $value ) {
+			return $key . ' => ' . $value;
+		};
+
+		$posts = array_map(
+			$callback,
+			array_keys( $objects['posts'] ),
+			$objects['posts']
+		);
+
+		$content .= implode( "\n", $posts ) . "\n";
+		$content .= str_repeat( '=', 13 ) . "\n\n";
+
+		if ( ! empty( $objects['translations'] ) ) {
+			$content .= "--- Translations ---\n";
+			$content .= "Translations group: {$objects['translations']->term_id}\n";
+
+			$translations = maybe_unserialize( $objects['translations']->description );
+
+			$content .= implode( "\n", array_map( $callback, array_keys( $translations ), $translations ) ) . "\n";
+			$content .= str_repeat( '=', 20 ) . "\n\n";
+		}
+
+		foreach ( $this->captured_queries as $i => $query_data ) {
+			$content .= "--- QUERY #{$i} ---\n";
+			$content .= "SQL:\n" . $query_data['sql'] . "\n\n";
+
+			// Rerun the query after `query` filter has been removed.
+			$results = $wpdb->get_results( $query_data['sql'], ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+			$formatted = array();
+			if ( ! empty( $results ) ) {
+
+				foreach ( $results as $index => $row ) {
+					$formatted[] = '=== Résultat #' . ( $index + 1 ) . ' ===';
+					$formatted = array_merge(
+						$formatted,
+						array_map( $callback, array_keys( $row ), $row )
+					);
+					$formatted[] = '';
+				}
+			}
+
+			$content .= implode( "\n", $formatted ) . "\n";
+			$content .= "Timestamp: {$query_data['timestamp']}s\n";
+			$content .= "Backtrace:\n" . implode( "\n", $query_data['backtrace'] ) . "\n\n\n";
+		}
+
+		$log_dir = PLL_TEST_DATA_DIR . '/polylang-query-logs/';
+
+		@mkdir( $log_dir );
+		$timestamp = gmdate( 'Y-m-d_H-i-s' );
+		file_put_contents( "{$log_dir}queries_{$timestamp}.log", $content );
 	}
 }
