@@ -14,6 +14,7 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 	private $start_time = 0;
 
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 		$factory->language->create_many( 3 );
 	}
 
