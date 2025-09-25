@@ -10,7 +10,7 @@ use PLL_Language;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Abstract class allowing to proxy the list of languages.
+ * Class allowing to chain language proxies.
  *
  * @since 3.8
  */
@@ -48,7 +48,7 @@ class Languages_Proxy_Chain {
 	}
 
 	/**
-	 * Returns the list of available languages after passing it through this proxy.
+	 * Returns the list of available languages after passing it through proxies.
 	 *
 	 * @since 3.8
 	 *
