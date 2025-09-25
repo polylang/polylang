@@ -37,9 +37,9 @@ class Languages_Proxy_Chain {
 	 *
 	 * @since 3.8
 	 *
-	 * @param Languages $languages The object to proxy.
-	 * @param array     $proxies   List of proxies.
-	 * @param string    $parent    Key of the first item of the stack.
+	 * @param Languages $languages Languages' model.
+	 * @param array     $proxies   List of registered proxies.
+	 * @param string    $parent    Key of the first item of the proxies stack to traverse.
 	 */
 	public function __construct( Languages $languages, array $proxies, string $parent ) {
 		$this->languages = $languages;
@@ -75,7 +75,7 @@ class Languages_Proxy_Chain {
 	}
 
 	/**
-	 * Returns a proxy that allows to filter `get_list()`.
+	 * Returns proxies chain.
 	 *
 	 * @since 3.8
 	 *
