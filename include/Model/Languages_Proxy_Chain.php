@@ -56,7 +56,7 @@ class Languages_Proxy_Chain {
 	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
 	 */
 	public function get_list( array $args = array() ): array {
-		$fields = $args['fields'] ?? null;
+		$all_args = $args;
 		unset( $args['fields'] );
 
 		$languages = $this->languages->get_list( $args );
@@ -68,10 +68,9 @@ class Languages_Proxy_Chain {
 			$languages = $this->proxies[ $key ]->filter( $languages );
 		}
 
-		$languages      = array_values( $languages ); // Re-index.
-		$args['fields'] = $fields;
+		$languages = array_values( $languages ); // Re-index.
 
-		return $this->languages->convert_list( $languages, $args );
+		return $this->languages->convert_list( $languages, $all_args );
 	}
 
 	/**
