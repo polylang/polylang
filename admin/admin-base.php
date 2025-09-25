@@ -120,7 +120,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function add_menus(): void {
 		global $admin_page_hooks;
 
-		$parent    = false;
+		$parent    = '';
 		$page_type = 'languages';
 
 		foreach ( $this->get_sub_menu_items() as $tab => $label ) {
