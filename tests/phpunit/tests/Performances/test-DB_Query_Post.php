@@ -32,6 +32,8 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 		);
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
+		// To avoid an extra query due to the Privacy policy page translation management.
+		remove_filter( 'map_meta_cap', array( $pll_admin->filters, 'fix_privacy_policy_page_editing' ), 10 );
 
 		$this->startQueryCount();
 
@@ -42,13 +44,7 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 
 		$this->stopQueryCount();
 
-		/*
-		 * There is an extra query due to the Privacy policy page translation management.
-		 * When getting the edit link for translations in the post language meta box,
-		 * `user_can()` function is called and triggers `map_meta_cap` filter on which Polylang is hooked.
-		 * @See `PLL_Filters::fix_privacy_policy_page_editing()`.
-		 */
-		$this->assertSame( 3, $this->query_counter, 'Number of queries when loading post language meta box should be 3.' );
+		$this->assertSame( 2, $this->query_counter, 'Number of queries when loading post language meta box should be 3.' );
 	}
 
 	/**
