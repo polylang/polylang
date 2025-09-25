@@ -837,10 +837,10 @@ class Languages {
 	 * @since 3.8
 	 *
 	 * @param string $key Proxy's key.
-	 * @return Languages_Proxy_Chain
+	 * @return Languages_Proxies
 	 */
-	public function proxy( string $key ): Languages_Proxy_Chain {
-		return new Languages_Proxy_Chain( $this, $this->proxies, $key );
+	public function proxy( string $key ): Languages_Proxies {
+		return new Languages_Proxies( $this, $this->proxies, $key );
 	}
 
 	/**

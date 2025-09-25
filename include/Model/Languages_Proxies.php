@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.8
  */
-class Languages_Proxy_Chain {
+class Languages_Proxies {
 	/**
 	 * @var Languages
 	 */
@@ -79,9 +79,9 @@ class Languages_Proxy_Chain {
 	 * @since 3.8
 	 *
 	 * @param string $key Proxy's key.
-	 * @return Languages_Proxy_Chain
+	 * @return Languages_Proxies
 	 */
-	public function proxy( string $key ): Languages_Proxy_Chain {
+	public function proxy( string $key ): Languages_Proxies {
 		$this->stack[] = $key;
 		return $this;
 	}
