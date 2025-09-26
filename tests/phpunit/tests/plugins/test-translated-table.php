@@ -1,7 +1,5 @@
 <?php
 
-use WP_Syntex\Polylang\Options\Business;
-
 class Translated_Table_Test extends PLL_UnitTestCase {
 
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
@@ -25,8 +23,8 @@ class Translated_Table_Test extends PLL_UnitTestCase {
 			}
 		);
 
-		$pll_admin = ( new PLL_Context_Admin() )->get();
+		new PLL_Context_Admin();
 
-		$this->assertSame( array( 'foo1_language' ), $pll_admin->options[ Business\Language_Taxonomies::key() ] );
+		$this->assertSame( array( 'foo1_language' ), get_option( 'pll_language_taxonomies' ) );
 	}
 }
