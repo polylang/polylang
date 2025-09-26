@@ -2,7 +2,9 @@ name: Integration and Unit Tests
 
 on:
   push:
-    branches: master
+    branches:
+        - master
+        - master-copy
     paths:
       - '**.php'
       - 'phpunit.xml'
