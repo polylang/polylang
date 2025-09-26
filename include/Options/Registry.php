@@ -32,7 +32,6 @@ class Registry {
 		// Internal.
 		Business\Default_Lang::class,
 		Business\Nav_Menus::class,
-		Business\Language_Taxonomies::class,
 		// Read only.
 		Business\First_Activation::class,
 		Business\Previous_Version::class,
