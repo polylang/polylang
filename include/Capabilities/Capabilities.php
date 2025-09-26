@@ -33,6 +33,7 @@ class Capabilities {
 	 */
 	public function map_custom_caps( $caps, $cap ) {
 		if ( 'manage_translations' === $cap ) {
+			$caps   = array_diff( $caps, array( 'manage_translations' ) );
 			$caps[] = 'manage_options';
 		}
 
