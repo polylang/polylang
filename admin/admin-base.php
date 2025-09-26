@@ -123,17 +123,23 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$parent    = '';
 		$page_type = 'languages';
 
-		foreach ( $this->get_sub_menu_items() as $tab => $label ) {
+		foreach ( $this->get_sub_menu_items() as $tab => $menu_data ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
-			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
 
 			if ( empty( $parent ) ) {
 				$parent = $page;
-				add_menu_page( $label, __( 'Languages', 'polylang' ), $capa, $page, '__return_null', 'dashicons-translation' );
+
+				/*
+				 * WP actually doesn't care about the user capability used here, as long as it has sub-menus: it will
+				 * use the ones from the sub-menus. See `_wp_menu_output()`.
+				 * Ex: a user with `manage_translations` will still be able to access the Translations page, even if the
+				 * main menu has `manage_options`.
+				 */
+				add_menu_page( $menu_data['label'], __( 'Languages', 'polylang' ), $menu_data['capability'], $page, '__return_null', 'dashicons-translation' );
 				$admin_page_hooks[ $page ] = $page_type; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
-			add_submenu_page( $parent, $label, $label, $capa, $page, array( $this, 'languages_page' ) );
+			add_submenu_page( $parent, $menu_data['label'], $menu_data['label'], $menu_data['capability'], $page, array( $this, 'languages_page' ) );
 		}
 
 		/*
@@ -601,10 +607,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *     List of sub-menu items with page slugs as array keys, and arrays as follow as array values:
 	 *
 	 *     @type string $label      Sub-menu title.
-	 *     @type string $capability Optional. User capability. Default is `manage_options`.
+	 *     @type string $capability User capability.
 	 * }
 	 *
-	 * @phpstan-return array<non-empty-string, string>
+	 * @phpstan-return array<non-empty-string, array{label: string, capability: non-falsy-string}>
 	 */
 	protected function get_sub_menu_items(): array {
 		$tabs = array(
@@ -625,18 +631,17 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @param string[] $tabs List of sub-menu items with page slugs as array keys and titles as array values.
 		 */
-		$tabs   = apply_filters( 'pll_settings_tabs', $tabs );
-		$return = array();
+		$tabs = (array) apply_filters( 'pll_settings_tabs', $tabs );
 
-		foreach ( $tabs as $tab => $label ) {
-			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
-
-			if ( current_user_can( $capa ) ) {
-				// Keep only useful tabs to ease `add_menu_page()` in `PLL_Admin_Base::add_menus()`.
-				$return[ $tab ] = $label;
-			}
-		}
-
-		return $return;
+		return array_map(
+			function ( $label, $tab ) {
+				return array(
+					'label'      => $label,
+					'capability' => 'strings' === $tab ? 'manage_translations' : 'manage_options',
+				);
+			},
+			$tabs,
+			array_keys( $tabs )
+		);
 	}
 }
