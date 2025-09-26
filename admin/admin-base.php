@@ -632,8 +632,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * @param string[] $tabs List of sub-menu items with page slugs as array keys and titles as array values.
 		 */
 		$tabs = (array) apply_filters( 'pll_settings_tabs', $tabs );
-
-		return array_map(
+		/** @phpstan-var array<non-empty-string, array{label: string, capability: non-falsy-string}> $return */
+		$return = array_map(
 			function ( $label, $tab ) {
 				return array(
 					'label'      => $label,
@@ -643,5 +643,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			$tabs,
 			array_keys( $tabs )
 		);
+		return $return;
 	}
 }
