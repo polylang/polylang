@@ -80,6 +80,7 @@ class PLL_CRUD_Terms {
 		add_filter( 'pre_term_slug', array( $this, 'set_pre_term_slug' ), 10, 2 );
 
 		// Filters terms by language
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ) );
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 		add_action( 'pre_get_posts', array( $this, 'set_tax_query_lang' ), 999 );
 		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ), 0 );
@@ -183,6 +184,27 @@ class PLL_CRUD_Terms {
 		}
 
 		return ! empty( $this->curlang ) ? array( $this->curlang ) : array();
+	}
+
+	/**
+	 * Adjusts query language for `_get_term_hierarchy()` and `WP_Query`.
+	 *
+	 * @since 1.3
+	 *
+	 * @param array $args WP_Term_Query arguments.
+	 * @return array Modified arguments.
+	 */
+	public function get_terms_args( $args ) {
+		// Don't break _get_term_hierarchy().
+		if ( 'all' === $args['get'] && 'id' === $args['orderby'] && 'id=>parent' === $args['fields'] ) {
+			$args['lang'] = '';
+		}
+
+		if ( isset( $this->tax_query_lang ) ) {
+			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
+		}
+
+		return $args;
 	}
 
 	/**
