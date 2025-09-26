@@ -50,7 +50,37 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 
 		$this->writeResultToFile( array( 'posts' => $posts, 'translations' => reset( $terms ) ) );
 
-		$this->assertSame( 10, $this->query_counter, 'Number of queries when loading post language meta box should be 3.' );
+		$this->assertSame( 10, $this->query_counter, 'Number of queries when loading post language meta box should be 10.' );
+	}
+
+	/**
+	 * Tests that getting the post translations
+	 * triggers only expected DB queries.
+	 */
+	public function test_post_translations() {
+		$posts = self::factory()->post->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' ),
+			array( 'lang' => 'de' )
+		);
+
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 1, $terms );
+
+		$pll_admin = ( new PLL_Context_Admin() )->get();
+		// To avoid an extra query due to the Privacy policy page translation management.
+		remove_filter( 'map_meta_cap', array( $pll_admin->filters, 'fix_privacy_policy_page_editing' ), 10 );
+
+		wp_cache_flush();
+		$this->startQueryCount();
+
+		$pll_admin->model->post->get_translations( $posts['en'] );
+
+		$this->stopQueryCount();
+
+		$this->writeResultToFile( array( 'posts' => $posts, 'translations' => reset( $terms ) ) );
+
+		$this->assertSame( 2, $this->query_counter, 'Number of queries when getting post translations should be 2.' );
 	}
 
 	/**
