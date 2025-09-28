@@ -241,7 +241,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_3_8() {
 		$options = get_option( Options::OPTION_NAME );
-		$language_taxonomies = isset( $options['language_taxonomies'] ) && is_array( $options['language_taxonomies'] ) ? $options['language_taxonomies'] : array( );
+		$language_taxonomies = is_array( $options ) && isset( $options['language_taxonomies'] ) && is_array( $options['language_taxonomies'] ) ? $options['language_taxonomies'] : array();
 		update_option( 'pll_language_taxonomies', $language_taxonomies );
 	}
 
