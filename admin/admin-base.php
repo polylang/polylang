@@ -614,7 +614,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		);
 
 		// Only if at least one language has been created.
-		if ( $this->model->has_languages() ) {
+		if ( ! empty( $this->model->languages->filter( 'translator' )->get_list() ) ) {
 			$tabs['strings'] = __( 'Translations', 'polylang' );
 		}
 
