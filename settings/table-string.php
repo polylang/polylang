@@ -417,8 +417,8 @@ class PLL_Table_String extends WP_List_Table {
 					);
 				}
 
-				// Clean database ( removes all strings which were registered some day but are no more )
-				if ( ! empty( $_POST['clean'] ) ) {
+				// Clean database (removes all strings which were registered some day but are no more).
+				if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
 					$new_mo = new PLL_MO();
 
 					foreach ( $this->strings as $string ) {
