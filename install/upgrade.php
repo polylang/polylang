@@ -233,14 +233,14 @@ class PLL_Upgrade {
 
 	/**
 	 * Upgrades if the previous version is < 3.8.
-	 * Migrates language taxonomies from polylang option to pll_language_taxonomies option.
+	 * Migrates language taxonomies from `polylang` option to `pll_language_taxonomies` option.
 	 *
 	 * @since 3.8
 	 *
 	 * @return void
 	 */
 	protected function upgrade_3_8() {
-		$options = get_option( Options::OPTION_NAME );
+		$options = get_option( `polylang` );
 		$language_taxonomies = is_array( $options ) && isset( $options['language_taxonomies'] ) && is_array( $options['language_taxonomies'] ) ? $options['language_taxonomies'] : array();
 		update_option( 'pll_language_taxonomies', $language_taxonomies );
 	}
