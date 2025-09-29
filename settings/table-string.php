@@ -19,28 +19,28 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @var PLL_Language[]
 	 */
-	protected $languages = array();
+	protected $languages;
 
 	/**
 	 * Registered strings.
 	 *
 	 * @var array
 	 */
-	protected $strings = array();
+	protected $strings;
 
 	/**
 	 * The string groups.
 	 *
 	 * @var string[]
 	 */
-	protected $groups = array();
+	protected $groups;
 
 	/**
 	 * The selected string group or -1 if none is selected.
 	 *
 	 * @var string|int
 	 */
-	protected $selected_group = -1;
+	protected $selected_group;
 
 	/**
 	 * Constructor.
@@ -64,6 +64,8 @@ class PLL_Table_String extends WP_List_Table {
 		$this->languages = $languages;
 		$this->strings = PLL_Admin_Strings::get_strings();
 		$this->groups = array_unique( wp_list_pluck( $this->strings, 'context' ) );
+
+		$this->selected_group = -1;
 
 		if ( ! empty( $_GET['group'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
@@ -97,10 +99,6 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_cb( $item ) {
-		if ( ! isset( $item['row'] ) ) {
-			return '';
-		}
-
 		return sprintf(
 			'<label class="screen-reader-text" for="cb-select-%1$s">%2$s</label><input id="cb-select-%1$s" type="checkbox" name="strings[]" value="%1$s" %3$s />',
 			esc_attr( $item['row'] ),
@@ -131,10 +129,6 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_translations( $item ) {
-		if ( empty( $this->languages ) || ! isset( $item['translations'] ) ) {
-			return '';
-		}
-
 		$out       = '';
 		$languages = array();
 
@@ -255,10 +249,6 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		if ( empty( $this->languages ) ) {
-			return;
-		}
-
 		// Is admin language filter active?
 		if ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) {
 			$languages = wp_list_filter( $this->languages, array( 'slug' => $lg ) );
@@ -394,8 +384,6 @@ class PLL_Table_String extends WP_List_Table {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
 		if ( ! empty( $_POST['submit'] ) ) {
-			$done = false;
-
 			foreach ( $this->languages as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) || ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
@@ -439,21 +427,16 @@ class PLL_Table_String extends WP_List_Table {
 				}
 
 				isset( $new_mo ) ? $new_mo->export_to_db( $language ) : $mo->export_to_db( $language );
-				$done = true;
 			}
 
-			if ( $done ) {
-				pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
+			pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
 
-				/**
-				 * Fires after the strings translations are saved in DB
-				 *
-				 * @since 1.2
-				 */
-				do_action( 'pll_save_strings_translations' );
-			} else {
-				pll_add_notice( new WP_Error( 'pll_strings_translations_not_updated', __( 'No translations updated.', 'polylang' ) ) );
-			}
+			/**
+			 * Fires after the strings translations are saved in DB
+			 *
+			 * @since 1.2
+			 */
+			do_action( 'pll_save_strings_translations' );
 		}
 
 		// Unregisters strings registered through WPML API
