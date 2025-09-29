@@ -123,7 +123,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$parent    = '';
 		$page_type = 'languages';
 
-		foreach ( $this->get_sub_menu_items() as $tab => $menu_data ) {
+		foreach ( $this->get_menu_items() as $tab => $menu_data ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
 
 			if ( empty( $parent ) ) {
@@ -612,7 +612,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *
 	 * @phpstan-return array<non-empty-string, array{label: string, capability: non-falsy-string}>
 	 */
-	protected function get_sub_menu_items(): array {
+	protected function get_menu_items(): array {
 		$tabs = array(
 			'lang' => __( 'Languages', 'polylang' ),
 		);
