@@ -2,24 +2,16 @@
 
 namespace WP_Syntex\Polylang\Tests\Model\Languages;
 
-use WP_Error;
+use PLL_UnitTestCase;
+use WP_Syntex\Polylang\Model\Languages;
+use PLL_Translatable_Objects;
 use PLL_Cache;
 use PLL_Language;
-use PLL_UnitTestCase;
-use PLL_UnitTest_Factory;
-use PLL_Translatable_Objects;
-use WP_Syntex\Polylang\Model\Languages;
+use WP_Error;
 
 class Test_CRUD extends PLL_UnitTestCase {
 
 	private $languages;
-
-	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
-
-		parent::pllSetUpBeforeClass( $factory );
-
-		self::reset_translatable_objects_registry();
-	}
 
 	public function set_up() {
 		parent::set_up();

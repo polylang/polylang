@@ -128,7 +128,6 @@ trait PLL_UnitTestCase_Trait {
 	 */
 	public static function wpTearDownAfterClass() {
 		self::delete_all_languages();
-		self::reset_translatable_objects_registry();
 	}
 
 	/**
@@ -287,15 +286,5 @@ trait PLL_UnitTestCase_Trait {
 		if ( ! file_exists( $path ) ) {
 			self::markTestSkipped( $message );
 		}
-	}
-
-	/**
-	 * Resets PLL_Translatable_Objects::$objects static property to avoid conflict in tests.
-	 */
-	protected static function reset_translatable_objects_registry() {
-		$reflection = new ReflectionClass( PLL_Translatable_Objects::class );
-		$property   = $reflection->getProperty( 'objects' );
-		$property->setAccessible( true );
-		$property->setValue( null, array() );
 	}
 }

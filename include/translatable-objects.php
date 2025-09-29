@@ -28,7 +28,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 *
 	 * @phpstan-var array<non-empty-string, PLL_Translatable_Object>
 	 */
-	private static $objects = array();
+	private $objects = array();
 
 	/**
 	 * Registers a translatable object.
@@ -52,10 +52,10 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 		}
 
 		if ( ! isset( $this->objects[ $object->get_type() ] ) ) {
-			self::$objects[ $object->get_type() ] = $object;
+			$this->objects[ $object->get_type() ] = $object;
 		}
 
-		return self::$objects[ $object->get_type() ];
+		return $this->objects[ $object->get_type() ];
 	}
 
 	/**
@@ -69,7 +69,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 */
 	#[\ReturnTypeWillChange]
 	public function getIterator() {
-		return new ArrayIterator( self::$objects );
+		return new ArrayIterator( $this->objects );
 	}
 
 	/**
@@ -89,11 +89,11 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * )
 	 */
 	public function get( $object_type ) {
-		if ( ! isset( self::$objects[ $object_type ] ) ) {
+		if ( ! isset( $this->objects[ $object_type ] ) ) {
 			return null;
 		}
 
-		return self::$objects[ $object_type ];
+		return $this->objects[ $object_type ];
 	}
 
 	/**
@@ -106,7 +106,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
 	 */
 	public function get_secondary_translatable_objects() {
-		return array_diff_key( self::$objects, array( $this->main_type => null ) );
+		return array_diff_key( $this->objects, array( $this->main_type => null ) );
 	}
 
 	/**
@@ -123,7 +123,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	public function get_taxonomy_names( $filter = array( 'language', 'translations' ) ) {
 		$taxonomies = array();
 
-		foreach ( self::$objects as $object ) {
+		foreach ( $this->objects as $object ) {
 			if ( in_array( 'language', $filter, true ) ) {
 				$taxonomies[] = $object->get_tax_language();
 			}
