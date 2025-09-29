@@ -70,7 +70,7 @@ class Languages_Proxies {
 
 		$languages = array_values( $languages ); // Re-index.
 
-		return $this->languages->convert_list( $languages, $all_args );
+		return $this->languages->maybe_convert_list( $languages, $all_args );
 	}
 
 	/**
