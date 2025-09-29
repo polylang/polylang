@@ -40,6 +40,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	public const OPTION_NAME = 'polylang';
 
 	/**
+	 * Option class names by blog ID and option name.
+	 *
+	 * @var string[][]
+	 * @phpstan-var array<int, array<non-falsy-string, class-string<Abstract_Option>>>
+	 */
+	private $registry = array();
+
+	/**
 	 * Polylang's options, by blog ID.
 	 * Raw value if option is not registered yet, `Abstract_Option` instance otherwise.
 	 *
@@ -49,43 +57,12 @@ class Options implements ArrayAccess, IteratorAggregate {
 	private $options = array();
 
 	/**
-	 * Polylang's default options.
-	 * Used on sites where Polylang is not activated (`switch_to_blog()`).
-	 *
-	 * @var mixed[]
-	 * @phpstan-var array<non-falsy-string, mixed>
-	 */
-	private $default = array();
-
-	/**
 	 * Tells if the options have been modified, by blog ID.
 	 *
 	 * @var bool[]
 	 * @phpstan-var array<int, true>
 	 */
 	private $modified = array();
-
-	/**
-	 * The original blog ID.
-	 *
-	 * @var int
-	 */
-	private $blog_id;
-
-	/**
-	 * The current blog ID.
-	 *
-	 * @var int
-	 */
-	private $current_blog_id;
-
-	/**
-	 * Map of memoized values of blog IDs to tell if Polylang is active.
-	 *
-	 * @var bool[]
-	 * @phpstan-var array<int, bool>
-	 */
-	private $is_plugin_active = array();
 
 	/**
 	 * Cached options JSON schema by blog ID.
@@ -101,13 +78,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @since 3.7
 	 */
 	public function __construct() {
-		// Keep track of the blog ID.
-		$this->blog_id          = (int) get_current_blog_id();
-		$this->current_blog_id  = $this->blog_id;
-		$this->is_plugin_active = array( $this->blog_id => true );
-
 		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
-		add_action( 'switch_blog', array( $this, 'on_blog_switch' ), -1000 ); // Options must be ready early.
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
 
@@ -123,29 +94,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @phpstan-param class-string<Abstract_Option> $class_name
 	 */
 	public function register( string $class_name ): self {
-		$key = $class_name::key();
-
-		if ( ! $this->is_plugin_active() && ! array_key_exists( $key, $this->default ) ) {
-			$this->default[ $key ] = $class_name::get_default();
-		}
-
-		foreach ( $this->options as &$options ) {
-			if ( ! array_key_exists( $key, $options ) ) {
-				// Option raw value doesn't exist in database, use default instead.
-				$options[ $key ] = new $class_name();
-				continue;
-			}
-
-			// If option exists in database, use this value.
-			if ( $options[ $key ] instanceof Abstract_Option ) {
-				// Already registered, do nothing.
-				continue;
-			}
-
-			// Option raw value exists in database, use it.
-			$options[ $key ] = new $class_name( $options[ $key ] );
-		}
-
+		$this->registry[ get_current_blog_id() ][ $class_name::key() ] = $class_name;
 		return $this;
 	}
 
@@ -162,18 +111,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 			return $value->get_all();
 		}
 		return $value;
-	}
-
-	/**
-	 * Initializes options for the newly switched blog if applicable.
-	 *
-	 * @since 3.7
-	 *
-	 * @param int $blog_id The blog ID.
-	 * @return void
-	 */
-	public function on_blog_switch( $blog_id ): void {
-		$this->current_blog_id = (int) $blog_id;
 	}
 
 	/**
@@ -195,10 +132,12 @@ class Options implements ArrayAccess, IteratorAggregate {
 
 		remove_action( 'switch_blog', array( $this, 'on_blog_switch' ), -1000 );
 
-		// Handle the original blog first, maybe this will prevent the use of `switch_to_blog()`.
-		if ( isset( $modified[ $this->blog_id ] ) && $this->current_blog_id === $this->blog_id ) {
+		// Handle the current blog first, maybe this will prevent the use of `switch_to_blog()`.
+		$current_blog_id = get_current_blog_id();
+
+		if ( ! empty( $modified[ $current_blog_id ] ) ) {
 			$this->save();
-			unset( $modified[ $this->blog_id ] );
+			unset( $modified[ $current_blog_id ] ); // Don't remove this line.
 
 			if ( empty( $modified ) ) {
 				// All done, no need of `switch_to_blog()`.
@@ -221,13 +160,15 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return bool True if the options were updated, false otherwise.
 	 */
 	public function save(): bool {
-		if ( empty( $this->modified[ $this->current_blog_id ] ) ) {
+		$current_blog_id = get_current_blog_id();
+
+		if ( empty( $this->modified[ $current_blog_id ] ) || ! pll_is_plugin_active( POLYLANG_BASENAME ) ) {
 			return false;
 		}
 
-		unset( $this->modified[ $this->current_blog_id ] );
+		unset( $this->modified[ $current_blog_id ] );
 
-		if ( is_multisite() && ! get_site( $this->current_blog_id ) ) { // Cached by `$this->get_modified()` if called from `$this->save_all()`.
+		if ( is_multisite() && ! get_site( $current_blog_id ) ) { // Cached by `$this->get_modified()` if called from `$this->save_all()`.
 			// Deleted. Should not happen if called from `$this->save_all()`.
 			return false;
 		}
@@ -252,18 +193,23 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return mixed[] All options values.
 	 */
 	public function get_all(): array {
-		$this->maybe_init_options_for_current_blog();
+		$current_blog_id = get_current_blog_id();
+		// Register everything.
+		$this->get_options_for_current_blog();
 
-		if ( ! $this->is_plugin_active() ) {
-			return $this->default;
-		}
+		// Build everything.
+		array_map(
+			array( $this, 'get_option_object' ),
+			array_keys( $this->registry[ $current_blog_id ] )
+		);
 
+		// Return only registered options.
 		return array_map(
 			function ( $value ) {
 				return $value->get();
 			},
 			array_filter(
-				$this->options[ $this->current_blog_id ],
+				$this->options[ $current_blog_id ],
 				function ( $value ) {
 					return $value instanceof Abstract_Option;
 				}
@@ -280,21 +226,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return WP_Error
 	 */
 	public function merge( array $values ): WP_Error {
-		$this->maybe_init_options_for_current_blog();
-
-		if ( ! $this->is_plugin_active() ) {
-			/* translators: %s is a blog ID. */
-			return new WP_Error( 'pll_not_active', sprintf( __( 'Polylang is not active on site %s.', 'polylang' ), $this->current_blog_id ) );
-		}
-
 		$errors = new WP_Error();
 
-		foreach ( $this->options[ $this->current_blog_id ] as $key => $option ) {
-			if ( ! isset( $values[ $key ] ) || ! $this->has( $key ) ) {
+		foreach ( $values as $key => $value ) {
+			if ( ! $this->has( $key ) ) {
 				continue;
 			}
 
-			$option_errors = $this->set( $key, $values[ $key ] );
+			$option_errors = $this->set( $key, $value );
 
 			if ( $option_errors->has_errors() ) {
 				// Blocking and non-blocking errors.
@@ -346,25 +285,26 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @phpstan-return Schema
 	 */
 	public function get_schema(): array {
-		if ( isset( $this->schema[ $this->current_blog_id ] ) ) {
-			return $this->schema[ $this->current_blog_id ];
+		$current_blog_id = get_current_blog_id();
+
+		if ( isset( $this->schema[ $current_blog_id ] ) ) {
+			return $this->schema[ $current_blog_id ];
 		}
 
+		$this->get_options_for_current_blog();
 		$properties = array();
 
-		if ( $this->is_plugin_active() ) {
-			$this->maybe_init_options_for_current_blog();
+		foreach ( $this->registry[ $current_blog_id ] as $key => $class_name ) {
+			$option = $this->get_option_object( $key );
 
-			foreach ( $this->options[ $this->current_blog_id ] as $option ) {
-				if ( ! $option instanceof Abstract_Option || empty( $option->get_schema() ) ) {
-					continue;
-				}
-
-				$properties[ $option->key() ] = $option->get_schema();
+			if ( ! $option instanceof Abstract_Option || empty( $option->get_schema() ) ) {
+				continue;
 			}
+
+			$properties[ $option->key() ] = $option->get_schema();
 		}
 
-		$this->schema[ $this->current_blog_id ] = array(
+		$this->schema[ $current_blog_id ] = array(
 			'$schema'              => 'http://json-schema.org/draft-04/schema#',
 			'title'                => static::OPTION_NAME,
 			'description'          => __( 'Polylang options', 'polylang' ),
@@ -373,7 +313,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			'additionalProperties' => false,
 		);
 
-		return $this->schema[ $this->current_blog_id ];
+		return $this->schema[ $current_blog_id ];
 	}
 
 	/**
@@ -385,13 +325,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return bool
 	 */
 	public function has( string $key ): bool {
-		$this->maybe_init_options_for_current_blog();
-
-		if ( ! $this->is_plugin_active() ) {
-			return array_key_exists( $key, $this->default );
-		}
-
-		return isset( $this->options[ $this->current_blog_id ][ $key ] ) && $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Option;
+		return $this->get_option_object( $key ) instanceof Abstract_Option;
 	}
 
 	/**
@@ -403,17 +337,13 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return mixed
 	 */
 	public function get( string $key ) {
-		if ( ! $this->has( $key ) ) {
+		$option = $this->get_option_object( $key );
+
+		if ( ! $option instanceof Abstract_Option ) {
 			$v = null;
 			return $v;
 		}
 
-		if ( ! $this->is_plugin_active() ) {
-			return $this->default[ $key ];
-		}
-
-		/** @var Abstract_Option */
-		$option = $this->options[ $this->current_blog_id ][ $key ];
 		return $option->get();
 	}
 
@@ -430,23 +360,18 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return WP_Error
 	 */
 	public function set( string $key, $value ): WP_Error {
-		if ( ! $this->has( $key ) ) {
+		$option = $this->get_option_object( $key );
+
+		if ( ! $option instanceof Abstract_Option ) {
 			/* translators: %s is the name of an option. */
 			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" ) );
 		}
 
-		if ( ! $this->is_plugin_active() ) {
-			/* translators: %s is a blog ID. */
-			return new WP_Error( 'pll_not_active', sprintf( __( 'Polylang is not active on site %s.', 'polylang' ), $this->current_blog_id ) );
-		}
-
-		/** @var Abstract_Option */
-		$option    = $this->options[ $this->current_blog_id ][ $key ];
 		$old_value = $option->get();
 
 		if ( $option->set( $value, $this ) && $option->get() !== $old_value ) {
 			// No blocking errors: the value can be stored.
-			$this->modified[ $this->current_blog_id ] = true;
+			$this->modified[ get_current_blog_id() ] = true;
 		}
 
 		// Return errors.
@@ -462,19 +387,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return mixed The new value.
 	 */
 	public function reset( string $key ) {
-		if ( ! $this->has( $key ) ) {
+		$option = $this->get_option_object( $key );
+
+		if ( ! $option instanceof Abstract_Option ) {
 			return null;
 		}
 
-		if ( ! $this->is_plugin_active() ) {
-			return $this->default[ $key ];
-		}
-
-		/** @var Abstract_Option */
-		$option = $this->options[ $this->current_blog_id ][ $key ];
-
 		if ( $option->get() !== $option->reset() ) {
-			$this->modified[ $this->current_blog_id ] = true;
+			$this->modified[ get_current_blog_id() ] = true;
 		}
 
 		return $option->get();
@@ -590,42 +510,55 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
-	 * Initializes options for the current blog if needed.
+	 * Returns the option object corresponding to the given key.
 	 *
 	 * @since 3.8
 	 *
-	 * @return void
+	 * @param string $key The name of the option.
+	 * @return Abstract_Option|null
 	 */
-	private function maybe_init_options_for_current_blog(): void {
-		if ( ! $this->is_plugin_active() ) {
-			if ( empty( $this->default ) ) {
-				$this->init_options_for_current_blog();
-			}
-			return;
+	private function get_option_object( $key ): ?Abstract_Option {
+		$options = $this->get_options_for_current_blog();
+
+		if ( isset( $options[ $key ] ) && $options[ $key ] instanceof Abstract_Option ) {
+			return $options[ $key ];
 		}
 
-		if ( ! isset( $this->options[ $this->current_blog_id ] ) ) {
-			$this->init_options_for_current_blog();
+		$current_blog_id = get_current_blog_id();
+
+		if ( ! isset( $this->registry[ $current_blog_id ][ $key ] ) ) {
+			return null;
 		}
+
+		/** @phpstan-var non-falsy-string $key */
+		$class_name = $this->registry[ $current_blog_id ][ $key ];
+
+		$this->options[ $current_blog_id ][ $key ] = new $class_name( $options[ $key ] ?? null );
+
+		return $this->options[ $current_blog_id ][ $key ];
 	}
 
 	/**
-	 * Initializes options for the current blog.
+	 * Returns the options for the current blog.
 	 *
-	 * @since 3.7
+	 * @since 3.8
 	 *
-	 * @return void
+	 * @return array
 	 */
-	private function init_options_for_current_blog(): void {
-		if ( $this->is_plugin_active() ) {
-			$options = get_option( self::OPTION_NAME );
+	private function get_options_for_current_blog(): array {
+		$current_blog_id = get_current_blog_id();
 
-			if ( empty( $options ) || ! is_array( $options ) ) {
-				$this->options[ $this->current_blog_id ]  = array();
-				$this->modified[ $this->current_blog_id ] = true;
-			} else {
-				$this->options[ $this->current_blog_id ] = $options;
-			}
+		if ( isset( $this->options[ $current_blog_id ] ) ) {
+			return $this->options[ $current_blog_id ];
+		}
+
+		$options = get_option( self::OPTION_NAME );
+
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			$this->options[ $current_blog_id ]  = array();
+			$this->modified[ $current_blog_id ] = true;
+		} else {
+			$this->options[ $current_blog_id ] = $options;
 		}
 
 		/**
@@ -633,30 +566,12 @@ class Options implements ArrayAccess, IteratorAggregate {
 		 * This is the best place to register options.
 		 *
 		 * @since 3.7
-		 * @since 3.8 New parameter `$is_plugin_active`.
 		 *
-		 * @param Options $options          Instance of the options.
-		 * @param int     $current_blog_id  Current blog ID.
-		 * @param bool    $is_plugin_active True if Polylang is active on the current site, false otherwise.
-		 *                                  This can be false after calling `switch_to_blog()`.
+		 * @param Options $options         Instance of the options.
+		 * @param int     $current_blog_id Current blog ID.
 		 */
-		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id, $this->is_plugin_active() );
-	}
+		do_action( 'pll_init_options_for_blog', $this, $current_blog_id );
 
-	/**
-	 * Tells if Polylang is active on the current blog.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	private function is_plugin_active(): bool {
-		if ( isset( $this->is_plugin_active[ $this->current_blog_id ] ) ) {
-			return $this->is_plugin_active[ $this->current_blog_id ];
-		}
-
-		$this->is_plugin_active[ $this->current_blog_id ] = pll_is_plugin_active( POLYLANG_BASENAME ) || doing_action( 'activate_' . POLYLANG_BASENAME );
-
-		return $this->is_plugin_active[ $this->current_blog_id ];
+		return $this->options[ $current_blog_id ];
 	}
 }

@@ -48,7 +48,7 @@ class Nav_Menus extends Abstract_Option {
 	 *
 	 * @return array
 	 */
-	public static function get_default() {
+	public function get_default() {
 		return array();
 	}
 
