@@ -242,9 +242,12 @@ class PLL_Upgrade {
 	protected function upgrade_3_8() {
 		$options = get_option( 'polylang' );
 
+		$language_taxonomies = array();
 		if ( is_array( $options ) && isset( $options['language_taxonomies'] ) && is_array( $options['language_taxonomies'] ) ) {
-			update_option( 'pll_language_taxonomies', $options['language_taxonomies'] );
+			$language_taxonomies = $options['language_taxonomies'];
 		}
+
+		update_option( 'pll_language_taxonomies', $language_taxonomies );
 	}
 
 	/**
