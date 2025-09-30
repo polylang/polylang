@@ -73,21 +73,19 @@ class PLL_CRUD_Terms {
 		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang   = &$polylang->pref_lang;
 
-		// Saving terms
+		// Saving terms.
 		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
 		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // After PLL_Admin_Filters_Term
 		add_filter( 'pre_term_name', array( $this, 'set_pre_term_name' ) );
 		add_filter( 'pre_term_slug', array( $this, 'set_pre_term_slug' ), 10, 2 );
 
-		// Adds cache domain when querying terms
-		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
-
-		// Filters terms by language
+		// Filters terms query by language.
+		add_filter( 'get_terms_args', array( $this, 'adjust_query_lang' ) );
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 		add_action( 'pre_get_posts', array( $this, 'set_tax_query_lang' ), 999 );
 		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ), 0 );
 
-		// Deleting terms
+		// Deleting terms.
 		add_action( 'pre_delete_term', array( $this, 'delete_term' ), 10, 2 );
 	}
 
@@ -189,16 +187,15 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Adds language dependent cache domain when querying terms.
-	 * Useful as the 'lang' parameter is not included in cache key by WordPress.
+	 * Adjusts query language for `_get_term_hierarchy()` and `WP_Query`.
 	 *
 	 * @since 1.3
+	 * @since 3.8 Renamed from `get_terms_args()`.
 	 *
-	 * @param array    $args       WP_Term_Query arguments.
-	 * @param string[] $taxonomies Queried taxonomies.
+	 * @param array $args WP_Term_Query arguments.
 	 * @return array Modified arguments.
 	 */
-	public function get_terms_args( $args, $taxonomies ) {
+	public function adjust_query_lang( $args ) {
 		// Don't break _get_term_hierarchy().
 		if ( 'all' === $args['get'] && 'id' === $args['orderby'] && 'id=>parent' === $args['fields'] ) {
 			$args['lang'] = '';
@@ -208,9 +205,6 @@ class PLL_CRUD_Terms {
 			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
 		}
 
-		foreach ( $this->get_queried_languages( $taxonomies, $args ) as $language ) {
-			$args['cache_domain'] = empty( $args['cache_domain'] ) ? "pll_{$language->slug}" : "{$args['cache_domain']},{$language->slug}";
-		}
 		return $args;
 	}
 
