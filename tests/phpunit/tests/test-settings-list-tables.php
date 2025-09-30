@@ -28,18 +28,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 
 		$this->init( 'mlang' );
 
-		ob_start();
-		do_action( 'admin_menu' );
-		set_current_screen();
-		do_action( 'load-toplevel_page_mlang' );
-		get_admin_page_title();
-		get_current_screen()->render_screen_meta();
-		do_action( 'toplevel_page_mlang' );
-		$out = ob_get_clean();
-
-		$doc = new DomDocument();
-		$doc->loadHTML( $out );
-		$xpath = new DOMXpath( $doc );
+		$xpath = $this->get_page_content( 'toplevel_page_mlang' );
 
 		// All column headers.
 		$this->assertSame( 7, $xpath->query( '//thead/tr/th' )->length );
@@ -78,18 +67,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 
 		PLL_Admin_Strings::register_string( 'Test', 'Some string' );
 
-		ob_start();
-		do_action( 'admin_menu' );
-		set_current_screen();
-		do_action( 'load-languages_page_mlang_strings' );
-		get_admin_page_title();
-		get_current_screen()->render_screen_meta();
-		do_action( 'languages_page_mlang_strings' );
-		$out = ob_get_clean();
-
-		$doc = new DomDocument();
-		$doc->loadHTML( $out );
-		$xpath = new DOMXpath( $doc );
+		$xpath = $this->get_page_content( 'languages_page_mlang_strings' );
 
 		// All column headers.
 		$this->assertSame( 4, $xpath->query( '//thead/tr/th' )->length ); // Doesn't count the checkbox.
@@ -117,18 +95,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 		$pll_env = $this->init( 'mlang_settings' );
 		$pll_env->register_settings_modules(); // Manually register modules to avoid firing the 'admin_init' action.
 
-		ob_start();
-		do_action( 'admin_menu' );
-		set_current_screen();
-		do_action( 'load-languages_page_mlang_settings' );
-		get_admin_page_title();
-		get_current_screen()->render_screen_meta();
-		do_action( 'languages_page_mlang_settings' );
-		$out = ob_get_clean();
-
-		$doc = new DomDocument();
-		$doc->loadHTML( $out );
-		$xpath = new DOMXpath( $doc );
+		$xpath = $this->get_page_content( 'languages_page_mlang_settings' );
 
 		// All column headers.
 		$this->assertSame( 2, $xpath->query( '//thead/tr/th' )->length ); // Doesn't count the empty cb.
@@ -153,5 +120,20 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'pll-module-media', $trs->item( 3 )->getAttribute( 'id' ) );
 		$this->assertSame( 'pll-module-cpt', $trs->item( 4 )->getAttribute( 'id' ) );
 		$this->assertSame( 'pll-module-licenses', $trs->item( 5 )->getAttribute( 'id' ) );
+	}
+
+	private function get_page_content( string $hook_name ): DOMXpath {
+		ob_start();
+		do_action( 'admin_menu' );
+		set_current_screen();
+		do_action( "load-{$hook_name}" );
+		get_admin_page_title();
+		get_current_screen()->render_screen_meta();
+		do_action( $hook_name );
+		$out = (string) ob_get_clean();
+
+		$doc = new DomDocument();
+		$doc->loadHTML( $out );
+		return new DOMXpath( $doc );
 	}
 }

@@ -66,6 +66,15 @@ class Languages {
 	private $languages_ready = false;
 
 	/**
+	 * Languages list proxies.
+	 *
+	 * @var Languages_Proxy_Interface[]
+	 *
+	 * @phpstan-var array<non-falsy-string, Languages_Proxy_Interface>
+	 */
+	private $proxies = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -625,8 +634,7 @@ class Languages {
 		);
 
 		$languages = array_values( $languages ); // Re-index.
-
-		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
+		return $this->maybe_convert_list( $languages, (array) $args );
 	}
 
 	/**
@@ -791,6 +799,50 @@ class Languages {
 			delete_option( '_transient_' . self::TRANSIENT_NAME );
 		}
 	}
+
+	/**
+	 * Applies arguments that change the type of the elements of the given list of languages.
+	 *
+	 * @since 3.8
+	 *
+	 * @param PLL_Language[] $languages The list of language objects.
+	 * @param array          $args {
+	 *   @type string $fields Optional. Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 * }
+	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
+	 */
+	public function maybe_convert_list( array $languages, array $args ): array {
+		if ( ! empty( $args['fields'] ) ) {
+			return wp_list_pluck( $languages, $args['fields'] );
+		}
+		return $languages;
+	}
+
+	/**
+	 * Registers languages proxies.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Languages_Proxy_Interface $proxy Proxy instance.
+	 * @return self
+	 */
+	public function register_proxy( Languages_Proxy_Interface $proxy ): self {
+		$this->proxies[ $proxy->key() ] = $proxy;
+		return $this;
+	}
+
+	/**
+	 * Stacks a proxy that will filter the list of languages.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key Proxy's key.
+	 * @return Languages_Proxies
+	 */
+	public function filter( string $key ): Languages_Proxies {
+		return new Languages_Proxies( $this, $this->proxies, $key );
+	}
+
 	/**
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *

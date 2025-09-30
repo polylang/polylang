@@ -311,7 +311,10 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string[] Array of bulk actions.
 	 */
 	public function get_bulk_actions() {
-		return array( 'delete' => __( 'Delete', 'polylang' ) );
+		if ( current_user_can( 'manage_options' ) ) {
+			return array( 'delete' => __( 'Delete', 'polylang' ) );
+		}
+		return array();
 	}
 
 	/**
@@ -413,8 +416,8 @@ class PLL_Table_String extends WP_List_Table {
 					);
 				}
 
-				// Clean database ( removes all strings which were registered some day but are no more )
-				if ( ! empty( $_POST['clean'] ) ) {
+				// Clean database (removes all strings which were registered some day but are no more).
+				if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
 					$new_mo = new PLL_MO();
 
 					foreach ( $this->strings as $string ) {
@@ -436,7 +439,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Unregisters strings registered through WPML API
-		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) ) {
+		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) && current_user_can( 'manage_options' ) ) {
 			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $key ) {
 				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
 			}

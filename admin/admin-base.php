@@ -111,46 +111,78 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Adds the link to the languages panel in the WordPress admin menu
+	 * Adds links to Polylang's admin panels to the WordPress admin menu.
 	 *
 	 * @since 0.1
 	 *
 	 * @return void
 	 */
-	public function add_menus() {
+	public function add_menus(): void {
 		global $admin_page_hooks;
 
-		// Prepare the list of tabs
-		$tabs = array( 'lang' => __( 'Languages', 'polylang' ) );
+		$parent    = '';
+		$page_type = 'languages';
 
-		// Only if at least one language has been created
-		if ( $this->model->has_languages() ) {
-			$tabs['strings'] = __( 'Translations', 'polylang' );
-		}
-
-		$tabs['settings'] = __( 'Settings', 'polylang' );
-
-		/**
-		 * Filter the list of tabs in Polylang settings
-		 *
-		 * @since 1.5.1
-		 *
-		 * @param array $tabs list of tab names
-		 */
-		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
-
-		$parent = '';
-
-		foreach ( $tabs as $tab => $title ) {
+		foreach ( $this->get_menu_items() as $tab => $title ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
+
 			if ( empty( $parent ) ) {
 				$parent = $page;
-				add_menu_page( $title, __( 'Languages', 'polylang' ), 'manage_options', $page, '__return_null', 'dashicons-translation' );
-				$admin_page_hooks[ $page ] = 'languages'; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
+
+				/*
+				 * WP actually doesn't care about the user capability used here, as long as it has sub-menus: it will
+				 * use the ones from the sub-menus. See `_wp_menu_output()`.
+				 * Ex: a user with `manage_translations` will still be able to access the Translations page, even if the
+				 * main menu has `manage_options`.
+				 */
+				add_menu_page( $title, __( 'Languages', 'polylang' ), $capa, $page, '__return_null', 'dashicons-translation' );
+				$admin_page_hooks[ $page ] = $page_type; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
-			add_submenu_page( $parent, $title, $title, 'manage_options', $page, array( $this, 'languages_page' ) );
+			add_submenu_page( $parent, $title, $title, $capa, $page, array( $this, 'languages_page' ) );
 		}
+
+		/*
+		 * Get rid of the `toplevel` prefix in hook names.
+		 *
+		 * In the WP admin, if an admin screen is the first of its menu (like the PLL's "Languages" screen), the hooks
+		 * fired in the screen get a `toplevel` prefix (ex: `toplevel_page_mlang`) while all the other screens get a
+		 * slug based on the parent screen title (ex: `languages_page_mlang_strings`, where `languages` is the parent
+		 * screen's slug). This will not prevent the `toplevel` hooks to fire, but it will fire the `languages` hooks in
+		 * addition: this way, screens can be removed or moved around without the need of hooking both prefixes: using
+		 * the hooks with the `languages` prefix will work in both cases.
+		 *
+		 * @see get_plugin_page_hookname()
+		 */
+		foreach ( array( 'load-', 'admin_print_styles-', 'admin_print_scripts-', 'admin_head-', '', 'admin_print_footer_scripts-', 'admin_footer-' ) as $prefix ) {
+			add_action(
+				"{$prefix}toplevel_page_{$parent}",
+				static function () use ( $prefix, $page_type, $parent ) {
+					do_action( "{$prefix}{$page_type}_page_{$parent}" );
+				}
+			);
+		}
+
+		/*
+		 * Ensure a common CSS class to the `<body>` tag.
+		 *
+		 * Due to the `toplevel` "issue" described earlier, the CSS class `toplevel_page_mlang` (for example) is added
+		 * to the body. This adds a class with the `languages` prefix. This ensures we have a common CSS class, even if
+		 * the screen is moved to the 1st position in the menu.
+		 */
+		add_action(
+			// Target the screen in 1st position only.
+			"admin_head-toplevel_page_{$parent}",
+			static function () use ( $page_type, $parent ) {
+				add_filter(
+					'admin_body_class',
+					static function ( $admin_body_classes ) use ( $page_type, $parent ) {
+						return "{$admin_body_classes} {$page_type}_page_{$parent}";
+					}
+				);
+			}
+		);
 	}
 
 	/**
@@ -565,5 +597,36 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns the list of sub-menu items.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string[] List of sub-menu items with page slugs as array keys, and sub-menu titles as array values.
+	 *
+	 * @phpstan-return array<non-empty-string, string>
+	 */
+	protected function get_menu_items(): array {
+		$tabs = array(
+			'lang' => __( 'Languages', 'polylang' ),
+		);
+
+		// Only if at least one language has been created.
+		if ( ! empty( $this->model->languages->filter( 'translator' )->get_list() ) ) {
+			$tabs['strings'] = __( 'Translations', 'polylang' );
+		}
+
+		$tabs['settings'] = __( 'Settings', 'polylang' );
+
+		/**
+		 * Filter the list of sub-menu items in Polylang settings.
+		 *
+		 * @since 1.5.1
+		 *
+		 * @param string[] $tabs List of sub-menu items with page slugs as array keys and titles as array values.
+		 */
+		return (array) apply_filters( 'pll_settings_tabs', $tabs );
 	}
 }
