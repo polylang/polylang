@@ -57,10 +57,6 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		if ( empty( $languages ) ) {
-			return;
-		}
-
 		$this->languages = $languages;
 		$this->strings = PLL_Admin_Strings::get_strings();
 		$this->groups = array_unique( wp_list_pluck( $this->strings, 'context' ) );
