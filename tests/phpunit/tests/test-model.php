@@ -242,6 +242,8 @@ class Model_Test extends PLL_UnitTestCase {
 		// Re-create missing terms.
 		self::$model->maybe_create_language_terms();
 
+		$this->assertSame( array( 'foo_language' ), get_option( 'pll_language_taxonomies' ) );
+
 		// Make sure the terms are re-created.
 		$tt_ids = array();
 		$slugs  = array();
