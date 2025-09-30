@@ -78,7 +78,7 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * Displays a notice when ugrading from a too old version
+	 * Displays a notice when upgrading from a too old version
 	 *
 	 * @since 1.0
 	 *

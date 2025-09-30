@@ -275,7 +275,7 @@ class PLL_WPML_API {
 				/*
 				 * It seems that WPML fills the `instances` property with the total number of posts
 				 * related to this term, while `WP_Term::$count` includes only *published* posts.
-				 * We intentionnally accept this difference to avoid extra DB queries.
+				 * We intentionally accept this difference to avoid extra DB queries.
 				 */
 				$return[ $lang ] = (object) array(
 					'translation_id'       => '0', // We have nothing equivalent.
