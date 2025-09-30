@@ -227,7 +227,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		new PLL_Admin_Filters_Widgets_Options( $polylang );
 
-		$widget_mock = new WP_Widget( 'tes_wiget', 'Test Widget' );
+		$widget_mock = new WP_Widget( 'test_widget', 'Test Widget' );
 		$widget_mock->_set( 1 );
 
 		ob_start();
