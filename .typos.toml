@@ -19,6 +19,7 @@ extend-ignore-re = [
     "Jani Alha",
     "olt-manager\\.php",
     # En français dans le texte.
+    "Tableau de bord",
     "Etiquette exemple",
     "<!\\[CDATA\\[non-classe\\]\\]>",
     "\\bicl_lso_",
