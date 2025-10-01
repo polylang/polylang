@@ -64,6 +64,10 @@ class PLL_Activate extends PLL_Abstract_Activate {
 			update_option( 'polylang_wpml_strings', array() );
 		}
 
+		if ( ! get_option( 'pll_language_taxonomies' ) ) {
+			update_option( 'pll_language_taxonomies', array() );
+		}
+
 		/*
 		 * Don't use flush_rewrite_rules at network activation. See #32471.
 		 * Thanks to RavanH for the trick. See https://polylang.wordpress.com/2015/06/10/polylang-1-7-6-and-multisite/.
