@@ -4,6 +4,7 @@
  * This test was moved from `Model_Test` class to avoid to load Polylang API
  * before registering the custom table as it's done in production.
  * The goal is to check any use of Polylang API functions which will trigger a fatal error.
+ * 
  * @ticket #2713 {@see https://github.com/polylang/polylang-pro/issues/2713}
  */
 class Model_Maybe_Create_Language_Terms_Test extends PLL_UnitTestCase {
