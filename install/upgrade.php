@@ -4,7 +4,6 @@
  */
 
 use WP_Syntex\Polylang\Options\Options;
-
 /**
  * Manages Polylang upgrades
  *
@@ -113,7 +112,7 @@ class PLL_Upgrade {
 		 */
 		delete_transient( 'pll_languages_list' );
 
-		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7' ) as $version ) {
+		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7', '3.8' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
 				if ( is_callable( $method_to_call ) ) {
@@ -230,6 +229,25 @@ class PLL_Upgrade {
 	protected function upgrade_3_7() {
 		$this->allow_to_hide_language_from_content();
 		$this->empty_duplicated_strings_translations();
+	}
+
+	/**
+	 * Upgrades if the previous version is < 3.8.
+	 * Migrates language taxonomies from `polylang` option to `pll_language_taxonomies` option.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	protected function upgrade_3_8() {
+		$options = get_option( 'polylang' );
+
+		$language_taxonomies = array();
+		if ( is_array( $options ) && isset( $options['language_taxonomies'] ) && is_array( $options['language_taxonomies'] ) ) {
+			$language_taxonomies = $options['language_taxonomies'];
+		}
+
+		update_option( 'pll_language_taxonomies', $language_taxonomies );
 	}
 
 	/**

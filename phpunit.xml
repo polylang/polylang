@@ -12,6 +12,10 @@
 			<!-- These tests must run before others due to constant manipulation -->
 			<file>./tests/phpunit/tests/test-install.php</file>
 		</testsuite>
+		<testsuite name="maybe-create-language-terms">
+			<!-- These tests must be isolated to be sure Polylang API isn't loaded by another test -->
+			<file>./tests/phpunit/tests/plugins/test-model-maybe-create-language-terms.php</file>
+		</testsuite>
 		<testsuite name="main">
 			<directory prefix="test-" suffix=".php">./tests/phpunit/tests</directory>
 		</testsuite>

@@ -2,10 +2,8 @@
 
 namespace WP_Syntex\Polylang\Tests\Integration\Options\Abstract_List;
 
-use PLL_Admin;
 use PLL_UnitTestCase;
 use WP_UnitTest_Factory;
-use PLLTest_Translatable;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Business;
 
@@ -28,27 +26,6 @@ class Prepare_Test extends PLL_UnitTestCase {
 		array_map( 'unregister_post_type', array( 'cpt1', 'cpt2', 'cpt3', 'cpt4' ) );
 
 		parent::wpTearDownAfterClass();
-	}
-
-	public function test_language_taxonomies() {
-		global $polylang;
-
-		$orig_translatable_objects = self::$model->translatable_objects;
-
-		$links_model = self::$model->get_links_model();
-		$polylang    = new PLL_Admin( $links_model );
-
-		foreach ( array( 'foo1', 'foo2', 'foo3', 'foo4' ) as $foo ) {
-			$polylang->model->translatable_objects->register( new PLLTest_Translatable( $polylang->model, $foo ) );
-		}
-
-		$this->test_option(
-			Business\Language_Taxonomies::key(),
-			array( 'foo1_language', 'foo2_language', 'foo3_language' ),
-			array( 'foo1_language', 'foo4_language' )
-		);
-
-		self::$model->translatable_objects = $orig_translatable_objects;
 	}
 
 	public function test_post_types() {

@@ -85,7 +85,6 @@ class GetSchema_Test extends PHPUnit_Adapter_TestCase {
 	 */
 	public function test_object_types( $value, array $sanitized_value, $expected_valid ) {
 		$classes = array(
-			Business\Language_Taxonomies::class,
 			Business\Post_Types::class,
 			Business\Taxonomies::class,
 		);
