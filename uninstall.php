@@ -183,6 +183,7 @@ class PLL_Uninstall {
 		delete_option( 'polylang_licenses' );
 		delete_option( 'pll_dismissed_notices' );
 		delete_option( 'pll_language_from_content_available' );
+		delete_option( 'pll_language_taxonomies' );
 
 		// Delete transients.
 		delete_option( '_transient_pll_languages_list' ); // Force deletion of the transient from the options table even in case external object cache is used.
