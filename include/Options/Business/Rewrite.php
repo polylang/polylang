@@ -34,7 +34,6 @@ class Rewrite extends Abstract_Boolean {
 	 * Returns the default value.
 	 *
 	 * @since 3.7
-	 * @since 3.8 Made `public` and `static`.
 	 *
 	 * @return bool
 	 */
