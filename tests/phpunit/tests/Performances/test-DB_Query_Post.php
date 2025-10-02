@@ -20,7 +20,7 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 
 	/**
 	 * Tests that getting the post translations
-	 * triggers only expected DB queries.
+	 * triggers only expected DB queries
 	 */
 	public function test_get_post_translations() {
 		$posts = self::factory()->post->create_translated(
@@ -31,13 +31,13 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
 
-		$this->startQueryCount();
+		$query_count = $this->count_queries(
+			function () use ( $pll_admin, $posts ) {
+				$pll_admin->model->post->get_translations( $posts['en'] );
+			}
+		);
 
-		$pll_admin->model->post->get_translations( $posts['en'] );
-
-		$this->stopQueryCount();
-
-		$this->assertSame( 2, $this->query_counter, 'Number of queries when getting post translations should be 2.' );
+		$this->assertSame( 2, $query_count, 'Number of queries when getting post translations should be 2.' );
 	}
 
 	/**
@@ -51,56 +51,30 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
 
-		$this->startQueryCount();
-
-		$pll_admin->model->post->save_translations( $post_en, array( 'fr' => $post_fr, 'de' => $post_de ) );
-
-		$this->stopQueryCount();
-
-		$this->assertSame( 38, $this->query_counter, 'Number of queries when getting post translations should be 2.' );
-	}
-
-	/**
-	 * Counts each SQL query executed.
-	 *
-	 * @param string $query La requête SQL
-	 * @return string La requête inchangée
-	 */
-	public function countQuery( $query ) {
-		if ( ! $this->monitoring_active ) {
-			return $query;
-		}
-
-		++$this->query_counter;
-
-		// Stores the query details for later analysis.
-		$this->captured_queries[] = array(
-			'sql' => $query,
-			'timestamp' => microtime( true ) - $this->start_time,
-			'backtrace' => wp_debug_backtrace_summary( null, 2, false ), // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_wp_debug_backtrace_summary
+		$query_count = $this->count_queries(
+			function () use ( $pll_admin, $post_en, $post_fr, $post_de ) {
+				$pll_admin->model->post->save_translations( $post_en, array( 'fr' => $post_fr, 'de' => $post_de ) );
+			}
 		);
 
-		return $query;
+		$this->assertSame( 38, $query_count, 'Number of queries when getting post translations should be 2.' );
 	}
 
 	/**
-	 * Starts counting database queries.
+	 * Counts the number of database queries executed during a callback.
+	 *
+	 * @param callable $callback The function to execute while counting queries.
+	 * @return int The number of queries executed.
 	 */
-	private function startQueryCount() {
-		$this->query_counter     = 0;
-		$this->captured_queries  = array();
-		$this->monitoring_active = true;
-		$this->start_time        = microtime( true );
+	private function count_queries( callable $callback ) {
+		global $wpdb;
 
 		wp_cache_flush();
-		add_filter( 'query', array( $this, 'countQuery' ), 10, 1 );
-	}
 
-	/**
-	 * Ends counting database queries.
-	 */
-	private function stopQueryCount() {
-		$this->monitoring_active = false;
-		remove_filter( 'query', array( $this, 'countQuery' ), 10 );
+		$queries_before = $wpdb->num_queries;
+
+		$callback();
+
+		return $wpdb->num_queries - $queries_before;
 	}
 }
