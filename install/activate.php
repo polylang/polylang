@@ -52,21 +52,15 @@ class PLL_Activate extends PLL_Abstract_Activate {
 
 		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.
 
-		if ( false === get_option( 'pll_language_from_content_available' ) ) {
-			update_option(
-				'pll_language_from_content_available',
-				0 === $options['force_lang'] ? 'yes' : 'no'
-			);
-		}
+		add_option(
+			'pll_language_from_content_available',
+			0 === $options['force_lang'] ? 'yes' : 'no'
+		);
 
 		// Avoid 1 query on every pages if no wpml strings is registered.
-		if ( ! get_option( 'polylang_wpml_strings' ) ) {
-			update_option( 'polylang_wpml_strings', array() );
-		}
+		add_option( 'polylang_wpml_strings', array() );
 
-		if ( ! get_option( 'pll_language_taxonomies' ) ) {
-			update_option( 'pll_language_taxonomies', array() );
-		}
+		add_option( 'pll_language_taxonomies', array() );
 
 		/*
 		 * Don't use flush_rewrite_rules at network activation. See #32471.
