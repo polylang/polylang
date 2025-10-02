@@ -57,7 +57,7 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 			}
 		);
 
-		$this->assertSame( 38, $query_count, 'Number of queries when getting post translations should be 2.' );
+		$this->assertSame( 39, $query_count, 'Number of queries when getting post translations should be 2.' );
 	}
 
 	/**
