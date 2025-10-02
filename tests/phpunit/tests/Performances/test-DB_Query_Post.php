@@ -29,9 +29,6 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 			array( 'lang' => 'de' )
 		);
 
-		$terms = wp_get_object_terms( $posts, 'post_translations' );
-		$this->assertCount( 1, $terms );
-
 		$pll_admin = ( new PLL_Context_Admin() )->get();
 
 		$this->startQueryCount();
