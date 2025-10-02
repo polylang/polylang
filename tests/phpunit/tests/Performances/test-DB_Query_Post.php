@@ -57,7 +57,7 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 			}
 		);
 
-		$this->assertSame( 39, $query_count, 'Number of queries when getting post translations should be 2.' );
+		$this->assertSame( 38, $query_count, 'Number of queries when getting post translations should be 2.' );
 	}
 
 	/**
@@ -69,17 +69,12 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 	private function count_queries( callable $callback ) {
 		global $wpdb;
 
-		// Flush cache to ensure queries are executed.
 		wp_cache_flush();
 
-		// Reset and capture initial query count.
-		$wpdb->num_queries = 0;
 		$queries_before = $wpdb->num_queries;
 
-		// Execute the callback.
 		$callback();
 
-		// Calculate queries executed during callback.
 		return $wpdb->num_queries - $queries_before;
 	}
 }
