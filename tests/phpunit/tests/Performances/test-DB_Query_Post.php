@@ -45,6 +45,13 @@ class DB_Query_Post_Test extends PLL_UnitTestCase {
 	 * triggers only expected DB queries.
 	 */
 	public function test_save_post_translations() {
+		global $wp_version;
+
+		// Skips this test because count result isn't the same for WordPress 6.2.
+		if ( version_compare( $wp_version, '6.3', '<' ) ) {
+			$this->markTestSkipped( 'This test is skipped for WordPress version less than 6.3.' );
+		}
+
 		$post_en = self::factory()->post->create( array( 'lang' => 'en' ) );
 		$post_fr = self::factory()->post->create( array( 'lang' => 'fr' ) );
 		$post_de = self::factory()->post->create( array( 'lang' => 'de' ) );
