@@ -444,7 +444,7 @@ class PLL_Admin_Site_Health {
 
 		// Multisite
 		if ( is_multisite() ) {
-			if ( is_plugin_active_for_network( 'POLYLANG_BASENAME' ) ) {
+			if ( is_plugin_active_for_network( POLYLANG_BASENAME ) ) {
 				$network_activated = __( 'Yes', 'polylang' );
 			} else {
 				$network_activated = __( 'No', 'polylang' );
