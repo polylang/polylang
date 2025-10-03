@@ -111,7 +111,7 @@ class PLL_Table_String extends WP_List_Table {
 			esc_attr( $item['row'] ),
 			/* translators:  accessibility text, %s is a string potentially in any language */
 			sprintf( __( 'Select %s', 'polylang' ), format_to_edit( $item['string'] ) ),
-			empty( $item['icl'] ) ? 'disabled' : '' // Only strings registered with WPML API can be removed.
+			disabled( empty( $item['icl'] ), true, false ) // Only strings registered with WPML API can be removed.
 		);
 	}
 
@@ -149,12 +149,12 @@ class PLL_Table_String extends WP_List_Table {
 				'<input type="text" name="translation[%1$s][%2$s]" id="%1$s-%2$s" value="%4$s" %5$s/>';
 
 			$out .= sprintf(
-				'<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . '</div>' . "\n",
+				'<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . "</div>\n",
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
 				format_to_edit( $translation ), // Don't interpret special chars.
-				in_array( $key, $this->authorized_language_slugs, true ) ? '' : 'disabled'
+				disabled( in_array( $key, $this->authorized_language_slugs, true ), false, false )
 			);
 		}
 
