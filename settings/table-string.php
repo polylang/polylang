@@ -17,9 +17,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class PLL_Table_String extends WP_List_Table {
 	/**
-	 * The list of languages.
+	 * Languages model.
 	 *
-	 * @var PLL_Language[]
+	 * @var Languages
 	 */
 	protected $languages;
 
@@ -67,7 +67,7 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		$this->languages                 = $languages->get_list();
+		$this->languages                 = $languages;
 		$this->authorized_language_slugs = $languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
 		$this->strings                   = PLL_Admin_Strings::get_strings();
 		$this->groups                    = array_unique( wp_list_pluck( $this->strings, 'context' ) );
@@ -139,7 +139,7 @@ class PLL_Table_String extends WP_List_Table {
 		$out       = '';
 		$languages = array();
 
-		foreach ( $this->languages as $language ) {
+		foreach ( $this->languages->get_list() as $language ) {
 			$languages[ $language->slug ] = $language->name;
 		}
 
@@ -260,9 +260,9 @@ class PLL_Table_String extends WP_List_Table {
 	public function prepare_items() {
 		// Is admin language filter active?
 		if ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) {
-			$languages = wp_list_filter( $this->languages, array( 'slug' => $lg ) );
+			$languages = wp_list_filter( $this->languages->get_list(), array( 'slug' => $lg ) );
 		} else {
-			$languages = $this->languages;
+			$languages = $this->languages->get_list();
 		}
 
 		$data = $this->strings;
@@ -396,21 +396,9 @@ class PLL_Table_String extends WP_List_Table {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
 		if ( ! empty( $_POST['submit'] ) ) {
-			foreach ( $this->languages as $language ) {
+			foreach ( $this->languages->filter( 'translator' )->get_list() as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) || ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
-				}
-
-				if ( ! in_array( $language->slug, $this->authorized_language_slugs, true ) ) {
-					wp_die(
-						sprintf(
-							/* translators: %1$s is a language name, %2$s is a language locale. */
-							esc_html__( 'Sorry, you are not allowed to translate in %1$s (%2$s).', 'polylang' ),
-							esc_html( $language->name ),
-							sprintf( '<code>%s</code>', esc_html( $language->locale ) )
-						),
-						403
-					);
 				}
 
 				$translations = array_map( 'trim', (array) wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
