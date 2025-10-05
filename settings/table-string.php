@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Model\Languages;
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // since WP 3.1
 }
@@ -15,11 +17,18 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class PLL_Table_String extends WP_List_Table {
 	/**
-	 * The list of languages.
+	 * Languages model.
 	 *
-	 * @var PLL_Language[]
+	 * @var Languages
 	 */
 	protected $languages;
+
+	/**
+	 * List of language (slugs) that the current user is allowed to translate into.
+	 *
+	 * @var string[]
+	 */
+	protected $authorized_language_slugs;
 
 	/**
 	 * Registered strings.
@@ -46,10 +55,11 @@ class PLL_Table_String extends WP_List_Table {
 	 * Constructor.
 	 *
 	 * @since 0.6
+	 * @since 3.8 The 1st argument is an instance of the languages model.
 	 *
-	 * @param PLL_Language[] $languages List of languages.
+	 * @param Languages $languages Languages model.
 	 */
-	public function __construct( $languages ) {
+	public function __construct( Languages $languages ) {
 		parent::__construct(
 			array(
 				'plural' => 'Strings translations', // Do not translate ( used for css class )
@@ -57,9 +67,10 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		$this->languages = $languages;
-		$this->strings = PLL_Admin_Strings::get_strings();
-		$this->groups = array_unique( wp_list_pluck( $this->strings, 'context' ) );
+		$this->languages                 = $languages;
+		$this->authorized_language_slugs = $languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
+		$this->strings                   = PLL_Admin_Strings::get_strings();
+		$this->groups                    = array_unique( wp_list_pluck( $this->strings, 'context' ) );
 
 		$this->selected_group = -1;
 
@@ -100,7 +111,7 @@ class PLL_Table_String extends WP_List_Table {
 			esc_attr( $item['row'] ),
 			/* translators:  accessibility text, %s is a string potentially in any language */
 			sprintf( __( 'Select %s', 'polylang' ), format_to_edit( $item['string'] ) ),
-			empty( $item['icl'] ) ? 'disabled' : '' // Only strings registered with WPML API can be removed.
+			disabled( empty( $item['icl'] ), true, false ) // Only strings registered with WPML API can be removed.
 		);
 	}
 
@@ -128,20 +139,22 @@ class PLL_Table_String extends WP_List_Table {
 		$out       = '';
 		$languages = array();
 
-		foreach ( $this->languages as $language ) {
+		foreach ( $this->languages->get_list() as $language ) {
 			$languages[ $language->slug ] = $language->name;
 		}
 
 		foreach ( $item['translations'] as $key => $translation ) {
 			$input_type = $item['multiline'] ?
-				'<textarea name="translation[%1$s][%2$s]" id="%1$s-%2$s">%4$s</textarea>' :
-				'<input type="text" name="translation[%1$s][%2$s]" id="%1$s-%2$s" value="%4$s" />';
+				'<textarea name="translation[%1$s][%2$s]" id="%1$s-%2$s" %5$s>%4$s</textarea>' :
+				'<input type="text" name="translation[%1$s][%2$s]" id="%1$s-%2$s" value="%4$s" %5$s/>';
+
 			$out .= sprintf(
-				'<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . '</div>' . "\n",
+				'<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . "</div>\n",
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
-				format_to_edit( $translation ) // Don't interpret special chars.
+				format_to_edit( $translation ), // Don't interpret special chars.
+				disabled( in_array( $key, $this->authorized_language_slugs, true ), false, false )
 			);
 		}
 
@@ -247,9 +260,9 @@ class PLL_Table_String extends WP_List_Table {
 	public function prepare_items() {
 		// Is admin language filter active?
 		if ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) {
-			$languages = wp_list_filter( $this->languages, array( 'slug' => $lg ) );
+			$languages = wp_list_filter( $this->languages->get_list(), array( 'slug' => $lg ) );
 		} else {
-			$languages = $this->languages;
+			$languages = $this->languages->get_list();
 		}
 
 		$data = $this->strings;
@@ -383,7 +396,7 @@ class PLL_Table_String extends WP_List_Table {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
 		if ( ! empty( $_POST['submit'] ) ) {
-			foreach ( $this->languages as $language ) {
+			foreach ( $this->languages->filter( 'translator' )->get_list() as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) || ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
 				}
