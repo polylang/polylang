@@ -111,7 +111,7 @@ class PLL_CRUD_Terms {
 		if ( ! $this->model->term->get_language( $term_id ) ) {
 			$this->model->term->set_language(
 				$term_id,
-				$this->get_language_from_context( new User( new WP_User() ), (int) $term_id, (string) $taxonomy )
+				$this->get_language_from_context( new User(), (int) $term_id, (string) $taxonomy )
 			);
 		}
 	}
