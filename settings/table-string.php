@@ -258,11 +258,12 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
+		$languages = $this->languages->get_list();
+
 		// Is admin language filter active?
-		if ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) {
-			$languages = wp_list_filter( $this->languages->get_list(), array( 'slug' => $lg ) );
-		} else {
-			$languages = $this->languages->get_list();
+		$filter = get_user_meta( get_current_user_id(), 'pll_filter_content', true );
+		if ( $filter ) {
+			$languages = wp_list_filter( $languages, array( 'slug' => $filter ) );
 		}
 
 		$data = $this->strings;
