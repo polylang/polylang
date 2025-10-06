@@ -24,13 +24,6 @@ class PLL_Table_String extends WP_List_Table {
 	protected $languages;
 
 	/**
-	 * List of language (slugs) that the current user is allowed to translate into.
-	 *
-	 * @var string[]
-	 */
-	protected $authorized_language_slugs;
-
-	/**
 	 * Registered strings.
 	 *
 	 * @var array
@@ -67,10 +60,9 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		$this->languages                 = $languages;
-		$this->authorized_language_slugs = $languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
-		$this->strings                   = PLL_Admin_Strings::get_strings();
-		$this->groups                    = array_unique( wp_list_pluck( $this->strings, 'context' ) );
+		$this->languages = $languages;
+		$this->strings   = PLL_Admin_Strings::get_strings();
+		$this->groups    = array_unique( wp_list_pluck( $this->strings, 'context' ) );
 
 		$this->selected_group = -1;
 
@@ -154,7 +146,7 @@ class PLL_Table_String extends WP_List_Table {
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
 				format_to_edit( $translation ), // Don't interpret special chars.
-				disabled( in_array( $key, $this->authorized_language_slugs, true ), false, false )
+				$item['disabled'][ $key ]
 			);
 		}
 
@@ -268,16 +260,16 @@ class PLL_Table_String extends WP_List_Table {
 
 		$data = $this->strings;
 
-		// Filter by selected group
+		// Filter by selected group.
 		if ( -1 !== $this->selected_group ) {
 			$data = wp_list_filter( $data, array( 'context' => $this->selected_group ) );
 		}
 
-		// Filter by searched string
+		// Filter by searched string.
 		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
 
 		if ( ! empty( $s ) ) {
-			// Search in translations
+			// Search in translations.
 			$in_translations = $this->search_in_translations( $languages, $s );
 
 			foreach ( $data as $key => $row ) {
@@ -287,10 +279,10 @@ class PLL_Table_String extends WP_List_Table {
 			}
 		}
 
-		// Sorting
+		// Sorting.
 		uasort( $data, array( $this, 'usort_reorder' ) );
 
-		// Paging
+		// Paging.
 		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
@@ -305,14 +297,21 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		// Translate strings
-		// Kept for the end as it is a slow process
+		$allowed_language_slugs = $this->languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
+
+		/*
+		 * Translate strings.
+		 * Kept for the end as it is a slow process.
+		 */
 		foreach ( $languages as $language ) {
+			$disabled = disabled( in_array( $language->slug, $allowed_language_slugs, true ), false, false );
+
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
 			foreach ( $this->items as $key => $row ) {
 				$this->items[ $key ]['translations'][ $language->slug ] = $mo->translate_if_any( $row['string'] );
-				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience
+				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience.
+				$this->items[ $key ]['disabled'][ $language->slug ]     = $disabled;
 			}
 		}
 	}
