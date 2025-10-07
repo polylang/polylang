@@ -449,8 +449,10 @@ class PLL_Admin_Site_Health {
 			} else {
 				$network_activated = __( 'No', 'polylang' );
 			}
-			$fields['network_activated']['label'] = __( 'Network Activated', 'polylang' );
-			$fields['network_activated']['value'] = $network_activated;
+			$fields['network_activated'] = array(
+				'label' => __( 'Network Activated', 'polylang' ),
+				'value' => $network_activated,
+			);
 		}
 
 		// Create the section.
