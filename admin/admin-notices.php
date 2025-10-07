@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-
 /**
  * A class to manage admin notices
  * displayed only to admin, based on 'manage_options' capability
@@ -17,7 +15,7 @@ class PLL_Admin_Notices {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	protected $options;
 

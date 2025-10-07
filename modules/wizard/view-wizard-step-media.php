@@ -6,10 +6,8 @@
  *
  * @since 2.7
  *
- * @var Options $options Polylang's options.
+ * @var \WP_Syntex\Polylang\Options\Options $options Polylang's options.
  */
-
-use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
 

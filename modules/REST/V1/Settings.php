@@ -11,7 +11,6 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Syntex\Polylang\Model\Languages;
-use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\REST\Abstract_Controller;
 
 defined( 'ABSPATH' ) || exit;
@@ -23,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings extends Abstract_Controller {
 	/**
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	private $options;
 

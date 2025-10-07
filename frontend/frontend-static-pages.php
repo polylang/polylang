@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-
 /**
  * Manages the static front page and the page for posts on frontend
  *
@@ -26,7 +24,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	/**
 	 * Stores plugin's options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	protected $options;
 
