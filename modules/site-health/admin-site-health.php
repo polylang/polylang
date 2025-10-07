@@ -450,7 +450,7 @@ class PLL_Admin_Site_Health {
 				$network_activated = __( 'No', 'polylang' );
 			}
 			$fields['network_activated'] = array(
-				'label' => __( 'Network Activated', 'polylang' ),
+				'label' => __( 'Network activated', 'polylang' ),
 				'value' => $network_activated,
 			);
 		}
