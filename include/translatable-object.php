@@ -4,7 +4,6 @@
  */
 
 use WP_Syntex\Polylang\Model\Languages;
-use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,7 +29,7 @@ abstract class PLL_Translatable_Object {
 	/**
 	 * Polylang's options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	protected $options;
 

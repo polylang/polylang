@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-
 /**
  * Adds actions and filters related to languages when creating, reading, updating or deleting posts
  * Acts both on frontend and backend
@@ -55,7 +53,7 @@ class PLL_CRUD_Terms {
 	/**
 	 * Reference to the Polylang options array.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	protected $options;
 

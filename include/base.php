@@ -4,7 +4,6 @@
  */
 
 use WP_Syntex\Polylang\REST\Request;
-use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
@@ -26,7 +25,7 @@ abstract class PLL_Base {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	public $options;
 

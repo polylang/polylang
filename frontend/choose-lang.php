@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-
 /**
  * Base class to choose the language
  *
@@ -14,7 +12,7 @@ abstract class PLL_Choose_Lang {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	public $options;
 

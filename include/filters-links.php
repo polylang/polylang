@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-
 /**
  * Manages links filters needed on both frontend and admin
  *
@@ -14,7 +12,7 @@ class PLL_Filters_Links {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	public $options;
 

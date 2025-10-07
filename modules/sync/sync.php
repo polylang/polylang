@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-
 /**
  * Manages copy and synchronization of terms and post metas on front
  *
@@ -29,7 +27,7 @@ class PLL_Sync {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	protected $options;
 
