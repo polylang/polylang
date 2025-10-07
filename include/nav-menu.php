@@ -137,7 +137,7 @@ class PLL_Nav_Menu {
 	 *
 	 * @since 0.9.4
 	 *
-	 * @param array $options \WP_Syntex\Polylang\Options\Options stored in the option nav_menu_options.
+	 * @param array $options Options stored in the option nav_menu_options.
 	 * @return array Modified options.
 	 */
 	public function nav_menu_options( $options ) {
