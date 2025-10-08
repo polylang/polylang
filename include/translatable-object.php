@@ -337,13 +337,14 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Return terms associated to the given object in the given taxonomy.
+	 * Returns terms associated to the given object in the given taxonomy.
 	 *
 	 * @since 1.2
+	 * @since 3.8 Returns null if the associated term doesn't exist.
 	 *
 	 * @param int    $object_id Object ID.
 	 * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post (or term, or else) language.
-	 * @return WP_Term|null The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
+	 * @return WP_Term|null The term associated to the object in the requested taxonomy if it exists, `null` otherwise.
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
 		$terms = $this->get_object_terms( array( $object_id ), $taxonomy );
