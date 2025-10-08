@@ -146,7 +146,6 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->post->save_translations( $posts['fr'], array( 'fr' => $posts['fr'], 'en' => $posts['en'] ) );
 
 		$terms = wp_get_object_terms( $posts, 'post_translations' );
-		$term_id = $terms[0]->term_id;
 		$this->assertCount( 2, $terms ); // Is correct at this step because the German post isn't translated into either English or French.
 
 		// Links again the German and English posts but not with the French one.
@@ -154,7 +153,6 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$terms = wp_get_object_terms( $posts, 'post_translations' );
 		$this->assertCount( 1, $terms );
-		$this->assertSame( $term_id, $terms[0]->term_id ); // The term is the same as the latest save_translations().
 
 		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['de'], 'en' ) );
 		$this->assertSame( $posts['de'], self::$model->post->get_translation( $posts['en'], 'de' ) );

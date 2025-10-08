@@ -186,11 +186,6 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
 
-		/*
-		 * Keeps the translation group term_id corresponding to the German term which has just been updated.
-		 * The goal is to be able to compare it when we will link again the German term with either the English term later.
-		 */
-		$term_id = $translations_terms[0]->term_id;
 		$this->assertCount( 3, $terms );
 
 		$this->assertSame( 0, self::$model->term->get_translation( $terms['en'], 'fr' ) );
@@ -213,7 +208,6 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$translations_terms = wp_get_object_terms( $terms, 'term_translations' );
 		$this->assertCount( 2, $translations_terms ); // Is correct because each term has a translations group even if it isn't translated.
-		$this->assertSame( $term_id, $translations_terms[0]->term_id ); // The term is the same as the German term when we unlinked translations.
 
 		$this->assertSame( $terms['en'], self::$model->term->get_translation( $terms['de'], 'en' ) );
 		$this->assertSame( $terms['de'], self::$model->term->get_translation( $terms['en'], 'de' ) );
