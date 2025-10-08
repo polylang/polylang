@@ -35,12 +35,11 @@ class Rewrite extends Abstract_Boolean {
 	 *
 	 * @since 3.8
 	 *
-	 * @param array   $info    The current site health information.
 	 * @param Options $options An instance of the Options class providing additional configuration.
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function get_site_health_info( Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( $this->get() ) {
 			$value = '1: ' . sprintf(
 				/* translators: %s is a URL slug: `/language/`. */
@@ -55,7 +54,7 @@ class Rewrite extends Abstract_Boolean {
 			);
 		}
 
-		return $this->get_site_health_info( $info, $value, self::key() );
+		return $this->format_single_value_for_site_health_info( $value );
 	}
 	/**
 	 * Returns the default value.

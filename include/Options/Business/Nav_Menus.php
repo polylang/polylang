@@ -45,18 +45,17 @@ class Nav_Menus extends Abstract_Option {
 	 *
 	 * @since 3.8
 	 *
-	 * @param array   $info    The current site health information.
 	 * @param Options $options An instance of the Options class providing additional configuration.
 	 *
 	 * @return array The updated site health information.
 	 */
-	public function add_to_site_health_info( array $info, Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function get_site_health_info( Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$current_theme = get_stylesheet();
 		/** @phpstan-var NavMenusValue $nav_menus */
 		$nav_menus     = $this->get();
 		$fields        = array();
 		if ( empty( $nav_menus[ $current_theme ] ) ) {
-			return $info;
+			return $fields;
 		}
 		foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
 			if ( empty( $lang ) ) {
@@ -67,9 +66,7 @@ class Nav_Menus extends Abstract_Option {
 			$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
 			$fields[ $location ]['value'] = is_array( $lang ) ? $this->format_array_for_site_health_info( $lang ) : $lang;
 		}
-		$info = array_merge( $info, $fields );
-
-		return $info;
+		return $fields;
 	}
 
 	/**

@@ -289,7 +289,6 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.8
 	 *
-	 * @param array   $info    The current site health information.
 	 * @param Options $options An instance of the Options class providing additional configuration.
 	 *
 	 * @return array The updated site health information.
@@ -303,9 +302,7 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.8
 	 *
-	 * @param array  $info  An array containing existing site health information.
-	 * @param mixed  $value The value to be added to the site health fields.
-	 * @param string $key   The key used to identify the added field.
+	 * @param mixed $value The value to be added to the site health fields.
 	 *
 	 * @return array Updated array of site health information including the new fields.
 	 */
