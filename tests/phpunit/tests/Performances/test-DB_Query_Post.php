@@ -6,7 +6,7 @@ use PLL_UnitTestCase;
 use PLL_Context_Admin;
 use PLL_UnitTest_Factory;
 
-class DB_Query_Post_Test extends PLL_UnitTestCase {
+class DB_Query_Translations_Test extends PLL_UnitTestCase {
 
 	private $query_counter = 0;
 	private $captured_queries = array();
