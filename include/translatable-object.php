@@ -284,7 +284,7 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Caches all object-relationship terms.
+	 * Caches all object-relationship terms and returns them for the specified taxonomy.
 	 *
 	 * @since 3.8
 	 *
