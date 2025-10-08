@@ -260,9 +260,7 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$this->update_object_term_cache( $object_ids );
-
-		$cached_values = wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
+		$cached_values = $this->get_from_object_term_cache( $object_ids, $taxonomy );
 
 		// Flatten the array to prime the terms cache.
 		$all_term_ids = array();
@@ -290,18 +288,19 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int[] $object_ids Array of object IDs to retrieve terms for.
+	 * @param int[]  $object_ids Array of object IDs to retrieve terms for.
+	 * @param string $taxonomy   Taxonomy name.
 	 *
-	 * @return void
+	 * @return int[][]
 	 */
-	private function update_object_term_cache( array $object_ids ): void {
+	private function get_from_object_term_cache( array $object_ids, string $taxonomy ) {
 		$non_cached_ids = array();
-		foreach ( $this->tax_to_cache as $taxonomy ) {
-			$non_cached_ids = array_merge( $non_cached_ids, _get_non_cached_ids( $object_ids, "{$taxonomy}_relationships" ) );
+		foreach ( $this->tax_to_cache as $tax ) {
+			$non_cached_ids = array_merge( $non_cached_ids, _get_non_cached_ids( $object_ids, "{$tax}_relationships" ) );
 		}
 
 		if ( empty( $non_cached_ids ) ) {
-			return;
+			return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
 		}
 
 		$terms = wp_get_object_terms(
@@ -314,7 +313,7 @@ abstract class PLL_Translatable_Object {
 		);
 
 		if ( ! is_array( $terms ) ) {
-			return;
+			return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
 		}
 
 		$object_terms = array();
@@ -323,9 +322,9 @@ abstract class PLL_Translatable_Object {
 		}
 
 		foreach ( $non_cached_ids as $id ) {
-			foreach ( $this->tax_to_cache as $taxonomy ) {
-				if ( ! isset( $object_terms[ $taxonomy ][ $id ] ) ) {
-					$object_terms[ $taxonomy ][ $id ] = array();
+			foreach ( $this->tax_to_cache as $tax ) {
+				if ( ! isset( $object_terms[ $tax ][ $id ] ) ) {
+					$object_terms[ $tax ][ $id ] = array();
 				}
 			}
 		}
@@ -333,6 +332,8 @@ abstract class PLL_Translatable_Object {
 		foreach ( $object_terms as $tax => $data ) {
 			wp_cache_add_multiple( $data, "{$tax}_relationships" );
 		}
+
+		return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
 	}
 
 	/**
