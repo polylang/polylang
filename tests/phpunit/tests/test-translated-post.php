@@ -140,6 +140,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->assertSame( 0, self::$model->post->get_translation( $posts['de'], 'fr' ) );
 		$this->assertSame( 0, self::$model->post->get_translation( $posts['de'], 'en' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['en'], 'fr' ) );
 
 		// Links again the French and English posts.
 		self::$model->post->save_translations( $posts['fr'], array( 'fr' => $posts['fr'], 'en' => $posts['en'] ) );
