@@ -66,3 +66,11 @@ parameters:
 			message: "#^Parameter \\#2 \\$array of function implode expects array\\|null, mixed given\\.$#"
 			count: 1
 			path: include/Options/Business/Sync.php
+		-
+			message: "#^Parameter \\#2 \\$timestamp of function wp_date expects int\\|null, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/First_Activation.php
+		-
+			message: "#^Parameter \\#1 \\$format of function wp_date expects string, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/First_Activation.php
