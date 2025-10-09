@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
+use WP_Syntex\Polylang\Options\Primitive\Site_Health_String_Trait;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Version extends Abstract_String {
+	use Site_Health_String_Trait;
 	/**
 	 * Returns option key.
 	 *

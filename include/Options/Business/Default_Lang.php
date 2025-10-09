@@ -9,6 +9,7 @@ use WP_Error;
 use WP_Syntex\Polylang\Model\Languages;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
+use WP_Syntex\Polylang\Options\Primitive\Site_Health_String_Trait;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Default_Lang extends Abstract_String {
+	use site_health_string_trait;
 	/**
 	 * Returns option key.
 	 *
