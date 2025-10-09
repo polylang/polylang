@@ -200,6 +200,6 @@ class Domains extends Abstract_Option {
 			return $this->format_single_value_for_site_health_info( $this->get() );
 		}
 
-		return parent::format_single_value_for_site_health_info( $this->get() );
+		return parent::get_site_health_info( $options );
 	}
 }

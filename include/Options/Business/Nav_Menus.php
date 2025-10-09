@@ -53,18 +53,21 @@ class Nav_Menus extends Abstract_Option {
 		$current_theme = get_stylesheet();
 		/** @phpstan-var NavMenusValue $nav_menus */
 		$nav_menus     = $this->get();
-		$fields        = array();
 		if ( empty( $nav_menus[ $current_theme ] ) ) {
-			return $fields;
+			return array();
 		}
+
+		$fields = array();
 		foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
 			if ( empty( $lang ) ) {
 				/* translators: default value when a menu location is not used. */
 				$lang = __( 'Not used', 'polylang' );
 			}
 
-			$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-			$fields[ $location ]['value'] = is_array( $lang ) ? $this->format_array_for_site_health_info( $lang ) : $lang;
+			$fields[ $location ] = array(
+				'label' => sprintf( 'menu: %s', $location ),
+				'value' => is_array( $lang ) ? $this->format_array_for_site_health_info( $lang ) : $lang,
+			);
 		}
 		return $fields;
 	}
