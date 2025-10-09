@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\User;
+
 /**
  * Manages filters and actions related to media on admin side
  * Capability to edit / create media is checked before loading this class
@@ -120,6 +122,11 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 
 		if ( empty( $language ) ) {
 			return $post;
+		}
+
+		if ( ! ( new User() )->can_translate( $language ) ) {
+			/* translators: %s: language name */
+			wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a media.', 'polylang' ), $language->name ) ) );
 		}
 
 		$this->model->post->set_language( $post['ID'], $language );
