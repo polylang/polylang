@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Version extends Abstract_String {
 	use Site_Health_String_Trait;
+
 	/**
 	 * Returns option key.
 	 *

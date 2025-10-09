@@ -49,6 +49,7 @@ class Previous_Version extends Version {
 	 * @return array The updated site health information.
 	 */
 	public function get_site_health_info( Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		$value ='';
 		if ( ! $this->get() ) {
 			$value = __( 'This is the first activation', 'polylang' );
 		}

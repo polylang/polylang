@@ -20,6 +20,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Default_Lang extends Abstract_String {
 	use site_health_string_trait;
+
 	/**
 	 * Returns option key.
 	 *
