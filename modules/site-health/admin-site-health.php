@@ -96,11 +96,11 @@ class PLL_Admin_Site_Health {
 
 		// Get effective translated post types and taxonomies. The options doesn't show all translated ones.
 		if ( ! empty( $this->model->get_translated_post_types() ) ) {
-			$fields['cpt']['label'] = __( 'Post Types', 'polylang' );
+			$fields['cpt']['label'] = __( 'Translated post types', 'polylang' );
 			$fields['cpt']['value'] = implode( ', ', $this->model->get_translated_post_types() );
 		}
 		if ( ! empty( $this->model->get_translated_taxonomies() ) ) {
-			$fields['taxonomies']['label'] = __( 'Custom Taxonomies', 'polylang' );
+			$fields['taxonomies']['label'] = __( 'Translated custom taxonomies', 'polylang' );
 			$fields['taxonomies']['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
 		}
 
