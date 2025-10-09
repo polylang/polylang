@@ -17,7 +17,7 @@
     "env:composer": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang composer",
     "wp-env": "wp-env",
     "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang vendor/bin/phpunit",
-    "test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'export WP_MULTISITE=1 && vendor/bin/phpunit'"
+    "test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 vendor/bin/phpunit'"
   },
   "repository": {
     "type": "git",
