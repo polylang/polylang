@@ -173,7 +173,7 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		 * UPDATE `wptests_term_taxonomy` SET `count` = 3 WHERE `term_taxonomy_id` = 9
 		 * SELECT term_id, taxonomy FROM wptests_term_taxonomy WHERE term_taxonomy_id IN (9)
 		 */
-		$this->assertSame( 38, $query_count, 'Number of queries when getting post translations should be 2.' );
+		$this->assertSame( 38, $query_count, 'Number of queries when saving post translations should be 38.' );
 	}
 
 	/**
