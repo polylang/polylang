@@ -310,11 +310,11 @@ abstract class Abstract_Option {
 		if ( empty( $value ) ) {
 			return array();
 		}
-		
+
 		return array(
-			'label' => static::key(),
+			'label' => ucfirst( static::key() ),
 			'value' => $value,
-		);		
+		);
 	}
 
 	/**
