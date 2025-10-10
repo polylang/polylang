@@ -23,7 +23,7 @@ abstract class Abstract_String extends Abstract_Option {
 	 *
 	 * @return string
 	 */
-	public function get_default() {
+	public static function get_default() {
 		return '';
 	}
 
