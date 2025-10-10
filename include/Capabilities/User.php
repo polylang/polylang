@@ -101,8 +101,7 @@ class User {
 	 */
 	public function get_preferred_language( PLL_Model $model ): ?PLL_Language {
 		$pattern       = Languages::INNER_SLUG_PATTERN;
-		$caps_array    = array_combine( array_keys( $this->user->allcaps ), array_keys( $this->user->allcaps ) );
-		$language_caps = preg_grep( "/^translate_{$pattern}$/", $caps_array );
+		$language_caps = preg_grep( "/^translate_{$pattern}$/", array_keys( $this->user->allcaps ) );
 
 		if ( empty( $language_caps ) ) {
 			return null;
