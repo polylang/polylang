@@ -601,7 +601,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Tells if Polylang is active on the current blog.
 	 *
-	 * @since 3.7.5
+	 * @since 3.8
 	 *
 	 * @return bool
 	 */
