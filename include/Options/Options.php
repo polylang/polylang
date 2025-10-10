@@ -121,18 +121,25 @@ class Options implements ArrayAccess, IteratorAggregate {
 
 		if ( ! array_key_exists( $key, $this->options[ $this->current_blog_id ] ) ) {
 			// Option raw value doesn't exist in database, use default instead.
-			$this->options[ $this->current_blog_id ][ $key ] = new $class_name();
+			$this->options[ $this->current_blog_id ][ $key ] = $this->maybe_make_option_inactive(
+				new $class_name()
+			);
 			return $this;
 		}
 
 		// If option exists in database, use this value.
 		if ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Option ) {
 			// Already registered, do nothing.
+			$this->options[ $this->current_blog_id ][ $key ] = $this->maybe_make_option_inactive(
+				$this->options[ $this->current_blog_id ][ $key ]
+			);
 			return $this;
 		}
 
 		// Option raw value exists in database, use it.
-		$this->options[ $this->current_blog_id ][ $key ] = new $class_name( $this->options[ $this->current_blog_id ][ $key ] );
+		$this->options[ $this->current_blog_id ][ $key ] = $this->maybe_make_option_inactive(
+			new $class_name( $this->options[ $this->current_blog_id ][ $key ] )
+		);
 
 		return $this;
 	}
@@ -589,18 +596,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 		 *                                      This can be false after calling `switch_to_blog()`.
 		 */
 		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id, $this->is_plugin_active() );
-
-		if ( $this->is_plugin_active() ) {
-			return;
-		}
-
-		foreach ( $this->options[ $this->current_blog_id ] as $name => $option ) {
-			if ( ! $option instanceof Abstract_Option ) {
-				// This should not happen.
-				continue;
-			}
-			$this->options[ $this->current_blog_id ][ $name ] = new Inactive_Option( $option );
-		}
 	}
 
 	/**
@@ -618,5 +613,21 @@ class Options implements ArrayAccess, IteratorAggregate {
 		$this->is_plugin_active[ $this->current_blog_id ] = pll_is_plugin_active( POLYLANG_BASENAME ) || doing_action( 'activate_' . POLYLANG_BASENAME );
 
 		return $this->is_plugin_active[ $this->current_blog_id ];
+	}
+
+	/**
+	 * Decorates options if we are on a site where Polylang is not active.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Abstract_Option $option The option to decorate.
+	 * @return Abstract_Option
+	 */
+	private function maybe_make_option_inactive( Abstract_Option $option ): Abstract_Option {
+		if ( $this->is_plugin_active() || $option instanceof Inactive_Option ) {
+			return $option;
+		}
+
+		return new Inactive_Option( $option );
 	}
 }
