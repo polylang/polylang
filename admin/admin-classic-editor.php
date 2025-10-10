@@ -192,10 +192,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 'You are not allowed to edit this post.' );
 		}
 
-		if ( ! ( new User() )->can_translate( $lang ) ) {
-			/* translators: %s: language name */
-			wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a post.', 'polylang' ), $lang->name ) ) );
-		}
+		User::check_assign_rights_or_die( $lang, 'post' );
 
 		$this->model->post->set_language( $post_ID, $lang );
 

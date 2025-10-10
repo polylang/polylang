@@ -290,10 +290,7 @@ class PLL_Admin_Filters_Term {
 				return;
 			}
 
-			if ( ! ( new User() )->can_translate( $language ) ) {
-				/* translators: %s: language name */
-				wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a term.', 'polylang' ), $language->name ) ) );
-			}
+			User::check_assign_rights_or_die( $language, 'term' );
 
 			$this->model->term->set_language( $term_id, $language );
 		}
@@ -312,10 +309,7 @@ class PLL_Admin_Filters_Term {
 					return;
 				}
 
-				if ( ! ( new User() )->can_translate( $language ) ) {
-					/* translators: %s: language name */
-					wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a term.', 'polylang' ), $language->name ) ) );
-				}
+				User::check_assign_rights_or_die( $language, 'term' );
 
 				$this->model->term->set_language( $term_id, $language );
 				$term  = get_term( $term_id, $taxonomy );
@@ -357,10 +351,7 @@ class PLL_Admin_Filters_Term {
 					return;
 				}
 
-				if ( ! ( new User() )->can_translate( $language ) ) {
-					/* translators: %s: language name */
-					wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a term.', 'polylang' ), $language->name ) ) );
-				}
+				User::check_assign_rights_or_die( $language, 'term' );
 
 				$this->model->term->set_language( $term_id, $language );
 			}
@@ -379,10 +370,7 @@ class PLL_Admin_Filters_Term {
 				return;
 			}
 
-			if ( ! ( new User() )->can_translate( $language ) ) {
-				/* translators: %s: language name */
-				wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a term.', 'polylang' ), $language->name ) ) );
-			}
+			User::check_assign_rights_or_die( $language, 'term' );
 
 			$this->model->term->set_language( $term_id, $language );
 		}
@@ -397,10 +385,7 @@ class PLL_Admin_Filters_Term {
 				return;
 			}
 
-			if ( ! ( new User() )->can_translate( $language ) ) {
-				/* translators: %s: language name */
-				wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a term.', 'polylang' ), $language->name ) ) );
-			}
+			User::check_assign_rights_or_die( $language, 'term' );
 
 			$this->model->term->set_language( $term_id, $language );
 		}
