@@ -117,24 +117,22 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @phpstan-param class-string<Abstract_Option> $class_name
 	 */
 	public function register( string $class_name ): self {
-		foreach ( $this->options as &$options ) {
-			$key = $class_name::key();
+		$key = $class_name::key();
 
-			if ( ! array_key_exists( $key, $options ) ) {
-				// Option raw value doesn't exist in database, use default instead.
-				$options[ $key ] = new $class_name();
-				continue;
-			}
-
-			// If option exists in database, use this value.
-			if ( $options[ $key ] instanceof Abstract_Option ) {
-				// Already registered, do nothing.
-				continue;
-			}
-
-			// Option raw value exists in database, use it.
-			$options[ $key ] = new $class_name( $options[ $key ] );
+		if ( ! array_key_exists( $key, $this->options[ $this->current_blog_id ] ) ) {
+			// Option raw value doesn't exist in database, use default instead.
+			$this->options[ $this->current_blog_id ][ $key ] = new $class_name();
+			return $this;
 		}
+
+		// If option exists in database, use this value.
+		if ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Option ) {
+			// Already registered, do nothing.
+			return $this;
+		}
+
+		// Option raw value exists in database, use it.
+		$this->options[ $this->current_blog_id ][ $key ] = new $class_name( $this->options[ $this->current_blog_id ][ $key ] );
 
 		return $this;
 	}
