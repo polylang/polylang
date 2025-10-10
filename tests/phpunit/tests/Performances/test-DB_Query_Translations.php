@@ -33,10 +33,9 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		);
 
 		/*
-		 * Expected queries:
+		 * Expected queries from 1 call to `wp_get_object_terms()`:
+		 * --------------------------------------------------------
 		 *
-		 * `wp_get_object_terms()` call:
-		 * --------------------------------------------------------------------
 		 * SELECT DISTINCT t.term_id, tr.object_id
 		 *    FROM wptests_terms AS t  INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wptests_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id
 		 *    WHERE tt.taxonomy IN ('language', 'post_translations') AND tr.object_id IN (4)
@@ -74,29 +73,31 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		/*
 		 * Expected queries:
 		 *
-		 * `wp_get_object_terms()` call:
-		 * --------------------------------------------------------------------
+		 * 3 call to `wp_get_object_terms()`, 2 queries each:
+		 * --------------------------------------------------
+		 *
 		 * SELECT DISTINCT t.term_id, tr.object_id
 		 *     FROM wptests_terms AS t  INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wptests_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id
 		 *     WHERE tt.taxonomy IN ('language', 'post_translations') AND tr.object_id IN (7)
 		 *     ORDER BY t.name ASC
 		 *
+		 * SELECT t.*, tt.* FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (2)
 		 * SELECT DISTINCT t.term_id, tr.object_id
 		 *     FROM wptests_terms AS t  INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wptests_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id
 		 *     WHERE tt.taxonomy IN ('language', 'post_translations') AND tr.object_id IN (8)
 		 *     ORDER BY t.name ASC
 		 *
+		 * SELECT t.*, tt.* FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (4)
 		 * SELECT DISTINCT t.term_id, tr.object_id
 		 *     FROM wptests_terms AS t  INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wptests_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id
 		 *     WHERE tt.taxonomy IN ('language', 'post_translations') AND tr.object_id IN (9)
 		 *     ORDER BY t.name ASC
 		 *
-		 * SELECT t.*, tt.* FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (2)
-		 * SELECT t.*, tt.* FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (4)
 		 * SELECT t.*, tt.* FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (6)
-
-		 * `wp_insert_term()` call:
-		 * --------------------------------------------------------------------
+		 *
+		 * 1 call to `wp_insert_term()`, 8 queries:
+		 * ----------------------------------------
+		 *
 		 * SELECT  t.term_id
 		 *     FROM wptests_terms AS t  INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id
 		 *     WHERE tt.taxonomy IN ('post_translations') AND t.name IN ('pll_68e7b3e475f0c') AND tt.parent = '0'
@@ -120,9 +121,10 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		 * SELECT t.term_id, t.slug, tt.term_taxonomy_id, tt.taxonomy FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON ( tt.term_id = t.term_id ) WHERE t.slug = 'pll_68e7b3e475f0c' AND tt.parent = 0 AND tt.taxonomy = 'post_translations' AND t.term_id < 9 AND tt.term_taxonomy_id != 9
 		 * SELECT autoload FROM wptests_options WHERE option_name = 'post_translations_children'
 		 *
-		 * `wp_set_object_terms()` call:
-		 * --------------------------------------------------------------------
-		 *.SELECT DISTINCT t.term_id
+		 * 3 calls to `wp_set_object_terms()`:
+		 * -----------------------------------
+		 *
+		 * SELECT DISTINCT t.term_id
 		 *     FROM wptests_terms AS t  INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wptests_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id
 		 *     WHERE tt.taxonomy IN ('post_translations') AND tr.object_id IN (7)
 		 *
