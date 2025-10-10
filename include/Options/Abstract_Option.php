@@ -204,10 +204,11 @@ abstract class Abstract_Option {
 	 * Returns the default value.
 	 *
 	 * @since 3.7
+	 * @since 3.8 Visibility changed from `protected` to `public`.
 	 *
 	 * @return mixed
 	 */
-	abstract protected function get_default();
+	abstract public function get_default();
 
 	/**
 	 * Returns the JSON schema part specific to this option.
