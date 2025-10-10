@@ -38,6 +38,7 @@ class Domains extends Abstract_Option {
 	 * Returns the default value.
 	 *
 	 * @since 3.7
+	 * @since 3.8 Made `public` and `static`.
 	 *
 	 * @return array
 	 */
