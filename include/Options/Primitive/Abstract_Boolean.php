@@ -24,7 +24,7 @@ abstract class Abstract_Boolean extends Abstract_Option {
 	 *
 	 * @return bool
 	 */
-	protected function get_default() {
+	public function get_default() {
 		return false;
 	}
 

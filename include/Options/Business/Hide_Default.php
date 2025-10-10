@@ -39,7 +39,7 @@ class Hide_Default extends Abstract_Boolean {
 	 *
 	 * @return bool
 	 */
-	protected function get_default() {
+	public function get_default() {
 		return true;
 	}
 

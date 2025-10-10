@@ -36,7 +36,7 @@ class Force_Lang extends Abstract_Option {
 	 *
 	 * @return int
 	 */
-	protected function get_default() {
+	public function get_default() {
 		return 1;
 	}
 

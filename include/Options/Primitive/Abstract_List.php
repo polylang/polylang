@@ -57,7 +57,7 @@ abstract class Abstract_List extends Abstract_Option {
 	 *
 	 * @return array
 	 */
-	protected function get_default() {
+	public function get_default() {
 		return array();
 	}
 

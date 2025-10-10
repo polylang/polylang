@@ -38,7 +38,7 @@ class First_Activation extends Abstract_Option {
 	 *
 	 * @phpstan-return int<0, max>
 	 */
-	protected function get_default() {
+	public function get_default() {
 		return time();
 	}
 

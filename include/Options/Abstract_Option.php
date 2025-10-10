@@ -207,7 +207,7 @@ abstract class Abstract_Option {
 	 *
 	 * @return mixed
 	 */
-	abstract protected function get_default();
+	abstract public function get_default();
 
 	/**
 	 * Returns the JSON schema part specific to this option.
