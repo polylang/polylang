@@ -332,8 +332,7 @@ abstract class Abstract_Option {
 				if ( is_array( $value ) ) {
 					$ids = implode( ' , ', $value );
 					$value = "$key => $ids";
-				}
-				else {
+				} else {
 					$value = "$key => $value";
 				}
 			}
