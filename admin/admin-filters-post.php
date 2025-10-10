@@ -156,10 +156,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				return;
 			}
 
-			if ( ! ( new User() )->can_translate( $language ) ) {
-				/* translators: %s: language name */
-				wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a post.', 'polylang' ), $language->name ) ) );
-			}
+			User::check_assign_rights_or_die( $language, 'post' );
 
 			$this->model->post->set_language( $post_id, $language );
 
@@ -183,10 +180,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			check_admin_referer( 'bulk-posts' );
 
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {
-				if ( ! ( new User() )->can_translate( $lang ) ) {
-					/* translators: %s: language name */
-					wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a post.', 'polylang' ), $lang->name ) ) );
-				}
+				User::check_assign_rights_or_die( $lang, 'post' );
 
 				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 				foreach ( $post_ids as $post_id ) {
@@ -212,10 +206,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			$post_id = (int) $_POST['post_ID'];
 			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
 			if ( $post_id && $lang && current_user_can( 'edit_post', $post_id ) ) {
-				if ( ! ( new User() )->can_translate( $lang ) ) {
-					/* translators: %s: language name */
-					wp_die( esc_html( sprintf( __( 'You are not allowed to assign %s to a post.', 'polylang' ), $lang->name ) ) );
-				}
+				User::check_assign_rights_or_die( $lang, 'post' );
 
 				$this->model->post->set_language( $post_id, $lang );
 			}
