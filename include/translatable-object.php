@@ -245,53 +245,109 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Wraps `wp_get_object_terms()` to cache it and return only one object.
-	 * Inspired by the WordPress function `get_the_terms()`.
+	 * Wraps `wp_get_object_terms()` to cache it for multiple objects.
 	 *
-	 * @since 1.2
+	 * @since 3.8
 	 *
-	 * @param int    $id       Object ID.
-	 * @param string $taxonomy Polylang taxonomy depending if we are looking for a post (or term, or else) language.
-	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
+	 * @param int[]  $object_ids Array of object IDs.
+	 * @param string $taxonomy   Taxonomy name.
+	 * @return array<int,WP_Term|null> Array of terms with object ID as key.
 	 */
-	public function get_object_term( $id, $taxonomy ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) ) {
-			return false;
+	protected function get_object_terms( array $object_ids, string $taxonomy ) {
+		$object_ids = $this->sanitize_int_ids_list( $object_ids );
+		if ( empty( $object_ids ) ) {
+			return array();
 		}
 
-		$term = get_object_term_cache( $id, $taxonomy );
+		$cached_values = $this->get_from_object_term_cache( $object_ids, $taxonomy );
 
-		if ( is_array( $term ) ) {
-			return ! empty( $term ) ? reset( $term ) : false;
+		// Flatten the array to prime the terms cache.
+		$all_term_ids = array();
+		foreach ( $cached_values as $term_ids ) {
+			$all_term_ids = array_merge( $all_term_ids, $term_ids );
+		}
+		_prime_term_caches( $all_term_ids, false );
+
+		$terms = array();
+		foreach ( $cached_values as $object_id => $term_ids ) {
+			if ( ! empty( $term_ids ) ) {
+				$term_id = reset( $term_ids ); // There is only one term for language or translation groups.
+
+				/** @var WP_Term $term */
+				$term                = get_term( $term_id );
+				$terms[ $object_id ] = $term;
+			}
 		}
 
-		// Query terms.
-		$terms        = array();
-		$term         = false;
-		$object_terms = wp_get_object_terms( $id, $this->tax_to_cache, array( 'update_term_meta_cache' => false ) );
+		return $terms;
+	}
 
-		if ( is_array( $object_terms ) ) {
-			foreach ( $object_terms as $t ) {
-				$terms[ $t->taxonomy ] = $t;
-				if ( $t->taxonomy === $taxonomy ) {
-					$term = $t;
+	/**
+	 * Caches all object-relationship terms and returns them for the specified taxonomy.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int[]  $object_ids Array of object IDs to retrieve terms for.
+	 * @param string $taxonomy   Taxonomy name.
+	 *
+	 * @return int[][]
+	 */
+	private function get_from_object_term_cache( array $object_ids, string $taxonomy ) {
+		$non_cached_ids = array();
+		foreach ( $this->tax_to_cache as $tax ) {
+			$non_cached_ids = array_merge( $non_cached_ids, _get_non_cached_ids( $object_ids, "{$tax}_relationships" ) );
+		}
+
+		if ( empty( $non_cached_ids ) ) {
+			return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
+		}
+
+		$terms = wp_get_object_terms(
+			array_unique( $non_cached_ids ),
+			$this->tax_to_cache,
+			array(
+				'fields'                 => 'all_with_object_id',
+				'update_term_meta_cache' => false,
+			)
+		);
+
+		if ( ! is_array( $terms ) ) {
+			return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
+		}
+
+		$object_terms = array();
+		foreach ( $terms as $term ) {
+			$object_terms[ $term->taxonomy ][ $term->object_id ][] = $term->term_id;
+		}
+
+		foreach ( $non_cached_ids as $id ) {
+			foreach ( $this->tax_to_cache as $tax ) {
+				if ( ! isset( $object_terms[ $tax ][ $id ] ) ) {
+					$object_terms[ $tax ][ $id ] = array();
 				}
 			}
 		}
 
-		foreach ( $this->tax_to_cache as $tax ) {
-			if ( empty( $terms[ $tax ] ) ) {
-				$to_cache = array();
-			} else {
-				$to_cache = array( $terms[ $tax ]->term_id );
-			}
-
-			wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
+		foreach ( $object_terms as $tax => $data ) {
+			wp_cache_add_multiple( $data, "{$tax}_relationships" );
 		}
 
-		return $term;
+		return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
+	}
+
+	/**
+	 * Returns terms associated to the given object in the given taxonomy.
+	 *
+	 * @since 1.2
+	 * @since 3.8 Returns null if the associated term doesn't exist.
+	 *
+	 * @param int    $object_id Object ID.
+	 * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post (or term, or else) language.
+	 * @return WP_Term|null The term associated to the object in the requested taxonomy if it exists, `null` otherwise.
+	 */
+	public function get_object_term( $object_id, $taxonomy ) {
+		$terms = $this->get_object_terms( array( $object_id ), $taxonomy );
+		return $terms[ $object_id ] ?? null;
 	}
 
 	/**

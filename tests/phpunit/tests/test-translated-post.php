@@ -99,6 +99,69 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( 0, self::$model->post->get_translation( $de, 'fr' ) ); // fails
 	}
 
+	/**
+	 * Checks that the translations group are kept unique when linking several translations together.
+	 *
+	 * @ticket #2717 see {https://github.com/polylang/polylang-pro/issues/2717}.
+	 */
+	public function test_save_translations() {
+		$posts = self::factory()->post->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' ),
+			array( 'lang' => 'de' )
+		);
+
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 1, $terms );
+
+		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['en'], 'en' ) );
+		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['fr'], 'fr' ) );
+		$this->assertSame( $posts['de'], self::$model->post->get_translation( $posts['de'], 'de' ) );
+
+		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['en'], 'fr' ) );
+		$this->assertSame( $posts['de'], self::$model->post->get_translation( $posts['en'], 'de' ) );
+
+		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['fr'], 'en' ) );
+		$this->assertSame( $posts['de'], self::$model->post->get_translation( $posts['fr'], 'de' ) );
+
+		$this->assertSame( $posts['fr'], self::$model->post->get_translation( $posts['de'], 'fr' ) );
+		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['de'], 'en' ) );
+
+		/*
+		.* Removes the translations from the group by updating the German post.
+		.* It keeps a translations group only for German.
+		.* Translations in English and French are also unlinked.
+		.* See `PLL_Translated_Post::delete_translation()`.
+		 */
+		self::$model->post->save_translations( $posts['de'], array() );
+
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 1, $terms );
+
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['de'], 'fr' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['de'], 'en' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['en'], 'fr' ) );
+
+		// Links again the French and English posts.
+		self::$model->post->save_translations( $posts['fr'], array( 'fr' => $posts['fr'], 'en' => $posts['en'] ) );
+
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 2, $terms ); // Is correct at this step because the German post isn't translated into either English or French.
+
+		// Links again the German and English posts but not with the French one.
+		self::$model->post->save_translations( $posts['de'], array( 'de' => $posts['de'], 'en' => $posts['en'] ) );
+
+		$terms = wp_get_object_terms( $posts, 'post_translations' );
+		$this->assertCount( 1, $terms );
+
+		$this->assertSame( $posts['en'], self::$model->post->get_translation( $posts['de'], 'en' ) );
+		$this->assertSame( $posts['de'], self::$model->post->get_translation( $posts['en'], 'de' ) );
+
+		// The French post is no longer in the translations group.
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['fr'], 'en' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $posts['fr'], 'de' ) );
+	}
+
 	public function test_current_user_can_synchronize() {
 		add_filter( 'pll_pre_current_user_can_synchronize_post', '__return_null' ); // Enable capability check
 
