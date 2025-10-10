@@ -410,11 +410,6 @@ class Options implements ArrayAccess, IteratorAggregate {
 	 * @return mixed The new value.
 	 */
 	public function reset( string $key ) {
-		if ( ! $this->is_plugin_active() ) {
-			/* translators: %s is a blog ID. */
-			return new WP_Error( 'pll_not_active', sprintf( __( 'Polylang is not active on site %s.', 'polylang' ), number_format_i18n( get_current_blog_id() ) ) );
-		}
-
 		$option = $this->get_option_object( $key );
 
 		if ( ! $option instanceof Abstract_Option ) {
