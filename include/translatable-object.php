@@ -283,23 +283,22 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Caches all object-relationship terms and returns them for the specified taxonomy.
+	 * Caches all object-relationship terms.
 	 *
 	 * @since 3.8
 	 *
 	 * @param int[]  $object_ids Array of object IDs to retrieve terms for.
-	 * @param string $taxonomy   Taxonomy name.
 	 *
-	 * @return int[][]
+	 * @return void
 	 */
-	private function get_from_object_term_cache( array $object_ids, string $taxonomy ) {
+	protected function update_object_term_cache( array $object_ids ) {
 		$non_cached_ids = array();
 		foreach ( $this->tax_to_cache as $tax ) {
 			$non_cached_ids = array_merge( $non_cached_ids, _get_non_cached_ids( $object_ids, "{$tax}_relationships" ) );
 		}
 
 		if ( empty( $non_cached_ids ) ) {
-			return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
+			return;
 		}
 
 		$terms = wp_get_object_terms(
@@ -312,7 +311,7 @@ abstract class PLL_Translatable_Object {
 		);
 
 		if ( ! is_array( $terms ) ) {
-			return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
+			return;
 		}
 
 		$object_terms = array();
@@ -331,9 +330,23 @@ abstract class PLL_Translatable_Object {
 		foreach ( $object_terms as $tax => $data ) {
 			wp_cache_add_multiple( $data, "{$tax}_relationships" );
 		}
+	}
 
+	/**
+	 * Caches all object-relationship terms and returns them for the specified taxonomy.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int[]  $object_ids Array of object IDs to retrieve terms for.
+	 * @param string $taxonomy   Taxonomy name.
+	 *
+	 * @return int[][]
+	 */
+	protected function get_from_object_term_cache( array $object_ids, string $taxonomy ) {
+		$this->update_object_term_cache( $object_ids );
 		return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
 	}
+
 
 	/**
 	 * Returns terms associated to the given object in the given taxonomy.
