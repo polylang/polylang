@@ -24,6 +24,8 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Languages extends Abstract_Controller {
+	public const CAPABILITY = 'manage_languages_in_rest';
+
 	/**
 	 * @var Languages_Model
 	 */
@@ -650,7 +652,7 @@ class Languages extends Abstract_Controller {
 	 * @return bool
 	 */
 	protected function check_update_permission(): bool {
-		return current_user_can( 'manage_options' );
+		return current_user_can( self::CAPABILITY );
 	}
 
 	/**

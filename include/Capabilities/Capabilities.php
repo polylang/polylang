@@ -5,6 +5,9 @@
 
 namespace WP_Syntex\Polylang\Capabilities;
 
+use WP_Syntex\Polylang\REST\V1\Settings;
+use WP_Syntex\Polylang\REST\V1\Languages;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -32,9 +35,15 @@ class Capabilities {
 	 * @return string[]
 	 */
 	public function map_custom_caps( $caps, $cap ) {
-		if ( 'manage_translations' === $cap ) {
-			$caps   = array_diff( $caps, array( 'manage_translations' ) );
+		$custom_caps = array( 'manage_translations', Languages::CAPABILITY, Settings::CAPABILITY );
+
+		foreach ( $custom_caps as $custom_cap ) {
+			if ( $custom_cap !== $cap ) {
+				continue;
+			}
+			$caps   = array_diff( $caps, array( $custom_cap ) );
 			$caps[] = 'manage_options';
+			return $caps;
 		}
 
 		return $caps;
