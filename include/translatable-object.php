@@ -287,7 +287,7 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int[]  $object_ids Array of object IDs to retrieve terms for.
+	 * @param int[] $object_ids Array of object IDs.
 	 *
 	 * @return void
 	 */
