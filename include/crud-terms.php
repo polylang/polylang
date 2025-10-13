@@ -335,15 +335,15 @@ class PLL_CRUD_Terms {
 		} elseif ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
 			// Sets language from term parent if exists thanks to Scott Kingsley Clark.
 			$language = $parent_lang;
-		} elseif ( $user->is_translator() ) {
-			// Use default language if user can translate into it or its preferred one.
-			$language = $user->can_translate( $default_language ) ? $default_language : $user->get_preferred_language( $this->model );
-		} elseif ( isset( $this->pref_lang ) ) {
+		} elseif ( isset( $this->pref_lang ) && $user->can_translate( $this->pref_lang ) ) {
 			// Always defined on admin, never defined on frontend.
 			$language = $this->pref_lang;
 		} elseif ( ! empty( $this->curlang ) ) {
 			// Only on frontend due to the previous test always true on admin.
 			$language = $this->curlang;
+		} elseif ( $user->is_translator() ) {
+			// Use default language if user can translate into it or its preferred one.
+			$language = $user->can_translate( $default_language ) ? $default_language : $user->get_preferred_language( $this->model );
 		}
 
 		// In all other cases use default language because we must have a language to set.

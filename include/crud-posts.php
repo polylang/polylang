@@ -345,15 +345,15 @@ class PLL_CRUD_Posts {
 		} elseif ( ( $parent_id = wp_get_post_parent_id( $post_id ) ) && $parent_lang = $this->model->post->get_language( $parent_id ) ) {
 			// Use parent if exists.
 			$language = $parent_lang;
-		} elseif ( $user->is_translator() ) {
-			// Use default language if user can translate into it or its preferred one.
-			$language = $user->can_translate( $default_language ) ? $default_language : $user->get_preferred_language( $this->model );
-		} elseif ( isset( $this->pref_lang ) ) {
+		} elseif ( isset( $this->pref_lang ) && $user->can_translate( $this->pref_lang ) ) {
 			// Always defined on admin, never defined on frontend.
 			$language = $this->pref_lang;
 		} elseif ( ! empty( $this->curlang ) ) {
 			// Only on frontend due to the previous test always true on admin.
 			$language = $this->curlang;
+		} elseif ( $user->is_translator() ) {
+			// Use default language if user can translate into it or its preferred one.
+			$language = $user->can_translate( $default_language ) ? $default_language : $user->get_preferred_language( $this->model );
 		}
 
 		// In all other cases use default language because we must have a language to set.
