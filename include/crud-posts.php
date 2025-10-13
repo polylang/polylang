@@ -5,6 +5,7 @@
 
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Language_Context\Post as Language_Context;
 
 /**
  * Adds actions and filters related to languages when creating, updating or deleting posts.
@@ -84,9 +85,15 @@ class PLL_CRUD_Posts {
 	 */
 	public function set_default_language( $post_id ) {
 		if ( ! $this->model->post->get_language( $post_id ) ) {
+			$language_context = new Language_Context(
+				$this->model,
+				$this->request,
+				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
+				$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
+			);
 			$this->model->post->set_language(
 				$post_id,
-				$this->get_language_from_context( new User(), (int) $post_id )
+				$language_context->get_language( new User(), (int) $post_id )
 			);
 		}
 	}
@@ -311,46 +318,6 @@ class PLL_CRUD_Posts {
 
 		// Let's ensure that `PLL_CRUD_Posts::set_object_terms()` will do its job.
 		wp_set_post_terms( $post_id, $term_ids, 'post_tag' );
-	}
-
-	/**
-	 * Returns the language to set for a post creation.
-	 *
-	 * @since 3.8
-	 *
-	 * @param User $user    The user object.
-	 * @param int  $post_id The post ID for which to set the language. Default `0`.
-	 * @return PLL_Language The language context.
-	 */
-	public function get_language_from_context( User $user, int $post_id = 0 ): PLL_Language {
-		/** @var PLL_Language $default_language The default language is always defined. */
-		$default_language = $this->model->get_default_language();
-		$language         = null;
-		if ( ! empty( $_GET['new_lang'] ) && $lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// Defined only on admin.
-			$language = $lang;
-		} elseif ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// Testing $this->pref_lang makes this test pass only on frontend.
-			$language = $lang;
-		} elseif ( $this->request && $lang = $this->request->get_language() ) {
-			// REST request.
-			$language = $lang;
-		} elseif ( ( $parent_id = wp_get_post_parent_id( $post_id ) ) && $parent_lang = $this->model->post->get_language( $parent_id ) ) {
-			// Use parent if exists.
-			$language = $parent_lang;
-		} elseif ( isset( $this->pref_lang ) && $user->can_translate( $this->pref_lang ) ) {
-			// Always defined on admin, never defined on frontend.
-			$language = $this->pref_lang;
-		} elseif ( ! empty( $this->curlang ) ) {
-			// Only on frontend due to the previous test always true on admin.
-			$language = $this->curlang;
-		} elseif ( $user->is_translator() ) {
-			// Use default language if user can translate into it or its preferred one.
-			$language = $user->can_translate( $default_language ) ? $default_language : $user->get_preferred_language( $this->model );
-		}
-
-		// In all other cases use default language because we must have a language to set.
-		return $language ?? $default_language;
 	}
 
 	/**
