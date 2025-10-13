@@ -108,7 +108,7 @@ class PLL_CRUD_Terms {
 	 * @return void
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
-		if ( ! $this->model->term->get_language( $term_id ) && pll_is_plugin_active( POLYLANG_BASENAME ) ) {
+		if ( ! $this->model->term->get_language( $term_id ) ) {
 			$this->model->term->set_language(
 				$term_id,
 				$this->get_language_from_context( new User(), (int) $term_id, (string) $taxonomy )

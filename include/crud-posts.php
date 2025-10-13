@@ -83,7 +83,7 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function set_default_language( $post_id ) {
-		if ( ! $this->model->post->get_language( $post_id ) && pll_is_plugin_active( POLYLANG_BASENAME ) ) {
+		if ( ! $this->model->post->get_language( $post_id ) ) {
 			$this->model->post->set_language(
 				$post_id,
 				$this->get_language_from_context( new User(), (int) $post_id )
