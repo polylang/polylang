@@ -24,9 +24,9 @@ class User {
 	private $user;
 
 	/**
-	 * @var bool|null
+	 * @var string[]|null
 	 */
-	private $is_translator;
+	private $language_caps;
 
 	/**
 	 * Constructor.
@@ -52,14 +52,7 @@ class User {
 	 * @return bool
 	 */
 	public function is_translator(): bool {
-		if ( isset( $this->is_translator ) ) {
-			return $this->is_translator;
-		}
-
-		$pattern             = Languages::INNER_SLUG_PATTERN;
-		$this->is_translator = ! empty( preg_grep( "/^translate_{$pattern}$/", array_keys( $this->user->allcaps ) ) );
-
-		return $this->is_translator;
+		return ! empty( $this->get_language_caps() );
 	}
 
 	/**
@@ -100,8 +93,7 @@ class User {
 	 * @return PLL_Language|null
 	 */
 	public function get_preferred_language( PLL_Model $model ): ?PLL_Language {
-		$pattern       = Languages::INNER_SLUG_PATTERN;
-		$language_caps = preg_grep( "/^translate_{$pattern}$/", array_keys( $this->user->allcaps ) );
+		$language_caps = $this->get_language_caps();
 
 		if ( empty( $language_caps ) ) {
 			return null;
@@ -114,5 +106,22 @@ class User {
 		);
 
 		return $language ?: null;
+	}
+
+	/**
+	 * Returns the language capabilities of the user.
+	 *
+	 * @since 3.8
+	 *
+	 * @return array
+	 */
+	private function get_language_caps(): array {
+		if ( isset( $this->language_caps ) ) {
+			return $this->language_caps;
+		}
+
+		$this->language_caps = (array) preg_grep( '/^translate_{' . Languages::INNER_SLUG_PATTERN . '}$/', array_keys( $this->user->allcaps ) );
+
+		return $this->language_caps;
 	}
 }
