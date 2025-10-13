@@ -290,7 +290,7 @@ class PLL_Admin_Filters_Term {
 				return;
 			}
 
-			User::check_assign_rights_or_die( $language, 'term' );
+			User::check_assign_rights_or_die( $language );
 
 			$this->model->term->set_language( $term_id, $language );
 		}
@@ -309,7 +309,7 @@ class PLL_Admin_Filters_Term {
 					return;
 				}
 
-				User::check_assign_rights_or_die( $language, 'term' );
+				User::check_assign_rights_or_die( $language );
 
 				$this->model->term->set_language( $term_id, $language );
 				$term  = get_term( $term_id, $taxonomy );
@@ -351,7 +351,7 @@ class PLL_Admin_Filters_Term {
 					return;
 				}
 
-				User::check_assign_rights_or_die( $language, 'term' );
+				User::check_assign_rights_or_die( $language );
 
 				$this->model->term->set_language( $term_id, $language );
 			}
@@ -370,7 +370,7 @@ class PLL_Admin_Filters_Term {
 				return;
 			}
 
-			User::check_assign_rights_or_die( $language, 'term' );
+			User::check_assign_rights_or_die( $language );
 
 			$this->model->term->set_language( $term_id, $language );
 		}
@@ -385,7 +385,7 @@ class PLL_Admin_Filters_Term {
 				return;
 			}
 
-			User::check_assign_rights_or_die( $language, 'term' );
+			User::check_assign_rights_or_die( $language );
 
 			$this->model->term->set_language( $term_id, $language );
 		}
