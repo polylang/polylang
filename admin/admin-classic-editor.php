@@ -192,7 +192,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 'You are not allowed to edit this post.' );
 		}
 
-		User::check_assign_rights_or_die( $lang, 'post' );
+		User::check_assign_rights_or_die( $lang );
 
 		$this->model->post->set_language( $post_ID, $lang );
 
