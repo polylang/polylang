@@ -357,7 +357,7 @@ class PLL_Admin_Site_Health {
 	 * @since 3.1
 	 * @param int $limit Max number of terms to show per post type. `-1` to return all of them. Default is 5.
 	 *
-	 * @return array An associative array where the keys are post types and the values
+	 * @return string[] An associative array where the keys are post types and the values
 	 *                 are comma-separated strings of post IDs without a language.
 	 * @phpstan-param -1|positive-int $limit
 	 */
