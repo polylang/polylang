@@ -120,7 +120,7 @@ class User {
 			return $this->language_caps;
 		}
 
-		$this->language_caps = (array) preg_grep( '/^translate_{' . Languages::INNER_SLUG_PATTERN . '}$/', array_keys( $this->user->allcaps ) );
+		$this->language_caps = (array) preg_grep( '/^translate_' . Languages::INNER_SLUG_PATTERN . '$/', array_keys( $this->user->allcaps ) );
 
 		return $this->language_caps;
 	}
