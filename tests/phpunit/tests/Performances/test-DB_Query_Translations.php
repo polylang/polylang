@@ -83,7 +83,7 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		 *
 		 * SELECT t.*, tt.* FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (6,2,4)
 		 *
-		 * 1 call to `wp_insert_term()`, 8 queries:
+		 * 1 call to `wp_insert_term()`, 7 queries:
 		 * ----------------------------------------
 		 *
 		 * SELECT  t.term_id
@@ -107,7 +107,6 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		 * SELECT tt.term_taxonomy_id FROM wptests_term_taxonomy AS tt INNER JOIN wptests_terms AS t ON tt.term_id = t.term_id WHERE tt.taxonomy = 'post_translations' AND t.term_id = 9
 		 * INSERT INTO `wptests_term_taxonomy` (`term_id`, `taxonomy`, `description`, `parent`, `count`) VALUES (9, 'post_translations', 'a:3:{s:2:\"en\";i:7;s:2:\"fr\";i:8;s:2:\"de\";i:9;}', 0, 0)
 		 * SELECT t.term_id, t.slug, tt.term_taxonomy_id, tt.taxonomy FROM wptests_terms AS t INNER JOIN wptests_term_taxonomy AS tt ON ( tt.term_id = t.term_id ) WHERE t.slug = 'pll_68e7b3e475f0c' AND tt.parent = 0 AND tt.taxonomy = 'post_translations' AND t.term_id < 9 AND tt.term_taxonomy_id != 9
-		 * SELECT autoload FROM wptests_options WHERE option_name = 'post_translations_children'
 		 *
 		 * 3 calls to `wp_set_object_terms()`, 8 queries each:
 		 * ---------------------------------------------------
@@ -163,7 +162,8 @@ class DB_Query_Translations_Test extends PLL_UnitTestCase {
 		 * UPDATE `wptests_term_taxonomy` SET `count` = 3 WHERE `term_taxonomy_id` = 9
 		 * SELECT term_id, taxonomy FROM wptests_term_taxonomy WHERE term_taxonomy_id IN (9)
 		 */
-		$this->assertSame( 34, $query_count, 'Number of queries when saving post translations should be 34.' );
+		$number = version_compare( $GLOBALS['wp_version'], '6.9-alpha', '<' ) ? 34 : 33;
+		$this->assertSame( $number, $query_count, "Number of queries when saving post translations should be {$number}." );
 	}
 
 	/**
