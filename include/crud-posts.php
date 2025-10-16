@@ -72,7 +72,7 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function set_default_language( $post_id ) {
-		if ( ! $this->model->post->get_language( $post_id ) ) {
+		if ( ! $this->model->post->get_language( $post_id ) && pll_is_plugin_active( POLYLANG_BASENAME ) ) {
 			if ( ! empty( $_GET['new_lang'] ) && $lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				// Defined only on admin.
 				$this->model->post->set_language( $post_id, $lang );
