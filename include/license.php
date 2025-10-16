@@ -95,7 +95,7 @@ class PLL_License {
 
 		$licenses          = (array) get_option( 'polylang_licenses', array() );
 		$license           = isset( $licenses[ $this->id ] ) && is_array( $licenses[ $this->id ] ) ? $licenses[ $this->id ] : array();
-		$this->license_key = ! empty( $license['key'] ) ? (string) $license['key'] : '';
+		$this->license_key = $this->set_license_key( $license );
 
 		if ( ! empty( $license['data'] ) ) {
 			$this->license_data = (object) $license['data'];
@@ -364,5 +364,15 @@ class PLL_License {
 		}
 
 		return sprintf( '<tr id="pll-license-%s" class="%s">%s</tr>', esc_attr( $this->id ), $class, $out );
+	}
+
+	public function set_license_key( $license = '' ) {
+		$license_key = '';
+		if ( ! empty( $this->license_key ) ) {
+			$license_key = (string) $license['key'];
+		} elseif ( defined( 'PLLPRO_LICENSE_KEY' ) ) {
+			$license_key = (string) PLLPRO_LICENSE_KEY;
+		}
+		return $license_key;
 	}
 }
