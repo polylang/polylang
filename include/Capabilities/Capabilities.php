@@ -5,8 +5,6 @@
 
 namespace WP_Syntex\Polylang\Capabilities;
 
-use WP_Syntex\Polylang\REST\V1\Languages;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -15,6 +13,9 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.8
  */
 class Capabilities {
+	public const LANGUAGES_CAPABILITY    = 'manage_languages';
+	public const TRANSLATIONS_CAPABILITY = 'manage_translations';
+
 	/**
 	 * Constructor.
 	 *
@@ -34,7 +35,7 @@ class Capabilities {
 	 * @return string[]
 	 */
 	public function map_custom_caps( $caps, $cap ) {
-		$custom_caps = array( 'manage_translations', Languages::CAPABILITY );
+		$custom_caps = array( self::TRANSLATIONS_CAPABILITY, self::LANGUAGES_CAPABILITY );
 
 		foreach ( $custom_caps as $custom_cap ) {
 			if ( $custom_cap !== $cap ) {
