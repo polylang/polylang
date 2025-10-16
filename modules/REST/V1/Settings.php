@@ -21,8 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Settings extends Abstract_Controller {
-	public const CAPABILITY = 'manage_pll_settings_in_rest';
-
 	/**
 	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
@@ -156,7 +154,7 @@ class Settings extends Abstract_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! current_user_can( self::CAPABILITY ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error(
 				'rest_forbidden_context',
 				__( 'Sorry, you are not allowed to edit options.', 'polylang' ),
