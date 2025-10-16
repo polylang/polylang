@@ -86,10 +86,10 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Add Polylang Options to Site Health Information tab.
 	 *
+	 * @since 2.8
 	 * @param array $debug_info The debug information to be added to the core information page.
 	 *
 	 * @return array
-	 * @since 2.8
 	 */
 	public function info_options( $debug_info ) {
 		$fields = $this->model->options->get_site_health_info();
@@ -336,17 +336,17 @@ class PLL_Admin_Site_Health {
 			$post_ids_with_no_language = $this->model->get_posts_with_no_lang( $post_type, $limit );
 
 			if ( ! empty( $post_ids_with_no_language ) ) {
-				foreach ( $post_ids_with_no_language as $id ) {
-					$posts[ $post_type ][] = $id;
-				}
+			//	foreach ( $post_ids_with_no_language as $id ) {
+					$posts[ $post_type ][] = implode( ',', $post_ids_with_no_language );
+			//	}
 			}
 		}
 
-		if ( ! empty( $posts ) ) {
+/*		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post_type => $post_ids ) {
 				$posts[ $post_type ] = implode( ', ', $post_ids );
 			}
-		}
+		}*/
 
 		return $posts;
 	}
