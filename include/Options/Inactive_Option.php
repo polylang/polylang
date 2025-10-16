@@ -45,6 +45,9 @@ class Inactive_Option extends Abstract_Option {
 		$this->option = $option;
 		self::$key    = $option::key();
 		$this->errors = new WP_Error();
+
+		// Make sure the option doesn't contain any value.
+		$this->option->reset();
 	}
 
 	/**
@@ -110,7 +113,7 @@ class Inactive_Option extends Abstract_Option {
 	 * @return mixed
 	 */
 	protected function get_default() {
-		return $this->option->get_default();
+		return $this->option->get();
 	}
 
 	/**
