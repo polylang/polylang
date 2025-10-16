@@ -153,7 +153,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return array();
 		}
 
-		$this->update_object_term_cache( array_merge( array( $id ), $translations ) );
+		$this->prime_object_term_cache( array_merge( array( $id ), $translations ) );
 
 		$lang = $this->get_language( $id );
 

@@ -291,7 +291,7 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @return void
 	 */
-	protected function update_object_term_cache( array $object_ids ) {
+	protected function prime_object_term_cache( array $object_ids ) {
 		$non_cached_ids = array();
 		foreach ( $this->tax_to_cache as $tax ) {
 			$non_cached_ids = array_merge( $non_cached_ids, _get_non_cached_ids( $object_ids, "{$tax}_relationships" ) );
@@ -343,7 +343,7 @@ abstract class PLL_Translatable_Object {
 	 * @return int[][]
 	 */
 	protected function get_from_object_term_cache( array $object_ids, string $taxonomy ) {
-		$this->update_object_term_cache( $object_ids );
+		$this->prime_object_term_cache( $object_ids );
 		return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
 	}
 
