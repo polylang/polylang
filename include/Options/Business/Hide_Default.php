@@ -35,11 +35,10 @@ class Hide_Default extends Abstract_Boolean {
 	 * Returns the default value.
 	 *
 	 * @since 3.7
-	 * @since 3.8 Visibility changed from `protected` to `public`.
 	 *
 	 * @return bool
 	 */
-	public function get_default() {
+	protected function get_default() {
 		return true;
 	}
 

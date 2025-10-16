@@ -109,7 +109,7 @@ class Inactive_Option extends Abstract_Option {
 	 *
 	 * @return mixed
 	 */
-	public function get_default() {
+	protected function get_default() {
 		return $this->option->get_default();
 	}
 

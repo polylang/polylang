@@ -32,11 +32,10 @@ class Force_Lang extends Abstract_Option {
 	 * Returns the default value.
 	 *
 	 * @since 3.7
-	 * @since 3.8 Visibility changed from `protected` to `public`.
 	 *
 	 * @return int
 	 */
-	public function get_default() {
+	protected function get_default() {
 		return 1;
 	}
 
