@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\User;
+
 /**
  * Manages filters and actions related to posts on admin side
  *
@@ -154,6 +156,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				return;
 			}
 
+			( new User() )->can_translate_or_die( $language );
+
 			$this->model->post->set_language( $post_id, $language );
 
 			if ( ! isset( $_POST['post_tr_lang'] ) ) {
@@ -176,6 +180,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			check_admin_referer( 'bulk-posts' );
 
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {
+				( new User() )->can_translate_or_die( $lang );
+
 				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 				foreach ( $post_ids as $post_id ) {
 					if ( current_user_can( 'edit_post', $post_id ) ) {
@@ -200,6 +206,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			$post_id = (int) $_POST['post_ID'];
 			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
 			if ( $post_id && $lang && current_user_can( 'edit_post', $post_id ) ) {
+				( new User() )->can_translate_or_die( $lang );
+
 				$this->model->post->set_language( $post_id, $lang );
 			}
 		}

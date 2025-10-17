@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\User;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -267,7 +269,7 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @param int    $term_id  Term ID.
 	 * @param string $taxonomy Taxonomy name.
-	 * @return void
+	 * @return void|never
 	 */
 	protected function save_language( $term_id, $taxonomy ) {
 		global $wpdb;
@@ -284,9 +286,13 @@ class PLL_Admin_Filters_Term {
 
 			$language = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) );
 
-			if ( ! empty( $language ) ) {
-				$this->model->term->set_language( $term_id, $language );
+			if ( empty( $language ) ) {
+				return;
 			}
+
+			( new User() )->can_translate_or_die( $language );
+
+			$this->model->term->set_language( $term_id, $language );
 		}
 
 		// *Post* bulk edit, in case a new term is created
@@ -302,6 +308,8 @@ class PLL_Admin_Filters_Term {
 				if ( empty( $language ) ) {
 					return;
 				}
+
+				( new User() )->can_translate_or_die( $language );
 
 				$this->model->term->set_language( $term_id, $language );
 				$term  = get_term( $term_id, $taxonomy );
@@ -337,7 +345,15 @@ class PLL_Admin_Filters_Term {
 			}
 
 			elseif ( current_user_can( 'edit_term', $term_id ) ) {
-				$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) );
+				$language = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) );
+
+				if ( empty( $language ) ) {
+					return;
+				}
+
+				( new User() )->can_translate_or_die( $language );
+
+				$this->model->term->set_language( $term_id, $language );
 			}
 		}
 
@@ -348,8 +364,15 @@ class PLL_Admin_Filters_Term {
 				'_inline_edit'
 			);
 
-			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
-			$this->model->term->set_language( $term_id, $lang );
+			$language = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
+
+			if ( empty( $language ) ) {
+				return;
+			}
+
+			( new User() )->can_translate_or_die( $language );
+
+			$this->model->term->set_language( $term_id, $language );
 		}
 
 		// Edit post
@@ -358,9 +381,13 @@ class PLL_Admin_Filters_Term {
 
 			$language = $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) );
 
-			if ( ! empty( $language ) ) {
-				$this->model->term->set_language( $term_id, $language );
+			if ( empty( $language ) ) {
+				return;
 			}
+
+			( new User() )->can_translate_or_die( $language );
+
+			$this->model->term->set_language( $term_id, $language );
 		}
 	}
 

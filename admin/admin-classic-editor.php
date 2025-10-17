@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\User;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -172,7 +174,7 @@ class PLL_Admin_Classic_Editor {
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
 		$post_ID   = (int) $_POST['post_id'];
-		$lang_slug     = sanitize_key( $_POST['lang'] );
+		$lang_slug = sanitize_key( $_POST['lang'] );
 		$lang      = $this->model->get_language( $lang_slug );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
@@ -189,6 +191,8 @@ class PLL_Admin_Classic_Editor {
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
 			wp_die( 'You are not allowed to edit this post.' );
 		}
+
+		( new User() )->can_translate_or_die( $lang );
 
 		$this->model->post->set_language( $post_ID, $lang );
 
