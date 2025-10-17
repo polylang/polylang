@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\Capabilities;
+
 /**
  * Setup features available on all admin pages.
  *
@@ -125,7 +127,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $this->get_menu_items() as $tab => $title ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
-			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
+			$capa = $this->get_menu_capability( $tab );
 
 			if ( empty( $parent ) ) {
 				$parent = $page;
@@ -628,5 +630,25 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * @param string[] $tabs List of sub-menu items with page slugs as array keys and titles as array values.
 		 */
 		return (array) apply_filters( 'pll_settings_tabs', $tabs );
+	}
+
+	/**
+	 * Returns the user capability required to access the given menu page.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $menu Menu slug.
+	 * @return string
+	 */
+	protected function get_menu_capability( string $menu ): string {
+		switch ( $menu ) {
+			case 'lang':
+				return Capabilities::LANGUAGES_CAPABILITY;
+
+			case 'strings':
+				return Capabilities::TRANSLATIONS_CAPABILITY;
+		}
+
+		return 'manage_options';
 	}
 }
