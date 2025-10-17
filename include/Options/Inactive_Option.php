@@ -43,7 +43,6 @@ class Inactive_Option extends Abstract_Option {
 	 */
 	public function __construct( Abstract_Option $option ) {
 		$this->option = $option;
-		self::$key    = $option::key();
 		$this->errors = new WP_Error();
 
 		// Make sure the option doesn't contain any value.
