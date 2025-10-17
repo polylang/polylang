@@ -282,4 +282,61 @@ abstract class Abstract_Option {
 			'warning'
 		);
 	}
+
+	/**
+	 * Adds information to the site health info array.
+	 * Does nothing by default.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function get_site_health_info( Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return array();
+	}
+
+	/**
+	 * Renders site health information by appending additional fields.
+	 *
+	 * @since 3.8
+	 *
+	 * @param mixed $value The value to be added to the site health fields.
+	 *
+	 * @return array Updated array of site health information including the new fields.
+	 */
+	protected function format_single_value_for_site_health_info( mixed $value ): array {
+		if ( empty( $value ) ) {
+			return array();
+		}
+
+		return array(
+			'label' => ucfirst( static::key() ),
+			'value' => $value,
+		);
+	}
+
+	/**
+	 * Formats an array to display in options information.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $array An array of formatted data.
+	 * @return string
+	 */
+	protected function format_array_for_site_health_info( array $array ): string {
+		array_walk(
+			$array,
+			function ( &$value, $key ) {
+				if ( is_array( $value ) ) {
+					$ids = implode( ' , ', $value );
+					$value = "$key => $ids";
+				} else {
+					$value = "$key => $value";
+				}
+			}
+		);
+		return implode( ' | ', $array );
+	}
 }
