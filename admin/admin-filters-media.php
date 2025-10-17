@@ -124,7 +124,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			return $post;
 		}
 
-		User::check_assign_rights_or_die( $language );
+		( new User() )->can_translate_or_die( $language );
 
 		$this->model->post->set_language( $post['ID'], $language );
 

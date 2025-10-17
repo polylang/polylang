@@ -129,8 +129,8 @@ class User {
 	 * @param PLL_Language $language The language to assign.
 	 * @return void|never Dies if the user does not have the rights, does nothing otherwise.
 	 */
-	public static function check_assign_rights_or_die( PLL_Language $language ): void {
-		if ( ! ( new User() )->can_translate( $language ) ) {
+	public function can_translate_or_die( PLL_Language $language ): void {
+		if ( ! $this->can_translate( $language ) ) {
 			/* translators: %s: language name */
 			wp_die( esc_html( sprintf( __( 'You are not allowed to assign %1$s to an object.', 'polylang' ), $language->name ) ) );
 		}
