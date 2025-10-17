@@ -72,6 +72,7 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		$links_model = self::$model->get_links_model();
 		new PLL_Settings( $links_model );
+		do_action( 'admin_menu' );
 		do_action( 'load-toplevel_page_mlang' );
 
 		ob_start();
