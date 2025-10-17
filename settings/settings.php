@@ -44,7 +44,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// Adds screen options and the about box in the languages admin panel.
-		add_action( 'load-toplevel_page_mlang', array( $this, 'load_page' ) );
+		add_action( 'load-languages_page_mlang', array( $this, 'load_page' ) );
 		add_action( 'load-languages_page_mlang_strings', array( $this, 'load_page_strings' ) );
 
 		// Saves the per-page value in screen options.
