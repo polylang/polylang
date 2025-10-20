@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 3.7.3
+Stable tag: 3.7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,6 +93,10 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 * You need [Polylang for WooCommerce](https://polylang.pro/downloads/polylang-for-woocommerce/), premium addon described above, which will make both plugins work together.
 
+= Where do I report security bugs found in this plugin? =
+
+* Please report security bugs found in the source code of the Polylang plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/d83984d2-d748-43e3-88e2-6dd3bd2c881d). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. The Polylang languages admin panel
@@ -101,6 +105,11 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.7.4 (2025-10-28) =
+
+* Pro: Security: Fix a ReDoS vulnerability reported by Janine Moreira.
+* Security: Fix deserialization of untrusted data reported by Phat RiO – BlueRock via Patchstack.
 
 = 3.7.3 (2025-06-16) =
 
