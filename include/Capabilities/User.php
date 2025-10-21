@@ -89,23 +89,19 @@ class User {
 	 *
 	 * @since 3.8
 	 *
-	 * @param PLL_Model $model The model instance.
-	 * @return PLL_Language|null
+	 * @return string The preferred language slug, empty string if no preferred language is found.
 	 */
-	public function get_preferred_language( PLL_Model $model ): ?PLL_Language {
+	public function get_preferred_language_slug(): string {
 		$language_caps = $this->get_language_caps();
 
 		if ( empty( $language_caps ) ) {
-			return null;
+			return '';
 		}
 
 		// Arbitrarily use the first language cap.
 		$language_cap = reset( $language_caps );
-		$language     = $model->get_language(
-			str_replace( 'translate_', '', $language_cap )
-		);
 
-		return $language ?: null;
+		return str_replace( 'translate_', '', $language_cap );
 	}
 
 	/**

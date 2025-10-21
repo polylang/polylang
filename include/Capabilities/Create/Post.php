@@ -47,7 +47,7 @@ class Post extends Abstract_Object {
 			$language = $this->curlang;
 		} elseif ( $user->is_translator() ) {
 			// Use default language if user can translate into it or its preferred one.
-			$language = $user->can_translate( $default_language ) ? $default_language : $user->get_preferred_language( $this->model );
+			$language = $user->can_translate( $default_language ) ? $default_language : $this->model->get_language( $user->get_preferred_language_slug() );
 		}
 
 		// In all other cases use default language because we must have a language to set.
