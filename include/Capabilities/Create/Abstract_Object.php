@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Context;
+namespace WP_Syntex\Polylang\Capabilities\Create;
 
 use PLL_Model;
 use PLL_Language;

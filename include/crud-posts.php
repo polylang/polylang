@@ -5,7 +5,7 @@
 
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\User;
-use WP_Syntex\Polylang\Language_Context\Post as Language_Context;
+use WP_Syntex\Polylang\Capabilities\Create\Post as Language_Context;
 
 /**
  * Adds actions and filters related to languages when creating, updating or deleting posts.
