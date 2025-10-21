@@ -114,10 +114,11 @@ class PLL_Admin_Notices {
 			$allowed_screens = array(
 				'dashboard',
 				'plugins',
-				'toplevel_page_mlang',
-				'languages_page_mlang_strings',
-				'languages_page_mlang_settings',
 			);
+			foreach ( array( '_page_mlang', '_page_mlang_strings', '_page_mlang_settings' ) as $page_name ) {
+				$allowed_screens[] = "toplevel{$page_name}";
+				$allowed_screens[] = "languages{$page_name}";
+			}
 		}
 
 		/**
