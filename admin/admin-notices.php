@@ -184,7 +184,7 @@ class PLL_Admin_Notices {
 				$this->review_notice();
 			}
 
-			$allowed_screen = 'languages_page_mlang_strings';
+			$allowed_screen = PLL_Admin_Base::SCREEN_PREFIX . '_page_mlang_strings';
 			if (
 				( ! empty( $this->options['previous_version'] ) && version_compare( $this->options['previous_version'], '3.7.0', '<' ) )
 				&& $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen )
