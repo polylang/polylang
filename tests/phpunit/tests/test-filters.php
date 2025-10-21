@@ -387,7 +387,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	 *
 	 * @param string $priority Priority of `comments_clauses` to apply.
 	 */
-	public function test_db_error_in_comments_clauses( $priority ) {
+	public function test_db_error_in_comments_clauses_with_woo( $priority ) {
 		global $wpdb;
 
 		// Simulates WooCommerce adds a join comments clause.
@@ -395,7 +395,31 @@ class Filters_Test extends PLL_UnitTestCase {
 			'comments_clauses',
 			function ( $clauses ) use ( $wpdb ) {
 				$clauses['join'] .= " LEFT JOIN {$wpdb->posts} AS wp_posts_to_exclude_reviews ON comment_post_ID = wp_posts_to_exclude_reviews.ID ";
+				return $clauses;
+			},
+			$priority
+		);
 
+		$this->frontend->filters = new PLL_Filters( $this->frontend );
+
+		$this->assertCount( 0, get_comments( array( 'lang' => 'en' ) ) );
+		$this->assertEmpty( $wpdb->last_error, 'It should not have database error.' );
+	}
+
+	/**
+	 * @testWith ["1"]
+	 *           ["20"]
+	 *
+	 * @param string $priority Priority of `comments_clauses` to apply.
+	 */
+	public function test_db_error_in_comments_clauses_with_wpjma( $priority ) {
+		global $wpdb;
+
+		// Simulates WP Job Manager Applications adds a join comments clause.
+		add_filter(
+			'comments_clauses',
+			function ( $clauses ) use ( $wpdb ) {
+				$clauses['join'] .= " LEFT JOIN $wpdb->posts ON comment_post_ID = $wpdb->posts.ID ";
 				return $clauses;
 			},
 			$priority
