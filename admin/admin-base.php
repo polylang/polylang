@@ -9,6 +9,8 @@
  * @since 1.8
  */
 abstract class PLL_Admin_Base extends PLL_Base {
+	public const SCREEN_PREFIX = 'languages';
+
 	/**
 	 * Current language (used to filter the content).
 	 *
@@ -120,8 +122,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function add_menus(): void {
 		global $admin_page_hooks;
 
-		$parent    = '';
-		$page_type = 'languages';
+		$parent = '';
 
 		foreach ( $this->get_menu_items() as $tab => $title ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
@@ -137,7 +138,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				 * main menu has `manage_options`.
 				 */
 				add_menu_page( $title, __( 'Languages', 'polylang' ), $capa, $page, '__return_null', 'dashicons-translation' );
-				$admin_page_hooks[ $page ] = $page_type; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
+				$admin_page_hooks[ $page ] = self::SCREEN_PREFIX; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
 			add_submenu_page( $parent, $title, $title, $capa, $page, array( $this, 'languages_page' ) );
@@ -158,7 +159,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		foreach ( array( 'load-', 'admin_print_styles-', 'admin_print_scripts-', 'admin_head-', '', 'admin_print_footer_scripts-', 'admin_footer-' ) as $prefix ) {
 			add_action(
 				"{$prefix}toplevel_page_{$parent}",
-				static function () use ( $prefix, $page_type, $parent ) {
+				static function () use ( $prefix, $parent ) {
+					$page_type = self::SCREEN_PREFIX;
 					do_action( "{$prefix}{$page_type}_page_{$parent}" );
 				}
 			);
@@ -174,10 +176,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		add_action(
 			// Target the screen in 1st position only.
 			"admin_head-toplevel_page_{$parent}",
-			static function () use ( $page_type, $parent ) {
+			static function () use ( $parent ) {
 				add_filter(
 					'admin_body_class',
-					static function ( $admin_body_classes ) use ( $page_type, $parent ) {
+					static function ( $admin_body_classes ) use ( $parent ) {
+						$page_type = self::SCREEN_PREFIX;
 						return "{$admin_body_classes} {$page_type}_page_{$parent}";
 					}
 				);

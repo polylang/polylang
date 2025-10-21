@@ -117,7 +117,7 @@ class PLL_Admin_Notices {
 			);
 			foreach ( array( '_page_mlang', '_page_mlang_strings', '_page_mlang_settings' ) as $page_name ) {
 				$allowed_screens[] = "toplevel{$page_name}";
-				$allowed_screens[] = "languages{$page_name}";
+				$allowed_screens[] = PLL_Admin_Base::SCREEN_PREFIX . $page_name;
 			}
 		}
 
