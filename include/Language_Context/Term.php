@@ -15,11 +15,6 @@ use WP_Syntex\Polylang\Capabilities\User;
  */
 class Term extends Abstract_Object {
 	/**
-	 * @var string
-	 */
-	const TYPE = 'term';
-
-	/**
 	 * Returns the language to set for a post creation.
 	 *
 	 * @since 3.8

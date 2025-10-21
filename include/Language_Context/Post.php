@@ -15,11 +15,6 @@ use WP_Syntex\Polylang\Capabilities\User;
  */
 class Post extends Abstract_Object {
 	/**
-	 * @var string
-	 */
-	const TYPE = 'post';
-
-	/**
 	 * Returns the language to set for a post creation or update.
 	 *
 	 * @since 3.8
