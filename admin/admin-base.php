@@ -625,7 +625,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Returns the ID of a Polyang's settings screen.
+	 * Returns the ID of a Polylang's settings screen.
 	 *
 	 * @since 3.8
 	 *
@@ -637,7 +637,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Returns the slug of a Polyang's settings screen, as seen in the URL.
+	 * Returns the slug of a Polylang's settings screen, as seen in the URL.
 	 *
 	 * @since 3.8
 	 *
