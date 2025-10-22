@@ -287,6 +287,26 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
+	 * Returns the URL to edit a term.
+	 * Returns an empty string if the current user is not allowed to edit the term.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int          $term_id   Translation term id.
+	 * @param string       $taxonomy  Taxonomy name.
+	 * @param string       $post_type Post type name.
+	 * @param PLL_Language $language  The language of the term.
+	 * @return string
+	 */
+	public function get_edit_term_translation_link( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
+		if ( ! $this->user->can_translate( $language ) ) {
+			return '';
+		}
+
+		return (string) get_edit_term_link( $term_id, $taxonomy, $post_type );
+	}
+
+	/**
 	 * Returns some data (`from_post` and `new_lang`) from the current request.
 	 *
 	 * @since 3.7
