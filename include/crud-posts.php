@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\REST\Request;
+use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Create\Post as Create_Post;
+
 /**
  * Adds actions and filters related to languages when creating, updating or deleting posts.
  * Actions and filters triggered when reading posts are handled separately.
@@ -37,6 +41,13 @@ class PLL_CRUD_Posts {
 	protected $options;
 
 	/**
+	 * Reference to the Polylang Request object.
+	 *
+	 * @var Request
+	 */
+	private $request;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.4
@@ -48,6 +59,7 @@ class PLL_CRUD_Posts {
 		$this->model     = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 		$this->curlang   = &$polylang->curlang;
+		$this->request   = &$polylang->request;
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );
@@ -73,24 +85,16 @@ class PLL_CRUD_Posts {
 	 */
 	public function set_default_language( $post_id ) {
 		if ( ! $this->model->post->get_language( $post_id ) ) {
-			if ( ! empty( $_GET['new_lang'] ) && $lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				// Defined only on admin.
-				$this->model->post->set_language( $post_id, $lang );
-			} elseif ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				// Testing $this->pref_lang makes this test pass only on admin.
-				$this->model->post->set_language( $post_id, $lang );
-			} elseif ( ( $parent_id = wp_get_post_parent_id( $post_id ) ) && $parent_lang = $this->model->post->get_language( $parent_id ) ) {
-				$this->model->post->set_language( $post_id, $parent_lang );
-			} elseif ( isset( $this->pref_lang ) ) {
-				// Always defined on admin, never defined on frontend.
-				$this->model->post->set_language( $post_id, $this->pref_lang );
-			} elseif ( ! empty( $this->curlang ) ) {
-				// Only on frontend due to the previous test always true on admin.
-				$this->model->post->set_language( $post_id, $this->curlang );
-			} else {
-				// In all other cases set to default language.
-				$this->model->post->set_language( $post_id, $this->options['default_lang'] );
-			}
+			$post_language = new Create_Post(
+				$this->model,
+				$this->request,
+				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
+				$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
+			);
+			$this->model->post->set_language(
+				$post_id,
+				$post_language->get_language( new User(), (int) $post_id )
+			);
 		}
 	}
 

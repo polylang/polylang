@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\REST\Request;
+use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Create\Term as Create_Term;
+
 /**
  * Adds actions and filters related to languages when creating, reading, updating or deleting posts
  * Acts both on frontend and backend
@@ -58,6 +62,13 @@ class PLL_CRUD_Terms {
 	protected $options;
 
 	/**
+	 * Reference to the Polylang Request object.
+	 *
+	 * @var Request
+	 */
+	private $request;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.4
@@ -70,6 +81,7 @@ class PLL_CRUD_Terms {
 		$this->curlang     = &$polylang->curlang;
 		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang   = &$polylang->pref_lang;
+		$this->request     = &$polylang->request;
 
 		// Saving terms.
 		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
@@ -98,22 +110,16 @@ class PLL_CRUD_Terms {
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
 		if ( ! $this->model->term->get_language( $term_id ) ) {
-			if ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				// Testing $this->pref_lang makes this test pass only on frontend.
-				$this->model->term->set_language( $term_id, $lang );
-			} elseif ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
-				// Sets language from term parent if exists thanks to Scott Kingsley Clark
-				$this->model->term->set_language( $term_id, $parent_lang );
-			} elseif ( isset( $this->pref_lang ) ) {
-				// Always defined on admin, never defined on frontend
-				$this->model->term->set_language( $term_id, $this->pref_lang );
-			} elseif ( ! empty( $this->curlang ) ) {
-				// Only on frontend due to the previous test always true on admin
-				$this->model->term->set_language( $term_id, $this->curlang );
-			} else {
-				// In all other cases set to default language.
-				$this->model->term->set_language( $term_id, $this->options['default_lang'] );
-			}
+			$term_language = new Create_Term(
+				$this->model,
+				$this->request,
+				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
+				$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
+			);
+			$this->model->term->set_language(
+				$term_id,
+				$term_language->get_language( new User(), (int) $term_id, (string) $taxonomy )
+			);
 		}
 	}
 
