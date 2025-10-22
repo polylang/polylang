@@ -176,8 +176,12 @@ class PLL_Filters {
 		if ( ! empty( $lang ) ) {
 			$lang = wp_list_pluck( $lang, 'slug' );
 
-			$clauses['join']  .= " JOIN $wpdb->posts AS pll_posts ON pll_posts.ID = $wpdb->comments.comment_post_ID";
-			$clauses['join']  .= $this->model->post->join_clause( 'pll_posts' );
+			// If this clause is not already added by WP.
+			if ( false === strpos( $clauses['join'], "JOIN $wpdb->posts ON $wpdb->posts.ID" ) ) {
+				$clauses['join'] .= " JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
+			}
+
+			$clauses['join'] .= $this->model->post->join_clause();
 			$clauses['where'] .= $this->model->post->where_clause( $lang );
 		}
 		return $clauses;
