@@ -118,8 +118,15 @@ class PLL_Admin_Filters_Term {
 
 		$dropdown = new PLL_Walker_Dropdown();
 
+		$available_languages = $this->model->languages->filter( 'translator' )->get_list();
+
+		// Ensure that the selected language is in the filtered list to display the flag correctly on page load.
+		if ( $lang && ! in_array( $lang, $available_languages, true ) ) {
+			$lang = reset( $available_languages ) ?: $lang;
+		}
+
 		$dropdown_html = $dropdown->walk(
-			$this->model->get_languages_list(),
+			$available_languages,
 			-1,
 			array(
 				'name'     => 'term_lang_choice',
@@ -187,7 +194,7 @@ class PLL_Admin_Filters_Term {
 		$dropdown = new PLL_Walker_Dropdown();
 
 		$dropdown_html = $dropdown->walk(
-			$this->model->get_languages_list(),
+			$this->model->languages->filter( 'translator' )->get_list(),
 			-1,
 			array(
 				'name'     => 'term_lang_choice',

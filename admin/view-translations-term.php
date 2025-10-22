@@ -27,7 +27,7 @@ else {
 ?>
 <table class="widefat term-translations"  id="<?php echo isset( $term_id ) ? 'edit' : 'add'; ?>-term-translations">
 	<?php
-	foreach ( $this->model->get_languages_list() as $language ) {
+	foreach ( $this->model->languages->filter( 'translator' )->get_list() as $language ) {
 		if ( $language->term_id == $lang->term_id ) {
 			continue;
 		}
