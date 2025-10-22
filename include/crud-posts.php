@@ -5,7 +5,7 @@
 
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\User;
-use WP_Syntex\Polylang\Capabilities\Create\Post as Language_Context;
+use WP_Syntex\Polylang\Capabilities\Create\Post as Create_Post;
 
 /**
  * Adds actions and filters related to languages when creating, updating or deleting posts.
@@ -85,7 +85,7 @@ class PLL_CRUD_Posts {
 	 */
 	public function set_default_language( $post_id ) {
 		if ( ! $this->model->post->get_language( $post_id ) ) {
-			$language_context = new Language_Context(
+			$post_language = new Create_Post(
 				$this->model,
 				$this->request,
 				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
@@ -93,7 +93,7 @@ class PLL_CRUD_Posts {
 			);
 			$this->model->post->set_language(
 				$post_id,
-				$language_context->get_language( new User(), (int) $post_id )
+				$post_language->get_language( new User(), (int) $post_id )
 			);
 		}
 	}

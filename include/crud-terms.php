@@ -5,7 +5,7 @@
 
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\User;
-use WP_Syntex\Polylang\Capabilities\Create\Term as Language_Context;
+use WP_Syntex\Polylang\Capabilities\Create\Term as Create_Term;
 
 /**
  * Adds actions and filters related to languages when creating, reading, updating or deleting posts
@@ -110,7 +110,7 @@ class PLL_CRUD_Terms {
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
 		if ( ! $this->model->term->get_language( $term_id ) ) {
-			$language_context = new Language_Context(
+			$term_language = new Create_Term(
 				$this->model,
 				$this->request,
 				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
@@ -118,7 +118,7 @@ class PLL_CRUD_Terms {
 			);
 			$this->model->term->set_language(
 				$term_id,
-				$language_context->get_language( new User(), (int) $term_id, (string) $taxonomy )
+				$term_language->get_language( new User(), (int) $term_id, (string) $taxonomy )
 			);
 		}
 	}
