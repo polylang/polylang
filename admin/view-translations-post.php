@@ -11,6 +11,9 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$user_languages = $this->model->languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
+
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table>
@@ -59,14 +62,15 @@ defined( 'ABSPATH' ) || exit;
 				printf(
 					'<label class="screen-reader-text" for="tr_lang_%1$s">%2$s</label>
 					<input type="hidden" name="post_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$s" />
-					<span lang="%5$s" dir="%6$s"><input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s" /></span>',
+					<span lang="%5$s" dir="%6$s"><input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s" %7$s/></span>',
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
 					( empty( $translation ) ? '0' : esc_attr( (string) $translation->ID ) ),
 					( empty( $translation ) ? '' : esc_attr( $translation->post_title ) ),
 					esc_attr( $language->get_locale( 'display' ) ),
-					( $language->is_rtl ? 'rtl' : 'ltr' )
+					( $language->is_rtl ? 'rtl' : 'ltr' ),
+					disabled( in_array( $language->slug, $user_languages, true ), false, false )
 				);
 				?>
 			</td>
