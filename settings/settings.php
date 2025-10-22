@@ -44,8 +44,8 @@ class PLL_Settings extends PLL_Admin_Base {
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// Adds screen options and the about box in the languages admin panel.
-		add_action( 'load-languages_page_mlang', array( $this, 'load_page' ) );
-		add_action( 'load-languages_page_mlang_strings', array( $this, 'load_page_strings' ) );
+		add_action( 'load-' . self::get_screen_id( 'lang' ), array( $this, 'load_page' ) );
+		add_action( 'load-' . self::get_screen_id( 'strings' ), array( $this, 'load_page_strings' ) );
 
 		// Saves the per-page value in screen options.
 		add_filter( 'set_screen_option_pll_lang_per_page', array( $this, 'set_screen_option' ), 10, 3 );
@@ -112,7 +112,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				'pll-about-box',
 				__( 'About Polylang', 'polylang' ),
 				array( $this, 'metabox_about' ),
-				'toplevel_page_mlang',
+				self::get_screen_id( 'lang' ),
 				'normal'
 			);
 		}

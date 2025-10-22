@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 	<div class="metabox-holder">
 		<?php
 		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
-		do_meta_boxes( 'languages_page_mlang_strings', 'normal', array() );
+		do_meta_boxes( PLL_Admin_Base::get_screen_id( 'strings' ), 'normal', array() );
 		?>
 	</div>
 

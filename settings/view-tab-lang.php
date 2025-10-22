@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 			<div class="metabox-holder">
 				<?php
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
-				do_meta_boxes( 'toplevel_page_mlang', 'normal', array() );
+				do_meta_boxes( PLL_Admin_Base::get_screen_id( 'lang' ), 'normal', array() );
 				?>
 			</div>
 		</div><!-- col-wrap -->

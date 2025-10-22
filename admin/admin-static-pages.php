@@ -103,7 +103,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	public function notice_must_translate() {
 		$screen = get_current_screen();
 
-		if ( ! empty( $screen ) && ( 'toplevel_page_mlang' === $screen->id || 'edit-page' === $screen->id ) ) {
+		if ( ! empty( $screen ) && ( PLL_Admin_Base::get_screen_id( 'lang' ) === $screen->id || 'edit-page' === $screen->id ) ) {
 			$message = $this->get_must_translate_message();
 
 			if ( ! empty( $message ) ) {
