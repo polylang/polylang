@@ -384,7 +384,7 @@ class PLL_Admin_Filters_Term {
 		check_admin_referer( 'pll_language', '_pll_nonce' );
 
 		$translations = $this->model->term->get_translations( $term_id );
-		if (  ! isset( $_POST['term_tr_lang'] ) || ! is_array( $_POST['term_tr_lang'] ) ) {
+		if ( ! isset( $_POST['term_tr_lang'] ) || ! is_array( $_POST['term_tr_lang'] ) ) {
 			return $translations;
 		}
 
