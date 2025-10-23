@@ -132,7 +132,7 @@ class User {
 	public function can_translate_or_die( PLL_Language $language ): void {
 		if ( ! $this->can_translate( $language ) ) {
 			/* translators: %s: language name */
-			wp_die( esc_html( sprintf( __( 'You are not allowed to assign %1$s to an object.', 'polylang' ), $language->name ) ) );
+			wp_die( esc_html( sprintf( __( 'You are not allowed to do action in %s.', 'polylang' ), $language->name ) ) );
 		}
 	}
 }
