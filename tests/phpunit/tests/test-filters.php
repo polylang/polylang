@@ -419,7 +419,20 @@ class Filters_Test extends PLL_UnitTestCase {
 		add_filter(
 			'comments_clauses',
 			function ( $clauses ) use ( $wpdb ) {
-				$clauses['join'] .= " LEFT JOIN $wpdb->posts ON comment_post_ID = $wpdb->posts.ID ";
+				if ( ! $clauses['join'] ) {
+					$clauses['join'] = '';
+				}
+
+				if ( ! strstr( $clauses['join'], "JOIN $wpdb->posts" ) ) {
+					$clauses['join'] .= " LEFT JOIN $wpdb->posts ON comment_post_ID = $wpdb->posts.ID ";
+				}
+
+				if ( $clauses['where'] ) {
+					$clauses['where'] .= ' AND ';
+				}
+
+				$clauses['where'] .= " $wpdb->posts.post_type NOT IN ('job_application') ";
+
 				return $clauses;
 			},
 			$priority
