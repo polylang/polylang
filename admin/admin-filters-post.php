@@ -152,7 +152,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 			$language = $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) );
 
-			if ( empty( $language ) || ! ( new User() )->can_translate( $language ) ) {
+			if ( empty( $language ) ) {
 				return;
 			}
 
