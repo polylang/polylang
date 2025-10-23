@@ -27,8 +27,7 @@ else {
 ?>
 <table class="widefat term-translations"  id="<?php echo isset( $term_id ) ? 'edit' : 'add'; ?>-term-translations">
 	<?php
-	$authorized_languages = $this->model->languages->filter( 'translator' )->get_list();
-	$authorized_slugs     = wp_list_pluck( $authorized_languages, 'slug' );
+	$authorized_slugs = $this->model->languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id == $lang->term_id ) {
 			continue;
