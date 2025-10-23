@@ -10,6 +10,11 @@
  */
 abstract class PLL_Admin_Base extends PLL_Base {
 	/**
+	 * @since 3.8
+	 */
+	public const SCREEN_PREFIX = 'languages';
+
+	/**
 	 * Current language (used to filter the content).
 	 *
 	 * @var PLL_Language|null
@@ -121,14 +126,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		global $admin_page_hooks;
 
 		$parent    = '';
-		$page_type = 'languages';
+		$first_tab = '';
 
 		foreach ( $this->get_menu_items() as $tab => $title ) {
-			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+			$page = self::get_screen_slug( $tab );
 			$capa = 'strings' === $tab ? 'manage_translations' : 'manage_options';
 
 			if ( empty( $parent ) ) {
-				$parent = $page;
+				$parent    = $page;
+				$first_tab = $tab;
 
 				/*
 				 * WP actually doesn't care about the user capability used here, as long as it has sub-menus: it will
@@ -136,8 +142,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				 * Ex: a user with `manage_translations` will still be able to access the Translations page, even if the
 				 * main menu has `manage_options`.
 				 */
-				add_menu_page( $title, __( 'Languages', 'polylang' ), $capa, $page, '__return_null', 'dashicons-translation' );
-				$admin_page_hooks[ $page ] = $page_type; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
+				add_menu_page( $title, __( 'Languages', 'polylang' ), $capa, $parent, '__return_null', 'dashicons-translation' );
+				$admin_page_hooks[ $parent ] = self::SCREEN_PREFIX; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
 			add_submenu_page( $parent, $title, $title, $capa, $page, array( $this, 'languages_page' ) );
@@ -158,8 +164,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		foreach ( array( 'load-', 'admin_print_styles-', 'admin_print_scripts-', 'admin_head-', '', 'admin_print_footer_scripts-', 'admin_footer-' ) as $prefix ) {
 			add_action(
 				"{$prefix}toplevel_page_{$parent}",
-				static function () use ( $prefix, $page_type, $parent ) {
-					do_action( "{$prefix}{$page_type}_page_{$parent}" );
+				static function () use ( $prefix, $first_tab ) {
+					do_action( $prefix . self::get_screen_id( $first_tab ) );
 				}
 			);
 		}
@@ -174,13 +180,32 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		add_action(
 			// Target the screen in 1st position only.
 			"admin_head-toplevel_page_{$parent}",
-			static function () use ( $page_type, $parent ) {
+			static function () use ( $first_tab ) {
 				add_filter(
 					'admin_body_class',
-					static function ( $admin_body_classes ) use ( $page_type, $parent ) {
-						return "{$admin_body_classes} {$page_type}_page_{$parent}";
+					static function ( $admin_body_classes ) use ( $first_tab ) {
+						return $admin_body_classes . ' ' . self::get_screen_id( $first_tab );
 					}
 				);
+			}
+		);
+
+		/**
+		 * Also modify the screen ID and base.
+		 *
+		 * Note: the global variables `$page_hook` and `$hook_suffix` are not changed, their value is still
+		 * `toplevel_page_mlang`. Changing them breaks things because we can't filter `get_plugin_page_hookname()`.
+		 * This is why the above hooks are still needed.
+		 */
+		add_action(
+			'current_screen',
+			static function ( $current_screen ) use ( $parent, $first_tab ) {
+				if ( "toplevel_page_{$parent}" !== $current_screen->id ) {
+					return;
+				}
+
+				$current_screen->id   = self::get_screen_id( $first_tab );
+				$current_screen->base = self::get_screen_id( $first_tab );
 			}
 		);
 	}
@@ -597,6 +622,30 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns the ID of a Polylang's settings screen.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $tab The name of the screen (`lang`, `strings`, `settings`).
+	 * @return string
+	 */
+	public static function get_screen_id( string $tab ): string {
+		return sprintf( '%s_page_%s', self::SCREEN_PREFIX, self::get_screen_slug( $tab ) );
+	}
+
+	/**
+	 * Returns the slug of a Polylang's settings screen, as seen in the URL.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $tab The name of the screen (`lang`, `strings`, `settings`).
+	 * @return string
+	 */
+	public static function get_screen_slug( string $tab ): string {
+		return 'lang' === $tab ? 'mlang' : "mlang_$tab";
 	}
 
 	/**

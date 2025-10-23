@@ -111,13 +111,12 @@ class PLL_Admin_Notices {
 		}
 
 		if ( empty( $allowed_screens ) ) {
-			$screen_id       = sanitize_title( __( 'Languages', 'polylang' ) );
 			$allowed_screens = array(
 				'dashboard',
 				'plugins',
-				'toplevel_page_mlang',
-				$screen_id . '_page_mlang_strings',
-				$screen_id . '_page_mlang_settings',
+				PLL_Admin_Base::get_screen_id( 'lang' ),
+				PLL_Admin_Base::get_screen_id( 'strings' ),
+				PLL_Admin_Base::get_screen_id( 'settings' ),
 			);
 		}
 
@@ -184,7 +183,7 @@ class PLL_Admin_Notices {
 				$this->review_notice();
 			}
 
-			$allowed_screen = sanitize_title( __( 'Languages', 'polylang' ) ) . '_page_mlang_strings';
+			$allowed_screen = PLL_Admin_Base::get_screen_id( 'strings' );
 			if (
 				( ! empty( $this->options['previous_version'] ) && version_compare( $this->options['previous_version'], '3.7.0', '<' ) )
 				&& $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen )
