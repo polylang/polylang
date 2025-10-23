@@ -182,6 +182,8 @@ class PLL_Admin_Classic_Editor {
 			wp_die( esc_html( "{$lang_slug} is not a valid language code." ) );
 		}
 
+		( new User() )->can_translate_or_die( $lang );
+
 		$post_type_object = get_post_type_object( $post_type );
 
 		if ( empty( $post_type_object ) ) {
@@ -191,8 +193,6 @@ class PLL_Admin_Classic_Editor {
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
 			wp_die( 'You are not allowed to edit this post.' );
 		}
-
-		( new User() )->can_translate_or_die( $lang );
 
 		$this->model->post->set_language( $post_ID, $lang );
 
