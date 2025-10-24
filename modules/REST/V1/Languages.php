@@ -13,6 +13,7 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 use WP_Syntex\Polylang\Model\Languages as Languages_Model;
 use WP_Syntex\Polylang\REST\Abstract_Controller;
 
@@ -650,7 +651,7 @@ class Languages extends Abstract_Controller {
 	 * @return bool
 	 */
 	protected function check_update_permission(): bool {
-		return current_user_can( 'manage_options' );
+		return current_user_can( Capabilities::LANGUAGES );
 	}
 
 	/**
