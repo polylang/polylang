@@ -35,7 +35,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param int          $post_id  The source post id.
+	 * @param int          $post_id  The source post ID.
 	 * @param PLL_Language $language The language of the new translation.
 	 * @return string
 	 */
@@ -182,7 +182,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int          $post_id  The source post id.
+	 * @param int          $post_id  The source post ID.
 	 * @param PLL_Language $language The language of the post.
 	 * @return string
 	 */
@@ -228,7 +228,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param int          $term_id   Source term id.
+	 * @param int          $term_id   Source term ID.
 	 * @param string       $taxonomy  Taxonomy name.
 	 * @param string       $post_type Post type name.
 	 * @param PLL_Language $language  The language of the new translation.
@@ -312,7 +312,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int          $term_id   Translation term id.
+	 * @param int          $term_id   Translation term ID.
 	 * @param string       $taxonomy  Taxonomy name.
 	 * @param string       $post_type Post type name.
 	 * @param PLL_Language $language  The language of the term.
