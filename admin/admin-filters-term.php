@@ -376,16 +376,13 @@ class PLL_Admin_Filters_Term {
 		// Security check as 'wp_update_term' can be called from outside WP admin.
 		check_admin_referer( 'pll_language', '_pll_nonce' );
 
-		$translations = $this->model->term->get_translations( $term_id );
-		if ( ! isset( $_POST['term_tr_lang'] ) || ! is_array( $_POST['term_tr_lang'] ) ) {
-			return $translations;
-		}
+		$translations = array();
 
-		// Make sure a translator won't edit translations they're not allowed to.
-		$sent_translations = array_map( 'absint', $_POST['term_tr_lang'] );
-		foreach ( $this->model->languages->filter( 'translator' )->get_list() as $lang ) {
-			if ( isset( $sent_translations[ $lang->slug ] ) ) {
-				$translations[ $lang->slug ] = $sent_translations[ $lang->slug ];
+		// Save translations after checking the translated term is in the right language ( as well as cast id to int ).
+		if ( isset( $_POST['term_tr_lang'] ) ) {
+			foreach ( array_map( 'absint', $_POST['term_tr_lang'] ) as $lang => $tr_id ) {
+				$tr_lang = $this->model->term->get_language( $tr_id );
+				$translations[ $lang ] = $tr_lang && $tr_lang->slug == $lang ? $tr_id : 0;
 			}
 		}
 

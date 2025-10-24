@@ -27,14 +27,10 @@ else {
 ?>
 <table class="widefat term-translations"  id="<?php echo isset( $term_id ) ? 'edit' : 'add'; ?>-term-translations">
 	<?php
-	$authorized_slugs = $this->model->languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id == $lang->term_id ) {
 			continue;
 		}
-
-		// Check if the user is allowed to translate this language.
-		$is_authorized = in_array( $language->slug, $authorized_slugs, true );
 
 		// Look for any existing translation in this language
 		// Take care not to propose a self link
@@ -84,7 +80,7 @@ else {
 					esc_html__( 'Translation', 'polylang' ),
 					$translation_exists ? (int) $translation->term_id : 0,
 					$translation_exists ? esc_attr( $translation->name ) : '',
-					disabled( ! empty( $disabled ) || ! $is_authorized, true, false ),
+					disabled( empty( $disabled ), false, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )
 				);
