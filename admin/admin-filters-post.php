@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
-
 /**
  * Manages filters and actions related to posts on admin side
  *
@@ -160,21 +158,11 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 			$this->model->post->set_language( $post_id, $language );
 
-			if ( ! isset( $_POST['post_tr_lang'] ) || ! is_array( $_POST['post_tr_lang'] ) ) {
+			if ( ! isset( $_POST['post_tr_lang'] ) ) {
 				return;
 			}
 
-			// Make sure a translator won't edit translations they're not allowed to.
-			$translations      = $this->model->post->get_translations( $post_id );
-			$sent_translations = array_map( 'absint', $_POST['post_tr_lang'] );
-
-			foreach ( $this->model->languages->filter( 'translator' )->get_list() as $lang ) {
-				if ( isset( $sent_translations[ $lang->slug ] ) ) {
-					$translations[ $lang->slug ] = $sent_translations[ $lang->slug ];
-				}
-			}
-
-			$this->save_translations( $post_id, $translations );
+			$this->save_translations( $post_id, array_map( 'absint', $_POST['post_tr_lang'] ) );
 		}
 	}
 
