@@ -13,8 +13,8 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.8
  */
 class Capabilities {
-	public const LANGUAGES_CAPABILITY    = 'manage_languages';
-	public const TRANSLATIONS_CAPABILITY = 'manage_translations';
+	public const LANGUAGES    = 'manage_languages';
+	public const TRANSLATIONS = 'manage_translations';
 
 	/**
 	 * Constructor.
@@ -35,7 +35,7 @@ class Capabilities {
 	 * @return string[]
 	 */
 	public function map_custom_caps( $caps, $cap ) {
-		$custom_caps = array( self::TRANSLATIONS_CAPABILITY, self::LANGUAGES_CAPABILITY );
+		$custom_caps = array( self::TRANSLATIONS, self::LANGUAGES );
 
 		foreach ( $custom_caps as $custom_cap ) {
 			if ( $custom_cap !== $cap ) {

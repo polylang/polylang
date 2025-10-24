@@ -651,7 +651,7 @@ class Languages extends Abstract_Controller {
 	 * @return bool
 	 */
 	protected function check_update_permission(): bool {
-		return current_user_can( Capabilities::LANGUAGES_CAPABILITY );
+		return current_user_can( Capabilities::LANGUAGES );
 	}
 
 	/**

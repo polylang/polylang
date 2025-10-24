@@ -692,10 +692,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	protected function get_menu_capability( string $menu ): string {
 		switch ( $menu ) {
 			case 'lang':
-				return Capabilities::LANGUAGES_CAPABILITY;
+				return Capabilities::LANGUAGES;
 
 			case 'strings':
-				return Capabilities::TRANSLATIONS_CAPABILITY;
+				return Capabilities::TRANSLATIONS;
 		}
 
 		return 'manage_options';
