@@ -359,16 +359,9 @@ class PLL_Admin_Site_Health {
 			$term_ids_with_no_language = $this->model->get_terms_with_no_lang( $taxonomy, $limit );
 
 			if ( ! empty( $term_ids_with_no_language ) ) {
-				$terms[ $taxonomy ] = $id;
+				$terms[ $taxonomy ] = implode( ',', $term_ids_with_no_language );
 			}
 		}
-
-		if ( ! empty( $terms ) ) {
-			foreach ( $terms as $taxonomy => $term_ids ) {
-				$terms[ $taxonomy ] = implode( ', ', $term_ids );
-			}
-		}
-
 		return $terms;
 	}
 
