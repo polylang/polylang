@@ -47,6 +47,23 @@ parameters:
 			count: 1
 			path: include/mo.php
 
+		# Ignored because there is no dynamic return type extension for WP_Syntex\Polylang\Options\Abstract_Option::get()
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/Sync.php
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\|null, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/Sync.php
+		-
+			message: "#^Parameter \\#2 \\$timestamp of function wp_date expects int\\|null, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/First_Activation.php
+		-
+			message: "#^Parameter \\#1 \\$format of function wp_date expects string, mixed given\\.$#"
+			count: 1
+			path: include/Options/Business/First_Activation.php
 		# Ignored because $object_id isn't declared and documented in WP_Term class.
 		-
 			message: "#^Access to an undefined property WP_Term\\:\\:\\$object_id\\.$#"
