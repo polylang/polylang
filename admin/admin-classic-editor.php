@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Capabilities\User;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -172,13 +174,15 @@ class PLL_Admin_Classic_Editor {
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
 		$post_ID   = (int) $_POST['post_id'];
-		$lang_slug     = sanitize_key( $_POST['lang'] );
+		$lang_slug = sanitize_key( $_POST['lang'] );
 		$lang      = $this->model->get_language( $lang_slug );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( empty( $lang ) ) {
 			wp_die( esc_html( "{$lang_slug} is not a valid language code." ) );
 		}
+
+		( new User() )->can_translate_or_die( $lang );
 
 		$post_type_object = get_post_type_object( $post_type );
 

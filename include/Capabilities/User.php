@@ -120,4 +120,19 @@ class User {
 
 		return $this->language_caps;
 	}
+
+	/**
+	 * Checks if the current user has the rights to assign a language to an object and dies if not.
+	 *
+	 * @since 3.8
+	 *
+	 * @param PLL_Language $language The language to assign.
+	 * @return void|never Dies if the user does not have the rights, does nothing otherwise.
+	 */
+	public function can_translate_or_die( PLL_Language $language ): void {
+		if ( ! $this->can_translate( $language ) ) {
+			/* translators: %s: language name */
+			wp_die( esc_html( sprintf( __( 'You are not allowed to do action in %s.', 'polylang' ), $language->name ) ) );
+		}
+	}
 }
