@@ -3,8 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
-
 /**
  * Manages filters and actions related to posts on admin side
  *
