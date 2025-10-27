@@ -164,7 +164,7 @@ class PLL_Admin_Filters_Columns {
 
 		// Hidden field containing the post language for quick edit.
 		if ( $column === $this->get_first_language_column() ) {
-			printf( '<div class="hidden" id="lang_%d">%s</div>', $post_id, esc_html( $lang->slug ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			printf( '<div class="hidden" id="lang_%d">%s</div>', $post_id, esc_html( $lang->slug ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped `$post_id` already converted to integer above.
 		}
 
 		$tr_id   = $this->model->post->get( $post_id, $language );
@@ -253,7 +253,7 @@ class PLL_Admin_Filters_Columns {
 
 		$term_id = (int) $term_id;
 		$inline  = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
-		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ); // phpcs:ignore WordPress.Security.NonceVerification
+		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ); // phpcs:ignore WordPress.Security.NonceVerification `$term_id` already converted to integer above.
 
 		if ( empty( $lang ) ) {
 			return $out;
