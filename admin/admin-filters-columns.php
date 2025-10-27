@@ -4,8 +4,8 @@
  */
 
 /**
- * Adds the language column in posts and terms list tables
- * Manages quick edit and bulk edit as well
+ * Adds the language column in posts and terms list tables.
+ * Manages quick edit and bulk edit as well.
  *
  * @since 1.2
  */
@@ -32,7 +32,7 @@ class PLL_Admin_Filters_Columns {
 	public $filter_lang;
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.2
 	 *
@@ -78,7 +78,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param string   $before  The column before which we want to add our languages.
 	 * @return string[] Modified list of columns.
 	 */
-	protected function add_column( $columns, $before ) {
+	protected function add_column( array $columns, string $before ): array {
 		if ( $n = array_search( $before, array_keys( $columns ) ) ) {
 			$end = array_slice( $columns, $n );
 			$columns = array_slice( $columns, 0, $n );
@@ -96,9 +96,9 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 0.9
 	 *
-	 * @return string first language column name.
+	 * @return string First language column name.
 	 */
-	protected function get_first_language_column() {
+	protected function get_first_language_column(): string {
 		foreach ( $this->model->get_languages_list() as $language ) {
 			return 'language_' . $language->slug;
 		}
@@ -130,7 +130,7 @@ class PLL_Admin_Filters_Columns {
 	 * @return string[] Modified list of columns.
 	 */
 	public function add_post_column( $columns ) {
-		return $this->add_column( $columns, 'comments' );
+		return $this->add_column( (array) $columns, 'comments' );
 	}
 
 	/**
@@ -143,7 +143,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $post_id Post ID.
 	 * @return void
 	 */
-	public function post_column( $column, $post_id ) {
+	public function post_column( $column, $post_id ): void {
 		if ( false === strpos( $column, 'language_' ) ) {
 			return;
 		}
@@ -182,41 +182,43 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Quick edit & bulk edit
+	 * Quick edit & bulk edit.
 	 *
 	 * @since 0.9
 	 *
-	 * @param string $column column name
-	 * @return string unmodified $column
+	 * @param string $column Column name.
+	 * @return string Unmodified column.
 	 */
 	public function quick_edit_custom_box( $column ) {
-		if ( $column == $this->get_first_language_column() ) {
-
-			$elements = $this->model->languages->filter( 'translator' )->get_list();
-			if ( current_filter() == 'bulk_edit_custom_box' ) {
-				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;', 'polylang' ) ) );
-			}
-
-			$dropdown = new PLL_Walker_Dropdown();
-			// The hidden field 'old_lang' allows to pass the old language to ajax request
-			printf(
-				'<fieldset class="inline-edit-col-left">
-					<div class="inline-edit-col">
-						<label class="alignleft">
-							<span class="title">%s</span>
-							%s
-						</label>
-					</div>
-				</fieldset>',
-				esc_html__( 'Language', 'polylang' ),
-				$dropdown->walk( $elements, -1, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
-			);
+		if ( $column !== $this->get_first_language_column() ) {
+			return $column;
 		}
+
+		$elements = $this->model->languages->filter( 'translator' )->get_list();
+		if ( current_filter() == 'bulk_edit_custom_box' ) {
+			array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;', 'polylang' ) ) );
+		}
+
+		$dropdown = new PLL_Walker_Dropdown();
+		// The hidden field 'old_lang' allows to pass the old language to ajax request
+		printf(
+			'<fieldset class="inline-edit-col-left">
+				<div class="inline-edit-col">
+					<label class="alignleft">
+						<span class="title">%s</span>
+						%s
+					</label>
+				</div>
+			</fieldset>',
+			esc_html__( 'Language', 'polylang' ),
+			$dropdown->walk( $elements, -1, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
+		);
+
 		return $column;
 	}
 
 	/**
-	 * Adds the language column ( before the posts column ) in the 'Categories' or 'Post Tags' table.
+	 * Adds the language column (before the posts column) in the 'Categories' or 'Post Tags' table.
 	 *
 	 * @since 0.1
 	 *
@@ -231,7 +233,7 @@ class PLL_Admin_Filters_Columns {
 			return $columns;
 		}
 
-		return $this->add_column( $columns, 'posts' );
+		return $this->add_column( (array) $columns, 'posts' );
 	}
 
 	/**
@@ -310,13 +312,15 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Update rows of translated posts when the language is modified in quick edit
+	 * Update rows of translated posts when the language is modified in quick edit.
 	 *
 	 * @since 1.7
 	 *
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
-	public function ajax_update_post_rows() {
+	public function ajax_update_post_rows(): void {
 		check_ajax_referer( 'inlineeditnonce', '_pll_nonce' );
 
 		if ( ! isset( $_POST['post_type'], $_POST['post_id'], $_POST['screen'] ) ) {
@@ -334,10 +338,9 @@ class PLL_Admin_Filters_Columns {
 
 		$x = new WP_Ajax_Response();
 
-		// Collect old translations
+		// Collect old translations.
 		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$translations = array_map( 'intval', $translations );
-
 		$translations = array_merge( $translations, array( (int) $_POST['post_id'] ) ); // Add current post
 
 		foreach ( $translations as $post_id ) {
@@ -354,13 +357,16 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Update rows of translated terms when adding / deleting a translation or when the language is modified in quick edit
+	 * Update rows of translated terms when adding / deleting a translation
+	 * or when the language is modified in quick edit.
 	 *
 	 * @since 1.7
 	 *
 	 * @return void
+	 *
+	 * @phpstan-return never
 	 */
-	public function ajax_update_term_rows() {
+	public function ajax_update_term_rows(): void {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
 		if ( ! isset( $_POST['taxonomy'], $_POST['term_id'], $_POST['screen'] ) ) {
@@ -378,12 +384,11 @@ class PLL_Admin_Filters_Columns {
 
 		$x = new WP_Ajax_Response();
 
-		// Collect old translations
+		// Collect old translations.
 		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$translations = array_map( 'intval', $translations );
-
-		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // Add current translations
-		$translations = array_unique( $translations ); // Remove duplicates
+		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // Add current translations.
+		$translations = array_unique( $translations ); // Remove duplicates.
 
 		foreach ( $translations as $term_id ) {
 			$level = is_taxonomy_hierarchical( $taxonomy ) ? count( get_ancestors( $term_id, $taxonomy ) ) : 0;
@@ -410,7 +415,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param PLL_Language $language PLL_Language object.
 	 * @return string
 	 */
-	protected function get_flag_html( $language ) {
+	protected function get_flag_html( PLL_Language $language ): string {
 		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 
