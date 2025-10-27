@@ -345,7 +345,7 @@ class PLL_Admin_Filters_Columns {
 			if ( $post = get_post( $post_id ) ) {
 				ob_start();
 				$wp_list_table->single_row( $post, $level );
-				$data = ob_get_clean();
+				$data = (string) ob_get_clean();
 				$x->add( array( 'what' => 'row', 'data' => $data, 'supplemental' => array( 'post_id' => $post_id ) ) );
 			}
 		}
@@ -395,7 +395,7 @@ class PLL_Admin_Filters_Columns {
 
 			ob_start();
 			$wp_list_table->single_row( $tag, $level );
-			$data = ob_get_clean();
+			$data = (string) ob_get_clean();
 			$x->add( array( 'what' => 'row', 'data' => $data, 'supplemental' => array( 'term_id' => $term_id ) ) );
 		}
 
