@@ -213,7 +213,7 @@ class PLL_Admin_Filters_Columns {
 	public function quick_edit_custom_box( $column ) {
 		if ( $column == $this->get_first_language_column() ) {
 
-			$elements = $this->model->get_languages_list();
+			$elements = $this->model->languages->filter( 'translator' )->get_list();
 			if ( current_filter() == 'bulk_edit_custom_box' ) {
 				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;', 'polylang' ) ) );
 			}
