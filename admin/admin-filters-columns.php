@@ -99,11 +99,9 @@ class PLL_Admin_Filters_Columns {
 	 * @return string First language column name.
 	 */
 	protected function get_first_language_column(): string {
-		foreach ( $this->model->get_languages_list() as $language ) {
-			return 'language_' . $language->slug;
-		}
-
-		return '';
+		$languages = $this->model->get_languages_list();
+		$language  = reset( $languages );
+		return ! empty( $language ) ? "language_{$language->slug}" : '';
 	}
 
 	/**
