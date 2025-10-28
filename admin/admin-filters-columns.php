@@ -176,7 +176,7 @@ class PLL_Admin_Filters_Columns {
 
 		// Link to edit (or not) the post or a translation.
 		$url = $this->links->get_edit_post_translation_link( $tr_post->ID, $language );
-		echo $this->get_item_edition_link( $url, $tr_post->ID, $tr_post->post_title, $language, $tr_post->ID === $post_id ? 'flag' : 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->links->get_item_edition_link( $url, $tr_post->ID, $tr_post->post_title, $language, $tr_post->ID === $post_id ? 'flag' : 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -289,7 +289,7 @@ class PLL_Admin_Filters_Columns {
 
 		// Link to edit (or not) the term or a translation.
 		$url  = $this->links->get_edit_term_translation_link( $tr_term->term_id, $taxonomy, $post_type, $language );
-		$out .= $this->get_item_edition_link( $url, $tr_term->term_id, $tr_term->name, $language, $tr_term->term_id === $term_id ? 'flag' : 'icon' );
+		$out .= $this->links->get_item_edition_link( $url, $tr_term->term_id, $tr_term->name, $language, $tr_term->term_id === $term_id ? 'flag' : 'icon' );
 
 		if ( $this->get_first_language_column() !== $column ) {
 			return $out;
@@ -415,68 +415,5 @@ class PLL_Admin_Filters_Columns {
 	 */
 	protected function get_flag_html( PLL_Language $language ): string {
 		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
-	}
-
-	/**
-	 * Returns a link to edit an item (or an icon/flag if the current user is not allowed to).
-	 *
-	 * @since 3.8
-	 *
-	 * @param string       $url       URL of the edition link.
-	 * @param int          $item_id   ID of the item.
-	 * @param string       $item_name Name of the item.
-	 * @param PLL_Language $language  Language of the item.
-	 * @param string       $mode      Optional. How the link should be displayed: with a pen icon or a language's flag.
-	 *                                Possible values are `icon` and `flag`. Default is `icon`.
-	 * @return string
-	 *
-	 * @phpstan-param 'icon'|'flag' $mode
-	 */
-	private function get_item_edition_link( string $url, int $item_id, string $item_name, PLL_Language $language, string $mode = 'icon' ): string {
-		if ( 'flag' === $mode ) {
-			$flag  = $this->get_flag_html( $language );
-			$class = 'pll_column_flag';
-		} else {
-			$flag  = '';
-			$class = 'pll_icon_edit';
-		}
-
-		if ( empty( $url ) ) {
-			// The current user is not allowed to edit the item.
-			if ( 'flag' === $mode ) {
-				/* translators: accessibility text, %s is a native language name */
-				$hint = sprintf( __( 'You are not allowed to edit this item in %s', 'polylang' ), $language->name );
-			} else {
-				/* translators: accessibility text, %s is a native language name */
-				$hint = sprintf( __( 'You are not allowed to edit a translation in %s', 'polylang' ), $language->name );
-			}
-
-			return sprintf(
-				'<span title="%s" class="%s wp-ui-text-icon"><span class="screen-reader-text">%s</span>%s</span>',
-				esc_attr( $hint ),
-				esc_attr( $class ),
-				esc_html( $hint ),
-				$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			);
-		} else {
-			// The current user is allowed to edit the item.
-			if ( 'flag' === $mode ) {
-				/* translators: accessibility text, %s is a native language name */
-				$hint = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
-			} else {
-				/* translators: accessibility text, %s is a native language name */
-				$hint   = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
-				$class .= " translation_{$item_id}";
-			}
-
-			return sprintf(
-				'<a href="%s" class="%s" title="%s"><span class="screen-reader-text">%s</span>%s</a>',
-				esc_url( $url ),
-				esc_attr( $class ),
-				esc_attr( $item_name ),
-				esc_html( $hint ),
-				$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			);
-		}
 	}
 }
