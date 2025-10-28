@@ -211,11 +211,13 @@ class PLL_Admin_Links extends PLL_Links {
 			);
 		}
 
+		/* translators: accessibility text, %s is a native language name */
+		$hint = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 		return sprintf(
-			'<a href="%1$s" class="pll_icon_edit"><span class="screen-reader-text">%2$s</span></a>',
+			'<a href="%1$s" title="%2$s" class="pll_icon_edit"><span class="screen-reader-text">%3$s</span></a>',
 			esc_url( $link ),
-			/* translators: accessibility text, %s is a native language name */
-			esc_html( sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name ) )
+			esc_attr( $hint ),
+			esc_html( $hint )
 		);
 	}
 
