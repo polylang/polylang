@@ -359,10 +359,9 @@ class PLL_Admin_Links extends PLL_Links {
 			}
 
 			return sprintf(
-				'<span title="%s" class="%s wp-ui-text-icon"><span class="screen-reader-text">%s</span>%s</span>',
+				'<span title="%s" class="%s wp-ui-text-icon">%s</span>',
 				esc_attr( $hint ),
 				esc_attr( $class ),
-				esc_html( $hint ),
 				$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 		} else {
