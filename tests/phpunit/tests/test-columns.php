@@ -20,17 +20,17 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$factory->language->create_many( 2 );
 
-		self::$editor        = self::factory()->user->create( array( 'role' => 'editor' ) );
-		self::$translator_fr = self::factory()->user->create( array( 'role' => 'editor' ) );
-		self::$translator_es = self::factory()->user->create( array( 'role' => 'editor' ) );
-		( new WP_User( self::$translator_fr ) )->add_cap( 'translate_fr' );
-		( new WP_User( self::$translator_es ) )->add_cap( 'translate_es' );
+		self::$editor        = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
+		self::$translator_fr = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
+		self::$translator_es = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
+		self::$translator_fr->add_cap( 'translate_fr' );
+		self::$translator_es->add_cap( 'translate_es' );
 	}
 
 	public static function wpTearDownAfterClass() {
-		self::delete_user( self::$editor );
-		self::delete_user( self::$translator_fr );
-		self::delete_user( self::$translator_es );
+		self::delete_user( self::$editor->ID );
+		self::delete_user( self::$translator_fr->ID );
+		self::delete_user( self::$translator_es->ID );
 		parent::wpTearDownAfterClass();
 	}
 
@@ -38,7 +38,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		// Sets a user to pass current_user_can tests.
-		wp_set_current_user( self::$editor );
+		wp_set_current_user( self::$editor->ID );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$en = self::factory()->post->create( array( 'lang' => 'en' ) );
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -104,7 +104,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$en = self::factory()->post->create( array( 'lang' => 'en' ) );
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -139,7 +139,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $en, 'en' );
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -174,7 +174,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		);
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -222,7 +222,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$en = self::factory()->category->create( array( 'lang' => 'en' ) );
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -253,7 +253,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$en = self::factory()->category->create( array( 'lang' => 'en' ) );
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -288,7 +288,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		);
 
 		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user );
+			wp_set_current_user( self::$$user->ID );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
