@@ -86,8 +86,11 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		if ( empty( $user ) ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a post.' );
-		} else {
+		} elseif ( 'translator_fr' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A French translator should not be able to edit a post in English.' );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		} elseif ( 'translator_es' === $user ) {
+			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a post in English.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
 	}
@@ -115,10 +118,13 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( empty( $user ) || 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator or a French translator should be able to create a translation in French.' );
+		if ( empty( $user ) ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to create a translation in French.' );
 			$this->assertNotFalse( strpos( $column, 'from_post' ), 'The URL allowing to create a translation should contain the `from_post` query arg.' );
-		} else {
+		} elseif ( 'translator_fr' === $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to create a translation in French.' );
+			$this->assertNotFalse( strpos( $column, 'from_post' ), 'The URL allowing to create a translation should contain the `from_post` query arg.' );
+		} elseif ( 'translator_es' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to create a translation in French.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
@@ -150,10 +156,13 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( empty( $user ) || 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator or a French translator should be able to create a translation in French.' );
+		if ( empty( $user ) ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to create a translation in French.' );
 			$this->assertNotFalse( strpos( $column, 'from_media' ), 'The URL allowing to create a translation should contain the `from_media` query arg.' );
-		} else {
+		} elseif ( 'translator_fr' === $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to create a translation in French.' );
+			$this->assertNotFalse( strpos( $column, 'from_media' ), 'The URL allowing to create a translation should contain the `from_media` query arg.' );
+		} elseif ( 'translator_es' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to create a translation in French.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
@@ -185,9 +194,11 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 
-		if ( empty( $user ) || 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator or a French translator should be able to edit a translation.' );
-		} else {
+		if ( empty( $user ) ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a translation.' );
+		} elseif ( 'translator_fr' === $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to edit a translation.' );
+		} elseif ( 'translator_es' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a translation in English.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
@@ -232,8 +243,11 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		if ( empty( $user ) ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a term.' );
-		} else {
+		} elseif ( 'translator_fr' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A French translator should not be able to edit a term in English.' );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		} elseif ( 'translator_es' === $user ) {
+			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a term in English.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
 	}
@@ -261,10 +275,13 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( empty( $user ) || 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator or a French translator should be able to create a translation in French.' );
+		if ( empty( $user ) ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to create a translation in French.' );
 			$this->assertNotFalse( strpos( $column, 'from_tag' ), 'The URL allowing to create a translation should contain the `from_tag` query arg.' );
-		} else {
+		} elseif ( 'translator_fr' === $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to create a translation in French.' );
+			$this->assertNotFalse( strpos( $column, 'from_tag' ), 'The URL allowing to create a translation should contain the `from_tag` query arg.' );
+		} elseif ( 'translator_es' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to create a translation in French.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
@@ -296,9 +313,11 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 
-		if ( empty( $user ) || 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator or a French translator should be able to edit a translation.' );
-		} else {
+		if ( empty( $user ) ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a translation.' );
+		} elseif ( 'translator_fr' === $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to edit a translation.' );
+		} elseif ( 'translator_es' === $user ) {
 			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a translation in English.' );
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
 		}
