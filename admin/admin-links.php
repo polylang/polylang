@@ -137,12 +137,10 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	protected function new_translation_link( string $link, PLL_Language $language ): string {
 		if ( empty( $link ) ) {
-			/* translators: accessibility text, %s is a native language name */
-			$hint = sprintf( __( 'You are not allowed to add a translation in %s', 'polylang' ), $language->name );
 			return sprintf(
-				'<span title="%1$s" class="pll_icon_add wp-ui-text-icon"><span class="screen-reader-text">%2$s</span></span>',
-				esc_attr( $hint ),
-				esc_html( $hint )
+				'<span title="%s" class="pll_icon_add wp-ui-text-icon"></span>',
+				/* translators: accessibility text, %s is a native language name */
+				esc_attr( sprintf( __( 'You are not allowed to add a translation in %s', 'polylang' ), $language->name ) )
 			);
 		}
 
@@ -206,12 +204,10 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	protected function edit_translation_link( string $link, PLL_Language $language ): string {
 		if ( empty( $link ) ) {
-			/* translators: accessibility text, %s is a native language name */
-			$hint = sprintf( __( 'You are not allowed to edit a translation in %s', 'polylang' ), $language->name );
 			return sprintf(
-				'<span title="%s" class="pll_icon_edit wp-ui-text-icon"><span class="screen-reader-text">%s</span></span>',
-				esc_attr( $hint ),
-				esc_html( $hint )
+				'<span title="%s" class="pll_icon_edit wp-ui-text-icon"></span>',
+				/* translators: accessibility text, %s is a native language name */
+				esc_attr( sprintf( __( 'You are not allowed to edit a translation in %s', 'polylang' ), $language->name ) )
 			);
 		}
 
