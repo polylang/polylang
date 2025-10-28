@@ -162,7 +162,7 @@ class PLL_Admin_Filters_Columns {
 
 		// Hidden field containing the post language for quick edit.
 		if ( $column === $this->get_first_language_column() ) {
-			printf( '<div class="hidden" id="lang_%d">%s</div>', $post_id, esc_html( $lang->slug ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			printf( '<div class="hidden" id="lang_%d">%s</div>', (int) $post_id, esc_html( $lang->slug ) );
 		}
 
 		$tr_id   = $this->model->post->get( $post_id, $language );
