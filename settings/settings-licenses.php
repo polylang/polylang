@@ -40,8 +40,6 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			)
 		);
 
-		$this->buttons['cancel'] = sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', __( 'Close', 'polylang' ) );
-
 		$this->items = apply_filters( 'pll_settings_licenses', array() );
 
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
