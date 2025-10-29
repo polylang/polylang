@@ -596,11 +596,6 @@ parameters:
 			path: modules/sync/sync-metas.php
 
 		-
-			message: "#^Parameter \\#1 \\$data of function maybe_unserialize expects string, mixed given\\.$#"
-			count: 1
-			path: modules/sync/sync-metas.php
-
-		-
 			message: "#^@param int \\$from does not accept actual type of parameter\\: int\\|null\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
