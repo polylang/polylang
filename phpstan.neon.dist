@@ -53,3 +53,6 @@ parameters:
 			count: 1
 			path: include/translatable-object.php
 
+
+		# Ignored because the function wp_slash accepts mixed although not documented.
+		- "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
