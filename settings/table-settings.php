@@ -83,7 +83,6 @@ class PLL_Table_Settings extends WP_List_Table {
 				esc_html( $item->title ),
 				$form, // phpcs:ignore
 				$item->get_buttons()// phpcs:ignore
-
 			);
 		}
 	}

@@ -143,6 +143,14 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		);
 	}
 
+	/**
+	 * Get the buttons.
+	 *
+	 * @since 1.9
+	 * @since 3.8 Returns a string instead of an array.
+	 *
+	 * @return string The HTML fragment for the buttons.
+	 */
 	public function get_buttons(): string {
 		if ( ! defined( 'POLYLANG_LICENSE_KEY' ) ) {
 			return parent::get_buttons();
