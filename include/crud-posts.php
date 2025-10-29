@@ -84,18 +84,25 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function set_default_language( $post_id ) {
-		if ( ! $this->model->post->get_language( $post_id ) && pll_is_plugin_active( POLYLANG_BASENAME ) ) {
-			$post_language = new Create_Post(
-				$this->model,
-				$this->request,
-				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
-				$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
-			);
-			$this->model->post->set_language(
-				$post_id,
-				$post_language->get_language( new User(), (int) $post_id )
-			);
+		if ( is_multisite() && ms_is_switched() && ! $this->model->has_languages() ) {
+			return;
 		}
+
+		if ( $this->model->post->get_language( $post_id ) ) {
+			return;
+		}
+
+		$post_language = new Create_Post(
+			$this->model,
+			$this->request,
+			$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
+			$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
+		);
+
+		$this->model->post->set_language(
+			$post_id,
+			$post_language->get_language( new User(), (int) $post_id )
+		);
 	}
 
 	/**
@@ -109,29 +116,34 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function save_post( $post_id, $post ) {
-		// Does nothing except on post types which are filterable.
-		if ( $this->model->is_translated_post_type( $post->post_type ) ) {
-			if ( $id = wp_is_post_revision( $post_id ) ) {
-				$post_id = $id;
-			}
-
-			$lang = $this->model->post->get_language( $post_id );
-
-			if ( empty( $lang ) ) {
-				$this->set_default_language( $post_id );
-			}
-
-			/**
-			 * Fires after the post language and translations are saved.
-			 *
-			 * @since 1.2
-			 *
-			 * @param int     $post_id      Post id.
-			 * @param WP_Post $post         Post object.
-			 * @param int[]   $translations The list of translations post ids.
-			 */
-			do_action( 'pll_save_post', $post_id, $post, $this->model->post->get_translations( $post_id ) );
+		if ( is_multisite() && ms_is_switched() && ! $this->model->has_languages() ) {
+			return;
 		}
+
+		if ( ! $this->model->is_translated_post_type( $post->post_type ) ) {
+			return;
+		}
+
+		if ( $id = wp_is_post_revision( $post_id ) ) {
+			$post_id = $id;
+		}
+
+		$lang = $this->model->post->get_language( $post_id );
+
+		if ( empty( $lang ) ) {
+			$this->set_default_language( $post_id );
+		}
+
+		/**
+		 * Fires after the post language and translations are saved.
+		 *
+		 * @since 1.2
+		 *
+		 * @param int     $post_id      Post id.
+		 * @param WP_Post $post         Post object.
+		 * @param int[]   $translations The list of translations post ids.
+		 */
+		do_action( 'pll_save_post', $post_id, $post, $this->model->post->get_translations( $post_id ) );
 	}
 
 	/**
