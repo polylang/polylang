@@ -105,6 +105,9 @@ class PLL_Model {
 		$this->translatable_objects = new PLL_Translatable_Objects();
 		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects, $this->cache );
 
+		$this->languages->register_proxy( new Model\Hide_Empty() );
+		$this->languages->register_proxy( new Model\Hide_Default() );
+
 		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this ) ); // Translated post sub model.
 		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this ) ); // Translated term sub model.
 
