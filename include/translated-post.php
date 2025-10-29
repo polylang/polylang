@@ -371,6 +371,9 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		$translations[ $lang->slug ] = $tr_id;
 		$this->save_translations( $tr_id, $translations );
 
+		$switch_language = new PLL_Switch_Language();
+		$switch_language->switch_language( $lang );
+
 		/**
 		 * Fires after a media translation is created
 		 *
