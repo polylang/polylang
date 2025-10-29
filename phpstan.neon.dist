@@ -55,13 +55,4 @@ parameters:
 
 
 		# Ignored because the function wp_slash accepts mixed although not documented.
-		-
-			message: "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
-			count: 1
-			path: include/translated-post.php
-
-		# Ignored because the function wp_slash accepts mixed although not documented.
-		-
-			message: "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
-			count: 5
-			path: modules/sync/sync-metas.php
+		- "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
