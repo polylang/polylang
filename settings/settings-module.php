@@ -371,10 +371,7 @@ class PLL_Settings_Module {
 	 *
 	 * @return string An array of html fragment for the buttons.
 	 */
-	public function get_buttons() {
-		if ( ! defined( 'POLYLANG_LICENSE_KEY' ) ) {
-			return $this->buttons;
-		}
-		return '';
+	public function get_buttons(): string {
+				return $this->buttons;
 	}
 }

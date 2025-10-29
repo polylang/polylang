@@ -144,4 +144,11 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			)
 		);
 	}
+
+	public function get_buttons(): string {
+		if ( ! defined( 'POLYLANG_LICENSE_KEY' ) ) {
+			return parent::get_buttons();
+		}
+		return '';
+	}
 }
