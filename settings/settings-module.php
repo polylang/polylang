@@ -372,6 +372,6 @@ class PLL_Settings_Module {
 	 * @return string An array of html fragment for the buttons.
 	 */
 	public function get_buttons(): string {
-				return $this->buttons;
+		return $this->buttons;
 	}
 }
