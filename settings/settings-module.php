@@ -82,7 +82,7 @@ class PLL_Settings_Module {
 	/**
 	 * Stores html fragment for the buttons.
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $buttons;
 
@@ -165,10 +165,12 @@ class PLL_Settings_Module {
 			'deactivated' => esc_html__( 'Deactivated', 'polylang' ),
 		);
 
-		$this->buttons = array(
-			'cancel' => sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', esc_html__( 'Cancel', 'polylang' ) ),
-			'save'   => sprintf( '<button type="button" class="button button-primary save">%s</button>', esc_html__( 'Save Changes', 'polylang' ) ),
-		);
+		$this->buttons = sprintf(
+			'<p class="submit inline-edit-save">
+				<button type="button" class="button button-secondary cancel">%1s</button>
+				<button type="button" class="button button-primary save">%2s</button>
+
+			</p>', esc_html__( 'Cancel', 'polylang' ), esc_html__( 'Save Changes', 'polylang' ) );
 
 		// Ajax action to save options.
 		add_action( 'wp_ajax_pll_save_options', array( $this, 'save_options' ) );
