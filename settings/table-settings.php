@@ -70,7 +70,7 @@ class PLL_Table_Settings extends WP_List_Table {
 		// The settings if there are
 		// "inactive" class to reuse css from the plugins list table
 		if ( $form = $item->get_form() ) {
-			printf(
+			sprintf(
 				'<tr id="pll-configure-%s" class="pll-configure inactive inline-edit-row" style="display: none;">
 					<td colspan="3">
 						<legend>%1s</legend>
