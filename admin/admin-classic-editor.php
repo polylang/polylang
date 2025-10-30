@@ -141,9 +141,11 @@ class PLL_Admin_Classic_Editor {
 		);
 
 		/**
-		 * Fires before displaying the list of translations in the Languages metabox for posts
+		 * Fires before displaying the list of translations in the Languages metabox for posts.
 		 *
 		 * @since 1.8
+		 *
+		 * @param string $post_type Post's post type.
 		 */
 		do_action( 'pll_before_post_translations', $post_type );
 
