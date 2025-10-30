@@ -144,7 +144,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Get the buttons.
+	 * Returns the HTML strings for buttons. Empty if the license is set with a constant.
 	 *
 	 * @since 1.9
 	 * @since 3.8 Returns a string instead of an array.
