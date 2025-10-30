@@ -51,23 +51,34 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function attachment_fields_to_edit( $fields, $post ) {
 		if ( 'post.php' === $GLOBALS['pagenow'] ) {
-			return $fields; // Don't add anything on edit media panel for WP 3.5+ since we have the metabox.
+			return $fields; // Don't add anything on edit media panel since we have the metabox.
 		}
 
 		$post_id = $post->ID;
-		$lang = $this->model->post->get_language( $post_id );
+		$lang    = $this->model->post->get_language( $post_id );
+		$user    = new User();
+
+		if ( empty( $lang ) || ! $user->can_translate( $lang ) ) {
+			// The user is not allowed to edit this attachment.
+			$languages = $this->model->languages->get_list();
+			$disabled  = true;
+		} else {
+			$languages = $this->model->languages->filter( 'translator' )->get_list();
+			$disabled  = false;
+		}
 
 		$dropdown = new PLL_Walker_Dropdown();
 		$fields['language'] = array(
 			'label' => __( 'Language', 'polylang' ),
 			'input' => 'html',
 			'html'  => $dropdown->walk(
-				$this->model->languages->filter( 'translator' )->get_list(),
+				$languages,
 				-1,
 				array(
 					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
 					'class'    => 'media_lang_choice',
 					'selected' => $lang ? $lang->slug : '',
+					'disabled' => $disabled,
 				)
 			),
 		);
