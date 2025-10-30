@@ -58,7 +58,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		$lang    = $this->model->post->get_language( $post_id );
 		$user    = new User();
 
-		if ( empty( $lang ) || ! $user->can_translate( $lang ) ) {
+		if ( ( empty( $lang ) && $user->is_translator() ) || ( ! empty( $lang ) && ! $user->can_translate( $lang ) ) ) {
 			// The user is not allowed to edit this attachment.
 			$languages = $this->model->languages->get_list();
 			$disabled  = true;
