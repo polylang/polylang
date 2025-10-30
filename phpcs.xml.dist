@@ -139,6 +139,10 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
+	<rule ref="WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
 	<!--
 	#############################################################################
 	Global exclusions for js files.
