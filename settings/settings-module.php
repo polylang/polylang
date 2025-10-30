@@ -172,7 +172,7 @@ class PLL_Settings_Module {
 
 			</p>',
 			esc_html__( 'Cancel', 'polylang' ),
-			esc_html__( 'Save Changes', 'polylang' ) 
+			esc_html__( 'Save Changes', 'polylang' )
 		);
 
 		// Ajax action to save options.
