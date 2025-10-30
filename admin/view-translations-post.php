@@ -14,6 +14,8 @@ defined( 'ABSPATH' ) || exit;
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table>
 	<?php
+	$post_type = get_post_type( $post_ID );
+
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id === $lang->term_id ) {
 			continue;
@@ -47,8 +49,11 @@ defined( 'ABSPATH' ) || exit;
 			 * The dynamic portion of the hook name, `$lang`, refers to the language code.
 			 *
 			 * @since 2.1
+			 * @since 3.8 New `$post_type` parameter.
+			 *
+			 * @param string $post_type Post's post type.
 			 */
-			do_action( 'pll_before_post_translation_' . $language->slug );
+			do_action( 'pll_before_post_translation_' . $language->slug, $post_type );
 			?>
 			<td class = "pll-translation-column">
 				<?php
