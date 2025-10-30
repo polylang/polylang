@@ -25,6 +25,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
 		$this->pll_admin->default_term->add_hooks();
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
+		$this->pll_admin->links           = new PLL_Admin_Links( $this->pll_admin );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
