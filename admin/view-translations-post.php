@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table>
 	<?php
-	$post_type = get_post_type( $post_ID );
+	$post_type = (string) get_post_type( $post_ID );
 
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id === $lang->term_id ) {
