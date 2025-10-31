@@ -351,6 +351,7 @@ function pll_languages_list( $args = array() ) {
 
 	return PLL()->model->languages
 		->filter( ! empty( $args['hide_empty'] ) ? 'hide_empty' : '' )
+		->filter( ! empty( $args['hide_default'] ) ? 'hide_default' : '' )
 		->get_list( $args );
 }
 

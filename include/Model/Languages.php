@@ -556,9 +556,9 @@ class Languages {
 	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_list()`.
 	 *
 	 * @param array $args {
+	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`). Deprecated, use the `hide_empty` proxy instead.
 	 *   @type bool   $hide_default Hides default language from the list (default to `false`). Deprecated, use the `hide_default` proxy instead.
-	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
@@ -572,11 +572,29 @@ class Languages {
 		}
 
 		if ( ! empty( $args['hide_empty'] ) ) {
-			_deprecated_argument( __METHOD__, '3.8', esc_html__( 'Use the `hide_empty` proxy instead.', 'polylang' ) );
+			_deprecated_argument(
+				__METHOD__,
+				'3.8',
+				sprintf(
+					/* translators: 1: argument name, 2: proxy name. */
+					esc_html__( 'The argument %1$s has been replaced by %2$s.', 'polylang' ),
+					'<code>hide_empty</code>',
+					'<code>PLL()->model->languages->filter( \'hide_empty\' )->get_list()</code>'
+				)
+			);
 		}
 
 		if ( ! empty( $args['hide_default'] ) ) {
-			_deprecated_argument( __METHOD__, '3.8', esc_html__( 'Use the `hide_default` proxy instead.', 'polylang' ) );
+			_deprecated_argument(
+				__METHOD__,
+				'3.8',
+				sprintf(
+					/* translators: 1: argument name, 2: proxy name. */
+					esc_html__( 'The argument %1$s has been replaced by %2$s.', 'polylang' ),
+					'<code>hide_default</code>',
+					'<code>PLL()->model->languages->filter( \'hide_default\' )->get_list()</code>'
+				)
+			);
 		}
 
 		$languages = $this->cache->get( self::CACHE_KEY );
