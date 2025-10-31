@@ -82,7 +82,7 @@ class PLL_Settings_Module {
 	/**
 	 * Stores html fragment for the buttons.
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected $buttons;
 
