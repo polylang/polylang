@@ -144,7 +144,7 @@ abstract class PLL_Choose_Lang {
 
 			$accept_langs->bubble_sort();
 
-			$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post.
+			$languages = $this->model->languages->filter( 'hide_empty' )->get_list(); // Hides languages with no post.
 
 			/**
 			 * Filters the list of languages to use to match the browser preferences.

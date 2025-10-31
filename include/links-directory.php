@@ -81,12 +81,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string The modified url.
 	 */
 	public function remove_language_from_link( $url ) {
-		$languages = $this->model->get_languages_list(
-			array(
-				'hide_default' => $this->options['hide_default'],
-				'fields'       => 'slug',
-			)
-		);
+		$languages = $this->model->languages
+			->filter( $this->options['hide_default'] ? 'hide_default' : '' )
+			->get_list( array( 'fields' => 'slug' ) );
 
 		if ( ! empty( $languages ) ) {
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );

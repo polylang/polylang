@@ -347,8 +347,15 @@ function pll_is_translated_taxonomy( $tax ) {
  * @return string[]
  */
 function pll_languages_list( $args = array() ) {
-	$args = wp_parse_args( $args, array( 'fields' => 'slug' ) );
-	return PLL()->model->get_languages_list( $args );
+	$args         = wp_parse_args( $args, array( 'fields' => 'slug' ) );
+	$hide_empty   = ! empty( $args['hide_empty'] ) ? 'hide_empty' : '';
+	$hide_default = ! empty( $args['hide_default'] ) ? 'hide_default' : '';
+	unset( $args['hide_empty'], $args['hide_default'] );
+
+	return PLL()->model->languages
+		->filter( $hide_empty )
+		->filter( $hide_default )
+		->get_list( $args );
 }
 
 /**

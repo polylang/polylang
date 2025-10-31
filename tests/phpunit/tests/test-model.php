@@ -15,16 +15,16 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_languages_list() {
-		$this->assertSame( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
-		$this->assertSame( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
-		$this->assertSame( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
+		$this->assertSame( array( 'en', 'fr' ), self::$model->languages->get_list( array( 'fields' => 'slug' ) ) );
+		$this->assertSame( array( 'English', 'Français' ), self::$model->languages->get_list( array( 'fields' => 'name' ) ) );
+		$this->assertSame( array(), self::$model->languages->filter( 'hide_empty' )->get_list() );
 
 		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
-		$this->assertSame( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
-		$this->assertSame( array( 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_default' => true ) ) );
-		$this->assertSame( array(), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_default' => true, 'hide_empty' => true ) ) );
+		$this->assertSame( array( 'en' ), self::$model->languages->filter( 'hide_empty' )->get_list( array( 'fields' => 'slug' ) ) );
+		$this->assertSame( array( 'fr' ), self::$model->languages->filter( 'hide_default' )->get_list( array( 'fields' => 'slug' ) ) );
+		$this->assertSame( array(), self::$model->languages->filter( 'hide_default' )->filter( 'hide_empty' )->get_list( array( 'fields' => 'slug' ) ) );
 	}
 
 	public function test_languages_list_order() {

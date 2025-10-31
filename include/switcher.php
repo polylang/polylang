@@ -121,7 +121,8 @@ class PLL_Switcher {
 		$first = true;
 		$out   = array();
 
-		foreach ( $this->links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
+		$filter = $args['hide_if_empty'] ? 'hide_empty' : '';
+		foreach ( $this->links->model->languages->filter( $filter )->get_list() as $language ) {
 			$id           = (int) $language->term_id;
 			$order        = (int) $language->term_group;
 			$slug         = $language->slug;
