@@ -267,39 +267,35 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 1.5
 	 *
-	 * @param int    $term_id  Term ID.
+	 * @param int    $term_id  The term ID.
 	 * @param string $taxonomy Taxonomy name.
 	 * @return void|never
 	 */
 	protected function save_language( $term_id, $taxonomy ) {
-		// Security checks are necessary to accept language modifications
-		// as 'wp_update_term' can be called from outside WP admin
-
-		// Edit tags
-		if ( isset( $_POST['term_lang_choice'] ) ) {
-			if ( isset( $_POST['action'] ) && sanitize_key( $_POST['action'] ) === 'add-' . $taxonomy ) { // phpcs:ignore WordPress.Security.NonceVerification
-				check_ajax_referer( 'add-' . $taxonomy, '_ajax_nonce-add-' . $taxonomy ); // Category metabox
-			} else {
-				check_admin_referer( 'pll_language', '_pll_nonce' ); // Edit tags or tags metabox
-			}
-
-			$language = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) );
-
-			if ( empty( $language ) ) {
-				return;
-			}
-
-			( new User() )->can_translate_or_die( $language );
-
-			$this->model->term->set_language( $term_id, $language );
+		/*
+		 * Category metabox.
+		 */
+		if ( isset( $_POST['term_lang_choice'], $_REQUEST[ '_ajax_nonce-add-' . $taxonomy ] ) && wp_verify_nonce( $_REQUEST[ '_ajax_nonce-add-' . $taxonomy ], 'add-' . $taxonomy ) ) {
+			$this->maybe_set_language( $term_id, sanitize_key( $_POST['term_lang_choice'] ) );
+			return;
 		}
 
-		// *Post* bulk edit, in case a new term is created
-		elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) {
-			check_admin_referer( 'bulk-posts' );
+		/*
+		 * Edit tags or tags metabox.
+		 */
+		if ( isset( $_POST['term_lang_choice'] ) ) {
+			check_admin_referer( 'pll_language', '_pll_nonce' );
+			$this->maybe_set_language( $term_id, sanitize_key( $_POST['term_lang_choice'] ) );
+			return;
+		}
 
-			// Bulk edit does not modify the language
-			// So we possibly create a tag in several languages
+		/*
+		 *  *Post* bulk edit, in case a new term is created.
+		 */
+		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-posts' ) ) {
+			/*
+			 * Bulk edit does not modify the language, so we possibly create a tag in several languages.
+			 */
 			if ( -1 === (int) $_GET['inline_lang_choice'] ) {
 				// The language of the current term is set a according to the language of the current post.
 				$language = $this->model->post->get_language( $this->post_id );
@@ -328,53 +324,55 @@ class PLL_Admin_Filters_Term {
 						$this->model->term->save_translations( $term_id, $translations );
 					}
 				}
-			}
-
-			elseif ( current_user_can( 'edit_term', $term_id ) ) {
-				$language = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) );
-
-				if ( empty( $language ) ) {
-					return;
-				}
-
-				( new User() )->can_translate_or_die( $language );
-
-				$this->model->term->set_language( $term_id, $language );
-			}
-		}
-
-		// Quick edit
-		elseif ( isset( $_POST['inline_lang_choice'] ) ) {
-			check_ajax_referer(
-				isset( $_POST['action'] ) && 'inline-save' == $_POST['action'] ? 'inlineeditnonce' : 'taxinlineeditnonce', // Post quick edit or tag quick edit ?
-				'_inline_edit'
-			);
-
-			$language = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
-
-			if ( empty( $language ) ) {
 				return;
 			}
 
-			( new User() )->can_translate_or_die( $language );
-
-			$this->model->term->set_language( $term_id, $language );
+			if ( current_user_can( 'edit_term', $term_id ) ) {
+				$this->maybe_set_language( $term_id, sanitize_key( $_GET['inline_lang_choice'] ) );
+			}
+			return;
 		}
 
-		// Edit post
-		elseif ( isset( $_POST['post_lang_choice'] ) ) { // FIXME should be useless now
+		/*
+		 * Quick edit.
+		 */
+		if ( isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) ) {
+			if ( ! wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' ) && ! wp_verify_nonce( $_REQUEST['_inline_edit'], 'taxinlineeditnonce' ) ) { // Post quick edit or tag quick edit ?
+				return;
+			}
+
+			$this->maybe_set_language( $term_id, sanitize_key( $_POST['inline_lang_choice'] ) );
+			return;
+		}
+
+		/*
+		 * Edit post.
+		 */
+		if ( isset( $_POST['post_lang_choice'] ) ) { // FIXME should be useless now
 			check_admin_referer( 'pll_language', '_pll_nonce' );
-
-			$language = $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) );
-
-			if ( empty( $language ) ) {
-				return;
-			}
-
-			( new User() )->can_translate_or_die( $language );
-
-			$this->model->term->set_language( $term_id, $language );
+			$this->maybe_set_language( $term_id, sanitize_key( $_POST['post_lang_choice'] ) );
 		}
+	}
+
+	/**
+	 * Sets the language of a term if the user is allowed to.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int    $term_id  The term ID.
+	 * @param string $language Language slug.
+	 * @return void|never
+	 */
+	private function maybe_set_language( $term_id, $language ) {
+		$language = $this->model->get_language( $language );
+
+		if ( empty( $language ) ) {
+			return;
+		}
+
+		( new User() )->can_translate_or_die( $language );
+
+		$this->model->term->set_language( $term_id, $language );
 	}
 
 	/**
