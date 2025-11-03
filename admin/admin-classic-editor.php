@@ -97,7 +97,11 @@ class PLL_Admin_Classic_Editor {
 	 */
 	public function post_language() {
 		global $post_ID;
-		$post_type = (string) get_post_type( $post_ID );
+		$post_type = get_post_type( $post_ID );
+
+		if ( empty( $post_type ) ) {
+			return;
+		}
 
 		$from_post_id  = 0;
 		$lang          = $this->model->post->get_language( $post_ID );
