@@ -557,8 +557,8 @@ class Languages {
 	 *
 	 * @param array $args {
 	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
-	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`). Deprecated, use the `hide_empty` proxy instead.
-	 *   @type bool   $hide_default Hides default language from the list (default to `false`). Deprecated, use the `hide_default` proxy instead.
+	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`). Deprecated, use the `hide_empty` filter instead.
+	 *   @type bool   $hide_default Hides default language from the list (default to `false`). Deprecated, use the `hide_default` filter instead.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
