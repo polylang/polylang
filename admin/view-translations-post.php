@@ -55,7 +55,7 @@ if ( empty( $post_type ) ) {
 			 * @since 2.1
 			 * @since 3.8 New `$post_type` parameter.
 			 *
-			 * @param string $post_type Post's post type.
+			 * @param string $post_type The post type.
 			 */
 			do_action( 'pll_before_post_translation_' . $language->slug, $post_type );
 			?>

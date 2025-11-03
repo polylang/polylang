@@ -149,7 +149,7 @@ class PLL_Admin_Classic_Editor {
 		 *
 		 * @since 1.8
 		 *
-		 * @param string $post_type Post's post type.
+		 * @param string $post_type The post type.
 		 */
 		do_action( 'pll_before_post_translations', $post_type );
 
