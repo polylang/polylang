@@ -315,7 +315,7 @@ class PLL_Admin_Filters_Term {
 
 				// Get all terms with the same name.
 				if ( $term instanceof WP_Term ) {
-					$term_ids = get_terms( array( 'taconomy' => $taxonomy, 'name' => $term->name, 'hide_empty' => false, 'fields' => 'ids' ) );
+					$term_ids = get_terms( array( 'taxonomy' => $taxonomy, 'name' => $term->name, 'hide_empty' => false, 'fields' => 'ids' ) );
 
 					// If we have several terms with the same name, they are translations of each other.
 					if ( is_array( $term_ids ) && count( $term_ids ) > 1 ) {

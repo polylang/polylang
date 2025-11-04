@@ -129,15 +129,17 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_create_term_from_post_bulk_edit() {
-		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin ); // We need this too
+		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin ); // We need this too.
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 
-		$posts = self::factory()->post->create_many( 2 );
-		self::$model->post->set_language( $posts[0], 'en' );
-		self::$model->post->set_language( $posts[1], 'fr' );
+		$posts = self::factory()->post->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' )
+		);
 
-		$test_tag = self::factory()->tag->create( array( 'name' => 'test_tag' ) );
-		self::$model->term->set_language( $test_tag, 'fr' );
+		$test_tag = self::factory()->tag->create( array( 'name' => 'test_tag', 'lang' => 'fr' ) );
+
+		self::factory()->category->create( array( 'name' => 'new_tag', 'lang' => 'fr' ) ); // Add a possible conflicting term with same name in different taxonomy.
 
 		// First do not modify any language.
 		$_GET = array(
@@ -152,13 +154,13 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
 
-		$tags_en = wp_get_post_tags( $posts[0] );
+		$tags_en = wp_get_post_tags( $posts['en'] );
 		$new_en = wp_filter_object_list( $tags_en, array( 'name' => 'new_tag' ), 'AND', 'term_id' );
 		$new_en = reset( $new_en );
 		$test_en = wp_filter_object_list( $tags_en, array( 'name' => 'test_tag' ), 'AND', 'term_id' );
 		$test_en = reset( $test_en );
 
-		$tags_fr = wp_get_post_tags( $posts[1] );
+		$tags_fr = wp_get_post_tags( $posts['fr'] );
 		$new_fr = wp_filter_object_list( $tags_fr, array( 'name' => 'new_tag' ), 'AND', 'term_id' );
 		$new_fr = reset( $new_fr );
 		$test_fr = wp_filter_object_list( $tags_fr, array( 'name' => 'test_tag' ), 'AND', 'term_id' );
@@ -179,7 +181,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		do_action( 'load-edit.php' );
 		bulk_edit_posts( $_REQUEST );
 
-		$tags = wp_get_post_tags( $posts[0] );
+		$tags = wp_get_post_tags( $posts['en'] );
 		$third = wp_filter_object_list( $tags, array( 'name' => 'third_tag' ), 'AND', 'term_id' );
 		$third = reset( $third );
 		$this->assertEquals( 'fr', self::$model->term->get_language( $third )->slug );
@@ -187,7 +189,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$tags = wp_list_pluck( $tags, 'term_id' );
 		$this->assertEqualSets( array( $new_fr, $test_fr, $third ), $tags );
 
-		$tags = wp_get_post_tags( $posts[1] );
+		$tags = wp_get_post_tags( $posts['fr'] );
 		$tags = wp_list_pluck( $tags, 'term_id' );
 		$this->assertEqualSets( array( $new_fr, $test_fr, $third ), $tags );
 	}
