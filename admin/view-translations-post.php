@@ -4,18 +4,13 @@
  *
  * @package Polylang
  *
- * @var PLL_Admin_Classic_Editor $this    PLL_Admin_Classic_Editor object.
- * @var PLL_Language             $lang    The post language. Default language if no language assigned yet.
- * @var int                      $post_ID The post id.
+ * @var PLL_Admin_Classic_Editor $this      PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang      The post language. Default language if no language assigned yet.
+ * @var int                      $post_ID   The post id.
+ * @var string                   $post_type The post type.
  */
 
 defined( 'ABSPATH' ) || exit;
-
-$post_type = get_post_type( $post_ID );
-
-if ( empty( $post_type ) ) {
-	return;
-}
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table>
