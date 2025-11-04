@@ -363,7 +363,7 @@ class PLL_Admin_Filters_Term {
 	 * @param string $language Language slug.
 	 * @return void|never
 	 */
-	private function maybe_set_language( $term_id, $language ) {
+	private function maybe_set_language( int $term_id, string $language ): void {
 		$language = $this->model->get_language( $language );
 
 		if ( empty( $language ) ) {

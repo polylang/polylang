@@ -150,7 +150,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
+		$user = new User();
+		if ( ! $user->has_cap( $post_type_object->cap->edit_post, $post_id ) ) {
 			return;
 		}
 
@@ -160,7 +161,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		( new User() )->can_translate_or_die( $language );
+		$user->can_translate_or_die( $language );
 
 		$this->model->post->set_language( $post_id, $language );
 
@@ -197,11 +198,12 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		( new User() )->can_translate_or_die( $language );
+		$user = new User();
+		$user->can_translate_or_die( $language );
 
 		$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 		foreach ( $post_ids as $post_id ) {
-			if ( current_user_can( 'edit_post', $post_id ) ) {
+			if ( $user->has_cap( 'edit_post', $post_id ) ) {
 				$this->model->post->set_language( $post_id, $language );
 			}
 		}
@@ -229,12 +231,12 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		( new User() )->can_translate_or_die( $language );
-
+		$user = new User();
+		$user->can_translate_or_die( $language );
 
 		$post_id = (int) $_POST['post_ID'];
 
-		if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
+		if ( ! $post_id || ! $user->has_cap( 'edit_post', $post_id ) ) {
 			return;
 		}
 
