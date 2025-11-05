@@ -20,7 +20,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 
 		self::require_api();
-		
+
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
@@ -236,16 +236,14 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_languages_meta_box_for_new_post() {
-		global $post_ID;
-
 		$lang = self::$model->get_language( 'en' );
 		$this->pll_admin->pref_lang = $lang;
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-		$post_ID = self::factory()->post->create();
-		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
+		$post = self::factory()->post->create_and_get();
+		wp_set_object_terms( $post->ID, array(), 'language' ); // Intentionally remove the language
 
 		ob_start();
-		$this->pll_admin->classic_editor->post_language();
+		$this->pll_admin->classic_editor->post_language( $post );
 		$form = ob_get_clean();
 		$doc = new DOMDocument();
 		$doc->loadHTML( $form );
@@ -256,11 +254,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_languages_meta_box_for_new_translation() {
-		global $post_ID;
-
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-		$post_ID = self::factory()->post->create();
-		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
+		$post = self::factory()->post->create_and_get();
+		wp_set_object_terms( $post->ID, array(), 'language' ); // Intentionally remove the language
 
 		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -280,7 +276,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$GLOBALS['post']      = get_post( $en );
 
 		ob_start();
-		$this->pll_admin->classic_editor->post_language();
+		$this->pll_admin->classic_editor->post_language( $post );
 		$form = ob_get_clean();
 		$doc = new DomDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
@@ -302,17 +298,15 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		$fr_post = self::factory()->post->create_and_get( array( 'post_title' => 'essai' ) );
+		self::$model->post->set_language( $fr_post->ID, 'fr' );
 
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
-
-		$GLOBALS['post_ID'] = $fr;
+		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr_post->ID ) );
 
 		$lang = self::$model->get_language( 'fr' );
 
 		ob_start();
-		$this->pll_admin->classic_editor->post_language();
+		$this->pll_admin->classic_editor->post_language( $fr_post );
 		$form = ob_get_clean();
 		$doc = new DomDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
@@ -342,8 +336,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_languages_meta_box_for_media() {
-		global $post_ID;
-
 		$this->pll_admin->options['media_support'] = 1;
 
 		$en = self::factory()->attachment->create_object( 'image0.jpg' );
@@ -354,7 +346,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$lang = self::$model->get_language( 'fr' );
 
 		ob_start();
-		$this->pll_admin->classic_editor->post_language();
+		$this->pll_admin->classic_editor->post_language( get_post( $post_ID ) );
 		$form = ob_get_clean();
 		$doc = new DomDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
