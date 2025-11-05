@@ -28,7 +28,7 @@ abstract class PLL_Abstract_Sitemaps {
 	 * @since 2.8
 	 *
 	 * @param array $whitelist White list.
-	 * @return array;
+	 * @return array
 	 */
 	public function home_url_white_list( $whitelist ) {
 		$whitelist[] = array( 'file' => 'class-wp-sitemaps-posts' );

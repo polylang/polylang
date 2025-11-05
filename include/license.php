@@ -68,7 +68,7 @@ class PLL_License {
 	/**
 	 * API url.
 	 *
-	 * @var string.
+	 * @var string
 	 */
 	private $api_url = 'https://polylang.pro';
 
