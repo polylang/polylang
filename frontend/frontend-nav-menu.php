@@ -21,7 +21,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );

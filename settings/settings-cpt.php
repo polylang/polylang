@@ -49,7 +49,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Settings $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct(

@@ -21,7 +21,7 @@ class PLL_Settings_Media extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang polylang object
+	 * @param PLL_Settings $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct(
