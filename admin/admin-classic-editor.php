@@ -93,12 +93,12 @@ class PLL_Admin_Classic_Editor {
 	 *
 	 * @since 0.1
 	 *
+	 * @param WP_Post $post Current post object.
 	 * @return void
 	 */
-	public function post_language() {
-		global $post_ID;
-		$post_type = get_post_type( $post_ID );
-
+	public function post_language( WP_Post $post ): void {
+		$post_ID       = $post->ID;
+		$post_type     = $post->post_type;
 		$from_post_id  = 0;
 		$lang          = $this->model->post->get_language( $post_ID );
 		$new_post_data = $this->links->get_data_from_new_post_translation_request();
@@ -141,9 +141,11 @@ class PLL_Admin_Classic_Editor {
 		);
 
 		/**
-		 * Fires before displaying the list of translations in the Languages metabox for posts
+		 * Fires before displaying the list of translations in the Languages metabox for posts.
 		 *
 		 * @since 1.8
+		 *
+		 * @param string $post_type The post type.
 		 */
 		do_action( 'pll_before_post_translations', $post_type );
 

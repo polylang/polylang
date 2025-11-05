@@ -4,9 +4,10 @@
  *
  * @package Polylang
  *
- * @var PLL_Admin_Classic_Editor $this    PLL_Admin_Classic_Editor object.
- * @var PLL_Language             $lang    The post language. Default language if no language assigned yet.
- * @var int                      $post_ID The post id.
+ * @var PLL_Admin_Classic_Editor $this      PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang      The post language. Default language if no language assigned yet.
+ * @var int                      $post_ID   The post id.
+ * @var string                   $post_type The post type.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -47,8 +48,11 @@ defined( 'ABSPATH' ) || exit;
 			 * The dynamic portion of the hook name, `$lang`, refers to the language code.
 			 *
 			 * @since 2.1
+			 * @since 3.8 New `$post_type` parameter.
+			 *
+			 * @param string $post_type The post type.
 			 */
-			do_action( 'pll_before_post_translation_' . $language->slug );
+			do_action( 'pll_before_post_translation_' . $language->slug, $post_type );
 			?>
 			<td class = "pll-translation-column">
 				<?php
