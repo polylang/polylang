@@ -93,18 +93,12 @@ class PLL_Admin_Classic_Editor {
 	 *
 	 * @since 0.1
 	 *
+	 * @param WP_Post $post Current post object.
 	 * @return void
 	 */
-	public function post_language() {
-		global $post_ID;
-		$post_type = get_post_type( $post_ID );
-
-		if ( empty( $post_type ) ) {
-			return;
-		}
-
+	public function post_language( WP_Post $post ): void {
 		$from_post_id  = 0;
-		$lang          = $this->model->post->get_language( $post_ID );
+		$lang          = $this->model->post->get_language( $post->ID );
 		$new_post_data = $this->links->get_data_from_new_post_translation_request();
 
 		if ( ! empty( $new_post_data ) ) {
@@ -118,7 +112,7 @@ class PLL_Admin_Classic_Editor {
 
 		$dropdown = new PLL_Walker_Dropdown();
 
-		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post_ID ) : 'post_lang_choice';
+		$id = 'attachment' === $post->post_type ? "attachments[{$post->ID}][language]" : 'post_lang_choice';
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
@@ -133,14 +127,14 @@ class PLL_Admin_Classic_Editor {
 
 		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
-		// NOTE: the class "tags-input" allows to include the field in the autosave $_POST ( see autosave.js )
+		// NOTE: the class "tags-input" allows to include the field in the autosave $_POST (see autosave.js).
 		printf(
 			'<p><strong>%1$s</strong></p>
 			<label class="screen-reader-text" for="%2$s">%1$s</label>
 			<div id="select-%3$s-language">%4$s</div>',
 			esc_html__( 'Language', 'polylang' ),
 			esc_attr( $id ),
-			( 'attachment' === $post_type ? 'media' : 'post' ),
+			'attachment' === $post->post_type ? 'media' : 'post',
 			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
 
@@ -151,17 +145,17 @@ class PLL_Admin_Classic_Editor {
 		 *
 		 * @param string $post_type The post type.
 		 */
-		do_action( 'pll_before_post_translations', $post_type );
+		do_action( 'pll_before_post_translations', $post->post_type );
 
 		echo '<div id="post-translations" class="translations">';
 		if ( $lang ) {
-			if ( 'attachment' === $post_type ) {
+			if ( 'attachment' === $post->post_type ) {
 				include __DIR__ . '/view-translations-media.php';
 			} else {
 				include __DIR__ . '/view-translations-post.php';
 			}
 		}
-		echo '</div>' . "\n";
+		echo "</div>\n";
 	}
 
 	/**
