@@ -272,6 +272,8 @@ class PLL_Admin_Filters_Term {
 	 * @return void|never
 	 */
 	protected function save_language( $term_id, $taxonomy ) {
+		$term_id = (int) $term_id;
+
 		/*
 		 * Category metabox.
 		 */
@@ -337,7 +339,7 @@ class PLL_Admin_Filters_Term {
 		 * Quick edit.
 		 */
 		if ( isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) ) {
-			if ( ! wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' ) && ! wp_verify_nonce( $_REQUEST['_inline_edit'], 'taxinlineeditnonce' ) ) { // Post quick edit or tag quick edit ?
+			if ( ! wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' ) && ! wp_verify_nonce( $_REQUEST['_inline_edit'], 'taxinlineeditnonce' ) ) { // Post quick edit or tag quick edit?
 				return;
 			}
 
@@ -348,7 +350,7 @@ class PLL_Admin_Filters_Term {
 		/*
 		 * Edit post.
 		 */
-		if ( isset( $_POST['post_lang_choice'] ) ) { // FIXME should be useless now
+		if ( isset( $_POST['post_lang_choice'] ) ) { // FIXME should be useless now.
 			check_admin_referer( 'pll_language', '_pll_nonce' );
 			$this->maybe_set_language( $term_id, sanitize_key( $_POST['post_lang_choice'] ) );
 		}
