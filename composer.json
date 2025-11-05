@@ -8,17 +8,23 @@
 		"php": ">=7.2"
 	},
 	"require-dev": {
-		"wpsyntex/polylang-phpstan": "^1.2",
+		"wpsyntex/polylang-phpstan": "dev-bump-dependencies",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"behat/behat": "^3.7|^3.8",
 		"yoast/wp-test-utils": "^1.0.0",
-		"rector/rector": "^1.1",
+		"rector/rector": "^2",
 		"wpsyntex/wp-phpunit": "dev-master",
 		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/polylang/polylang-phpstan"
+		}
+	],
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"autoload": {

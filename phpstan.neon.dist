@@ -2,7 +2,7 @@ includes:
 	- vendor/wpsyntex/polylang-phpstan/extension.neon
 	- phpstan-baseline.neon
 parameters:
-	level: max
+	level: 9
 	paths:
 		- polylang.php
 		- admin/
@@ -16,6 +16,8 @@ parameters:
 		- include/widget-calendar.php
 		- install/plugin-updater.php
 	treatPhpDocTypesAsCertain: false
+	stubFiles:
+		- tests/phpstan/wordpress-stubs-override.php
 	ignoreErrors:
 		- identifier: missingType.iterableValue
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
