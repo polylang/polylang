@@ -8,7 +8,7 @@
 		"php": ">=7.2"
 	},
 	"require-dev": {
-		"wpsyntex/polylang-phpstan": "dev-bump-dependencies",
+		"wpsyntex/polylang-phpstan": "^2.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
@@ -19,12 +19,6 @@
 		"wpsyntex/wp-phpunit": "dev-master",
 		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/polylang/polylang-phpstan"
-		}
-	],
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"autoload": {
