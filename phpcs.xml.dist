@@ -187,4 +187,5 @@
 	<exclude-pattern>bin/*.php</exclude-pattern>
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
+	<exclude-pattern>tests/phpstan/wordpress-stubs-override.php</exclude-pattern>
 </ruleset>
