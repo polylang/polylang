@@ -170,26 +170,8 @@ class PLL_Admin_Links extends PLL_Links {
 			return '';
 		}
 
-		$link = $this->get_edit_post_translation_link( $post_id, $language );
+		$link = (string) get_edit_post_link( $post_id );
 		return $this->edit_translation_link( $link, $language );
-	}
-
-	/**
-	 * Returns the URL to edit a post.
-	 * Returns an empty string if the current user is not allowed to edit the post.
-	 *
-	 * @since 3.8
-	 *
-	 * @param int          $post_id  The source post ID.
-	 * @param PLL_Language $language The language of the post.
-	 * @return string
-	 */
-	public function get_edit_post_translation_link( int $post_id, PLL_Language $language ): string {
-		if ( ! $this->user->can_translate( $language ) ) {
-			return '';
-		}
-
-		return (string) get_edit_post_link( $post_id );
 	}
 
 	/**
@@ -300,28 +282,8 @@ class PLL_Admin_Links extends PLL_Links {
 			return '';
 		}
 
-		$link = $this->get_edit_term_translation_link( $term_id, $taxonomy, $post_type, $language );
+		$link = (string) get_edit_term_link( $term_id, $taxonomy, $post_type );
 		return $this->edit_translation_link( $link, $language );
-	}
-
-	/**
-	 * Returns the URL to edit a term.
-	 * Returns an empty string if the current user is not allowed to edit the term.
-	 *
-	 * @since 3.8
-	 *
-	 * @param int          $term_id   Translation term ID.
-	 * @param string       $taxonomy  Taxonomy name.
-	 * @param string       $post_type Post type name.
-	 * @param PLL_Language $language  The language of the term.
-	 * @return string
-	 */
-	public function get_edit_term_translation_link( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
-		if ( ! $this->user->can_translate( $language ) ) {
-			return '';
-		}
-
-		return (string) get_edit_term_link( $term_id, $taxonomy, $post_type );
 	}
 
 	/**
