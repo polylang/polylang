@@ -58,7 +58,9 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 		$arr = array();
 
 		// NB: When 'skip_missing' is false, WPML returns all languages even if there is no content
-		$languages = PLL()->model->get_languages_list( array( 'hide_empty' => $args['skip_missing'] ) );
+		$languages = PLL()->model->languages
+			->filter( $args['skip_missing'] ? 'hide_empty' : '' )
+			->get_list();
 		$languages = wp_list_sort( $languages, $orderby, $order ); // Since WP 4.7
 
 		foreach ( $languages as $lang ) {

@@ -82,12 +82,9 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	public function rewrite_rules( $rules ) {
 		global $wp_rewrite;
 
-		$languages = $this->model->get_languages_list(
-			array(
-				'fields'       => 'slug',
-				'hide_default' => $this->options['hide_default'],
-			)
-		);
+		$languages = $this->model->languages
+			->filter( $this->options['hide_default'] ? 'hide_default' : '' )
+			->get_list( array( 'fields' => 'slug' ) );
 
 		if ( empty( $languages ) ) {
 			return $rules;

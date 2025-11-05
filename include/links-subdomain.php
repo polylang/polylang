@@ -60,12 +60,9 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 * @return string The modified url.
 	 */
 	public function remove_language_from_link( $url ) {
-		$languages = $this->model->get_languages_list(
-			array(
-				'hide_default' => $this->options['hide_default'],
-				'fields'       => 'slug',
-			)
-		);
+		$languages = $this->model->languages
+			->filter( $this->options['hide_default'] ? 'hide_default' : '' )
+			->get_list( array( 'fields' => 'slug' ) );
 
 		if ( ! empty( $languages ) ) {
 			$url = preg_replace( '#://(' . implode( '|', $languages ) . ')\.#', $this->www, $url );

@@ -556,9 +556,9 @@ class Languages {
 	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_list()`.
 	 *
 	 * @param array $args {
-	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
-	 *   @type bool   $hide_default Hides default language from the list (default to `false`).
 	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`). Deprecated, use the `hide_empty` filter instead.
+	 *   @type bool   $hide_default Hides default language from the list (default to `false`). Deprecated, use the `hide_default` filter instead.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
@@ -568,6 +568,32 @@ class Languages {
 				__METHOD__ . '()',
 				"It must not be called before the hook 'pll_pre_init'.",
 				'3.4'
+			);
+		}
+
+		if ( ! empty( $args['hide_empty'] ) ) {
+			_deprecated_argument(
+				__METHOD__,
+				'3.8',
+				sprintf(
+					/* translators: 1: argument name, 2: proxy name. */
+					esc_html__( 'The argument %1$s has been replaced by %2$s.', 'polylang' ),
+					'<code>hide_empty</code>',
+					'<code>PLL()->model->languages->filter( \'hide_empty\' )->get_list()</code>'
+				)
+			);
+		}
+
+		if ( ! empty( $args['hide_default'] ) ) {
+			_deprecated_argument(
+				__METHOD__,
+				'3.8',
+				sprintf(
+					/* translators: 1: argument name, 2: proxy name. */
+					esc_html__( 'The argument %1$s has been replaced by %2$s.', 'polylang' ),
+					'<code>hide_default</code>',
+					'<code>PLL()->model->languages->filter( \'hide_default\' )->get_list()</code>'
+				)
 			);
 		}
 
@@ -624,6 +650,7 @@ class Languages {
 			$this->is_creating_list = false;
 		}
 
+		// Backward compatibility with Polylang < 3.8.
 		$languages = array_filter(
 			$languages,
 			function ( $lang ) use ( $args ) {
