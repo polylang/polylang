@@ -272,7 +272,6 @@ class PLL_Admin_Filters_Term {
 	 * @return void|never
 	 */
 	protected function save_language( $term_id, $taxonomy ) {
-		global $wpdb;
 		// Security checks are necessary to accept language modifications
 		// as 'wp_update_term' can be called from outside WP admin
 
@@ -312,35 +311,22 @@ class PLL_Admin_Filters_Term {
 				( new User() )->can_translate_or_die( $language );
 
 				$this->model->term->set_language( $term_id, $language );
-				$term  = get_term( $term_id, $taxonomy );
-				$terms = array();
+				$term = get_term( $term_id, $taxonomy );
 
-				// Get all terms with the same name
-				// FIXME backward compatibility WP < 4.2
-				// No WP function to get all terms with the exact same name so let's use a custom query
-				// $terms = get_terms( $taxonomy, array( 'name' => $term->name, 'hide_empty' => false, 'fields' => 'ids' ) ); should be OK in 4.2
-				// I may need to rework the loop below
+				// Get all terms with the same name.
 				if ( $term instanceof WP_Term ) {
-					$terms = $wpdb->get_results(
-						$wpdb->prepare(
-							"SELECT t.term_id FROM $wpdb->terms AS t
-							INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
-							WHERE tt.taxonomy = %s AND t.name = %s",
-							$taxonomy,
-							$term->name
-						)
-					);
-				}
+					$term_ids = get_terms( array( 'taxonomy' => $taxonomy, 'name' => $term->name, 'hide_empty' => false, 'fields' => 'ids' ) );
 
-				// If we have several terms with the same name, they are translations of each other
-				if ( count( $terms ) > 1 ) {
-					$translations = array();
+					// If we have several terms with the same name, they are translations of each other.
+					if ( is_array( $term_ids ) && count( $term_ids ) > 1 ) {
+						$translations = array();
 
-					foreach ( $terms as $term ) {
-						$translations[ $this->model->term->get_language( $term->term_id )->slug ] = $term->term_id;
+						foreach ( $term_ids as $_id ) {
+							$translations[ $this->model->term->get_language( $_id )->slug ] = $_id;
+						}
+
+						$this->model->term->save_translations( $term_id, $translations );
 					}
-
-					$this->model->term->save_translations( $term_id, $translations );
 				}
 			}
 
