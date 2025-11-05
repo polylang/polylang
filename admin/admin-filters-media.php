@@ -58,13 +58,25 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		$lang    = $this->model->post->get_language( $post_id );
 		$user    = new User();
 
-		if ( ( empty( $lang ) && $user->is_translator() ) || ( ! empty( $lang ) && ! $user->can_translate( $lang ) ) ) {
-			// The user is not allowed to edit this attachment.
+		if ( ! empty( $lang ) ) {
+			// The item has a language.
+			if ( $user->can_translate( $lang ) ) {
+				// The user is allowed to translate this language: display the list.
+				$languages = $this->model->languages->filter( 'translator' )->get_list();
+				$disabled  = false;
+			} else {
+				// The user is not allowed to translate this language: display only the item's language in a disabled selector.
+				$languages = array( $lang );
+				$disabled  = true;
+			}
+		} elseif ( ! $user->is_translator() ) {
+			// The item has no language and the user has access to all languages: display the full list.
 			$languages = $this->model->languages->get_list();
-			$disabled  = true;
-		} else {
-			$languages = $this->model->languages->filter( 'translator' )->get_list();
 			$disabled  = false;
+		} else {
+			// The item has no language and the user is not allowed to assign one: disabled and empty selector.
+			$languages = array();
+			$disabled  = true;
 		}
 
 		$dropdown = new PLL_Walker_Dropdown();
