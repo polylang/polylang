@@ -109,18 +109,17 @@ class PLL_CRUD_Terms {
 	 * @return void
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
-		if ( ! $this->model->term->get_language( $term_id ) ) {
-			$term_language = new Create_Term(
-				$this->model,
-				$this->request,
-				$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
-				$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
-			);
-			$this->model->term->set_language(
-				$term_id,
-				$term_language->get_language( new User(), (int) $term_id, (string) $taxonomy )
-			);
-		}
+		$term_language = new Create_Term(
+			$this->model,
+			$this->request,
+			$this->pref_lang instanceof PLL_Language ? $this->pref_lang : null, // Can be `false` as well...
+			$this->curlang instanceof PLL_Language ? $this->curlang : null // Can be `false` as well...
+		);
+
+		$this->model->term->set_language(
+			$term_id,
+			$term_language->get_language( new User(), (int) $term_id, (string) $taxonomy )
+		);
 	}
 
 	/**
@@ -135,25 +134,30 @@ class PLL_CRUD_Terms {
 	 * @return void
 	 */
 	public function save_term( $term_id, $tt_id, $taxonomy ) {
-		if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
-
-			$lang = $this->model->term->get_language( $term_id );
-
-			if ( empty( $lang ) ) {
-				$this->set_default_language( $term_id, $taxonomy );
-			}
-
-			/**
-			 * Fires after the term language and translations are saved.
-			 *
-			 * @since 1.2
-			 *
-			 * @param int    $term_id      Term id.
-			 * @param string $taxonomy     Taxonomy name.
-			 * @param int[]  $translations The list of translations term ids.
-			 */
-			do_action( 'pll_save_term', $term_id, $taxonomy, $this->model->term->get_translations( $term_id ) );
+		if ( is_multisite() && ms_is_switched() && ! $this->model->has_languages() ) {
+			return;
 		}
+
+		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			return;
+		}
+
+		$lang = $this->model->term->get_language( $term_id );
+
+		if ( empty( $lang ) ) {
+			$this->set_default_language( $term_id, $taxonomy );
+		}
+
+		/**
+		 * Fires after the term language and translations are saved.
+		 *
+		 * @since 1.2
+		 *
+		 * @param int    $term_id      Term id.
+		 * @param string $taxonomy     Taxonomy name.
+		 * @param int[]  $translations The list of translations term ids.
+		 */
+		do_action( 'pll_save_term', $term_id, $taxonomy, $this->model->term->get_translations( $term_id ) );
 	}
 
 	/**
