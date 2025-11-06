@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run PHPCS and PHPStan tests
-      uses: polylang/actions/static-analysis@bump-php
+      uses: polylang/actions/static-analysis@main
 
     - name: Run PHPCompatibility for files that require php 5.6
       run: vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist
