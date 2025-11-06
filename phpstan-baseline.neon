@@ -133,6 +133,12 @@ parameters:
 			path: admin/admin-filters-post.php
 
 		-
+			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: admin/admin-filters-post.php
+
+		-
 			message: '#^Parameter \#1 \$posts of function update_post_caches expects array\<WP_Post\>, array\<WP_Post\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -172,6 +178,12 @@ parameters:
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''absint'' given\.$#'
 			identifier: argument.type
 			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 4
 			path: admin/admin-filters-term.php
 
 		-
@@ -250,6 +262,18 @@ parameters:
 			message: '#^Cannot call method get_stylesheet\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
+			path: admin/admin-nav-menu.php
+
+		-
+			message: '#^Parameter \#1 \$locations of method PLL_Admin_Nav_Menu\:\:update_nav_menu_locations\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: admin/admin-nav-menu.php
+
+		-
+			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 4
 			path: admin/admin-nav-menu.php
 
 		-
@@ -695,6 +719,12 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: include/Options/Abstract_Option.php
+
+		-
+			message: '#^Cannot access offset ''polylang'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: include/Options/Business/Sync.php
 
 		-
 			message: '#^Function PLL\(\) should return PLL_Admin\|PLL_Frontend\|PLL_REST_Request\|PLL_Settings but returns mixed\.$#'
