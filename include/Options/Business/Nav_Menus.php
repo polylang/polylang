@@ -41,6 +41,37 @@ class Nav_Menus extends Abstract_Option {
 	}
 
 	/**
+	 * Adds information to the site health info array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Options $options An instance of the Options class providing additional configuration.
+	 *
+	 * @return array The updated site health information.
+	 */
+	public function get_site_health_info( Options $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		$current_theme = get_stylesheet();
+		/** @phpstan-var NavMenusValue $nav_menus */
+		$nav_menus = $this->get();
+		if ( empty( $nav_menus[ $current_theme ] ) ) {
+			return array();
+		}
+
+		$fields = array();
+		foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
+			$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
+
+			if ( empty( $lang ) ) {
+				/* translators: default value when a menu location is not used. */
+				$fields[ $location ]['value'] = __( 'Not used', 'polylang' );
+			} else {
+				$fields[ $location ]['value'] = $this->format_array_for_site_health_info( $lang );
+			}
+		}
+		return $fields;
+	}
+
+	/**
 	 * Returns the default value.
 	 *
 	 * @since 3.7
