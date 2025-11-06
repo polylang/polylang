@@ -253,12 +253,6 @@ parameters:
 			path: admin/admin-nav-menu.php
 
 		-
-			message: '#^Parameter \#1 \$locations of method PLL_Admin_Nav_Menu\:\:update_nav_menu_locations\(\) expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-nav-menu.php
-
-		-
 			message: '#^Cannot access an offset on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -701,12 +695,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: include/Options/Abstract_Option.php
-
-		-
-			message: '#^Cannot access offset ''polylang'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: include/Options/Business/Sync.php
 
 		-
 			message: '#^Function PLL\(\) should return PLL_Admin\|PLL_Frontend\|PLL_REST_Request\|PLL_Settings but returns mixed\.$#'
@@ -1207,12 +1195,6 @@ parameters:
 			path: install/upgrade.php
 
 		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: modules/site-health/admin-site-health.php
-
-		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -1222,18 +1204,6 @@ parameters:
 			message: '#^Cannot call method get_must_translate_message\(\) on PLL_Admin_Static_Pages\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: modules/site-health/admin-site-health.php
-
-		-
-			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: modules/site-health/admin-site-health.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
-			count: 2
 			path: modules/site-health/admin-site-health.php
 
 		-
