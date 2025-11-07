@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 3.7.4
+Stable tag: 3.7.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -105,6 +105,25 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.7.5 (2025-11-10)
+
+* Pro: Updated DeepL supported languages list
+* Pro: Fix a regression in cross domain login
+* Pro: Fix post object field not correctly translated
+* Pro: Fix a fatal error in EDD plugin updater when the request to the server fails
+* Pro: Fix locale fallback in WP 6.8+
+* Pro: Add `pll_enable_acf_labels_translation` filter allowing to disable the translation of ACF labels
+* Pro: Fix ACF image field not correctly translated when media translation is active
+* Pro: Fix ACF image field in reapeater not copied
+* Pro: Fix ACF ajax request unexpectedly filtered by language when editing a field group
+* Pro: Fix ACF blocks not translated when included inside a non-ACF block
+* Pro: Add compatibility of the duplicate tool with Divi
+* Fix Undefined array key "terms" in canonical.php #1691
+* Fix some regressions in the WPML API used by YITH WooCommerce Wishlist #1684
+* Fix LinkedIn site title preview with Yoast SEO #1686
+* Fix HTML language attribute on login page #1601
+* Fix conflict with WP Job Manager Application #1749
 
 = 3.7.4 (2025-10-28) =
 
