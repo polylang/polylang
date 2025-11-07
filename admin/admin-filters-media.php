@@ -51,23 +51,39 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function attachment_fields_to_edit( $fields, $post ) {
 		if ( 'post.php' === $GLOBALS['pagenow'] ) {
-			return $fields; // Don't add anything on edit media panel for WP 3.5+ since we have the metabox.
+			return $fields; // Don't add anything on edit media panel since we have the metabox.
 		}
 
-		$post_id = $post->ID;
-		$lang = $this->model->post->get_language( $post_id );
+		$post_id   = $post->ID;
+		$lang      = $this->model->post->get_language( $post_id );
+		$user      = new User();
+		$languages = $this->model->languages->filter( 'translator' )->get_list();
+
+		if ( empty( $lang ) ) {
+			// The media has no language: prepend an empty option to prevent displaying a wrong information.
+			array_unshift( $languages, (object) array( 'slug' => '', 'name' => '' ) );
+		} elseif ( ! $user->can_translate( $lang ) ) {
+			// The user cannot translate this language, so it isn't in `$languages` (the dropdown will be disabled).
+			array_unshift( $languages, $lang );
+		}
+
+		// Disable the dropdown if:
+		// - the media has no language and the user is a translator,
+		// - or the media has a language but the user is not allowed to translate it.
+		$disabled = empty( $lang ) ? $user->is_translator() : ! $user->can_translate( $lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
 		$fields['language'] = array(
 			'label' => __( 'Language', 'polylang' ),
 			'input' => 'html',
 			'html'  => $dropdown->walk(
-				$this->model->get_languages_list(),
+				$languages,
 				-1,
 				array(
 					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
 					'class'    => 'media_lang_choice',
 					'selected' => $lang ? $lang->slug : '',
+					'disabled' => $disabled,
 				)
 			),
 		);
