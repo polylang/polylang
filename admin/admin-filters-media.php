@@ -54,30 +54,23 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			return $fields; // Don't add anything on edit media panel since we have the metabox.
 		}
 
-		$post_id = $post->ID;
-		$lang    = $this->model->post->get_language( $post_id );
-		$user    = new User();
+		$post_id   = $post->ID;
+		$lang      = $this->model->post->get_language( $post_id );
+		$user      = new User();
+		$languages = $this->model->languages->filter( 'translator' )->get_list();
 
-		if ( ! empty( $lang ) ) {
-			// The item has a language.
-			if ( $user->can_translate( $lang ) ) {
-				// The user is allowed to translate this language: display the list.
-				$languages = $this->model->languages->filter( 'translator' )->get_list();
-				$disabled  = false;
-			} else {
-				// The user is not allowed to translate this language: display only the item's language in a disabled selector.
-				$languages = array( $lang );
-				$disabled  = true;
-			}
-		} elseif ( ! $user->is_translator() ) {
-			// The item has no language and the user has access to all languages: display the full list.
-			$languages = $this->model->languages->get_list();
-			$disabled  = false;
-		} else {
-			// The item has no language and the user is not allowed to assign one: disabled and empty selector.
-			$languages = array();
-			$disabled  = true;
+		if ( empty( $lang ) ) {
+			// The media has no language: prepend an empty option to prevent displaying a wrong information.
+			array_unshift( $languages, (object) array( 'slug' => '', 'name' => '' ) );
+		} elseif ( ! $user->can_translate( $lang ) ) {
+			// The user cannot translate this language, so it isn't in `$languages` (the dropdown will be disabled).
+			array_unshift( $languages, $lang );
 		}
+
+		// Disable the dropdown if:
+		// - the media has no language and the user is a translator,
+		// - or the media has a language but the user is not allowed to translate it.
+		$disabled = empty( $lang ) ? $user->is_translator() : ! $user->can_translate( $lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
 		$fields['language'] = array(
