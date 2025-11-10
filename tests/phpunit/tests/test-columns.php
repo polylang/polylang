@@ -245,15 +245,14 @@ class Columns_Test extends PLL_UnitTestCase {
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
+		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 
 		if ( 'visitor' !== $user ) {
-			$column = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 			$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
-			ob_start();
-			$pll_admin->filters_columns->term_column( '', 'language_fr', $en );
-			$this->assertEmpty( ob_get_clean() );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
@@ -278,15 +277,14 @@ class Columns_Test extends PLL_UnitTestCase {
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
+		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
 
 		if ( 'visitor' !== $user ) {
-			$column = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
 			$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
-			ob_start();
-			$pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
-			$this->assertEmpty( ob_get_clean() );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
