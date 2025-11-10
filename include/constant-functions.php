@@ -4,7 +4,7 @@
  *
  * The aim of these functions is to be stubed in unit tests.
  *
- * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 5.6.
+ * /!\ THE CODE IN THIS FILE MUST BE COMPATIBLE WITH PHP 7.0.
  */
 
 /**
