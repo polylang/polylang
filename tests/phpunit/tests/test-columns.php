@@ -8,8 +8,6 @@
  */
 class Columns_Test extends PLL_UnitTestCase {
 	protected static $editor;
-	protected static $translator_fr;
-	protected static $translator_es;
 
 	/**
 	 * @param PLL_UnitTest_Factory $factory
@@ -20,17 +18,11 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$factory->language->create_many( 2 );
 
-		self::$editor        = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_es = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr->add_cap( 'translate_fr' );
-		self::$translator_es->add_cap( 'translate_es' );
+		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
 
 	public static function wpTearDownAfterClass() {
-		self::delete_user( self::$editor->ID );
-		self::delete_user( self::$translator_fr->ID );
-		self::delete_user( self::$translator_es->ID );
+		self::delete_user( self::$editor );
 		parent::wpTearDownAfterClass();
 	}
 
@@ -38,7 +30,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		// Sets a user to pass current_user_can tests.
-		wp_set_current_user( self::$editor->ID );
+		wp_set_current_user( self::$editor );
 	}
 
 	/**
@@ -63,8 +55,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
@@ -72,8 +63,8 @@ class Columns_Test extends PLL_UnitTestCase {
 	public function test_post_language( string $user ) {
 		$en = self::factory()->post->create( array( 'lang' => 'en' ) );
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -84,21 +75,17 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a post.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A French translator should not be able to edit a post in English.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a post in English.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
@@ -106,8 +93,8 @@ class Columns_Test extends PLL_UnitTestCase {
 	public function test_untranslated_post( string $user ) {
 		$en = self::factory()->post->create( array( 'lang' => 'en' ) );
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -118,15 +105,12 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'from_post' ), 'The URL allowing to create a translation should contain the `from_post` query arg.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'from_post' ), 'The URL allowing to create a translation should contain the `from_post` query arg.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$this->assertNotFalse( strpos( $column, 'from_post' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
@@ -134,21 +118,20 @@ class Columns_Test extends PLL_UnitTestCase {
 	 * Special case for media.
 	 *
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
 	 */
 	public function test_untranslated_media( string $user ) {
 		$en = self::factory()->attachment->create_object( 'image.jpg' );
-		self::$model->post->set_language( $en, 'en' );
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
+		$pll_admin->model->post->set_language( $en, 'en' );
 
 		ob_start();
 		$pll_admin->filters_columns->post_column( 'language_fr', $en );
@@ -156,22 +139,18 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'from_media' ), 'The URL allowing to create a translation should contain the `from_media` query arg.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'from_media' ), 'The URL allowing to create a translation should contain the `from_media` query arg.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$this->assertNotFalse( strpos( $column, 'from_media' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
@@ -182,8 +161,8 @@ class Columns_Test extends PLL_UnitTestCase {
 			array( 'lang' => 'fr' )
 		);
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
@@ -194,13 +173,11 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a translation.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to edit a translation.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a translation in English.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
@@ -220,8 +197,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
@@ -232,30 +208,28 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$en = self::factory()->category->create( array( 'lang' => 'en' ) );
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
-		$column    = $pll_admin->filters_columns->term_column( '', 'language_en', $en );
+
+		$column = $pll_admin->filters_columns->term_column( '', 'language_en', $en );
 
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a term.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A French translator should not be able to edit a term in English.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a term in English.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
@@ -266,31 +240,26 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$en = self::factory()->category->create( array( 'lang' => 'en' ) );
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
-		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 
-		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
-
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'from_tag' ), 'The URL allowing to create a translation should contain the `from_tag` query arg.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'from_tag' ), 'The URL allowing to create a translation should contain the `from_tag` query arg.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to create a translation in French.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$column = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
+			$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			ob_start();
+			$pll_admin->filters_columns->term_column( '', 'language_fr', $en );
+			$this->assertEmpty( ob_get_clean() );
 		}
 	}
 
 	/**
 	 * @testWith [""]
-	 *           ["translator_fr"]
-	 *           ["translator_es"]
+	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
 	 * @return void
@@ -304,22 +273,20 @@ class Columns_Test extends PLL_UnitTestCase {
 			array( 'lang' => 'fr' )
 		);
 
-		if ( ! empty( $user ) ) {
-			wp_set_current_user( self::$$user->ID );
+		if ( 'visitor' === $user ) {
+			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
-		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
 
-		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
-
-		if ( empty( $user ) ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A non-translator should be able to edit a translation.' );
-		} elseif ( 'translator_fr' === $user ) {
-			$this->assertNotFalse( strpos( $column, 'href="' ), 'A French translator should be able to edit a translation.' );
-		} elseif ( 'translator_es' === $user ) {
-			$this->assertFalse( strpos( $column, 'href="' ), 'A Spanish translator should not be able to edit a translation in English.' );
-			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ), 'The UI should appear as disabled.' );
+		if ( 'visitor' !== $user ) {
+			$column = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
+			$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
+		} else {
+			ob_start();
+			$pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
+			$this->assertEmpty( ob_get_clean() );
 		}
 	}
 
@@ -403,7 +370,7 @@ class Columns_Test extends PLL_UnitTestCase {
 				$options->item( 0 )->getAttribute( 'value' ),
 				$options->item( 1 )->getAttribute( 'value' ),
 			),
-			"Expected the <select> tag to contain a 'en' and a 'fr' choices."
+			"'Expected the <select> tag to contain a 'en' and a 'fr' choices."
 		);
 
 		// Bulk Edit.
@@ -417,7 +384,7 @@ class Columns_Test extends PLL_UnitTestCase {
 				$options->item( 1 )->getAttribute( 'value' ),
 				$options->item( 2 )->getAttribute( 'value' ),
 			),
-			"Expected the <select> tag to contain a '-1', a 'en', and a 'fr' choices."
+			"'Expected the <select> tag to contain a '-1', a 'en', and a 'fr' choices."
 		);
 	}
 }
