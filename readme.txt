@@ -106,7 +106,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-= 3.7.5 (2025-11-10)
+= 3.7.5 (2025-11-10) =
 
 * Pro: Updated DeepL supported languages list
 * Pro: Fix a regression in cross domain login
@@ -115,7 +115,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix locale fallback in WP 6.8+
 * Pro: Add `pll_enable_acf_labels_translation` filter allowing to disable the translation of ACF labels
 * Pro: Fix ACF image field not correctly translated when media translation is active
-* Pro: Fix ACF image field in reapeater not copied
+* Pro: Fix ACF image field in repeater not copied
 * Pro: Fix ACF ajax request unexpectedly filtered by language when editing a field group
 * Pro: Fix ACF blocks not translated when included inside a non-ACF block
 * Pro: Add compatibility of the duplicate tool with Divi
