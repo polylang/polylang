@@ -54,7 +54,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -75,7 +75,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
@@ -84,7 +84,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -105,7 +105,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'from_post' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
@@ -117,7 +117,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	/**
 	 * Special case for media.
 	 *
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -139,7 +139,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'from_media' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
@@ -149,7 +149,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -173,7 +173,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
@@ -196,7 +196,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -219,7 +219,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
@@ -228,7 +228,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -247,7 +247,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$pll_admin = ( new PLL_Context_Admin() )->get();
 		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
@@ -257,7 +257,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [""]
+	 * @testWith ["editor"]
 	 *           ["visitor"]
 	 *
 	 * @param string $user The user to define as current.
@@ -279,7 +279,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$pll_admin = ( new PLL_Context_Admin() )->get();
 		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
 
-		if ( 'visitor' !== $user ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
