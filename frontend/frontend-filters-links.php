@@ -354,7 +354,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	/**
 	 * Adds the current language to URL query.
 	 *
-	 * @since 3.7.4
+	 * @since 3.7.5
 	 *
 	 * @param string $url The oEmbed endpoint URL.
 	 * @return string The oEmbed endpoint URL with the language.

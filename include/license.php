@@ -12,8 +12,6 @@ class PLL_License {
 	/**
 	 * URL to Polylang's account page.
 	 *
-	 * @since 3.7.4
-	 *
 	 * @var string
 	 */
 	public const ACCOUNT_URL = 'https://polylang.pro/my-account/';
