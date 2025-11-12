@@ -85,7 +85,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			$columns[ 'language_' . $language->slug ] = $this->get_flag_html( $language ) . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>';
+			$columns[ 'language_' . $language->slug ] = $this->links->get_flag_html( $language ) . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>';
 		}
 
 		return isset( $end ) ? array_merge( $columns, $end ) : $columns;
@@ -400,17 +400,5 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$x->send();
-	}
-
-	/**
-	 * Returns the language flag or the language slug if there is no flag.
-	 *
-	 * @since 2.8
-	 *
-	 * @param PLL_Language $language PLL_Language object.
-	 * @return string
-	 */
-	protected function get_flag_html( PLL_Language $language ): string {
-		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 }

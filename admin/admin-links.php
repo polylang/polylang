@@ -341,7 +341,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	public function get_edit_item_link( string $url, int $item_id, string $item_name, PLL_Language $language, string $mode = 'icon' ): string {
 		if ( 'flag' === $mode ) {
-			$flag  = $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
+			$flag  = $this->get_flag_html( $language );
 			$class = 'pll_column_flag';
 		} else {
 			$flag  = '';
@@ -384,6 +384,19 @@ class PLL_Admin_Links extends PLL_Links {
 				$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 		}
+	}
+
+	/**
+	 * Returns the language flag or the language slug if there is no flag.
+	 *
+	 * @since 2.8
+	 * @since 3.8 Moved from `PLL_Admin_Filters_Columns` and made `public`.
+	 *
+	 * @param PLL_Language $language PLL_Language object.
+	 * @return string
+	 */
+	public function get_flag_html( PLL_Language $language ): string {
+		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 
 	/**
