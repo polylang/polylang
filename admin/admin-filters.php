@@ -15,7 +15,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Base $polylang The Polylang object.
+	 * @param PLL_Admin $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );

@@ -19,7 +19,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Base $polylang The Polylang object.
+	 * @param PLL_Admin_Base $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
