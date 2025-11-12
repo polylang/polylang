@@ -339,7 +339,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-param 'icon'|'flag' $mode
 	 */
-	public function get_edit_item_link( string $url, int $item_id, string $item_name, PLL_Language $language, string $mode = 'icon' ): string {
+	private function get_edit_item_link( string $url, int $item_id, string $item_name, PLL_Language $language, string $mode = 'icon' ): string {
 		if ( 'flag' === $mode ) {
 			$flag  = $this->get_flag_html( $language );
 			$class = 'pll_column_flag';
