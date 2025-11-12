@@ -166,7 +166,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$tr_id   = $this->model->post->get( $post_id, $language );
-		$tr_post = $tr_id ? get_post( $tr_id ) : false;
+		$tr_post = $tr_id ? get_post( $tr_id ) : null;
 
 		if ( ! $tr_post instanceof WP_Post ) {
 			// Link to add a new translation: no translation for this language yet, or it doesn't exist anymore.
@@ -279,7 +279,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$tr_id   = $this->model->term->get( $term_id, $language );
-		$tr_term = $tr_id ? get_term( $tr_id, $taxonomy ) : false;
+		$tr_term = $tr_id ? get_term( $tr_id, $taxonomy ) : null;
 
 		if ( ! $tr_term instanceof WP_Term ) {
 			// Link to add a new translation: no translation for this language yet, or it doesn't exist anymore.
