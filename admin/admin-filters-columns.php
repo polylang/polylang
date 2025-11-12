@@ -197,7 +197,6 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$dropdown = new PLL_Walker_Dropdown();
-		// The hidden field 'old_lang' allows to pass the old language to ajax request
 		printf(
 			'<fieldset class="inline-edit-col-left">
 				<div class="inline-edit-col">
