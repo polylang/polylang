@@ -8,7 +8,7 @@
 		"php": ">=7.2"
 	},
 	"require-dev": {
-		"wpsyntex/polylang-phpstan": "dev-wordpress-stubs-override",
+		"wpsyntex/polylang-phpstan": "^2.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
