@@ -197,10 +197,6 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			wp_set_object_terms( $p, $group, $this->tax_translations );
 		}
 
-		if ( ! is_array( $terms ) ) {
-			return $translations;
-		}
-
 		// Clean now unused translation groups.
 		$terms = array_filter( $terms );
 		foreach ( $terms as $term ) {
