@@ -142,7 +142,7 @@ class PLL_Admin_Filters_Columns {
 	 * @return void
 	 */
 	public function post_column( $column, $post_id ): void {
-		if ( false === strpos( $column, 'language_' ) ) {
+		if ( ! str_starts_with( $column, 'language_' ) ) {
 			return;
 		}
 
@@ -244,7 +244,7 @@ class PLL_Admin_Filters_Columns {
 	 * @return string
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		if ( false === strpos( $column, 'language_' ) ) {
+		if ( ! str_starts_with( $column, 'language_' ) ) {
 			return $out;
 		}
 
