@@ -27,7 +27,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		$ref = new ReflectionProperty( PLL_WPML_Config::instance(), 'files' );
-		$ref->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $ref->setAccessible( true );
 		$ref->setValue( PLL_WPML_Config::instance(), null );
 
 		$this->links_model = self::$model->get_links_model();
