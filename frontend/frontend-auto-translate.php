@@ -334,10 +334,7 @@ class PLL_Frontend_Auto_Translate {
 				// We got an unexpected query var, let return it unchanged.
 				return $query_var;
 			}
-			$found_slug = $this->get_translated_term_by( 'slug', $slug, $taxonomy );
-			if ( is_string( $found_slug ) ) {
-				$slug = $found_slug;
-			}
+			$slug = $this->get_translated_term_by( 'slug', $slug, $taxonomy );
 		}
 
 		if ( ! empty( $sep ) ) {
