@@ -674,4 +674,3 @@ parameters:
 			message: "#^Parameter \\#2 \\$column_name of method PLL_Table_Settings\\:\\:column_default\\(\\) expects string, int\\|string given\\.$#"
 			count: 1
 			path: settings/table-settings.php
-

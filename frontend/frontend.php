@@ -292,7 +292,7 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		// Send the slug instead of the locale here to avoid conflicts with same locales.
-		$this->load_strings_translations( $this->curlang->slug );
+		PLL_Switch_Language::load_strings_translations( $this->curlang->slug );
 	}
 
 	/**
