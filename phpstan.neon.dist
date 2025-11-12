@@ -17,7 +17,7 @@ parameters:
 		- install/plugin-updater.php
 	treatPhpDocTypesAsCertain: false
 	stubFiles:
-		- tests/phpstan/wordpress-stubs-override.php
+		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
 	ignoreErrors:
 		- identifier: missingType.iterableValue
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
