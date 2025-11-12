@@ -21,4 +21,4 @@ on:
 
 jobs:
   testing:
-    uses: polylang/.github/.github/workflows/reusable-integration-and-unit-tests.yml@main
+    uses: polylang/.github/.github/workflows/reusable-integration-and-unit-tests.yml@go-php-85
