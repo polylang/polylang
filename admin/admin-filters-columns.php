@@ -147,8 +147,8 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$post_id = (int) $post_id;
-		$inline  = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
-		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id ); // phpcs:ignore WordPress.Security.NonceVerification
+		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' );
+		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id );
 
 		if ( empty( $lang ) ) {
 			return;
@@ -248,8 +248,8 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$term_id = (int) $term_id;
-		$inline  = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
-		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ); // phpcs:ignore WordPress.Security.NonceVerification
+		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'taxinlineeditnonce' );
+		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id );
 
 		if ( empty( $lang ) ) {
 			return $out;
