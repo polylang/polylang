@@ -158,8 +158,8 @@ class PLL_Admin_Links extends PLL_Links {
 	 * Returns the html markup for a post translation link.
 	 *
 	 * @since 1.4
-	 * @since 3.8 First param is a `WP_Post` instead of an `int`.
-	 *            New param `$mode`.
+	 * @since 3.8 First parameter is a `WP_Post` instead of an `int`.
+	 *            New parameter `$mode`.
 	 *
 	 * @param WP_Post $post The post.
 	 * @param string  $mode Optional. How the link should be displayed: with a pen icon or a language's flag.
@@ -313,8 +313,8 @@ class PLL_Admin_Links extends PLL_Links {
 	 * Returns the html markup for a term translation link.
 	 *
 	 * @since 1.4
-	 * @since 3.8 First param is a `WP_Term` instead of an `int`.
-	 *            New param `$mode`.
+	 * @since 3.8 First parameter is a `WP_Term` instead of an `int`.
+	 *            New parameter `$mode`.
 	 *
 	 * @param WP_Term $term      The term.
 	 * @param string  $taxonomy  Taxonomy name.
