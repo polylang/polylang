@@ -577,6 +577,12 @@ parameters:
 			path: include/Model/Languages.php
 
 		-
+			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 2
+			path: frontend/frontend-static-pages.php
+
+		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 2
@@ -611,6 +617,12 @@ parameters:
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
 			path: include/Model/Languages.php
+
+		-
+			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: frontend/frontend.php
 
 		-
 			message: '#^Cannot access property \$is_default on mixed\.$#'
@@ -857,6 +869,12 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: include/links-permalinks.php
+
+		-
+			message: '#^Cannot unset property PLL_License\:\:\$license_data because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: include/license.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, mixed given\.$#'
