@@ -18,7 +18,11 @@ class Settings_Test extends PLL_UnitTestCase {
 	}
 
 	public function set_up() {
+		global $pagenow;
+
 		parent::set_up();
+
+		$pagenow = 'settings_page_mlang'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
 
 		// Avoid an API request triggered by wp_get_available_translations() called in languages_page().
 		add_filter( 'pre_site_transient_available_translations', '__return_empty_array' );

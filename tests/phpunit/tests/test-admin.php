@@ -69,7 +69,10 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_remove_customize_submenu_with_block_base_theme() {
-		global $submenu, $_wp_theme_features;
+		global $submenu, $_wp_theme_features, $pagenow;
+
+		$pagenow = 'index.php'; // Set $pagenow so `user_can_access_admin_page()` doesn't throw PHP deprecation notice with PHP 8.5.
+
 		unset( $_wp_theme_features['widgets'] );
 
 		switch_theme( 'block-theme' );
