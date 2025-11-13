@@ -147,7 +147,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$post_id = (int) $post_id;
-		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' );
+		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && is_string( $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' );
 		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id );
 
 		if ( empty( $lang ) ) {
@@ -248,7 +248,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$term_id = (int) $term_id;
-		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'taxinlineeditnonce' );
+		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && is_string( $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'taxinlineeditnonce' );
 		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id );
 
 		if ( empty( $lang ) ) {
@@ -267,7 +267,7 @@ class PLL_Admin_Filters_Columns {
 			$taxonomy = sanitize_key( $_REQUEST['taxonomy'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
-		if ( ! isset( $taxonomy, $post_type ) || ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
+		if ( ! isset( $taxonomy, $post_type ) || ! is_string( $post_type ) || ! is_string( $taxonomy ) || ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			return $out;
 		}
 
