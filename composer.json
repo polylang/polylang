@@ -20,7 +20,6 @@
 		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true,
 	"autoload": {
 		"classmap": [
 			"admin/",
