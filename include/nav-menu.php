@@ -42,6 +42,7 @@ class PLL_Nav_Menu {
 	 * @since 1.7.7
 	 *
 	 * @param PLL_Base $polylang The Polylang object.
+	 * @param-out PLL_Base $polylang
 	 */
 	public function __construct( PLL_Base &$polylang ) {
 		$this->model   = &$polylang->model;

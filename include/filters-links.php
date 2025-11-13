@@ -46,6 +46,7 @@ class PLL_Filters_Links {
 	 * @since 1.8
 	 *
 	 * @param PLL_Base $polylang The Polylang object.
+	 * @param-out PLL_Base $polylang
 	 */
 	public function __construct( PLL_Base &$polylang ) {
 		$this->links       = &$polylang->links;

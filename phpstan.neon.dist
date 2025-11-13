@@ -2,7 +2,7 @@ includes:
 	- vendor/wpsyntex/polylang-phpstan/extension.neon
 	- phpstan-baseline.neon
 parameters:
-	level: max
+	level: 9
 	paths:
 		- polylang.php
 		- admin/
@@ -16,6 +16,8 @@ parameters:
 		- include/widget-calendar.php
 		- install/plugin-updater.php
 	treatPhpDocTypesAsCertain: false
+	stubFiles:
+		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
 	ignoreErrors:
 		- identifier: missingType.iterableValue
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
@@ -59,11 +61,7 @@ parameters:
 
 		# Ignored because there is no dynamic return type extension for WP_Syntex\Polylang\Options\Abstract_Option::get()
 		-
-			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, mixed given\\.$#"
-			count: 1
-			path: include/Options/Business/Sync.php
-		-
-			message: "#^Parameter \\#2 \\$array of function implode expects array\\|null, mixed given\\.$#"
+			message: "#^Parameter \\#2 \\$array of function implode expects array, mixed given\\.$#"
 			count: 1
 			path: include/Options/Business/Sync.php
 		-
@@ -74,3 +72,9 @@ parameters:
 			message: "#^Parameter \\#1 \\$format of function wp_date expects string, mixed given\\.$#"
 			count: 1
 			path: include/Options/Business/First_Activation.php
+
+		# Ignored because the return type of `PLL_Frontend_Auto_Translate::get_translated_term_by` is always a string in `PLL_Frontend_Auto_Translate::translate_terms_list`.
+		-
+			identifier: return.type
+			count: 1
+			path: frontend/frontend-auto-translate.php

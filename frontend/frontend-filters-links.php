@@ -43,7 +43,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Frontend $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );

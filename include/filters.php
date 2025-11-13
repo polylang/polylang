@@ -41,6 +41,7 @@ class PLL_Filters {
 	 * @since 1.4
 	 *
 	 * @param PLL_Base $polylang The Polylang object.
+	 * @param-out PLL_Base $polylang
 	 */
 	public function __construct( PLL_Base &$polylang ) {
 		global $wp_version;
