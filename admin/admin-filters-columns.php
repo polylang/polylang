@@ -175,7 +175,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		// Link to edit (or not) the post or a translation.
-		echo $this->links->get_edit_post_item_link_tag( $tr_post, $language, $tr_post->ID === $post_id ? 'flag' : 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->links->edit_post_translation_link( $tr_post, $tr_post->ID === $post_id ? 'flag' : 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -286,7 +286,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		// Link to edit (or not) the term or a translation.
-		$out .= $this->links->get_edit_term_item_link_tag( $tr_term, $taxonomy, $post_type, $language, $tr_term->term_id === $term_id ? 'flag' : 'icon' );
+		$out .= $this->links->edit_term_translation_link( $tr_term, $taxonomy, $post_type, $tr_term->term_id === $term_id ? 'flag' : 'icon' );
 
 		if ( $this->get_first_language_column() !== $column ) {
 			return $out;

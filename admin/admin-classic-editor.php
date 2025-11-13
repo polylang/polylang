@@ -313,7 +313,7 @@ class PLL_Admin_Classic_Editor {
 			$return[] = array(
 				'id'    => $post->ID,
 				'value' => $post->post_title,
-				'link'  => $this->links->edit_post_translation_link( $post->ID ),
+				'link'  => $this->links->edit_post_translation_link( $post ),
 			);
 		}
 
@@ -327,7 +327,7 @@ class PLL_Admin_Classic_Editor {
 					array(
 						'id'    => $post_id,
 						'value' => $post->post_title,
-						'link'  => $this->links->edit_post_translation_link( $post_id ),
+						'link'  => $this->links->edit_post_translation_link( $post ),
 					)
 				);
 			}

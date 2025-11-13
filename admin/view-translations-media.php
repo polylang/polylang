@@ -25,16 +25,24 @@ defined( 'ABSPATH' ) || exit;
 			<td class = "pll-media-edit-column">
 				<?php
 				$translation_id = $this->model->post->get_translation( $post_ID, $language );
+
 				if ( ! empty( $translation_id ) && $translation_id !== $post_ID ) {
-					// The translation exists
-					printf(
-						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
-						esc_attr( $language->slug ),
-						(int) $translation_id
-					);
-					echo $this->links->edit_post_translation_link( $translation_id ); // phpcs:ignore WordPress.Security.EscapeOutput
+					$translation = get_post( $translation_id );
+
+					if ( $translation instanceof WP_Post ) {
+						// The translation exists.
+						printf(
+							'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
+							esc_attr( $language->slug ),
+							(int) $translation->ID
+						);
+						echo $this->links->edit_post_translation_link( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
+					} else {
+						// The translation doesn't exist anymore.
+						echo $this->links->new_post_translation_link( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
+					}
 				} else {
-					// No translation
+					// No translation.
 					echo $this->links->new_post_translation_link( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>

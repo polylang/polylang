@@ -47,7 +47,7 @@ else {
 		$link = $add_link;
 
 		if ( $translation_exists ) {
-			$link = $this->links->edit_term_translation_link( $translation->term_id, $taxonomy, $post_type );
+			$link = $this->links->edit_term_translation_link( $translation, $taxonomy, $post_type );
 		}
 		?>
 		<tr>
