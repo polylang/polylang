@@ -535,6 +535,12 @@ parameters:
 			path: frontend/frontend-static-pages.php
 
 		-
+			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 2
+			path: frontend/frontend-static-pages.php
+
+		-
 			message: '#^Parameter \#2 \$page of method PLL_Links_Model\:\:add_paged_to_link\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -565,6 +571,12 @@ parameters:
 			path: frontend/frontend.php
 
 		-
+			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: frontend/frontend.php
+
+		-
 			message: '#^Property PLL_Frontend\:\:\$curlang \(PLL_Language\|null\) does not accept PLL_Language\|false\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -575,12 +587,6 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: include/Model/Languages.php
-
-		-
-			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
-			count: 2
-			path: frontend/frontend-static-pages.php
 
 		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
@@ -617,12 +623,6 @@ parameters:
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
 			path: include/Model/Languages.php
-
-		-
-			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
-			count: 1
-			path: frontend/frontend.php
 
 		-
 			message: '#^Cannot access property \$is_default on mixed\.$#'
@@ -817,6 +817,12 @@ parameters:
 			path: include/license.php
 
 		-
+			message: '#^Cannot unset property PLL_License\:\:\$license_data because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: include/license.php
+
+		-
 			message: '#^Parameter \#1 \$format of function date_i18n expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 3
@@ -869,12 +875,6 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: include/links-permalinks.php
-
-		-
-			message: '#^Cannot unset property PLL_License\:\:\$license_data because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
-			count: 1
-			path: include/license.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, mixed given\.$#'
