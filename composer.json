@@ -13,7 +13,7 @@
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
-		"behat/behat": "^3.26",
+		"behat/behat": "^3.26|<3.12",
 		"yoast/wp-test-utils": "^1.0.0",
 		"rector/rector": "^1.1",
 		"wpsyntex/wp-phpunit": "dev-master",
