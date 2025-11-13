@@ -26,33 +26,6 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_path' ) ) {
 	}
 }
 
-if ( ! function_exists( 'sanitize_locale_name' ) ) {
-	/**
-	 * Strips out all characters not allowed in a locale code.
-	 * Backward compatibility with WP < 6.2.1.
-	 *
-	 * @since 3.5
-	 *
-	 * @param string $locale_name The locale name to be sanitized.
-	 * @return string The sanitized value.
-	 */
-	function sanitize_locale_name( $locale_name ) {
-		// Limit to A-Z, a-z, 0-9, '_', '-'.
-		$sanitized = (string) preg_replace( '/[^A-Za-z0-9_-]/', '', $locale_name );
-
-		/**
-		 * Filters a sanitized locale name string.
-		 * Backward compatibility with WP < 6.2.1.
-		 *
-		 * @since 3.5
-		 *
-		 * @param string $sanitized   The sanitized locale name.
-		 * @param string $locale_name The locale name before sanitization.
-		 */
-		return apply_filters( 'sanitize_locale_name', $sanitized, $locale_name );
-	}
-}
-
 /**
  * Determines whether we should load the cache compatibility
  *

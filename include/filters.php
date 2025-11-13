@@ -44,8 +44,6 @@ class PLL_Filters {
 	 * @param-out PLL_Base $polylang
 	 */
 	public function __construct( PLL_Base &$polylang ) {
-		global $wp_version;
-
 		$this->links_model = &$polylang->links_model;
 		$this->model       = &$polylang->model;
 		$this->options     = $polylang->options;
@@ -56,18 +54,14 @@ class PLL_Filters {
 		add_action( 'add_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
 		add_action( 'delete_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
 
-		// Filters the comments according to the current language
+		// Filters the comments according to the current language.
 		add_action( 'parse_comment_query', array( $this, 'parse_comment_query' ) );
 		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
 
-		// Filters the get_pages function according to the current language
-		if ( version_compare( $wp_version, '6.3-alpha', '<' ) ) {
-			// Backward compatibility with WP < 6.3.
-			add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
-		}
+		// Filters the get_pages function according to the current language.
 		add_filter( 'get_pages_query_args', array( $this, 'get_pages_query_args' ), 10, 2 );
 
-		// Rewrites next and previous post links to filter them by language
+		// Rewrites next and previous post links to filter them by language.
 		add_filter( 'get_previous_post_join', array( $this, 'posts_join' ), 10, 5 );
 		add_filter( 'get_next_post_join', array( $this, 'posts_join' ), 10, 5 );
 		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
@@ -80,12 +74,12 @@ class PLL_Filters {
 		add_filter( 'password_change_email', array( $this, 'translate_user_email' ) );
 		add_filter( 'email_change_email', array( $this, 'translate_user_email' ) );
 
-		// Translates the privacy policy page
-		add_filter( 'option_wp_page_for_privacy_policy', array( $this, 'translate_page_for_privacy_policy' ), 20 ); // Since WP 4.9.6
+		// Translates the privacy policy page.
+		add_filter( 'option_wp_page_for_privacy_policy', array( $this, 'translate_page_for_privacy_policy' ), 20 ); // Since WP 4.9.6.
 		add_filter( 'map_meta_cap', array( $this, 'fix_privacy_policy_page_editing' ), 10, 4 );
 
-		// Personal data exporter
-		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_personal_data_exporter' ), 0 ); // Since WP 4.9.6
+		// Personal data exporter.
+		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_personal_data_exporter' ), 0 ); // Since WP 4.9.6.
 
 		// Fix for `term_exists()`.
 		add_filter( 'term_exists_default_query_args', array( $this, 'term_exists_default_query_args' ), 0, 3 ); // Since WP 6.0.0.
@@ -189,60 +183,6 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Filters get_pages() per language.
-	 *
-	 * @since 1.4
-	 *
-	 * @param WP_Post[] $pages An array of pages already queried.
-	 * @param array     $args  Array of get_pages() arguments.
-	 * @return WP_Post[] Modified list of pages.
-	 */
-	public function get_pages( $pages, $args ) {
-		if ( isset( $args['lang'] ) && empty( $args['lang'] ) ) {
-			return $pages;
-		}
-
-		$language = empty( $args['lang'] ) ? $this->curlang : $this->model->get_language( $args['lang'] );
-
-		if ( empty( $language ) || empty( $pages ) || ! $this->model->is_translated_post_type( $args['post_type'] ) ) {
-			return $pages;
-		}
-
-		static $once = false;
-
-		if ( ! empty( $args['number'] ) && ! $once ) {
-			// We are obliged to redo the get_pages() query if we want to get the right number.
-			$once = true; // Avoid infinite loop.
-
-			// Take care that 'exclude' argument accepts integer or strings too.
-			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), $this->get_related_page_ids( $language, 'NOT IN', $args ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
-			$numbered_pages  = get_pages( $args );
-			$pages           = ! $numbered_pages ? $pages : $numbered_pages;
-		}
-
-		$ids = wp_list_pluck( $pages, 'ID' );
-
-		if ( ! $once ) {
-			// Filters the queried list of pages by language.
-			$ids = array_intersect( $ids, $this->get_related_page_ids( $language, 'IN', $args ) );
-
-			foreach ( $pages as $key => $page ) {
-				if ( ! in_array( $page->ID, $ids ) ) {
-					unset( $pages[ $key ] );
-				}
-			}
-
-			$pages = array_values( $pages ); // In case 3rd parties suppose the existence of $pages[0].
-		}
-
-		// Not done by WP but extremely useful for performance when manipulating taxonomies.
-		update_object_term_cache( $ids, $args['post_type'] );
-
-		$once = false; // In case get_pages() is called another time.
-		return $pages;
-	}
-
-	/**
 	 * Filters the WP_Query in get_pages() per language.
 	 *
 	 * @since 3.4.3
@@ -257,37 +197,6 @@ class PLL_Filters {
 		}
 
 		return $query_args;
-	}
-
-	/**
-	 * Get page ids related to a get_pages() in or not in a given language.
-	 *
-	 * @since 3.2
-	 *
-	 * @param PLL_Language $language The language to use in the relationship
-	 * @param string       $relation 'IN' or 'NOT IN'.
-	 * @param array        $args     Array of get_pages() arguments.
-	 * @return int[]
-	 */
-	protected function get_related_page_ids( $language, $relation, $args ) {
-		$r = array(
-			'lang'        => '', // Ensure this query is not filtered.
-			'numberposts' => -1,
-			'nopaging'    => true,
-			'post_type'   => $args['post_type'],
-			'post_status' => $args['post_status'],
-			'fields'      => 'ids',
-			'tax_query'   => array(
-				array(
-					'taxonomy' => 'language',
-					'field'    => 'term_taxonomy_id', // Since WP 3.5.
-					'terms'    => $language->get_tax_prop( 'language', 'term_taxonomy_id' ),
-					'operator' => $relation,
-				),
-			),
-		);
-
-		return get_posts( $r );
 	}
 
 	/**
