@@ -161,7 +161,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @param WP_Post $post The post.
 	 * @param string  $mode Optional. How the link should be displayed: with a pen icon or a language's flag.
-	 *                      Possible values are `icon`, `metabox`, and `flag`. Default is `metabox`.
+	 *                      Possible values are `metabox`, `icon`, and `flag`. Default is `metabox`.
 	 * @return string
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
@@ -186,7 +186,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param string       $url       URL of the edition link.
 	 * @param PLL_Language $language  Language of the item.
 	 * @param string       $mode      How the link should be displayed: with a pen icon or a language's flag.
-	 *                                Possible values are `icon`, `metabox`, and `flag`.
+	 *                                Possible values are `metabox`, `icon`, and `flag`.
 	 * @param int          $item_id   ID of the item. Used only in `icon` mode.
 	 * @param string       $item_name Name of the item. Not used in `metabox` mode.
 	 * @return string
@@ -313,7 +313,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param WP_Term $term      The term.
 	 * @param string  $post_type Post type name.
 	 * @param string  $mode      Optional. How the link should be displayed: with a pen icon or a language's flag.
-	 *                           Possible values are `icon` and `flag`. Default is `metabox`.
+	 *                           Possible values are `metabox`, `icon`, and `flag`. Default is `metabox`.
 	 * @return string
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
