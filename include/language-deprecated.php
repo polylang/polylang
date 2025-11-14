@@ -82,6 +82,8 @@ abstract class PLL_Language_Deprecated {
 	 *
 	 * @since 3.4
 	 *
+	 * @throws DomainException If the property is not accessible.
+	 *
 	 * @param string $property Property to get.
 	 * @return mixed Required property value.
 	 */
@@ -124,7 +126,7 @@ abstract class PLL_Language_Deprecated {
 		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 		$file       = $trace[0]['file'] ?? '';
 		$line       = $trace[0]['line'] ?? 0;
-		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+		throw new DomainException(
 			esc_html(
 				sprintf(
 					"Cannot access %s property %s::$%s in %s on line %d.\nError handler",
@@ -135,7 +137,7 @@ abstract class PLL_Language_Deprecated {
 					$line
 				)
 			),
-			E_USER_ERROR
+
 		);
 	}
 
