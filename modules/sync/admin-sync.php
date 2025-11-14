@@ -238,7 +238,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		throw new BadMethodCallException(
 			sprintf(
-				'Call to undefined function PLL()->sync->%1$s() in %2$s on line %3$s' . "\nError handler",
+				'Call to undefined method PLL()->sync->%1$s() in %2$s on line %3$s' . "\nError handler",
 				esc_html( $func ),
 				esc_html( $debug[0]['file'] ),
 				absint( $debug[0]['line'] )

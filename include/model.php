@@ -171,7 +171,7 @@ class PLL_Model {
 		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		throw new BadMethodCallException(
 			sprintf(
-				'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
+				'Call to undefined method PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
 				esc_html( $name ),
 				esc_html( $debug[0]['file'] ?? '' ),
 				absint( $debug[0]['line'] ?? 0 )
