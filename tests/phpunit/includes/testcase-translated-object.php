@@ -16,7 +16,7 @@ abstract class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
 	 */
 	public function dont_save_translations_with_incorrect_language( $translated_object ) {
 		$property = new ReflectionProperty( get_class( $translated_object ), 'type' );
-		$property->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $property->setAccessible( true );
 		$object_type = $property->getValue( $translated_object );
 
 		$id = self::factory()->$object_type->create();

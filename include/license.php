@@ -154,7 +154,7 @@ class PLL_License {
 	 * @return PLL_License Updated PLL_License object.
 	 */
 	public function activate_license(
-		#[\SensitiveParameter]
+		#[\SensitiveParameter] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPNativeAttributeFound
 		string $license_key
 	): self {
 		$this->license_key = $license_key;

@@ -1,0 +1,13 @@
+{
+	"phpVersion": "8.4",
+	"config": {
+		"EMPTY_TRASH_DAYS": 0,
+		"WP_DEBUG": true,
+		"WP_DEBUG_LOG": true,
+		"SCRIPT_DEBUG": true
+	},
+	"plugins": [
+		".",
+		"https://downloads.wordpress.org/plugin/query-monitor.3.20.0.zip"
+	]
+}

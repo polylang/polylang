@@ -319,7 +319,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$model = new PLL_Model( $options );
 
 		$ref = new ReflectionMethod( $model->post, 'get_db_infos' );
-		$ref->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $ref->setAccessible( true );
 		$db_infos = $ref->invoke( $model->post );
 
 		$this->assertSame( $GLOBALS['wpdb']->posts, $db_infos['table'], 'get_db_infos() does not return the right table name.' );

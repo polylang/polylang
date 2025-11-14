@@ -166,7 +166,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 
 		// Happens on 'wp'
 		$set_language = new ReflectionMethod( PLL_Choose_Lang::class, 'set_language' );
-		$set_language->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $set_language->setAccessible( true );
 		$set_language->invokeArgs( $this->frontend->choose_lang, array( $this->frontend->model->get_language( 'ar' ) ) );
 
 		$this->assertEquals( 'rtl', wp_styles()->text_direction );

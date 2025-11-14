@@ -135,7 +135,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$model = new PLL_Model( $options );
 
 		$ref = new ReflectionMethod( $model->term, 'get_db_infos' );
-		$ref->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $ref->setAccessible( true );
 		$db_infos = $ref->invoke( $model->term );
 
 		$this->assertSame( $GLOBALS['wpdb']->term_taxonomy, $db_infos['table'], 'get_db_infos() does not return the right table name.' );

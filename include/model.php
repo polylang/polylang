@@ -133,6 +133,8 @@ class PLL_Model {
 	 *
 	 * @since 3.7
 	 *
+	 * @throws BadMethodCallException If the method is not found.
+	 *
 	 * @param string $name      Name of the method being called.
 	 * @param array  $arguments Enumerated array containing the parameters passed to the $name'ed method.
 	 * @return mixed
@@ -167,14 +169,13 @@ class PLL_Model {
 		}
 
 		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		throw new BadMethodCallException(
 			sprintf(
-				'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
+				'Call to undefined method PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
 				esc_html( $name ),
 				esc_html( $debug[0]['file'] ?? '' ),
 				absint( $debug[0]['line'] ?? 0 )
-			),
-			E_USER_ERROR
+			)
 		);
 	}
 

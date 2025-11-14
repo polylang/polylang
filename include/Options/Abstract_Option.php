@@ -306,7 +306,7 @@ abstract class Abstract_Option {
 	 *
 	 * @return array Updated array of site health information including the new fields.
 	 */
-	protected function format_single_value_for_site_health_info( mixed $value ): array {
+	protected function format_single_value_for_site_health_info( $value ): array {
 		if ( empty( $value ) ) {
 			return array();
 		}

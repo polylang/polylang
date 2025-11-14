@@ -10,17 +10,16 @@
 	"require-dev": {
 		"wpsyntex/polylang-phpstan": "^2.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
-		"wp-coding-standards/wpcs": "*",
+		"wp-coding-standards/wpcs": "^3",
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
-		"behat/behat": "^3.7|^3.8",
+		"behat/behat": "^3",
 		"yoast/wp-test-utils": "^1.0.0",
 		"rector/rector": "^2",
 		"wpsyntex/wp-phpunit": "dev-master",
 		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true,
 	"autoload": {
 		"classmap": [
 			"admin/",

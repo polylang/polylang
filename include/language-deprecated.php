@@ -82,6 +82,8 @@ abstract class PLL_Language_Deprecated {
 	 *
 	 * @since 3.4
 	 *
+	 * @throws DomainException If the property is not accessible.
+	 *
 	 * @param string $property Property to get.
 	 * @return mixed Required property value.
 	 */
@@ -134,8 +136,7 @@ abstract class PLL_Language_Deprecated {
 					$file,
 					$line
 				)
-			),
-			E_USER_ERROR
+			)
 		);
 	}
 
