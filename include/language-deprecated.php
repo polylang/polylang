@@ -137,7 +137,6 @@ abstract class PLL_Language_Deprecated {
 					$line
 				)
 			)
-
 		);
 	}
 
