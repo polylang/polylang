@@ -15,7 +15,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 	public function init( $pagename ) {
 		global $pagenow;
 
-		$pagenow = $pagename; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
+		$pagenow = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
 
 		wp_set_current_user( 1 );
 
