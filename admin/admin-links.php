@@ -33,7 +33,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a new post translation link.
 	 *
-	 * @since 1.8
+	 * @since 3.8
 	 *
 	 * @param int          $post_id  The source post ID.
 	 * @param PLL_Language $language The language of the new translation.
@@ -157,9 +157,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a post translation link.
 	 *
-	 * @since 1.4
-	 * @since 3.8 First parameter is a `WP_Post` instead of an `int`.
-	 *            New parameter `$mode`.
+	 * @since 3.8
 	 *
 	 * @param WP_Post $post The post.
 	 * @param string  $mode Optional. How the link should be displayed: with a pen icon or a language's flag.
@@ -183,9 +181,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a translation link.
 	 *
-	 * @since 2.6
-	 * @since 3.8 Visibility changed from `public` to `private`.
-	 *            Parameters `$language`, `$mode`, `$item_id`, and `$item_name` added.
+	 * @since 3.8
 	 *
 	 * @param string       $url       URL of the edition link.
 	 * @param PLL_Language $language  Language of the item.
@@ -312,9 +308,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a term translation link.
 	 *
-	 * @since 1.4
-	 * @since 3.8 First parameter is a `WP_Term` instead of an `int`.
-	 *            New parameter `$mode`.
+	 * @since 3.8
 	 *
 	 * @param WP_Term $term      The term.
 	 * @param string  $post_type Post type name.
@@ -338,8 +332,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the language flag or the language slug if there is no flag.
 	 *
-	 * @since 2.8
-	 * @since 3.8 Moved from `PLL_Admin_Filters_Columns` and made `public`.
+	 * @since 3.8
 	 *
 	 * @param PLL_Language $language PLL_Language object.
 	 * @return string
