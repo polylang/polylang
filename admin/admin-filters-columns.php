@@ -170,7 +170,7 @@ class PLL_Admin_Filters_Columns {
 
 		if ( ! $tr_post instanceof WP_Post ) {
 			// Link to add a new translation: no translation for this language yet, or it doesn't exist anymore.
-			echo $this->links->new_post_translation_link( $post_id, $language ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $this->links->get_new_post_link_html( $post_id, $language ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			return;
 		}
 

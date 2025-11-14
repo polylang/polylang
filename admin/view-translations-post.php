@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || exit;
 			$translation_id = $this->model->post->get( $from_post_id, $language );
 		}
 
-		$add_link    = $this->links->new_post_translation_link( $post_ID, $language );
+		$add_link    = $this->links->get_new_post_link_html( $post_ID, $language );
 		$link        = $add_link;
 		$translation = null;
 		if ( $translation_id ) {

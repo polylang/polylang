@@ -39,11 +39,11 @@ defined( 'ABSPATH' ) || exit;
 						echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
 					} else {
 						// The translation doesn't exist anymore.
-						echo $this->links->new_post_translation_link( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
+						echo $this->links->get_new_post_link_html( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 					}
 				} else {
 					// No translation.
-					echo $this->links->new_post_translation_link( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
+					echo $this->links->get_new_post_link_html( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
 			</td>

@@ -39,7 +39,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param PLL_Language $language The language of the new translation.
 	 * @return string
 	 */
-	public function new_post_translation_link( int $post_id, PLL_Language $language ): string {
+	public function get_new_post_link_html( int $post_id, PLL_Language $language ): string {
 		$link = $this->get_new_post_translation_link( $post_id, $language );
 		return $this->new_translation_link( $link, $language );
 	}
