@@ -317,7 +317,6 @@ class PLL_Admin_Links extends PLL_Links {
 	 *            New parameter `$mode`.
 	 *
 	 * @param WP_Term $term      The term.
-	 * @param string  $taxonomy  Taxonomy name.
 	 * @param string  $post_type Post type name.
 	 * @param string  $mode      Optional. How the link should be displayed: with a pen icon or a language's flag.
 	 *                           Possible values are `icon` and `flag`. Default is `metabox`.
@@ -325,14 +324,14 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	public function get_edit_term_link_html( WP_Term $term, string $taxonomy, string $post_type, string $mode = 'metabox' ): string {
+	public function get_edit_term_link_html( WP_Term $term, string $post_type, string $mode = 'metabox' ): string {
 		$language = $this->model->term->get_language( $term->term_id );
 
 		if ( empty( $language ) ) {
 			return '';
 		}
 
-		$url = (string) get_edit_term_link( $term->term_id, $taxonomy, $post_type );
+		$url = (string) get_edit_term_link( $term->term_id, $term->taxonomy, $post_type );
 		return $this->edit_translation_link( $url, $language, $mode, $term->term_id, $term->name );
 	}
 

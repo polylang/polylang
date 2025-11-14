@@ -578,7 +578,7 @@ class PLL_Admin_Filters_Term {
 			$return[] = array(
 				'id'    => $term->term_id,
 				'value' => rtrim( $parents_list, ' >' ), // Trim the separator added at the end by WP.
-				'link'  => $this->links->get_edit_term_link_html( $term, $term->taxonomy, $post_type ),
+				'link'  => $this->links->get_edit_term_link_html( $term, $post_type ),
 			);
 		}
 
