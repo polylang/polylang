@@ -325,7 +325,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	public function edit_term_translation_link( WP_Term $term, string $taxonomy, string $post_type, string $mode = 'metabox' ): string {
+	public function get_edit_term_link_html( WP_Term $term, string $taxonomy, string $post_type, string $mode = 'metabox' ): string {
 		$language = $this->model->term->get_language( $term->term_id );
 
 		if ( empty( $language ) ) {

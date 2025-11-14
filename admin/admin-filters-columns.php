@@ -286,7 +286,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		// Link to edit (or not) the term or a translation.
-		$out .= $this->links->edit_term_translation_link( $tr_term, $taxonomy, $post_type, $tr_term->term_id === $term_id ? 'flag' : 'icon' );
+		$out .= $this->links->get_edit_term_link_html( $tr_term, $taxonomy, $post_type, $tr_term->term_id === $term_id ? 'flag' : 'icon' );
 
 		if ( $this->get_first_language_column() !== $column ) {
 			return $out;
