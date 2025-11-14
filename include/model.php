@@ -175,7 +175,7 @@ class PLL_Model {
 				esc_html( $name ),
 				esc_html( $debug[0]['file'] ?? '' ),
 				absint( $debug[0]['line'] ?? 0 )
-			),
+			)
 		);
 	}
 

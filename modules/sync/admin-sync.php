@@ -242,7 +242,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 				esc_html( $func ),
 				esc_html( $debug[0]['file'] ),
 				absint( $debug[0]['line'] )
-			),
+			)
 		);
 	}
 }
