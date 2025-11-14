@@ -282,7 +282,7 @@ class PLL_Admin_Filters_Columns {
 
 		if ( ! $tr_term instanceof WP_Term ) {
 			// Link to add a new translation: no translation for this language yet, or it doesn't exist anymore.
-			return $out . $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
+			return $out . $this->links->get_new_term_link_html( $term_id, $taxonomy, $post_type, $language );
 		}
 
 		// Link to edit (or not) the term or a translation.

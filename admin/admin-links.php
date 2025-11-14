@@ -259,7 +259,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param PLL_Language $language  The language of the new translation.
 	 * @return string
 	 */
-	public function new_term_translation_link( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
+	public function get_new_term_link_html( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
 		$link = $this->get_new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
 		return $this->new_translation_link( $link, $language );
 	}

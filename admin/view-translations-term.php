@@ -43,7 +43,7 @@ else {
 		}
 		$translation_exists = $translation instanceof WP_Term;
 
-		$add_link = isset( $term_id ) ? $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language ) : ''; // Do not display the add new link in add term form ($term_id not set).
+		$add_link = isset( $term_id ) ? $this->links->get_new_term_link_html( $term_id, $taxonomy, $post_type, $language ) : ''; // Do not display the add new link in add term form ($term_id not set).
 		$link = $add_link;
 
 		if ( $translation_exists ) {
