@@ -54,16 +54,16 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_post_language( int $user_id ) {
+	public function test_post_language( string $user ) {
 		$en = self::factory()->post->create( array( 'lang' => 'en' ) );
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
@@ -75,24 +75,25 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 
-		if ( $user_id ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
 			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_untranslated_post( int $user_id ) {
+	public function test_untranslated_post( string $user ) {
 		$en = self::factory()->post->create( array( 'lang' => 'en' ) );
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
@@ -104,28 +105,28 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( $user_id ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'from_post' ) );
-			$this->assertSame( 0, strpos( $column, '<a href="' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
-			$this->assertSame( 0, strpos( $column, '<span' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
 	 * Special case for media.
 	 *
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_untranslated_media( int $user_id ) {
+	public function test_untranslated_media( string $user ) {
 		$en = self::factory()->attachment->create_object( 'image.jpg' );
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
@@ -138,29 +139,29 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
-		if ( $user_id ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'from_media' ) );
-			$this->assertSame( 0, strpos( $column, '<a href="' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
 			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
-			$this->assertSame( 0, strpos( $column, '<span' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_translated_post( int $user_id ) {
+	public function test_translated_post( string $user ) {
 		$posts = self::factory()->post->create_translated(
 			array( 'lang' => 'en' ),
 			array( 'lang' => 'fr' )
 		);
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
@@ -170,11 +171,13 @@ class Columns_Test extends PLL_UnitTestCase {
 		$pll_admin->filters_columns->post_column( 'language_fr', $posts['en'] );
 		$column = ob_get_clean();
 
-		if ( $user_id ) {
-			$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
+		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
+
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
-			$this->assertEmpty( $column );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
@@ -193,20 +196,20 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_term_language( int $user_id ) {
+	public function test_term_language( string $user ) {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
 		$en = self::factory()->category->create( array( 'lang' => 'en' ) );
 
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
@@ -216,51 +219,51 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 
-		if ( $user_id ) {
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
 			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_untranslated_term( int $user_id ) {
+	public function test_untranslated_term( string $user ) {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
 		$en = self::factory()->category->create( array( 'lang' => 'en' ) );
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
+		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 
-		if ( $user_id ) {
-			$column = $pll_admin->filters_columns->term_column( '', 'language_fr', $en );
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
-			$this->assertSame( 0, strpos( $column, '<a href="' ) );
+			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
-			ob_start();
-			$pll_admin->filters_columns->term_column( '', 'language_fr', $en );
-			$this->assertEmpty( ob_get_clean() );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 
 	/**
-	 * @testWith [1]
-	 *           [0]
+	 * @testWith ["editor"]
+	 *           ["visitor"]
 	 *
-	 * @param int $user_id Current user ID.
+	 * @param string $user The user to define as current.
 	 * @return void
 	 */
-	public function test_translated_term( int $user_id ) {
+	public function test_translated_term( string $user ) {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
@@ -269,20 +272,19 @@ class Columns_Test extends PLL_UnitTestCase {
 			array( 'lang' => 'fr' )
 		);
 
-		if ( ! $user_id ) {
+		if ( 'visitor' === $user ) {
 			wp_set_current_user( 0 );
 		}
 
 		$pll_admin = ( new PLL_Context_Admin() )->get();
+		$column    = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
 
-		if ( $user_id ) {
-			$column = $pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
+		if ( 'editor' === $user ) {
 			$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 			$this->assertNotFalse( strpos( $column, 'href="' ) );
 		} else {
-			ob_start();
-			$pll_admin->filters_columns->term_column( '', 'language_fr', $cats['en'] );
-			$this->assertEmpty( ob_get_clean() );
+			$this->assertNotFalse( strpos( $column, 'wp-ui-text-icon' ) );
+			$this->assertFalse( strpos( $column, 'href="' ) );
 		}
 	}
 

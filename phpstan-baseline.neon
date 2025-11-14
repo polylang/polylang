@@ -67,48 +67,6 @@ parameters:
 			path: admin/admin-classic-editor.php
 
 		-
-			message: '#^Cannot call method new_post_translation_link\(\) on PLL_Admin_Links\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: '#^Cannot call method new_term_translation_link\(\) on PLL_Admin_Links\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: '#^Parameter \#1 \$args of method WP_Ajax_Response\:\:add\(\) expects array\{what\?\: string, action\?\: string\|false, id\?\: int\|WP_Error, old_id\?\: int\|false, position\?\: string, data\?\: string\|WP_Error, supplemental\?\: array\}, array\{what\: ''row'', data\: string\|false, supplemental\: array\{post_id\: int\}\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: '#^Parameter \#1 \$args of method WP_Ajax_Response\:\:add\(\) expects array\{what\?\: string, action\?\: string\|false, id\?\: int\|WP_Error, old_id\?\: int\|false, position\?\: string, data\?\: string\|WP_Error, supplemental\?\: array\}, array\{what\: ''row'', data\: string\|false, supplemental\: array\{term_id\: int\}\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: '#^Parameter \#1 \$post_type of function post_type_exists expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: '#^Parameter \#1 \$taxonomy of function taxonomy_exists expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: '#^Parameter \#3 \$object_type of function get_edit_term_link expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
 			message: '#^Parameter \#1 \$location of function wp_safe_redirect expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1

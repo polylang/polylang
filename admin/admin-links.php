@@ -33,13 +33,13 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a new post translation link.
 	 *
-	 * @since 1.8
+	 * @since 3.8
 	 *
 	 * @param int          $post_id  The source post ID.
 	 * @param PLL_Language $language The language of the new translation.
 	 * @return string
 	 */
-	public function new_post_translation_link( int $post_id, PLL_Language $language ): string {
+	public function get_new_post_link_html( int $post_id, PLL_Language $language ): string {
 		$link = $this->get_new_post_translation_link( $post_id, $language );
 		return $this->new_translation_link( $link, $language );
 	}
@@ -157,49 +157,90 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a post translation link.
 	 *
-	 * @since 1.4
+	 * @since 3.8
 	 *
-	 * @param int $post_id The translation post id.
+	 * @param WP_Post $post The post.
+	 * @param string  $mode Optional. How the link should be displayed: with a pen icon or a language's flag.
+	 *                      Possible values are `metabox`, `icon`, and `flag`. Default is `metabox`.
 	 * @return string
+	 *
+	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	public function edit_post_translation_link( int $post_id ): string {
-		$language = $this->model->post->get_language( $post_id );
+	public function get_edit_post_link_html( WP_Post $post, string $mode = 'metabox' ): string {
+		$language = $this->model->post->get_language( $post->ID );
 
 		if ( empty( $language ) ) {
 			// Should not happen.
 			return '';
 		}
 
-		$link = (string) get_edit_post_link( $post_id );
-		return $this->edit_translation_link( $link, $language );
+		$url = (string) get_edit_post_link( $post->ID );
+		return $this->edit_translation_link( $url, $language, $mode, $post->ID, $post->post_title );
 	}
 
 	/**
 	 * Returns the html markup for a translation link.
 	 *
-	 * @since 2.6
-	 * @since 3.8 Visibility changed from `public` to `protected`.
+	 * @since 3.8
 	 *
-	 * @param string       $link     The translation link.
-	 * @param PLL_Language $language The language of the translation.
+	 * @param string       $url       URL of the edition link.
+	 * @param PLL_Language $language  Language of the item.
+	 * @param string       $mode      How the link should be displayed: with a pen icon or a language's flag.
+	 *                                Possible values are `metabox`, `icon`, and `flag`.
+	 * @param int          $item_id   ID of the item. Used only in `icon` mode.
+	 * @param string       $item_name Name of the item. Not used in `metabox` mode.
 	 * @return string
+	 *
+	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	protected function edit_translation_link( string $link, PLL_Language $language ): string {
-		if ( empty( $link ) ) {
-			return sprintf(
-				'<span title="%s" class="pll_icon_edit wp-ui-text-icon"></span>',
+	private function edit_translation_link( string $url, PLL_Language $language, string $mode, int $item_id, string $item_name ): string {
+		if ( 'flag' === $mode ) {
+			$flag  = $this->get_flag_html( $language );
+			$class = 'pll_column_flag';
+		} else {
+			$flag  = '';
+			$class = 'pll_icon_edit';
+		}
+
+		if ( empty( $url ) ) {
+			// The current user is not allowed to edit the item.
+			if ( 'flag' === $mode ) {
 				/* translators: accessibility text, %s is a native language name */
-				esc_attr( sprintf( __( 'You are not allowed to edit a translation in %s', 'polylang' ), $language->name ) )
+				$hint = sprintf( __( 'You are not allowed to edit this item in %s', 'polylang' ), $language->name );
+			} else {
+				/* translators: accessibility text, %s is a native language name */
+				$hint = sprintf( __( 'You are not allowed to edit a translation in %s', 'polylang' ), $language->name );
+			}
+
+			return sprintf(
+				'<span title="%s" class="%s wp-ui-text-icon">%s</span>',
+				esc_attr( $hint ),
+				esc_attr( $class ),
+				$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 		}
 
-		/* translators: accessibility text, %s is a native language name */
-		$hint = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
+		// The current user is allowed to edit the item.
+		if ( 'flag' === $mode ) {
+			/* translators: accessibility text, %s is a native language name */
+			$hint = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
+		} elseif ( 'icon' === $mode ) {
+			/* translators: accessibility text, %s is a native language name */
+			$hint   = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
+			$class .= " translation_{$item_id}";
+		} else {
+			/* translators: accessibility text, %s is a native language name */
+			$hint      = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
+			$item_name = $hint;
+		}
+
 		return sprintf(
-			'<a href="%1$s" title="%2$s" class="pll_icon_edit"><span class="screen-reader-text">%3$s</span></a>',
-			esc_url( $link ),
-			esc_attr( $hint ),
-			esc_html( $hint )
+			'<a href="%s" class="%s" title="%s"><span class="screen-reader-text">%s</span>%s</a>',
+			esc_url( $url ),
+			esc_attr( $class ),
+			esc_attr( $item_name ),
+			esc_html( $hint ),
+			$flag // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
 
@@ -214,7 +255,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param PLL_Language $language  The language of the new translation.
 	 * @return string
 	 */
-	public function new_term_translation_link( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
+	public function get_new_term_link_html( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
 		$link = $this->get_new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
 		return $this->new_translation_link( $link, $language );
 	}
@@ -267,23 +308,37 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a term translation link.
 	 *
-	 * @since 1.4
+	 * @since 3.8
 	 *
-	 * @param int    $term_id   Translation term id.
-	 * @param string $taxonomy  Taxonomy name.
-	 * @param string $post_type Post type name.
+	 * @param WP_Term $term      The term.
+	 * @param string  $post_type Post type name.
+	 * @param string  $mode      Optional. How the link should be displayed: with a pen icon or a language's flag.
+	 *                           Possible values are `metabox`, `icon`, and `flag`. Default is `metabox`.
 	 * @return string
+	 *
+	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	public function edit_term_translation_link( int $term_id, string $taxonomy, string $post_type ): string {
-		$language = $this->model->term->get_language( $term_id );
+	public function get_edit_term_link_html( WP_Term $term, string $post_type, string $mode = 'metabox' ): string {
+		$language = $this->model->term->get_language( $term->term_id );
 
 		if ( empty( $language ) ) {
-			// Should not happen.
 			return '';
 		}
 
-		$link = (string) get_edit_term_link( $term_id, $taxonomy, $post_type );
-		return $this->edit_translation_link( $link, $language );
+		$url = (string) get_edit_term_link( $term->term_id, $term->taxonomy, $post_type );
+		return $this->edit_translation_link( $url, $language, $mode, $term->term_id, $term->name );
+	}
+
+	/**
+	 * Returns the language flag or the language slug if there is no flag.
+	 *
+	 * @since 3.8
+	 *
+	 * @param PLL_Language $language PLL_Language object.
+	 * @return string
+	 */
+	public function get_flag_html( PLL_Language $language ): string {
+		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 
 	/**
