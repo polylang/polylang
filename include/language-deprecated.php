@@ -126,7 +126,7 @@ abstract class PLL_Language_Deprecated {
 		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 		$file       = $trace[0]['file'] ?? '';
 		$line       = $trace[0]['line'] ?? 0;
-		throw new DomainException(
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
 					"Cannot access %s property %s::$%s in %s on line %d.\nError handler",
