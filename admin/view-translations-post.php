@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) || exit;
 			$translation = get_post( $translation_id );
 
 			if ( $translation instanceof WP_Post ) {
-				$link = $this->links->edit_post_translation_link( $translation );
+				$link = $this->links->get_edit_post_link_html( $translation );
 			}
 		}
 		?>

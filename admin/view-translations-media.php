@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) || exit;
 							esc_attr( $language->slug ),
 							(int) $translation->ID
 						);
-						echo $this->links->edit_post_translation_link( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
+						echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
 					} else {
 						// The translation doesn't exist anymore.
 						echo $this->links->new_post_translation_link( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput

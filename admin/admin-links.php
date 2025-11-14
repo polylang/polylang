@@ -168,7 +168,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	public function edit_post_translation_link( WP_Post $post, string $mode = 'metabox' ): string {
+	public function get_edit_post_link_html( WP_Post $post, string $mode = 'metabox' ): string {
 		$language = $this->model->post->get_language( $post->ID );
 
 		if ( empty( $language ) ) {

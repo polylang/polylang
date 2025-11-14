@@ -175,7 +175,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		// Link to edit (or not) the post or a translation.
-		echo $this->links->edit_post_translation_link( $tr_post, $tr_post->ID === $post_id ? 'flag' : 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->links->get_edit_post_link_html( $tr_post, $tr_post->ID === $post_id ? 'flag' : 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
