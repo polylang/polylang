@@ -166,7 +166,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *                      Possible values are `icon`, `metabox`, and `flag`. Default is `metabox`.
 	 * @return string
 	 *
-	 * @phpstan-param 'icon'|'metabox'|'flag' $mode
+	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
 	public function edit_post_translation_link( WP_Post $post, string $mode = 'metabox' ): string {
 		$language = $this->model->post->get_language( $post->ID );
@@ -195,7 +195,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param string       $item_name Name of the item. Not used in `metabox` mode.
 	 * @return string
 	 *
-	 * @phpstan-param 'icon'|'metabox'|'flag' $mode
+	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
 	private function edit_translation_link( string $url, PLL_Language $language, string $mode, int $item_id, string $item_name ): string {
 		if ( 'flag' === $mode ) {
@@ -323,7 +323,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *                           Possible values are `icon` and `flag`. Default is `metabox`.
 	 * @return string
 	 *
-	 * @phpstan-param 'icon'|'metabox'|'flag' $mode
+	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
 	public function edit_term_translation_link( WP_Term $term, string $taxonomy, string $post_type, string $mode = 'metabox' ): string {
 		$language = $this->model->term->get_language( $term->term_id );
