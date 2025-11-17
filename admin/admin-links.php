@@ -175,7 +175,7 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		$url = (string) get_edit_post_link( $post->ID );
-		return $this->edit_translation_link( $url, $language, $mode, $post->ID, $post->post_title );
+		return $this->get_edit_item_link_html( $url, $language, $mode, $post->ID, $post->post_title );
 	}
 
 	/**
@@ -193,7 +193,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	private function edit_translation_link( string $url, PLL_Language $language, string $mode, int $item_id, string $item_name ): string {
+	private function get_edit_item_link_html( string $url, PLL_Language $language, string $mode, int $item_id, string $item_name ): string {
 		if ( 'flag' === $mode ) {
 			$flag  = $this->get_flag_html( $language );
 			$class = 'pll_column_flag';
@@ -326,7 +326,7 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		$url = (string) get_edit_term_link( $term->term_id, $term->taxonomy, $post_type );
-		return $this->edit_translation_link( $url, $language, $mode, $term->term_id, $term->name );
+		return $this->get_edit_item_link_html( $url, $language, $mode, $term->term_id, $term->name );
 	}
 
 	/**
