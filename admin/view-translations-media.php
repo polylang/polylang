@@ -1,7 +1,6 @@
 <?php
 /**
  * Displays the translations fields for media
- * Needs WP 3.5+
  *
  * @package Polylang
  *
@@ -40,7 +39,7 @@ defined( 'ABSPATH' ) || exit;
 					);
 					echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
 				} else {
-					// The translation doesn't exist anymore.
+					// The translation doesn't exist.
 					echo $this->links->get_new_post_link_html( $post, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
