@@ -19,30 +19,28 @@ defined( 'ABSPATH' ) || exit;
 		if ( $language->term_id === $lang->term_id ) {
 			continue;
 		}
+
+		$translation_id = $this->model->post->get_translation( $post_ID, $language );
+		$translation    = null;
+
+		if ( ! empty( $translation_id ) && $translation_id !== $post_ID ) {
+			$translation = get_post( $translation_id );
+		}
 		?>
 		<tr>
 			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->flag; // phpcs:ignore WordPress.Security.EscapeOutput ?></span><?php echo esc_html( $language->name ); ?></td>
 			<td class = "pll-media-edit-column">
 				<?php
-				$translation_id = $this->model->post->get_translation( $post_ID, $language );
-
-				if ( ! empty( $translation_id ) && $translation_id !== $post_ID ) {
-					$translation = get_post( $translation_id );
-
-					if ( $translation instanceof WP_Post ) {
-						// The translation exists.
-						printf(
-							'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
-							esc_attr( $language->slug ),
-							(int) $translation->ID
-						);
-						echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
-					} else {
-						// The translation doesn't exist anymore.
-						echo $this->links->get_new_post_link_html( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
-					}
+				if ( $translation instanceof WP_Post ) {
+					// The translation exists.
+					printf(
+						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
+						esc_attr( $language->slug ),
+						(int) $translation->ID
+					);
+					echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
 				} else {
-					// No translation.
+					// The translation doesn't exist anymore.
 					echo $this->links->get_new_post_link_html( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
