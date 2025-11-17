@@ -161,12 +161,16 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @param WP_Post $post The post.
 	 * @param string  $mode Optional. How the link should be displayed: with a pen icon or a language's flag.
-	 *                      Possible values are `metabox`, `icon`, and `flag`. Default is `metabox`.
+	 *                      Possible values are:
+	 *                      - `metabox_translation` (pen icon in metabox),
+	 *                      - `list_translation` (pen icon in items list),
+	 *                      - `list_current` (flag in items list).
+	 *                      Default is `metabox_translation`.
 	 * @return string
 	 *
-	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
+	 * @phpstan-param 'metabox_translation'|'list_translation'|'list_current' $mode
 	 */
-	public function get_edit_post_link_html( WP_Post $post, string $mode = 'metabox' ): string {
+	public function get_edit_post_link_html( WP_Post $post, string $mode = 'metabox_translation' ): string {
 		$language = $this->model->post->get_language( $post->ID );
 
 		if ( empty( $language ) ) {
@@ -185,16 +189,20 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @param string       $url       URL of the edition link.
 	 * @param PLL_Language $language  Language of the item.
-	 * @param int          $item_id   ID of the item. Used only in `icon` mode.
-	 * @param string       $item_name Name of the item. Not used in `metabox` mode.
+	 * @param int          $item_id   ID of the item. Used only in `list_translation` mode.
+	 * @param string       $item_name Name of the item. Not used in `metabox_translation` mode.
 	 * @param string       $mode      How the link should be displayed: with a pen icon or a language's flag.
-	 *                                Possible values are `metabox`, `icon`, and `flag`.
+	 *                                Possible values are:
+	 *                                - `metabox_translation` (pen icon in metabox),
+	 *                                - `list_translation` (pen icon in items list),
+	 *                                - `list_current` (flag in items list).
+	 *                                Default is `metabox_translation`.
 	 * @return string
 	 *
-	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
+	 * @phpstan-param 'metabox_translation'|'list_translation'|'list_current' $mode
 	 */
 	private function get_edit_item_link_html( string $url, PLL_Language $language, int $item_id, string $item_name, string $mode ): string {
-		if ( 'flag' === $mode ) {
+		if ( 'list_current' === $mode ) {
 			$flag  = $this->get_flag_html( $language );
 			$class = 'pll_column_flag';
 		} else {
@@ -204,7 +212,7 @@ class PLL_Admin_Links extends PLL_Links {
 
 		if ( empty( $url ) ) {
 			// The current user is not allowed to edit the item.
-			if ( 'flag' === $mode ) {
+			if ( 'list_current' === $mode ) {
 				/* translators: accessibility text, %s is a native language name */
 				$hint = sprintf( __( 'You are not allowed to edit this item in %s', 'polylang' ), $language->name );
 			} else {
@@ -221,10 +229,10 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		// The current user is allowed to edit the item.
-		if ( 'flag' === $mode ) {
+		if ( 'list_current' === $mode ) {
 			/* translators: accessibility text, %s is a native language name */
 			$hint = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
-		} elseif ( 'icon' === $mode ) {
+		} elseif ( 'list_translation' === $mode ) {
 			/* translators: accessibility text, %s is a native language name */
 			$hint   = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 			$class .= " translation_{$item_id}";
@@ -313,12 +321,16 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @param WP_Term $term      The term.
 	 * @param string  $post_type Post type name.
 	 * @param string  $mode      Optional. How the link should be displayed: with a pen icon or a language's flag.
-	 *                           Possible values are `metabox`, `icon`, and `flag`. Default is `metabox`.
+	 *                           Possible values are:
+	 *                           - `metabox_translation` (pen icon in metabox),
+	 *                           - `list_translation` (pen icon in items list),
+	 *                           - `list_current` (flag in items list).
+	 *                           Default is `metabox_translation`.
 	 * @return string
 	 *
-	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
+	 * @phpstan-param 'metabox_translation'|'list_translation'|'list_current' $mode
 	 */
-	public function get_edit_term_link_html( WP_Term $term, string $post_type, string $mode = 'metabox' ): string {
+	public function get_edit_term_link_html( WP_Term $term, string $post_type, string $mode = 'metabox_translation' ): string {
 		$language = $this->model->term->get_language( $term->term_id );
 
 		if ( empty( $language ) ) {
