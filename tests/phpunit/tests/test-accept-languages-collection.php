@@ -9,7 +9,7 @@ class Accept_Languages_Collection_Test extends PLL_UnitTestCase {
 	 */
 	protected function get_accept_languages_array( $accept_languages_collection ) {
 		$reflection = new ReflectionProperty( PLL_Accept_Languages_Collection::class, 'accept_languages' );
-		$reflection->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $reflection->setAccessible( true );
 		return $reflection->getValue( $accept_languages_collection );
 	}
 

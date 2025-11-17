@@ -134,8 +134,7 @@ abstract class PLL_Language_Deprecated {
 					$file,
 					$line
 				)
-			),
-			E_USER_ERROR
+			)
 		);
 	}
 
