@@ -4,10 +4,9 @@
  *
  * @package Polylang
  *
- * @var PLL_Admin_Classic_Editor $this      PLL_Admin_Classic_Editor object.
- * @var PLL_Language             $lang      The post language. Default language if no language assigned yet.
- * @var int                      $post_ID   The post id.
- * @var string                   $post_type The post type.
+ * @var PLL_Admin_Classic_Editor $this PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang The post language. Default language if no language assigned yet.
+ * @var WP_Post                  $post The post object.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -20,8 +19,8 @@ defined( 'ABSPATH' ) || exit;
 			continue;
 		}
 
-		$translation_id = $this->model->post->get_translation( $post_ID, $language );
-		if ( ! $translation_id || $translation_id === $post_ID ) { // $translation_id == $post_ID happens if the post has been (auto)saved before changing the language.
+		$translation_id = $this->model->post->get_translation( $post->ID, $language );
+		if ( ! $translation_id || $translation_id === $post->ID ) { // $translation_id == $post->ID happens if the post has been (auto)saved before changing the language.
 			$translation_id = 0;
 		}
 
@@ -29,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 			$translation_id = $this->model->post->get( $from_post_id, $language );
 		}
 
-		$add_link    = $this->links->get_new_post_link_html( $post_ID, $language );
+		$add_link    = $this->links->get_new_post_link_html( $post, $language );
 		$link        = $add_link;
 		$translation = null;
 		if ( $translation_id ) {
@@ -55,7 +54,7 @@ defined( 'ABSPATH' ) || exit;
 			 *
 			 * @param string $post_type The post type.
 			 */
-			do_action( 'pll_before_post_translation_' . $language->slug, $post_type );
+			do_action( 'pll_before_post_translation_' . $language->slug, $post->post_type );
 			?>
 			<td class = "pll-translation-column">
 				<?php

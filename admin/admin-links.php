@@ -35,12 +35,12 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 3.8
 	 *
-	 * @param int          $post_id  The source post ID.
+	 * @param WP_Post      $post     The source post.
 	 * @param PLL_Language $language The language of the new translation.
 	 * @return string
 	 */
-	public function get_new_post_link_html( int $post_id, PLL_Language $language ): string {
-		$link = $this->get_new_post_translation_link( $post_id, $language );
+	public function get_new_post_link_html( WP_Post $post, PLL_Language $language ): string {
+		$link = $this->get_new_post_translation_link( $post, $language );
 		return $this->new_translation_link( $link, $language );
 	}
 
@@ -49,25 +49,20 @@ class PLL_Admin_Links extends PLL_Links {
 	 * Returns an empty string if the current user is not allowed to create posts in the given language.
 	 *
 	 * @since 1.5
+	 * @since 3.8 Changed first parameter type from `int` to `WP_Post`.
 	 *
-	 * @param int          $post_id  The source post id.
+	 * @param WP_Post      $post     The source post.
 	 * @param PLL_Language $language The language of the new translation.
 	 * @param string       $context  Optional. Defaults to 'display' which encodes '&' to '&amp;'.
 	 *                               Otherwise, preserves '&'.
 	 * @return string
 	 */
-	public function get_new_post_translation_link( int $post_id, PLL_Language $language, string $context = 'display' ): string {
+	public function get_new_post_translation_link( WP_Post $post, PLL_Language $language, string $context = 'display' ): string {
 		if ( ! $this->user->can_translate( $language ) ) {
 			return '';
 		}
 
-		$post_type = get_post_type( $post_id );
-
-		if ( empty( $post_type ) ) {
-			return '';
-		}
-
-		$post_type_object = get_post_type_object( $post_type );
+		$post_type_object = get_post_type_object( $post->post_type );
 
 		if ( empty( $post_type_object ) || ! $this->user->has_cap( $post_type_object->cap->create_posts ) ) {
 			return '';
@@ -78,15 +73,15 @@ class PLL_Admin_Links extends PLL_Links {
 			$privacy_page = get_option( 'wp_page_for_privacy_policy' );
 			$privacy_page = is_numeric( $privacy_page ) ? (int) $privacy_page : 0;
 
-			if ( $privacy_page && in_array( $post_id, $this->model->post->get_translations( $privacy_page ) ) ) {
+			if ( $privacy_page && in_array( $post->ID, $this->model->post->get_translations( $privacy_page ) ) ) {
 				return '';
 			}
 		}
 
-		if ( 'attachment' === $post_type ) {
+		if ( 'attachment' === $post->post_type ) {
 			$args = array(
 				'action'     => 'translate_media',
-				'from_media' => $post_id,
+				'from_media' => $post->ID,
 				'new_lang'   => $language->slug,
 			);
 
@@ -100,8 +95,8 @@ class PLL_Admin_Links extends PLL_Links {
 			}
 		} else {
 			$args = array(
-				'post_type' => $post_type,
-				'from_post' => $post_id,
+				'post_type' => $post->post_type,
+				'from_post' => $post->ID,
 				'new_lang'  => $language->slug,
 			);
 
@@ -123,7 +118,7 @@ class PLL_Admin_Links extends PLL_Links {
 		 * @param PLL_Language $language The language of the new translation.
 		 * @param int          $post_id  The source post id.
 		 */
-		return apply_filters( 'pll_get_new_post_translation_link', $link, $language, $post_id );
+		return apply_filters( 'pll_get_new_post_translation_link', $link, $language, $post->ID );
 	}
 
 	/**
@@ -255,16 +250,15 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Returns the html markup for a new term translation.
 	 *
-	 * @since 1.8
+	 * @since 3.8
 	 *
-	 * @param int          $term_id   Source term ID.
-	 * @param string       $taxonomy  Taxonomy name.
+	 * @param WP_Term      $term      The source term.
 	 * @param string       $post_type Post type name.
 	 * @param PLL_Language $language  The language of the new translation.
 	 * @return string
 	 */
-	public function get_new_term_link_html( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
-		$link = $this->get_new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
+	public function get_new_term_link_html( WP_Term $term, string $post_type, PLL_Language $language ): string {
+		$link = $this->get_new_term_translation_link( $term, $post_type, $language );
 		return $this->new_translation_link( $link, $language );
 	}
 
@@ -273,27 +267,28 @@ class PLL_Admin_Links extends PLL_Links {
 	 * Returns an empty string if the current user is not allowed to create terms in the given language.
 	 *
 	 * @since 1.5
+	 * @since 3.8 Changed first parameter type from `int` to `WP_Term`.
+	 *            Removed 2nd parameter `$taxonomy`.
 	 *
-	 * @param int          $term_id   Source term id.
-	 * @param string       $taxonomy  Taxonomy name.
+	 * @param WP_Term      $term      The source term.
 	 * @param string       $post_type Post type name.
 	 * @param PLL_Language $language  The language of the new translation.
 	 * @return string
 	 */
-	public function get_new_term_translation_link( int $term_id, string $taxonomy, string $post_type, PLL_Language $language ): string {
+	public function get_new_term_translation_link( WP_Term $term, string $post_type, PLL_Language $language ): string {
 		if ( ! $this->user->can_translate( $language ) ) {
 			return '';
 		}
 
-		$tax = get_taxonomy( $taxonomy );
+		$tax = get_taxonomy( $term->taxonomy );
 		if ( ! $tax || ! $this->user->has_cap( $tax->cap->edit_terms ) ) {
 			return '';
 		}
 
 		$args = array(
-			'taxonomy'  => $taxonomy,
+			'taxonomy'  => $term->taxonomy,
 			'post_type' => $post_type,
-			'from_tag'  => $term_id,
+			'from_tag'  => $term->term_id,
 			'new_lang'  => $language->slug,
 		);
 
@@ -310,7 +305,7 @@ class PLL_Admin_Links extends PLL_Links {
 		 * @param string       $taxonomy  Taxonomy name.
 		 * @param string       $post_type Post type name.
 		 */
-		return apply_filters( 'pll_get_new_term_translation_link', $link, $language, $term_id, $taxonomy, $post_type );
+		return apply_filters( 'pll_get_new_term_translation_link', $link, $language, $term->term_id, $term->taxonomy, $post_type );
 	}
 
 	/**

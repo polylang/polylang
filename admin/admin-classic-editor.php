@@ -97,10 +97,9 @@ class PLL_Admin_Classic_Editor {
 	 * @return void
 	 */
 	public function post_language( WP_Post $post ): void {
-		$post_ID       = $post->ID;
 		$post_type     = $post->post_type;
 		$from_post_id  = 0;
-		$lang          = $this->model->post->get_language( $post_ID );
+		$lang          = $this->model->post->get_language( $post->ID );
 		$new_post_data = $this->links->get_data_from_new_post_translation_request();
 
 		if ( ! empty( $new_post_data ) ) {
@@ -114,7 +113,7 @@ class PLL_Admin_Classic_Editor {
 
 		$dropdown = new PLL_Walker_Dropdown();
 
-		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post_ID ) : 'post_lang_choice';
+		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post->ID ) : 'post_lang_choice';
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->languages->filter( 'translator' )->get_list(),
@@ -174,11 +173,16 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 'The request is missing the parameter "post_type", "lang" and/or "post_id".' );
 		}
 
-		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
-		$post_ID   = (int) $_POST['post_id'];
+		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist().
+		$post_ID = (int) $_POST['post_id'];
+		$post    = get_post( $post_ID );
+
+		if ( ! $post instanceof WP_Post ) {
+			wp_die( esc_html( "Invalid post ID {$post_ID}." ) );
+		}
+
 		$lang_slug = sanitize_key( $_POST['lang'] );
 		$lang      = $this->model->get_language( $lang_slug );
-		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( empty( $lang ) ) {
 			wp_die( esc_html( "{$lang_slug} is not a valid language code." ) );
@@ -186,20 +190,20 @@ class PLL_Admin_Classic_Editor {
 
 		( new User() )->can_translate_or_die( $lang );
 
-		$post_type_object = get_post_type_object( $post_type );
+		$post_type_object = get_post_type_object( $post->post_type );
 
 		if ( empty( $post_type_object ) ) {
-			wp_die( esc_html( "{$post_type} is not a valid post type." ) );
+			wp_die( esc_html( "{$post->post_type} is not a valid post type." ) );
 		}
 
-		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
+		if ( ! current_user_can( $post_type_object->cap->edit_post, $post->ID ) ) {
 			wp_die( 'You are not allowed to edit this post.' );
 		}
 
-		$this->model->post->set_language( $post_ID, $lang );
+		$this->model->post->set_language( $post->ID, $lang );
 
 		ob_start();
-		if ( 'attachment' === $post_type ) {
+		if ( 'attachment' === $post->post_type ) {
 			include __DIR__ . '/view-translations-media.php';
 		} else {
 			include __DIR__ . '/view-translations-post.php';
@@ -221,8 +225,8 @@ class PLL_Admin_Classic_Editor {
 					ob_end_clean();
 
 					ob_start();
-					// Use $post_ID to remember checked terms in case we come back to the original language
-					wp_terms_checklist( $post_ID, array( 'taxonomy' => $taxonomy->name, 'popular_cats' => $popular_ids ) );
+					// Use $post->ID to remember checked terms in case we come back to the original language
+					wp_terms_checklist( $post->ID, array( 'taxonomy' => $taxonomy->name, 'popular_cats' => $popular_ids ) );
 					$supplemental['all'] = ob_get_contents();
 					ob_end_clean();
 
@@ -244,37 +248,33 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		// Parent dropdown list ( only for hierarchical post types )
-		if ( in_array( $post_type, get_post_types( array( 'hierarchical' => true ) ) ) ) {
-			$post = get_post( $post_ID );
+		if ( in_array( $post->post_type, get_post_types( array( 'hierarchical' => true ) ) ) ) {
+			// Args and filter from 'page_attributes_meta_box' in wp-admin/includes/meta-boxes.php of WP 4.2.1
+			$dropdown_args = array(
+				'post_type'        => $post->post_type,
+				'exclude_tree'     => $post->ID,
+				'selected'         => $post->post_parent,
+				'name'             => 'parent_id',
+				'show_option_none' => __( '(no parent)', 'polylang' ),
+				'sort_column'      => 'menu_order, post_title',
+				'echo'             => 0,
+			);
 
-			if ( ! empty( $post ) ) {
-				// Args and filter from 'page_attributes_meta_box' in wp-admin/includes/meta-boxes.php of WP 4.2.1
-				$dropdown_args = array(
-					'post_type'        => $post->post_type,
-					'exclude_tree'     => $post->ID,
-					'selected'         => $post->post_parent,
-					'name'             => 'parent_id',
-					'show_option_none' => __( '(no parent)', 'polylang' ),
-					'sort_column'      => 'menu_order, post_title',
-					'echo'             => 0,
-				);
+			/** This filter is documented in wp-admin/includes/meta-boxes.php */
+			$dropdown_args = (array) apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3.
+			$dropdown_args['echo'] = 0; // Make sure to not print it.
 
-				/** This filter is documented in wp-admin/includes/meta-boxes.php */
-				$dropdown_args = (array) apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3.
-				$dropdown_args['echo'] = 0; // Make sure to not print it.
+			/** @var string $data */
+			$data = wp_dropdown_pages( $dropdown_args ); // phpcs:ignore WordPress.Security.EscapeOutput
 
-				/** @var string $data */
-				$data = wp_dropdown_pages( $dropdown_args ); // phpcs:ignore WordPress.Security.EscapeOutput
-
-				$x->Add( array( 'what' => 'pages', 'data' => $data ) );
-			}
+			$x->Add( array( 'what' => 'pages', 'data' => $data ) );
 		}
 
 		// Flag
 		$x->Add( array( 'what' => 'flag', 'data' => empty( $lang->flag ) ? esc_html( $lang->slug ) : $lang->flag ) );
 
 		// Sample permalink
-		$x->Add( array( 'what' => 'permalink', 'data' => get_sample_permalink_html( $post_ID ) ) );
+		$x->Add( array( 'what' => 'permalink', 'data' => get_sample_permalink_html( $post->ID ) ) );
 
 		$x->send();
 	}

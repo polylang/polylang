@@ -146,9 +146,15 @@ class PLL_Admin_Filters_Columns {
 			return;
 		}
 
-		$post_id = (int) $post_id;
-		$inline  = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && is_string( $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' );
-		$lang    = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id );
+		$post = get_post( (int) $post_id );
+
+		if ( ! $post instanceof WP_Post ) {
+			// Should not happen.
+			return;
+		}
+
+		$inline = isset( $_POST['inline_lang_choice'], $_REQUEST['_inline_edit'] ) && is_string( $_REQUEST['_inline_edit'] ) && wp_verify_nonce( $_REQUEST['_inline_edit'], 'inlineeditnonce' );
+		$lang   = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post->ID );
 
 		if ( empty( $lang ) ) {
 			return;
@@ -162,20 +168,20 @@ class PLL_Admin_Filters_Columns {
 
 		// Hidden field containing the post language for quick edit.
 		if ( $column === $this->get_first_language_column() ) {
-			printf( '<div class="hidden" id="lang_%d">%s</div>', (int) $post_id, esc_html( $lang->slug ) );
+			printf( '<div class="hidden" id="lang_%d">%s</div>', (int) $post->ID, esc_html( $lang->slug ) );
 		}
 
-		$tr_id   = $this->model->post->get( $post_id, $language );
+		$tr_id   = $this->model->post->get( $post->ID, $language );
 		$tr_post = $tr_id ? get_post( $tr_id ) : null;
 
 		if ( ! $tr_post instanceof WP_Post ) {
 			// Link to add a new translation: no translation for this language yet, or it doesn't exist anymore.
-			echo $this->links->get_new_post_link_html( $post_id, $language ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $this->links->get_new_post_link_html( $post, $language ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			return;
 		}
 
 		// Link to edit (or not) the post or a translation.
-		echo $this->links->get_edit_post_link_html( $tr_post, $tr_post->ID === $post_id ? 'list_current' : 'list_translation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->links->get_edit_post_link_html( $tr_post, $tr_post->ID === $post->ID ? 'list_current' : 'list_translation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -277,22 +283,29 @@ class PLL_Admin_Filters_Columns {
 			return $out;
 		}
 
-		$tr_id   = $this->model->term->get( $term_id, $language );
+		$term = get_term( $term_id, $taxonomy );
+
+		if ( ! $term instanceof WP_Term ) {
+			// Should not happen.
+			return $out;
+		}
+
+		$tr_id   = $this->model->term->get( $term->term_id, $language );
 		$tr_term = $tr_id ? get_term( $tr_id, $taxonomy ) : null;
 
 		if ( ! $tr_term instanceof WP_Term ) {
 			// Link to add a new translation: no translation for this language yet, or it doesn't exist anymore.
-			return $out . $this->links->get_new_term_link_html( $term_id, $taxonomy, $post_type, $language );
+			return $out . $this->links->get_new_term_link_html( $term, $post_type, $language );
 		}
 
 		// Link to edit (or not) the term or a translation.
-		$out .= $this->links->get_edit_term_link_html( $tr_term, $post_type, $tr_term->term_id === $term_id ? 'list_current' : 'list_translation' );
+		$out .= $this->links->get_edit_term_link_html( $tr_term, $post_type, $tr_term->term_id === $term->term_id ? 'list_current' : 'list_translation' );
 
 		if ( $this->get_first_language_column() !== $column ) {
 			return $out;
 		}
 
-		$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term_id, esc_html( $lang->slug ) );
+		$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term->term_id, esc_html( $lang->slug ) );
 
 		/**
 		 * Filters the output of the first language column in the terms list table.
@@ -303,7 +316,7 @@ class PLL_Admin_Filters_Columns {
 		 * @param int    $term_id Term ID.
 		 * @param string $lang    Language code.
 		 */
-		return apply_filters( 'pll_first_language_term_column', $out, $term_id, $lang->slug );
+		return apply_filters( 'pll_first_language_term_column', $out, $term->term_id, $lang->slug );
 	}
 
 	/**

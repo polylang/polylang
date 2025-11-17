@@ -161,10 +161,10 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 0.1
 	 *
-	 * @param WP_Term $tag The term being edited.
+	 * @param WP_Term $term The term being edited.
 	 * @return void
 	 */
-	public function edit_term_form( $tag ) {
+	public function edit_term_form( $term ) {
 		if ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$post_type = sanitize_key( $_REQUEST['post_type'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
@@ -177,14 +177,13 @@ class PLL_Admin_Filters_Term {
 			return;
 		}
 
-		$term_id  = $tag->term_id;
-		$taxonomy = $tag->taxonomy; // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		$taxonomy = $term->taxonomy; // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 
-		$lang = $this->model->term->get_language( $term_id );
+		$lang = $this->model->term->get_language( $term->term_id );
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
 		// Disable the language dropdown and the translations input fields for default terms to prevent removal
-		$disabled = $this->default_term->is_default_term( $term_id );
+		$disabled = $this->default_term->is_default_term( $term->term_id );
 
 		$dropdown = new PLL_Walker_Dropdown();
 
@@ -454,12 +453,16 @@ class PLL_Admin_Filters_Term {
 		}
 
 		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
-		$term_id   = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null; // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$taxonomy  = sanitize_key( $_POST['taxonomy'] );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( empty( $lang ) || ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			wp_die( 0 );
+		}
+
+		if ( ! empty( $_POST['term_id'] ) ) {
+			$term = get_term( (int) $_POST['term_id'], $taxonomy ); // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+			$term = $term instanceof WP_Term ? $term : null;
 		}
 
 		ob_start();

@@ -5,9 +5,9 @@
  *
  * @package Polylang
  *
- * @var PLL_Admin_Classic_Editor $this    PLL_Admin_Classic_Editor object.
- * @var PLL_Language             $lang    The media language. Default language if no language assigned yet.
- * @var int                      $post_ID The media Id.
+ * @var PLL_Admin_Classic_Editor $this PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang The media language. Default language if no language assigned yet.
+ * @var WP_Post                  $post The media object.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -20,10 +20,10 @@ defined( 'ABSPATH' ) || exit;
 			continue;
 		}
 
-		$translation_id = $this->model->post->get_translation( $post_ID, $language );
+		$translation_id = $this->model->post->get_translation( $post->ID, $language );
 		$translation    = null;
 
-		if ( ! empty( $translation_id ) && $translation_id !== $post_ID ) {
+		if ( ! empty( $translation_id ) && $translation_id !== $post->ID ) {
 			$translation = get_post( $translation_id );
 		}
 		?>
@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
 					echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
 				} else {
 					// The translation doesn't exist anymore.
-					echo $this->links->get_new_post_link_html( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
+					echo $this->links->get_new_post_link_html( $post, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
 			</td>
