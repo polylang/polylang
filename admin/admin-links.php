@@ -175,7 +175,7 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		$url = (string) get_edit_post_link( $post->ID );
-		return $this->get_edit_item_link_html( $url, $language, $mode, $post->ID, $post->post_title );
+		return $this->get_edit_item_link_html( $url, $language, $post->ID, $post->post_title, $mode );
 	}
 
 	/**
@@ -185,15 +185,15 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @param string       $url       URL of the edition link.
 	 * @param PLL_Language $language  Language of the item.
-	 * @param string       $mode      How the link should be displayed: with a pen icon or a language's flag.
-	 *                                Possible values are `metabox`, `icon`, and `flag`.
 	 * @param int          $item_id   ID of the item. Used only in `icon` mode.
 	 * @param string       $item_name Name of the item. Not used in `metabox` mode.
+	 * @param string       $mode      How the link should be displayed: with a pen icon or a language's flag.
+	 *                                Possible values are `metabox`, `icon`, and `flag`.
 	 * @return string
 	 *
 	 * @phpstan-param 'metabox'|'icon'|'flag' $mode
 	 */
-	private function get_edit_item_link_html( string $url, PLL_Language $language, string $mode, int $item_id, string $item_name ): string {
+	private function get_edit_item_link_html( string $url, PLL_Language $language, int $item_id, string $item_name, string $mode ): string {
 		if ( 'flag' === $mode ) {
 			$flag  = $this->get_flag_html( $language );
 			$class = 'pll_column_flag';
@@ -326,7 +326,7 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		$url = (string) get_edit_term_link( $term->term_id, $term->taxonomy, $post_type );
-		return $this->get_edit_item_link_html( $url, $language, $mode, $term->term_id, $term->name );
+		return $this->get_edit_item_link_html( $url, $language, $term->term_id, $term->name, $mode );
 	}
 
 	/**
