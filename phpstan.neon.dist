@@ -78,3 +78,9 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: frontend/frontend-auto-translate.php
+
+		# Ignored because PHPStan is drunk ¯\(°_o)/¯
+		-
+			identifier: deadCode.unreachable
+			count: 1
+			path: admin/admin-filters-columns.php

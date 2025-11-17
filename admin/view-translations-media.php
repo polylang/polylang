@@ -1,13 +1,12 @@
 <?php
 /**
  * Displays the translations fields for media
- * Needs WP 3.5+
  *
  * @package Polylang
  *
- * @var PLL_Admin_Classic_Editor $this    PLL_Admin_Classic_Editor object.
- * @var PLL_Language             $lang    The media language. Default language if no language assigned yet.
- * @var int                      $post_ID The media Id.
+ * @var PLL_Admin_Classic_Editor $this PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang The media language. Default language if no language assigned yet.
+ * @var WP_Post                  $post The media object.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -19,23 +18,29 @@ defined( 'ABSPATH' ) || exit;
 		if ( $language->term_id === $lang->term_id ) {
 			continue;
 		}
+
+		$translation_id = $this->model->post->get_translation( $post->ID, $language );
+		$translation    = null;
+
+		if ( ! empty( $translation_id ) && $translation_id !== $post->ID ) {
+			$translation = get_post( $translation_id );
+		}
 		?>
 		<tr>
 			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->flag; // phpcs:ignore WordPress.Security.EscapeOutput ?></span><?php echo esc_html( $language->name ); ?></td>
 			<td class = "pll-media-edit-column">
 				<?php
-				$translation_id = $this->model->post->get_translation( $post_ID, $language );
-				if ( ! empty( $translation_id ) && $translation_id !== $post_ID ) {
-					// The translation exists
+				if ( $translation instanceof WP_Post ) {
+					// The translation exists.
 					printf(
 						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
 						esc_attr( $language->slug ),
-						(int) $translation_id
+						(int) $translation->ID
 					);
-					echo $this->links->edit_post_translation_link( $translation_id ); // phpcs:ignore WordPress.Security.EscapeOutput
+					echo $this->links->get_edit_post_link_html( $translation ); // phpcs:ignore WordPress.Security.EscapeOutput
 				} else {
-					// No translation
-					echo $this->links->new_post_translation_link( $post_ID, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
+					// The translation doesn't exist.
+					echo $this->links->get_new_post_link_html( $post, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
 			</td>

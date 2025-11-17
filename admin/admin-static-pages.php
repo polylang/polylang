@@ -123,30 +123,36 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return string
 	 */
 	public function get_must_translate_message() {
-		$message = '';
+		if ( ! $this->page_on_front ) {
+			return '';
+		}
 
-		if ( $this->page_on_front ) {
-			$untranslated = array();
+		$page_on_front = get_post( $this->page_on_front );
 
-			foreach ( $this->model->get_languages_list() as $language ) {
-				if ( ! $this->model->post->get( $this->page_on_front, $language ) ) {
-					$untranslated[] = sprintf(
-						'<a href="%s">%s</a>',
-						esc_url( $this->links->get_new_post_translation_link( $this->page_on_front, $language ) ),
-						esc_html( $language->name )
-					);
-				}
-			}
+		if ( ! $page_on_front instanceof WP_Post ) {
+			return '';
+		}
 
-			if ( ! empty( $untranslated ) ) {
-				$message = sprintf(
-					/* translators: %s is a comma separated list of native language names */
-					esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
-					implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$untranslated = array();
+
+		foreach ( $this->model->get_languages_list() as $language ) {
+			if ( ! $this->model->post->get( $page_on_front->ID, $language ) ) {
+				$untranslated[] = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( $this->links->get_new_post_translation_link( $page_on_front, $language ) ),
+					esc_html( $language->name )
 				);
 			}
 		}
 
-		return $message;
+		if ( empty( $untranslated ) ) {
+			return '';
+		}
+
+		return sprintf(
+			/* translators: %s is a comma separated list of native language names */
+			esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
+			implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
 	}
 }
