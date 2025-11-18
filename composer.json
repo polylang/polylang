@@ -53,10 +53,10 @@
 			"@install-plugins"
 		],
 		"test":"vendor/bin/phpunit",
-		"cs70": "vendor/bin/phpcs --standard=phpcs-phpcompatibility-70.xml.dist",
+		"cs56": "vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist",
 		"cs": [
 			"vendor/bin/phpcs",
-			"@cs70"
+			"@cs56"
 		],
 		"cs-fix": "vendor/bin/phpcbf",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=2000M",
@@ -83,7 +83,7 @@
 		"install-tests-with-db": "Installs both the WordPress tests suite (with database creation) and the dependencies needed for integration tests, without creating the database.",
 		"test":"Runs PHPUnit tests.",
 		"cs":"Runs PHPCS linter.",
-		"cs70":"Runs PHPCompatibility linter on files that require php 7.0.",
+		"cs56":"Runs PHPCompatibility linter on files that require php 5.6.",
 		"stan": "Runs PHPStan analysis.",
 		"rector-dry": "Runs a preview of Rector.",
 		"lint": "Runs both PHPCS and PHPStan.",
