@@ -7,11 +7,22 @@ import {
 	setSetting,
 } from '@wpsyntex/e2e-test-utils';
 
+/**
+ * Covers browser preferred language detection on server side.
+ */
 test.describe( 'Should detect browser preferred language', () => {
+	/**
+	 * Before all tests:
+	 *     - Enable browser preferred language detection.
+	 */
 	test.beforeAll( async ( { requestUtils } ) => {
 		await setSetting( requestUtils, 'browser', true );
 	} );
 
+	/**
+	 * Before each test:
+	 *     - Clear cookies.
+	 */
 	test.beforeEach( async ( { page } ) => {
 		await page.context().clearCookies();
 	} );
