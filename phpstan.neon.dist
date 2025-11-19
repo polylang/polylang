@@ -84,3 +84,7 @@ parameters:
 			identifier: deadCode.unreachable
 			count: 1
 			path: admin/admin-filters-columns.php
+
+		# Ignored globally
+		-
+			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'

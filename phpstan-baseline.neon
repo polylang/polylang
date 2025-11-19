@@ -91,12 +91,6 @@ parameters:
 			path: admin/admin-filters-post.php
 
 		-
-			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: admin/admin-filters-post.php
-
-		-
 			message: '#^Parameter \#1 \$posts of function update_post_caches expects array\<WP_Post\>, array\<WP_Post\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -136,12 +130,6 @@ parameters:
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''absint'' given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-term.php
-
-		-
-			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 4
 			path: admin/admin-filters-term.php
 
 		-
@@ -202,12 +190,6 @@ parameters:
 			message: '#^Parameter \#1 \$locations of method PLL_Admin_Nav_Menu\:\:update_nav_menu_locations\(\) expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 3
-			path: admin/admin-nav-menu.php
-
-		-
-			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 4
 			path: admin/admin-nav-menu.php
 
 		-
