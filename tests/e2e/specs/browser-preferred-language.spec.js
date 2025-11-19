@@ -8,6 +8,11 @@ import {
 } from '@wpsyntex/e2e-test-utils';
 
 /**
+ * @typedef {import('@playwright/test').Page} Page
+ * @typedef {import('@playwright/test').BrowserContext} BrowserContext
+ */
+
+/**
  * Covers browser preferred language detection on server side.
  */
 test.describe( 'Should detect browser preferred language', () => {
@@ -64,29 +69,13 @@ test.describe( 'Should detect browser preferred language', () => {
 			lang: 'en-gb',
 		} );
 
-		await context.route( '**/*', ( route, request ) => {
-			route.continue( {
-				headers: {
-					...request.headers(),
-					'accept-language': 'en-GB;q=1.0',
-				},
-			} );
-		} );
+		await setAcceptLanguageHeader( context, 'en-GB;q=1.0' );
 
 		await page.goto( '/' );
 
 		await expect( page ).toHaveURL( /\/en-gb\/?$/ );
 
-		const cookies = await page.context().cookies();
-		const languageCookie = cookies.find(
-			( cookie ) => cookie.name === 'pll_language'
-		);
-
-		expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
-		expect(
-			languageCookie.value,
-			'Preferred language should be en-gb'
-		).toBe( 'en-gb' );
+		await expectLanguageCookie( page, 'en-gb' );
 
 		await context.close();
 	} );
@@ -110,28 +99,13 @@ test.describe( 'Should detect browser preferred language', () => {
 			lang: 'zh',
 		} );
 
-		await context.route( '**/*', ( route, request ) => {
-			route.continue( {
-				headers: {
-					...request.headers(),
-					'accept-language': 'zh-HK;q=1.0,en;q=0.9',
-				},
-			} );
-		} );
+		await setAcceptLanguageHeader( context, 'zh-HK;q=1.0,en;q=0.9' );
 
 		await page.goto( '/' );
 
 		await expect( page ).toHaveURL( /\/zh\/?$/ );
 
-		const cookies = await page.context().cookies();
-		const languageCookie = cookies.find(
-			( cookie ) => cookie.name === 'pll_language'
-		);
-
-		expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
-		expect( languageCookie.value, 'Preferred language should be zh' ).toBe(
-			'zh'
-		);
+		await expectLanguageCookie( page, 'zh' );
 
 		await context.close();
 	} );
@@ -155,26 +129,11 @@ test.describe( 'Should detect browser preferred language', () => {
 			lang: 'en',
 		} );
 
-		await context.route( '**/*', ( route, request ) => {
-			route.continue( {
-				headers: {
-					...request.headers(),
-					'accept-language': 'zh-Hant-HK;q=1.0,en;q=0.9',
-				},
-			} );
-		} );
+		await setAcceptLanguageHeader( context, 'zh-Hant-HK;q=1.0,en;q=0.9' );
 
 		await page.goto( '/' );
 
-		const cookies = await page.context().cookies();
-		const languageCookie = cookies.find(
-			( cookie ) => cookie.name === 'pll_language'
-		);
-
-		expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
-		expect( languageCookie.value, 'Preferred language should be zh' ).toBe(
-			'zh'
-		);
+		await expectLanguageCookie( page, 'zh' );
 
 		await context.close();
 	} );
@@ -211,28 +170,51 @@ test.describe( 'Should detect browser preferred language', () => {
 			lang: 'en',
 		} );
 
-		await context.route( '**/*', ( route, request ) => {
-			route.continue( {
-				headers: {
-					...request.headers(),
-					'accept-language': 'zh-Hant-HK;q=1.0,zh-CN;q=0.9,en;q=0.8',
-				},
-			} );
-		} );
+		await setAcceptLanguageHeader(
+			context,
+			'zh-Hant-HK;q=1.0,zh-CN;q=0.9,en;q=0.8'
+		);
 
 		await page.goto( '/' );
 
-		const cookies = await page.context().cookies();
-		const languageCookie = cookies.find(
-			( cookie ) => cookie.name === 'pll_language'
-		);
-
-		expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
-		expect(
-			languageCookie.value,
-			'Preferred language should be zh-hk'
-		).toBe( 'zh-hk' );
+		await expectLanguageCookie( page, 'zh-hk' );
 
 		await context.close();
 	} );
 } );
+
+/**
+ * Expects the language cookie to be set to the expected language slug.
+ *
+ * @param {Page}   page             - The page object.
+ * @param {string} expectedLanguage - The expected language slug.
+ */
+const expectLanguageCookie = async ( page, expectedLanguage ) => {
+	const cookies = await page.context().cookies();
+	const languageCookie = cookies.find(
+		( cookie ) => cookie.name === 'pll_language'
+	);
+
+	expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
+	expect(
+		languageCookie.value,
+		'Preferred language should be ' + expectedLanguage
+	).toBe( expectedLanguage );
+};
+
+/**
+ * Sets the accept language header for the given context.
+ *
+ * @param {BrowserContext} context        - The browser context.
+ * @param {string}         acceptLanguage - The accept language header value.
+ */
+const setAcceptLanguageHeader = async ( context, acceptLanguage ) => {
+	await context.route( '**/*', ( route, request ) => {
+		route.continue( {
+			headers: {
+				...request.headers(),
+				'accept-language': acceptLanguage,
+			},
+		} );
+	} );
+};
