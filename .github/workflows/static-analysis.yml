@@ -41,7 +41,7 @@ jobs:
           js:
             - 'tests/e2e/**/*.{js,mjs,cjs}'
 
-    - name: Run ESLint only JS files in the refactored directory
+    - name: Run ESLint only on e2e tests files for now...
       uses: polylang/actions/eslint@main
       if: ${{ steps.filter.outputs.js == 'true' }}
       with:
