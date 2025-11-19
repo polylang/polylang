@@ -1,0 +1,48 @@
+name: End To End Tests
+
+on:
+  push:
+    branches: master
+    paths:
+      - '**.php'
+      - '!tests/**.php'
+      - '**.js'
+      - '**.css'
+      - '**.scss'
+      - 'composer.json'
+      - 'package.json'
+      - 'webpack.config.js'
+      - '.github/workflows/end-to-end-tests.yml'
+      - 'babel.config.js'
+      - '.wp-env.json'
+
+  pull_request:
+    branches: master
+    paths:
+      - '**.php'
+      - '!tests/**.php'
+      - '**.js'
+      - '**.mjs'
+      - '**.cjs'
+      - '**.css'
+      - '**.scss'
+      - 'composer.json'
+      - 'package.json'
+      - 'webpack.config.js'
+      - '.github/workflows/end-to-end-tests.yml'
+      - 'babel.config.js'
+      - '.wp-env.json'
+  workflow_dispatch:
+
+jobs:
+  testing:
+    name: Playwright Tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the source code
+      uses: actions/checkout@v3
+
+    - name: Run Playwright tests
+      uses: polylang/actions/e2e@main
