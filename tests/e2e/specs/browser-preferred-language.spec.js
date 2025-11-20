@@ -49,14 +49,7 @@ test.describe( 'Should detect browser preferred language', () => {
 		context,
 	} ) => {
 		await createLanguage( requestUtils, 'en_US' );
-		await requestUtils.rest( {
-			path: '/pll/v1/languages',
-			method: 'POST',
-			data: {
-				locale: 'en_GB',
-				slug: 'en-gb',
-			},
-		} );
+		await createLanguage( requestUtils, 'en_GB', { slug: 'en-gb' } );
 
 		await requestUtils.createPost( {
 			title: 'English US Post',
