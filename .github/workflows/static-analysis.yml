@@ -23,3 +23,28 @@ jobs:
     - name: Run PHPCompatibility for files that require php 5.6
       run: vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist
       shell: bash
+
+  js-and-style:
+    name: ESLint
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the source code
+      uses: actions/checkout@v4
+
+    - name: Filter according to modified files
+      uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          js:
+            - 'tests/e2e/**/*.{js,mjs,cjs}'
+
+    - name: Run ESLint only on e2e tests files for now...
+      uses: polylang/actions/eslint@main
+      if: ${{ steps.filter.outputs.js == 'true' }}
+      with:
+        do-js: true
+        js-path: './tests/e2e'
+        do-style: false

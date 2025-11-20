@@ -7,7 +7,6 @@ js/src/
 node_modules/
 tests/
 tmp/
-behat.yml
 composer.json
 composer.lock
 issue_template.md
