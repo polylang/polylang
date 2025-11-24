@@ -43,6 +43,17 @@ class User {
 	}
 
 	/**
+	 * Returns the user ID.
+	 *
+	 * @since 3.8
+	 *
+	 * @return int
+	 */
+	public function get_id(): int {
+		return $this->user->ID;
+	}
+
+	/**
 	 * Tells if the user is a translator (has a translator capability).
 	 * Note: returns `true` if the user has a capability for a language that doesn't exist anymore. This is intentional,
 	 * to prevent the user to suddenly have the rights to translate in all languages while it wasn't allowed until then.
