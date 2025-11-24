@@ -72,6 +72,30 @@ class User {
 	}
 
 	/**
+	 * Tells if the user can translate to all the given languages.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $languages List of language slugs.
+	 * @return bool
+	 *
+	 * @phpstan-param array<non-empty-string> $languages
+	 */
+	public function can_translate_all( array $languages ): bool {
+		if ( ! $this->is_translator() ) {
+			return true;
+		}
+
+		$caps = array_map(
+			static function ( $slug ) {
+				return "translate_{$slug}";
+			},
+			$languages
+		);
+		return empty( array_diff( $caps, $this->get_language_caps() ) );
+	}
+
+	/**
 	 * Tells if the user has the specified capability.
 	 *
 	 * @since 3.8
