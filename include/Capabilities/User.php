@@ -79,7 +79,7 @@ class User {
 			return true;
 		}
 
-		return $this->user->has_cap( "translate_{$language->slug}" );
+		return in_array( "translate_{$language->slug}", $this->get_language_caps(), true );
 	}
 
 	/**
