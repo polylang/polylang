@@ -7,7 +7,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		self::markTestSkippedIfFileNotExists( PLL_TEST_PLUGINS_DIR . 'jetpack/jetpack.php', 'This test requires the plugin Jetpack.' );
 
-		$min_wp_version = '6.3';
+		$min_wp_version = '6.7';
 
 		if ( version_compare( $GLOBALS['wp_version'], $min_wp_version, '<' ) ) {
 			self::markTestSkipped( "This test requires WordPress {$min_wp_version} or higher" );
