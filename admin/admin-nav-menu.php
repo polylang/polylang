@@ -201,6 +201,8 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return mixed
 	 */
 	public function pre_update_option_theme_mods( $mods ) {
+		global $wp_customize;
+
 		if ( ! current_user_can( 'edit_theme_options' ) || ! is_array( $mods ) || ! isset( $mods['nav_menu_locations'] ) ) {
 			return $mods;
 		}
@@ -231,10 +233,14 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return $mods;
 		}
 
+		if ( ! $wp_customize instanceof WP_Customize_Manager ) {
+			return $mods;
+		}
+
 		/*
 		 * Customizer. Don't reset locations in this case.
 		 */
-		$action = 'save-customize_' . $GLOBALS['wp_customize']->get_stylesheet();
+		$action = 'save-customize_' . $wp_customize->get_stylesheet();
 		if ( isset( $_POST['action'], $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], $action ) && 'customize_save' == $_POST['action'] ) {
 			$mods['nav_menu_locations'] = $this->update_nav_menu_locations( $mods['nav_menu_locations'] );
 		}

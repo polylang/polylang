@@ -181,12 +181,6 @@ parameters:
 			path: admin/admin-nav-menu.php
 
 		-
-			message: '#^Cannot call method get_stylesheet\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: admin/admin-nav-menu.php
-
-		-
 			message: '#^Parameter \#1 \$locations of method PLL_Admin_Nav_Menu\:\:update_nav_menu_locations\(\) expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 3
