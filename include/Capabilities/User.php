@@ -29,6 +29,11 @@ class User {
 	private $language_caps;
 
 	/**
+	 * @var bool[]
+	 */
+	private $can_translate = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.8
@@ -75,11 +80,17 @@ class User {
 	 * @return bool
 	 */
 	public function can_translate( PLL_Language $language ): bool {
-		if ( ! $this->is_translator() ) {
-			return true;
+		if ( isset( $this->can_translate[ $language->slug ] ) ) {
+			return $this->can_translate[ $language->slug ];
 		}
 
-		return in_array( "translate_{$language->slug}", $this->get_language_caps(), true );
+		if ( ! $this->is_translator() ) {
+			$this->can_translate[ $language->slug ] = true;
+		} else {
+			$this->can_translate[ $language->slug ] = $this->user->has_cap( "translate_{$language->slug}" );
+		}
+
+		return $this->can_translate[ $language->slug ];
 	}
 
 	/**
