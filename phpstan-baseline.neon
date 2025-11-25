@@ -175,18 +175,6 @@ parameters:
 			path: admin/admin-filters.php
 
 		-
-			message: '#^Cannot access offset int on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: admin/admin-nav-menu.php
-
-		-
-			message: '#^Parameter \#1 \$locations of method PLL_Admin_Nav_Menu\:\:update_nav_menu_locations\(\) expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 3
-			path: admin/admin-nav-menu.php
-
-		-
 			message: '#^Cannot access an offset on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1

@@ -147,7 +147,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return;
 		}
 
-		if ( empty( $_POST['menu-item-url'][ $menu_item_db_id ] ) || '#pll_switcher' !== $_POST['menu-item-url'][ $menu_item_db_id ] ) {
+		if ( ! is_array( $_POST['menu-item-url'] ) || empty( $_POST['menu-item-url'][ $menu_item_db_id ] ) || '#pll_switcher' !== $_POST['menu-item-url'][ $menu_item_db_id ] ) {
 			return;
 		}
 
@@ -203,7 +203,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	public function pre_update_option_theme_mods( $mods ) {
 		global $wp_customize;
 
-		if ( ! current_user_can( 'edit_theme_options' ) || ! is_array( $mods ) || ! isset( $mods['nav_menu_locations'] ) ) {
+		if ( ! current_user_can( 'edit_theme_options' ) || ! is_array( $mods ) || ! isset( $mods['nav_menu_locations'] ) || ! is_array( $mods['nav_menu_locations'] ) ) {
 			return $mods;
 		}
 
