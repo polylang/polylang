@@ -84,16 +84,10 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 	 * @return int|WP_Error Language term ID on success, `WP_Error` on failure.
 	 */
 	public function create_object( $args ) {
-		$errors = $this->pll_model->add_language( $args );
+		$language = $this->pll_model->languages->add( $args );
 
-		if ( is_wp_error( $errors ) ) {
-			return $errors;
-		}
-
-		$language = $this->pll_model->get_language( $args['slug'] );
-
-		if ( ! $language instanceof PLL_Language ) {
-			return new WP_Error( 'Could not get the created language.' );
+		if ( is_wp_error( $language ) ) {
+			return $language;
 		}
 
 		return $language->term_id;
@@ -106,7 +100,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 	 * @return PLL_Language|WP_Error
 	 */
 	public function get_object_by_id( $object_id ) {
-		$language = $this->pll_model->get_language( $object_id );
+		$language = $this->pll_model->languages->get( $object_id );
 
 		if ( $language instanceof PLL_Language ) {
 			return $language;
