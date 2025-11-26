@@ -182,15 +182,13 @@ class Languages extends Abstract_Controller {
 		 *    no_default_cat?: bool
 		 * } $args
 		 */
-		$args   = $request->get_params();
-		$result = $this->languages->add( $args );
+		$args     = $request->get_params();
+		$language = $this->languages->add( $args );
 
-		if ( is_wp_error( $result ) ) {
-			return $this->add_status_to_error( $result );
+		if ( is_wp_error( $language ) ) {
+			return $this->add_status_to_error( $language );
 		}
 
-		/** @var PLL_Language */
-		$language = $this->languages->get( $args['locale'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -245,14 +243,12 @@ class Languages extends Abstract_Controller {
 		 */
 		$args            = $request->get_params();
 		$args['lang_id'] = $language->term_id;
-		$update = $this->languages->update( $args );
+		$language        = $this->languages->update( $args );
 
-		if ( is_wp_error( $update ) ) {
-			return $this->add_status_to_error( $update );
+		if ( is_wp_error( $language ) ) {
+			return $this->add_status_to_error( $language );
 		}
 
-		/** @var PLL_Language */
-		$language = $this->languages->get( $args['lang_id'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
