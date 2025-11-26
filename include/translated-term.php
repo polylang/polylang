@@ -263,7 +263,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-param array<positive-int> $ids
 	 */
 	public function clean_term_cache( $ids ) {
-		clean_object_term_cache( pll_sanitize_ids_list( $ids ), 'term' );
+		clean_object_term_cache( pll_sanitize_ids( $ids ), 'term' );
 	}
 
 	/**

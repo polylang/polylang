@@ -254,7 +254,7 @@ abstract class PLL_Translatable_Object {
 	 * @return array<int,WP_Term|null> Array of terms with object ID as key.
 	 */
 	protected function get_object_terms( array $object_ids, string $taxonomy ) {
-		$object_ids = pll_sanitize_ids_list( $object_ids );
+		$object_ids = pll_sanitize_ids( $object_ids );
 		if ( empty( $object_ids ) ) {
 			return array();
 		}
@@ -451,7 +451,7 @@ abstract class PLL_Translatable_Object {
 
 		$object_ids = $this->query_objects_with_no_lang( $language_ids, $limit, $args );
 
-		return array_values( pll_sanitize_ids_list( $object_ids ) );
+		return array_values( pll_sanitize_ids( $object_ids ) );
 	}
 
 	/**

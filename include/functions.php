@@ -187,7 +187,7 @@ function pll_sanitize_id( $id ) {
  *
  * @phpstan-return array<positive-int>
  */
-function pll_sanitize_ids_list( $ids ) {
+function pll_sanitize_ids( $ids ) {
 	if ( empty( $ids ) || ! is_array( $ids ) ) {
 		return array();
 	}

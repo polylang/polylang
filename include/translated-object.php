@@ -499,7 +499,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		// Make sure values are clean before working with them.
 		/** @phpstan-var array<non-empty-string, positive-int> $translations */
-		$translations = pll_sanitize_ids_list( $translations );
+		$translations = pll_sanitize_ids( $translations );
 
 		if ( 'save' === $context ) {
 			/**
