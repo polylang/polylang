@@ -176,7 +176,7 @@ abstract class PLL_Translatable_Object {
 	 *              the object).
 	 */
 	public function set_language( $id, $lang ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return false;
@@ -210,7 +210,7 @@ abstract class PLL_Translatable_Object {
 	 *                            ID is invalid.
 	 */
 	public function get_language( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return false;
@@ -235,7 +235,7 @@ abstract class PLL_Translatable_Object {
 	 * @return void
 	 */
 	public function delete_language( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return;
@@ -254,7 +254,7 @@ abstract class PLL_Translatable_Object {
 	 * @return array<int,WP_Term|null> Array of terms with object ID as key.
 	 */
 	protected function get_object_terms( array $object_ids, string $taxonomy ) {
-		$object_ids = $this->sanitize_int_ids_list( $object_ids );
+		$object_ids = pll_sanitize_ids_list( $object_ids );
 		if ( empty( $object_ids ) ) {
 			return array();
 		}
@@ -451,7 +451,7 @@ abstract class PLL_Translatable_Object {
 
 		$object_ids = $this->query_objects_with_no_lang( $language_ids, $limit, $args );
 
-		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
+		return array_values( pll_sanitize_ids_list( $object_ids ) );
 	}
 
 	/**
@@ -485,42 +485,6 @@ abstract class PLL_Translatable_Object {
 		wp_cache_set( $cache_key, $object_ids, $this->cache_type );
 
 		return $object_ids;
-	}
-
-	/**
-	 * Sanitizes an ID as positive integer.
-	 * Kind of similar to `absint()`, but rejects negative integers instead of making them positive.
-	 *
-	 * @since 3.2
-	 *
-	 * @param mixed $id A supposedly numeric ID.
-	 * @return int A positive integer. `0` for non numeric values and negative integers.
-	 *
-	 * @phpstan-return int<0,max>
-	 */
-	public function sanitize_int_id( $id ) {
-		return is_numeric( $id ) && $id >= 1 ? abs( (int) $id ) : 0;
-	}
-
-	/**
-	 * Sanitizes an array of IDs as positive integers.
-	 * `0` values are removed.
-	 *
-	 * @since 3.2
-	 *
-	 * @param mixed $ids An array of numeric IDs.
-	 * @return int[]
-	 *
-	 * @phpstan-return array<positive-int>
-	 */
-	public function sanitize_int_ids_list( $ids ) {
-		if ( empty( $ids ) || ! is_array( $ids ) ) {
-			return array();
-		}
-
-		$ids = array_map( array( $this, 'sanitize_int_id' ), $ids );
-
-		return array_filter( $ids );
 	}
 
 	/**
