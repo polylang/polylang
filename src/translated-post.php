@@ -131,7 +131,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return;
@@ -249,7 +249,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-param non-empty-string $context
 	 */
 	public function current_user_can_read( $id, $context = 'view' ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return false;
