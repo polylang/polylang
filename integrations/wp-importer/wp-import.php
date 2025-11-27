@@ -42,7 +42,7 @@ class PLL_WP_Import extends WP_Import {
 		parent::process_terms();
 
 		// First reset the core terms cache as WordPress Importer calls wp_suspend_cache_invalidation( true );
-		wp_cache_set( 'last_changed', microtime(), 'terms' );
+		wp_cache_set_terms_last_changed();
 
 		// Assign the default language in case the importer created the first language.
 		if ( empty( PLL()->options['default_lang'] ) ) {
