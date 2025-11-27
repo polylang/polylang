@@ -472,17 +472,15 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-param array<empty> $args
 	 */
 	protected function query_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) {
-		$key          = md5( maybe_serialize( $language_ids ) . maybe_serialize( $args ) . $limit );
-		$last_changed = wp_cache_get_last_changed( $this->cache_type );
-		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
-		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
+		$key        = "{$this->cache_type}_no_lang:" . md5( maybe_serialize( $language_ids ) . maybe_serialize( $args ) . $limit );
+		$object_ids = $this->get_from_cache( $key );
 
 		if ( is_array( $object_ids ) ) {
 			return $object_ids;
 		}
 
 		$object_ids = $this->get_raw_objects_with_no_lang( $language_ids, $limit, $args );
-		wp_cache_set( $cache_key, $object_ids, $this->cache_type );
+		$this->set_to_cache( $key, $object_ids );
 
 		return $object_ids;
 	}
@@ -614,6 +612,47 @@ abstract class PLL_Translatable_Object {
 	public function get_rest_description(): string {
 		/* translators: %s is the name of a database table. */
 		return sprintf( __( 'Language taxonomy properties for table %s.', 'polylang' ), $this->get_db_infos()['table'] );
+	}
+
+	/**
+	 * Fetches the value from the cache. Handles backward compatibility with WordPress < 6.9.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key The cache key.
+	 * @return mixed|false The cached value, false if not found.
+	 */
+	private function get_from_cache( $key ) {
+		$last_changed = wp_cache_get_last_changed( $this->cache_type );
+
+		if ( ! function_exists( 'wp_cache_get_salted' ) ) {
+			// Backward compatibility with WordPress < 6.9.
+			$cache_key = "{$key}:{$last_changed}";
+			return wp_cache_get( $cache_key, $this->cache_type );
+		}
+
+		return wp_cache_get_salted( $key, $this->cache_type, $last_changed );
+	}
+
+	/**
+	 * Stores the value in the cache. Handles backward compatibility with WordPress < 6.9.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key   The cache key.
+	 * @param mixed  $value The value to store in the cache.
+	 * @return bool True if the value has been stored, false otherwise.
+	 */
+	private function set_to_cache( $key, $value ): bool {
+		$last_changed = wp_cache_get_last_changed( $this->cache_type );
+
+		if ( ! function_exists( 'wp_cache_set_salted' ) ) {
+			// Backward compatibility with WordPress < 6.9.
+			$cache_key = "{$key}:{$last_changed}";
+			return wp_cache_set( $cache_key, $value, $this->cache_type );
+		}
+
+		return wp_cache_set_salted( $key, $value, $this->cache_type, $last_changed );
 	}
 
 	/**
