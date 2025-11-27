@@ -45,7 +45,11 @@ class Test_Last_Changed extends PLL_Object_Cache_TestCase {
 
 		$last_changed_after = wp_cache_get_last_changed( $cache_type );
 
-		$this->assertGreaterThan( (float) $last_changed, (float) $last_changed_after, 'The last changed time should be greater than the previous one.' );
+		$this->assertGreaterThan(
+			number_format( (float) $last_changed, 8, '.', '' ),
+			number_format( (float) $last_changed_after, 8, '.', '' ),
+			'The last changed time should be greater than the previous one.'
+		);
 	}
 
 	/**
@@ -70,6 +74,10 @@ class Test_Last_Changed extends PLL_Object_Cache_TestCase {
 
 		$last_changed_after = wp_cache_get_last_changed( $cache_type );
 
-		$this->assertGreaterThan( (float) $last_changed, (float) $last_changed_after, 'The last changed time should be greater than the previous one.' );
+		$this->assertGreaterThan(
+			number_format( (float) $last_changed, 8, '.', '' ),
+			number_format( (float) $last_changed_after, 8, '.', '' ),
+			'The last changed time should be greater than the previous one.'
+		);
 	}
 }
