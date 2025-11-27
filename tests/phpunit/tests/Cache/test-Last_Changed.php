@@ -30,7 +30,9 @@ class Test_Last_Changed extends PLL_Object_Cache_TestCase {
 	 * @testWith ["post","posts"]
 	 *           ["term","terms"]
 	 *
-	 * @return void
+	 * @param string $type       The object type.
+	 * @param string $cache_type The cache type.
+	 * @return void The void.
 	 */
 	public function test_set_language_sets_last_changed( string $type, string $cache_type ) {
 		$object_id = self::factory()->$type->create();
@@ -50,9 +52,11 @@ class Test_Last_Changed extends PLL_Object_Cache_TestCase {
 	 * @testWith ["post","posts"]
 	 *           ["term","terms"]
 	 *
-	 * @return void
+	 * @param string $type       The object type.
+	 * @param string $cache_type The cache type.
+	 * @return void The void.
 	 */
-	public function test_set_language_in_mass_sets_last_changed( $type, $cache_type ) {
+	public function test_set_language_in_mass_sets_last_changed( string $type, string $cache_type ) {
 		$object_ids = self::factory()->$type->create_many( 5 );
 
 		$last_changed = wp_cache_get_last_changed( $cache_type );
