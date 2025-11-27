@@ -194,7 +194,7 @@ abstract class PLL_Translatable_Object {
 
 		$term_taxonomy_ids = wp_set_object_terms( $id, $lang, $this->tax_language );
 
-		wp_cache_set( 'last_changed', microtime(), $this->cache_type );
+		wp_cache_set_last_changed( $this->cache_type );
 
 		return is_array( $term_taxonomy_ids );
 	}
@@ -600,7 +600,7 @@ abstract class PLL_Translatable_Object {
 		clean_term_cache( $ids, $this->tax_language );
 
 		// Invalidate our cache.
-		wp_cache_set( 'last_changed', microtime(), $this->cache_type );
+		wp_cache_set_last_changed( $this->cache_type );
 	}
 
 	/**
