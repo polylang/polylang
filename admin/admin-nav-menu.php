@@ -46,7 +46,9 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 		// FIXME is it possible to choose the order ( after theme locations in WP3.5 and older ) ?
 		// FIXME not displayed if Polylang is activated before the first time the user goes to nav menus http://core.trac.wordpress.org/ticket/16828
-		add_meta_box( 'pll_lang_switch_box', __( 'Language switcher', 'polylang' ), array( $this, 'lang_switch' ), 'nav-menus', 'side', 'high' );
+		add_action( 'load-nav-menus.php', function () {
+			add_meta_box( 'pll_lang_switch_box', __( 'Language switcher', 'polylang' ), array( $this, 'lang_switch' ), 'nav-menus', 'side', 'high' );
+		} );
 
 		$this->create_nav_menu_locations();
 	}
