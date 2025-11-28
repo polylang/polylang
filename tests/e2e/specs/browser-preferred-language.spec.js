@@ -69,8 +69,6 @@ test.describe( 'Should detect browser preferred language', () => {
 		await expect( page ).toHaveURL( /\/en-gb\/?$/ );
 
 		await expectLanguageCookie( page, 'en-gb' );
-
-		await context.close();
 	} );
 
 	test( 'Should deduce language from unmatched language-region code', async ( {
@@ -99,8 +97,6 @@ test.describe( 'Should detect browser preferred language', () => {
 		await expect( page ).toHaveURL( /\/zh\/?$/ );
 
 		await expectLanguageCookie( page, 'zh' );
-
-		await context.close();
 	} );
 
 	test( 'Should deduce language from unmatched language-script-region code', async ( {
@@ -127,8 +123,6 @@ test.describe( 'Should detect browser preferred language', () => {
 		await page.goto( '/' );
 
 		await expectLanguageCookie( page, 'zh' );
-
-		await context.close();
 	} );
 
 	test( 'Should deduce region from unmatched language-script-region code', async ( {
@@ -171,8 +165,6 @@ test.describe( 'Should detect browser preferred language', () => {
 		await page.goto( '/' );
 
 		await expectLanguageCookie( page, 'zh-hk' );
-
-		await context.close();
 	} );
 } );
 
