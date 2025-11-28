@@ -141,6 +141,7 @@ class Languages {
 	 *
 	 * @since 1.2
 	 * @since 3.7 Moved from `PLL_Admin_Model::add_language()` to `WP_Syntex\Polylang\Model\Languages::add()`.
+	 * @since 3.8 Returns the new object language.
 	 *
 	 * @param array $args {
 	 *   Arguments used to create the language.
@@ -156,7 +157,7 @@ class Languages {
 	 *   @type string $flag_code      Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
 	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language. Default is false.
 	 * }
-	 * @return true|WP_Error True success, a `WP_Error` otherwise.
+	 * @return PLL_Language|WP_Error The object language on success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
 	 *     name?: string,
@@ -215,7 +216,9 @@ class Languages {
 			return new WP_Error( 'pll_add_language', __( 'Could not add the language.', 'polylang' ) );
 		}
 
-		$result = wp_update_term( (int) $result['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
+		$id = (int) $result['term_id'];
+
+		$result = wp_update_term( $id, 'language', array( 'term_group' => (int) $args['term_group'] ) ); // Can't set the term group directly in `wp_insert_term()`.
 		if ( is_wp_error( $result ) ) {
 			return new WP_Error( 'pll_add_language', __( 'Could not set the language order.', 'polylang' ) );
 		}
@@ -233,7 +236,11 @@ class Languages {
 
 		// Refresh languages.
 		$this->clean_cache();
-		$this->get_list();
+		$new_language = $this->get( $id );
+
+		if ( ! $new_language ) {
+			return new WP_Error( 'pll_add_language', __( 'Could not add the language.', 'polylang' ) );
+		}
 
 		flush_rewrite_rules(); // Refresh rewrite rules.
 
@@ -257,7 +264,7 @@ class Languages {
 		 */
 		do_action( 'pll_add_language', $args );
 
-		return true;
+		return $new_language;
 	}
 
 	/**
@@ -265,6 +272,7 @@ class Languages {
 	 *
 	 * @since 1.2
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_language()` to `WP_Syntex\Polylang\Model\Languages::update()`.
+	 * @since 3.8 Returns the updated object language.
 	 *
 	 * @param array $args {
 	 *   Arguments used to modify the language.
@@ -280,7 +288,7 @@ class Languages {
 	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
 	 *   @type string $flag_code  Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
 	 * }
-	 * @return true|WP_Error True success, a `WP_Error` otherwise.
+	 * @return PLL_Language|WP_Error The updated object language on success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
 	 *     lang_id: int|numeric-string,
@@ -295,7 +303,8 @@ class Languages {
 	 * } $args
 	 */
 	public function update( $args ) {
-		$lang = $this->get( (int) $args['lang_id'] );
+		$id   = (int) $args['lang_id'];
+		$lang = $this->get( $id );
 
 		if ( empty( $lang ) ) {
 			return new WP_Error( 'pll_invalid_language_id', __( 'The language does not seem to exist.', 'polylang' ) );
@@ -409,7 +418,11 @@ class Languages {
 
 		// Refresh languages.
 		$this->clean_cache();
-		$this->get_list();
+		$updated_language = $this->get( $id );
+
+		if ( ! $updated_language ) {
+			return new WP_Error( 'pll_update_language', __( 'Could not update the language.', 'polylang' ) );
+		}
 
 		// Refresh rewrite rules.
 		flush_rewrite_rules();
@@ -435,7 +448,7 @@ class Languages {
 		 */
 		do_action( 'pll_update_language', $args, $lang );
 
-		return true;
+		return $updated_language;
 	}
 
 	/**

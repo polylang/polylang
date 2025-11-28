@@ -176,18 +176,17 @@ class PLL_Settings extends PLL_Admin_Base {
 		switch ( $action ) {
 			case 'add':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
-				$errors = $this->model->add_language( $_POST );
+				$language = $this->model->add_language( $_POST );
 
-				if ( is_wp_error( $errors ) ) {
-						pll_add_notice( $errors );
+				if ( is_wp_error( $language ) ) {
+						pll_add_notice( $language );
 				} else {
 					pll_add_notice( new WP_Error( 'pll_languages_created', __( 'Language added.', 'polylang' ), 'success' ) );
-					$locale = sanitize_locale_name( $_POST['locale'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
-					if ( 'en_US' !== $locale && current_user_can( 'install_languages' ) ) {
+					if ( 'en_US' !== $language->locale && current_user_can( 'install_languages' ) ) {
 						// Attempts to install the language pack
 						require_once ABSPATH . 'wp-admin/includes/translation-install.php';
-						if ( ! wp_download_language_pack( $locale ) ) {
+						if ( ! wp_download_language_pack( $language->locale ) ) {
 							pll_add_notice( new WP_Error( 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ), 'warning' ) );
 						}
 

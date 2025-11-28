@@ -34,11 +34,8 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'term_group' => 1,
 		);
 
-		$result = $this->languages->add( $args );
+		$language = $this->languages->add( $args );
 
-		$this->assertTrue( $result );
-
-		$language = $this->languages->get( 'en' );
 		$this->assertInstanceOf( PLL_Language::class, $language );
 		$this->assertSame( 'English', $language->name );
 		$this->assertSame( 'en', $language->slug );
@@ -57,11 +54,8 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'locale' => 'fr_FR',
 		);
 
-		$result = $this->languages->add( $args );
+		$language = $this->languages->add( $args );
 
-		$this->assertTrue( $result );
-
-		$language = $this->languages->get( 'fr' );
 		$this->assertInstanceOf( PLL_Language::class, $language );
 		$this->assertSame( 'Français', $language->name );
 		$this->assertSame( 'fr', $language->slug );
@@ -80,11 +74,8 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'term_group' => 2,
 		);
 
-		$result = $this->languages->add( $args );
+		$language = $this->languages->add( $args );
 
-		$this->assertTrue( $result );
-
-		$language = $this->languages->get( 'ar' );
 		$this->assertInstanceOf( PLL_Language::class, $language );
 		$this->assertSame( 1, $language->is_rtl );
 	}
@@ -234,8 +225,7 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'rtl'        => false,
 			'term_group' => 1,
 		);
-		$this->languages->add( $args );
-		$language = $this->languages->get( 'en' );
+		$language = $this->languages->add( $args );
 
 		$update_args = array(
 			'lang_id'    => $language->term_id,
@@ -246,11 +236,8 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'term_group' => 2,
 		);
 
-		$result = $this->languages->update( $update_args );
+		$updated_language = $this->languages->update( $update_args );
 
-		$this->assertTrue( $result );
-
-		$updated_language = $this->languages->get( 'en_updated' );
 		$this->assertInstanceOf( PLL_Language::class, $updated_language );
 		$this->assertSame( 'English Updated', $updated_language->name );
 		$this->assertSame( 'en_updated', $updated_language->slug );
@@ -264,8 +251,7 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'slug'   => 'en',
 			'locale' => 'en_US',
 		);
-		$this->languages->add( $args );
-		$language = $this->languages->get( 'en' );
+		$language = $this->languages->add( $args );
 
 		$update_args = array(
 			'lang_id'    => $language->term_id,
@@ -275,7 +261,7 @@ class Test_CRUD extends PLL_UnitTestCase {
 		);
 
 		$result = $this->languages->update( $update_args );
-		$this->assertTrue( $result );
+		$this->assertInstanceOf( PLL_Language::class, $result );
 	}
 
 	public function test_update_nonexistent_language() {
@@ -324,13 +310,11 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'term_group' => 1,
 		);
 
-		$this->assertTrue( $this->languages->add( $args ) );
-
-		$lang            = $this->languages->get( 'ar' );
+		$lang            = $this->languages->add( $args );
 		$args['lang_id'] = $lang->term_id;
 		$args['slug']    = 'ar';
 
-		$this->assertTrue( $this->languages->update( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->languages->update( $args ) );
 	}
 
 	public function test_delete_language() {
