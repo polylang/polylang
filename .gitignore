@@ -19,3 +19,8 @@ composer.lock
 DB-CONFIG
 package-lock.json
 Thumbs.db
+
+# Playwright
+playwright-report/
+artifacts/
+test-results/
