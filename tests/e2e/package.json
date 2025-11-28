@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils#better-lang-creation",
+		"@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
 		"@wordpress/e2e-test-utils-playwright": "^1",
 		"@playwright/test": "^1"
 	}
