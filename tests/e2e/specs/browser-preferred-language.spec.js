@@ -130,14 +130,7 @@ test.describe( 'Should detect browser preferred language', () => {
 		requestUtils,
 		context,
 	} ) => {
-		await requestUtils.rest( {
-			path: '/pll/v1/languages',
-			method: 'POST',
-			data: {
-				locale: 'zh_HK',
-				slug: 'zh-hk',
-			},
-		} );
+		await createLanguage( requestUtils, 'zh_HK', { slug: 'zh-hk' } );
 		await createLanguage( requestUtils, 'zh_CN' );
 		await createLanguage( requestUtils, 'en_US' );
 
