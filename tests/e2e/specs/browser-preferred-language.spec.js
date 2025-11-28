@@ -34,8 +34,6 @@ test.describe( 'Should detect browser preferred language', () => {
 
 	test.afterAll( async ( { requestUtils } ) => {
 		await resetAllSettings( requestUtils );
-		await deleteAllLanguages( requestUtils );
-		await requestUtils.deleteAllPosts();
 	} );
 
 	test.afterEach( async ( { requestUtils } ) => {
