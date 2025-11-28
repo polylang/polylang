@@ -29,6 +29,11 @@ class User {
 	private $language_caps;
 
 	/**
+	 * @var bool[]
+	 */
+	private $can_translate = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.8
@@ -40,6 +45,17 @@ class User {
 			$user = wp_get_current_user();
 		}
 		$this->user = $user;
+	}
+
+	/**
+	 * Returns the user ID.
+	 *
+	 * @since 3.8
+	 *
+	 * @return int
+	 */
+	public function get_id(): int {
+		return $this->user->ID;
 	}
 
 	/**
@@ -64,11 +80,44 @@ class User {
 	 * @return bool
 	 */
 	public function can_translate( PLL_Language $language ): bool {
+		if ( isset( $this->can_translate[ $language->slug ] ) ) {
+			return $this->can_translate[ $language->slug ];
+		}
+
+		if ( ! $this->is_translator() ) {
+			$this->can_translate[ $language->slug ] = true;
+		} else {
+			$this->can_translate[ $language->slug ] = $this->user->has_cap( "translate_{$language->slug}" );
+		}
+
+		return $this->can_translate[ $language->slug ];
+	}
+
+	/**
+	 * Tells if the user can translate to all the given languages.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array $languages List of language slugs.
+	 * @return bool
+	 *
+	 * @phpstan-param array<non-empty-string> $languages
+	 */
+	public function can_translate_all( array $languages ): bool {
 		if ( ! $this->is_translator() ) {
 			return true;
 		}
 
-		return $this->user->has_cap( "translate_{$language->slug}" );
+		foreach ( $languages as $language_slug ) {
+			if ( ! isset( $this->can_translate[ $language_slug ] ) ) {
+				$this->can_translate[ $language_slug ] = $this->user->has_cap( "translate_{$language_slug}" );
+			}
+			if ( ! $this->can_translate[ $language_slug ] ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
