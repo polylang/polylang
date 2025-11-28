@@ -108,13 +108,16 @@ class User {
 			return true;
 		}
 
-		$caps = array_map(
-			static function ( $slug ) {
-				return "translate_{$slug}";
-			},
-			$languages
-		);
-		return empty( array_diff( $caps, $this->get_language_caps() ) );
+		foreach ( $languages as $language_slug ) {
+			if ( ! isset( $this->can_translate[ $language_slug ] ) ) {
+				$this->can_translate[ $language_slug ] = $this->user->has_cap( "translate_{$language_slug}" );
+			}
+			if ( ! $this->can_translate[ $language_slug ] ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
