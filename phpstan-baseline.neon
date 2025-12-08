@@ -499,12 +499,6 @@ parameters:
 			path: frontend/frontend-static-pages.php
 
 		-
-			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
-			count: 2
-			path: frontend/frontend-static-pages.php
-
-		-
 			message: '#^Parameter \#2 \$page of method PLL_Links_Model\:\:add_paged_to_link\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -531,12 +525,6 @@ parameters:
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|null\.$#'
 			identifier: property.nonObject
-			count: 1
-			path: frontend/frontend.php
-
-		-
-			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
 			count: 1
 			path: frontend/frontend.php
 
@@ -777,12 +765,6 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 1
-			path: include/license.php
-
-		-
-			message: '#^Cannot unset property PLL_License\:\:\$license_data because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
 			count: 1
 			path: include/license.php
 

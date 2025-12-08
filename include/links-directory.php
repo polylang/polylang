@@ -172,7 +172,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
-		$filter = str_replace( '_rewrite_rules', '', current_filter() );
+		$filter = str_replace( '_rewrite_rules', '', (string) current_filter() );
 
 		global $wp_rewrite;
 		$newrules = array();

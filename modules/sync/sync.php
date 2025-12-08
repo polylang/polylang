@@ -221,7 +221,7 @@ class PLL_Sync {
 			$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 			$tr_term   = get_term( (int) $tr_id, $taxonomy );
 
-			if ( str_starts_with( current_filter(), 'created_' ) && 0 === $tr_parent ) {
+			if ( str_starts_with( (string) current_filter(), 'created_' ) && 0 === $tr_parent ) {
 				// Do not remove the existing hierarchy of translations when creating new term without parent.
 				continue;
 			}
