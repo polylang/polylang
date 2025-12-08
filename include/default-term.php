@@ -151,7 +151,7 @@ class PLL_Default_Term {
 	 *
 	 * @since 3.1
 	 *
-	 * @param  array $args Argument used to create the language. @see PLL_Admin_Model::add_language().
+	 * @param  array $args Argument used to create the language. @see `Model\Languages::add()`.
 	 * @return void
 	 */
 	public function handle_default_term_on_create_language( $args ) {

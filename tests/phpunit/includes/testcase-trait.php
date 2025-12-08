@@ -170,7 +170,7 @@ trait PLL_UnitTestCase_Trait {
 
 		$args = array_merge( $values, $args );
 
-		$errors = self::$model->add_language( $args );
+		$errors = self::$model->languages->add( $args );
 		if ( is_wp_error( $errors ) ) {
 			throw new InvalidArgumentException( $errors->get_error_message() );
 		}
@@ -202,7 +202,7 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		foreach ( $languages as $lang ) {
-			self::$model->delete_language( $lang->term_id );
+			self::$model->languages->delete( $lang->term_id );
 		}
 	}
 

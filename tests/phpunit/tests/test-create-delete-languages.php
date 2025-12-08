@@ -19,10 +19,9 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'term_group' => 2,
 		);
 
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$lang = $this->pll_env->model->add_language( $args );
 
-		$lang = $this->pll_env->model->get_language( 'en' );
-
+		$this->assertInstanceOf( PLL_Language::class, $lang );
 		$this->assertEquals( 'English', $lang->name );
 		$this->assertEquals( 'en', $lang->slug );
 		$this->assertEquals( 'en_US', $lang->locale );
@@ -42,10 +41,9 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'term_group' => 1,
 		);
 
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$lang = $this->pll_env->model->add_language( $args );
 
-		$lang = $this->pll_env->model->get_language( 'ar' );
-
+		$this->assertInstanceOf( PLL_Language::class, $lang );
 		$this->assertEquals( 'العربية', $lang->name );
 		$this->assertEquals( 'ar', $lang->slug );
 		$this->assertEquals( 'ar', $lang->locale );
@@ -180,7 +178,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'fr',
 			'term_group' => 2,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 	}
 
 	public function test_default_language_order() {
@@ -192,7 +190,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'us',
 			'term_group' => 0,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Français',
@@ -202,7 +200,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'fr',
 			'term_group' => 1,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Deutsch',
@@ -212,7 +210,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'de',
 			'term_group' => 2,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Español',
@@ -222,7 +220,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'es',
 			'term_group' => 3,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$expected = array(
 			'en',
@@ -243,7 +241,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'us',
 			'term_group' => 0,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$term_language_args = array(
 			'taxonomy' => 'term_language',
@@ -279,7 +277,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'us',
 			'term_group' => 0,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Français',
@@ -289,7 +287,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'fr',
 			'term_group' => 1,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 		$this->assertEquals( 'en', $this->pll_env->options['default_lang'] );
 
 		$fr = self::factory()->post->create();
@@ -331,7 +329,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'us',
 			'term_group' => 0,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Español',
@@ -341,7 +339,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'es',
 			'term_group' => 3,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Deutsch',
@@ -351,7 +349,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'de',
 			'term_group' => 2,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 
 		$args = array(
 			'name'       => 'Français',
@@ -361,7 +359,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag'       => 'fr',
 			'term_group' => 1,
 		);
-		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
+		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->add_language( $args ) );
 		$this->assertEquals( 'en', $this->pll_env->options['default_lang'] );
 
 		$fr = self::factory()->post->create();

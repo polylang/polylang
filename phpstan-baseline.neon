@@ -1321,12 +1321,6 @@ parameters:
 			path: settings/settings.php
 
 		-
-			message: '#^Parameter \#1 \$locale_name of function sanitize_locale_name expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: settings/settings.php
-
-		-
 			message: '#^Property PLL_Settings\:\:\$modules \(array\<PLL_Settings_Module\>\|null\) does not accept array\<object\>\.$#'
 			identifier: assign.propertyType
 			count: 1
