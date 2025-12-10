@@ -72,7 +72,7 @@ class Test_Object_With_No_Lang extends PLL_Object_Cache_TestCase {
 
 		$object_ids_with_no_lang = $this->pll_env->model->$type->get_objects_with_no_lang( $limit );
 
-		$this->assertLessThan( count( $this->object_ids[ $type ] ), count( $object_ids_with_no_lang ),  'The number of objects with no lang should be less than the total number of objects.' );
+		$this->assertLessThanOrEqual( count( $object_ids_with_no_lang ), count( $this->object_ids[ $type ] ),  'The total number of fixtures should be less than or equal to the number of objects with no lang.' );
 
 		foreach ( $this->object_ids [ $type ] as $object_id ) {
 			$this->assertContains( $object_id, $object_ids_with_no_lang, "The object id {$object_id} should be in the list of objects with no language." );
