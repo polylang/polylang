@@ -622,7 +622,7 @@ abstract class PLL_Translatable_Object {
 	 * @param string $key The cache key.
 	 * @return mixed|false The cached value, false if not found.
 	 */
-	private function get_from_cache( $key ) {
+	private function get_from_cache( string $key ) {
 		$last_changed = wp_cache_get_last_changed( $this->cache_type );
 
 		if ( ! function_exists( 'wp_cache_get_salted' ) ) {
@@ -643,7 +643,7 @@ abstract class PLL_Translatable_Object {
 	 * @param mixed  $value The value to store in the cache.
 	 * @return bool True if the value has been stored, false otherwise.
 	 */
-	private function set_to_cache( $key, $value ): bool {
+	private function set_to_cache( string $key, $value ): bool {
 		$last_changed = wp_cache_get_last_changed( $this->cache_type );
 
 		if ( ! function_exists( 'wp_cache_set_salted' ) ) {
