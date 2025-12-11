@@ -106,7 +106,12 @@ class PLL_Default_Term {
 			return;
 		}
 
-		$taxonomy = substr( current_filter(), 22 );
+		$current_filter = current_filter();
+		if ( ! $current_filter ) {
+			return;
+		}
+
+		$taxonomy = substr( $current_filter, 22 );
 
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $language->slug != $default_cat_lang->slug && ! $this->model->term->get_translation( $value, $language ) ) {

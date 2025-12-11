@@ -633,6 +633,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *
 	 * @param string $tab The name of the screen (`lang`, `strings`, `settings`).
 	 * @return string
+	 *
+	 * @phpstan-return non-empty-string
 	 */
 	public static function get_screen_id( string $tab ): string {
 		return sprintf( '%s_page_%s', self::SCREEN_PREFIX, self::get_screen_slug( $tab ) );
@@ -645,6 +647,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *
 	 * @param string $tab The name of the screen (`lang`, `strings`, `settings`).
 	 * @return string
+	 *
+	 * @phpstan-return non-empty-string
 	 */
 	public static function get_screen_slug( string $tab ): string {
 		return 'lang' === $tab ? 'mlang' : "mlang_$tab";
