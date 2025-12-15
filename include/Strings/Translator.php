@@ -75,7 +75,7 @@ class Translator {
 
 		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize' ), 10, 4 );
 
-		$this->resgister();
+		$this->register();
 	}
 
 	/**
@@ -104,7 +104,7 @@ class Translator {
 	 *
 	 * @return void
 	 */
-	private function resgister(): void {
+	private function register(): void {
 		PLL_Admin_Strings::register_string( $this->name, $this->string, $this->context, $this->multiline );
 	}
 
