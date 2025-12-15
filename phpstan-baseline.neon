@@ -217,18 +217,6 @@ parameters:
 			path: admin/admin-static-pages.php
 
 		-
-			message: '#^Offset ''widget_text'' might not exist on array\<string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 3
-			path: admin/admin-strings.php
-
-		-
-			message: '#^Offset ''widget_title'' might not exist on array\<string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 2
-			path: admin/admin-strings.php
-
-		-
 			message: '#^Property PLL_Admin\:\:\$block_editor \(PLL_Admin_Block_Editor\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
