@@ -92,7 +92,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 
 		// Backward compatibility with Polylang < 3.8.
 		if ( ! $language instanceof PLL_Language ) {
-			$language = $this->pll_model->languages->get( $args['locale'] );
+			$language = $this->pll_model->languages->get( $args['slug'] ?? $args['locale'] );
 		}
 
 		return $language instanceof PLL_Language ? $language->term_id : new WP_Error( 'Could not get the created language.' );
