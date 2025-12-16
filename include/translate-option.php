@@ -79,7 +79,7 @@ class PLL_Translate_Option {
 	 */
 	public function __construct( $name, $keys = array(), $args = array() ) {
 		$this->cache             = new PLL_Cache();
-		$this->sanitize_callback = $args['sanitize_callback'] ?? Closure::fromCallable( array( self::class, 'default_sanitize_option' ) );
+		$this->sanitize_callback = $args['sanitize_callback'] ?? Closure::fromCallable( array( $this, 'default_sanitize_option' ) );
 
 		// Registers the strings.
 		$context = $args['context'] ?? 'Polylang';
@@ -402,13 +402,13 @@ class PLL_Translate_Option {
 	 *
 	 * @since 2.9
 	 * @since 3.7 Add $context and $original parameters.
-	 * @since 3.8 Remove $context and $original parameters.
+	 * @since 3.8 Remove $context and $original parameters and now private.
 	 *
 	 * @param string $value The unsanitised string translation value.
 	 * @param string $name  The name registered for the string.
 	 * @return string Sanitized value.
 	 */
-	public static function default_sanitize_option( $value, $name ) {
+	private function default_sanitize_option( $value, $name ) {
 		/** @var string $sanitized_value */
 		$sanitized_value = sanitize_option( $name, $value );
 

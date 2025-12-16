@@ -71,7 +71,7 @@ class Translator {
 		$this->name              = $name;
 		$this->context           = $context;
 		$this->multiline         = $multiline;
-		$this->sanitize_callback = $sanitize_callback ?? Closure::fromCallable( array( self::class, 'default_sanitization' ) );
+		$this->sanitize_callback = $sanitize_callback ?? Closure::fromCallable( array( $this, 'default_sanitization' ) );
 
 		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize' ), 10, 4 );
 
@@ -129,7 +129,7 @@ class Translator {
 	 * @param string $string The string to sanitize.
 	 * @return string The sanitized string.
 	 */
-	private static function default_sanitization( $string ) {
+	private function default_sanitization( $string ) {
 		if ( ! current_user_can( 'unfiltered_html' ) ) {
 			return wp_kses_post( $string );
 		}
