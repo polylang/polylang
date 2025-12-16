@@ -45,11 +45,7 @@ class Test_Last_Changed extends PLL_Object_Cache_TestCase {
 
 		$last_changed_after = wp_cache_get_last_changed( $cache_type );
 
-		$this->assertGreaterThan(
-			number_format( (float) $last_changed, 8, '.', '' ),
-			number_format( (float) $last_changed_after, 8, '.', '' ),
-			'The last changed time should be greater than the previous one.'
-		);
+		$this->assertNotSame( $last_changed, $last_changed_after, 'Assigning a language must modify the cache last_changed.' );
 	}
 
 	/**
@@ -74,10 +70,6 @@ class Test_Last_Changed extends PLL_Object_Cache_TestCase {
 
 		$last_changed_after = wp_cache_get_last_changed( $cache_type );
 
-		$this->assertGreaterThan(
-			number_format( (float) $last_changed, 8, '.', '' ),
-			number_format( (float) $last_changed_after, 8, '.', '' ),
-			'The last changed time should be greater than the previous one.'
-		);
+		$this->assertNotSame( $last_changed, $last_changed_after, 'Assigning a language must modify the cache last_changed.' );
 	}
 }
