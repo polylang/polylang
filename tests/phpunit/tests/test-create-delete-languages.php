@@ -183,7 +183,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
 	}
 
-	public function test_default_language_order() {
+	public function test_languages_order() {
 		$args = array(
 			'name'       => 'English',
 			'slug'       => 'en',
@@ -200,7 +200,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'locale'     => 'fr_FR',
 			'rtl'        => 0,
 			'flag'       => 'fr',
-			'term_group' => 1,
+			'term_group' => 0,
 		);
 		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
 
@@ -210,7 +210,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'locale'     => 'de_DE',
 			'rtl'        => 0,
 			'flag'       => 'de',
-			'term_group' => 2,
+			'term_group' => 1,
 		);
 		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
 
@@ -220,15 +220,15 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'locale'     => 'es_ES',
 			'rtl'        => 0,
 			'flag'       => 'es',
-			'term_group' => 3,
+			'term_group' => 0,
 		);
 		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
 
 		$expected = array(
 			'en',
 			'fr',
-			'de',
 			'es',
+			'de',
 		);
 
 		$this->assertSameSetsWithIndex( $expected, $this->pll_env->model->get_languages_list( array( 'fields' => 'slug' ) ) );
