@@ -1320,20 +1320,20 @@ class Languages {
 			return array();
 		}
 
-		// Sort terms by 'language' taxonomy first, then by term_group, then by term_id.
 		$callback = static function ( $a, $b ) {
-			if ( $a->taxonomy === $b->taxonomy ) {
-				if ( $a->term_group === $b->term_group ) {
-					return $a->term_id < $b->term_id ? -1 : 1;
-				}
+			if ( $a->taxonomy !== $b->taxonomy ) {
+				// Sort terms by 'language' taxonomy first.
+				return 'language' === $a->taxonomy ? -1 : 1;
+			}
+			if ( $a->term_group !== $b->term_group ) {
+				// Then by term_group.
 				return $a->term_group < $b->term_group ? -1 : 1;
 			}
-
-			return 'language' === $a->taxonomy ? -1 : 1;
+			// Then by term_id.
+			return $a->term_id < $b->term_id ? -1 : 1;
 		};
 
 		usort( $terms, $callback );
-
 		return $terms;
 	}
 }
