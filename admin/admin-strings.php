@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Strings\Translator;
+
 /**
  * A fully static class to manage strings translations on admin side
  *
@@ -27,18 +29,6 @@ class PLL_Admin_Strings {
 	 * @var string[]|null
 	 */
 	protected static $default_strings;
-
-	/**
-	 * Add filters
-	 *
-	 * @since 1.6
-	 *
-	 * @return void
-	 */
-	public static function init() {
-		// default strings translations sanitization
-		add_filter( 'pll_sanitize_string_translation', array( self::class, 'sanitize_string_translation' ), 10, 2 );
-	}
 
 	/**
 	 * Register strings for translation making sure it is not duplicate or empty
@@ -94,17 +84,17 @@ class PLL_Admin_Strings {
 
 				// Widget title.
 				if ( ! empty( $widget_settings[ $number ]['title'] ) ) {
-					self::register_string( self::$default_strings['widget_title'], $widget_settings[ $number ]['title'], 'Widget' );
+					new Translator( $widget_settings[ $number ]['title'], self::$default_strings['widget_title'], 'Widget', false, 'sanitize_text_field' );
 				}
 
 				// Text of the Widget text.
 				if ( ! empty( $widget_settings[ $number ]['text'] ) ) {
-					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['text'], 'Widget', true );
+					new Translator( $widget_settings[ $number ]['text'], self::$default_strings['widget_text'], 'Widget', true );
 				}
 
 				// Content of the widget custom html.
 				if ( $widget_instance instanceof WP_Widget_Custom_HTML && ! empty( $widget_settings[ $number ]['content'] ) ) {
-					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['content'], 'Widget', true );
+					new Translator( $widget_settings[ $number ]['content'], self::$default_strings['widget_text'], 'Widget', true );
 				}
 			}
 		}
@@ -119,26 +109,5 @@ class PLL_Admin_Strings {
 		 */
 		self::$strings = apply_filters( 'pll_get_strings', self::$strings );
 		return self::$strings;
-	}
-
-	/**
-	 * Performs the sanitization ( before saving in DB ) of default strings translations
-	 *
-	 * @since 1.6
-	 *
-	 * @param string $translation translation to sanitize
-	 * @param string $name        unique name for the string
-	 * @return string
-	 */
-	public static function sanitize_string_translation( $translation, $name ) {
-		if ( $name == self::$default_strings['widget_title'] ) {
-			$translation = sanitize_text_field( $translation );
-		}
-
-		if ( $name == self::$default_strings['widget_text'] && ! current_user_can( 'unfiltered_html' ) ) {
-			$translation = wp_kses_post( $translation );
-		}
-
-		return $translation;
 	}
 }
