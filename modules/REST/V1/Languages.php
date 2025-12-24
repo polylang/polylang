@@ -654,7 +654,6 @@ class Languages extends Abstract_Controller {
 	 * Returns the language, if the ID is valid.
 	 *
 	 * @since 3.7
-	 * @since 3.8 Visibility changed to `public`.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return PLL_Language|WP_Error Language object if the ID or slug is valid, WP_Error otherwise.
@@ -662,7 +661,7 @@ class Languages extends Abstract_Controller {
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function get_language( WP_REST_Request $request ) {
+	private function get_language( WP_REST_Request $request ) {
 		if ( isset( $request['term_id'] ) ) {
 			$error = new WP_Error(
 				'rest_invalid_id',
