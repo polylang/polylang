@@ -402,10 +402,11 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 	public function test_language_switcher_metabox() {
 		$pll_admin = new PLL_Admin( $this->links_model );
-		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
+		$nav_menu  = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 
 		ob_start();
+		do_action( 'load-nav-menus.php' );
 		do_accordion_sections( 'nav-menus', 'side', null );
 		$out = ob_get_clean();
 
