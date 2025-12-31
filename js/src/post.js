@@ -64,8 +64,13 @@ jQuery(
 											$.each(
 												terms,
 												function ( i ) {
-													id = '#' + tax + '-' + pll_term_languages[ lg ][ tax ][ i ];
-													lang == lg ? $( id ).show() : $( id ).hide();
+													// Backward compatibility with WordPress < 6.7.
+													// Support both old (WP < 6.7) and new (WP >= 6.7) ID formats.
+													// Old format: category-123 (WordPress < 6.7).
+													// New format: in-category-123-1 (WordPress >= 6.7).
+													const termId = pll_term_languages[ lg ][ tax ][ i ];
+													const selector = `#${tax}-${termId}, [id^="in-${tax}-${termId}-"]`;
+													$( selector ).toggle( lang === lg );
 												}
 											);
 										}
