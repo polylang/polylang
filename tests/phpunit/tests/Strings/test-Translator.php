@@ -22,7 +22,7 @@ class Translator_Test extends PLL_UnitTestCase {
 
 		new Translator( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String' );
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String', '' );
 
 		$this->assertSame( $input, $sanitized );
 	}
@@ -44,7 +44,7 @@ class Translator_Test extends PLL_UnitTestCase {
 
 		new Translator( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String' );
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String', '' );
 
 		$this->assertSame( $expected, $sanitized );
 	}
@@ -69,7 +69,7 @@ class Translator_Test extends PLL_UnitTestCase {
 			$callback_name
 		);
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'my_string', 'FooContext', 'My String' );
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'my_string', 'FooContext', 'My String', '' );
 
 		$this->assertSame( $expected, $sanitized );
 	}
@@ -93,7 +93,7 @@ class Translator_Test extends PLL_UnitTestCase {
 		);
 
 		$input     = 'hello world';
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'hello_world', 'FooContext', 'Hello World' );
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'hello_world', 'FooContext', 'Hello World', '' );
 
 		$this->assertSame( 'HELLO WORLD', $sanitized );
 	}
@@ -114,7 +114,7 @@ class Translator_Test extends PLL_UnitTestCase {
 		new Translator( 'Original String', 'test_string', 'FooContext' );
 
 		$input     = '<script>alert("xss")</script><p>Safe</p>';
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, $name, $context, 'Original String' );
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, $name, $context, 'Original String', '' );
 
 		$this->assertSame( $input, $sanitized, 'Expected input to be unchanged when name and context do not match' );
 	}
@@ -142,11 +142,11 @@ class Translator_Test extends PLL_UnitTestCase {
 		$input = '<script>alert("xss")</script><p>Safe</p>';
 
 		// Should use default sanitization (wp_kses_post) for FooContext.
-		$sanitized1 = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Test String' );
+		$sanitized1 = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Test String', '' );
 		$this->assertSame( 'alert("xss")<p>Safe</p>', $sanitized1 );
 
 		// Should use sanitize_key for BarContext.
-		$sanitized2 = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'BazContext', 'Test String' );
+		$sanitized2 = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'BazContext', 'Test String', '' );
 		$this->assertSame( 'scriptalertxssscriptpsafep', $sanitized2 );
 	}
 
@@ -177,8 +177,28 @@ class Translator_Test extends PLL_UnitTestCase {
 
 		new Translator( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String' );
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String', '' );
 
 		$this->assertSame( $expected, $sanitized );
+	}
+
+	public function test_should_not_stip_out_already_existing_safe_translation() {
+		wp_set_current_user( 0 );
+
+		new Translator( 'Original String', 'test_string', 'FooContext' );
+
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', 'Translated String', 'test_string', 'FooContext', 'Original String', 'Translated String' );
+
+		$this->assertSame( 'Translated String', $sanitized );
+	}
+
+	public function test_should_not_stip_out_already_existing_unsafe_translation() {
+		wp_set_current_user( 0 );
+
+		new Translator( 'Original String', 'test_string', 'FooContext' );
+
+		$sanitized = apply_filters( 'pll_sanitize_string_translation', "<script>alert('xss')</script>", 'test_string', 'FooContext', 'Original String', "<script>alert('xss')</script>" );
+
+		$this->assertSame( "<script>alert('xss')</script>", $sanitized );
 	}
 }

@@ -110,7 +110,7 @@ class PLL_MO extends MO {
 	}
 
 	/**
-	 * Translates a string or returns false if the translation is not found.
+	 * Translates a string or returns empty string if the translation is not found.
 	 * Contrary to `self::translate()`, this method doesn't fallback to the source string but returns empty string instead.
 	 *
 	 * @since 3.7

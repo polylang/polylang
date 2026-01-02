@@ -73,7 +73,7 @@ class Translator {
 		$this->multiline         = $multiline;
 		$this->sanitize_callback = $sanitize_callback ?? Closure::fromCallable( array( $this, 'default_sanitization' ) );
 
-		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize' ), 10, 4 );
+		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize' ), 10, 5 );
 
 		$this->register();
 	}
@@ -87,10 +87,15 @@ class Translator {
 	 * @param string $name        The name as defined in pll_register_string.
 	 * @param string $context     The context as defined in pll_register_string.
 	 * @param string $original    The original string to translate.
+	 * @param string $previous    The previous translation if any.
 	 * @return string The sanitized string.
 	 */
-	public function sanitize( $translation, $name, $context, $original ): string {
+	public function sanitize( $translation, $name, $context, $original, $previous ): string {
 		if ( ! $this->is_matching( $name, $context ) ) {
+			return $translation;
+		}
+
+		if ( trim( $previous ) === trim( $translation ) ) {
 			return $translation;
 		}
 
