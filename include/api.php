@@ -5,6 +5,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Strings\Translator;
+
 /**
  * Template tag: displays the language switcher.
  * The function does nothing if used outside the frontend.
@@ -178,18 +180,29 @@ function pll_home_url( $lang = '' ) {
  *
  * @api
  * @since 0.6
+ * @since 3.8 Added $sanitize_callback parameter.
  *
- * @param string $name      A unique name for the string.
- * @param string $string    The string to register.
- * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'.
- * @param bool   $multiline Optional, true if the string table should display a multiline textarea,
- *                          false if should display a single line input, defaults to false.
+ * @param string        $name              A unique name for the string.
+ * @param string        $string            The string to register.
+ * @param string        $context           Optional, the group in which the string is registered, defaults to 'polylang'.
+ * @param bool          $multiline         Optional, true if the string table should display a multiline textarea,
+ *                                         false if should display a single line input, defaults to false.
+ * @param callable|null $sanitize_callback Optional, a callback function that sanitizes the string. Defaults to null.
  * @return void
  */
-function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
-	if ( PLL() instanceof PLL_Admin_Base ) {
-		PLL_Admin_Strings::register_string( $name, $string, $context, $multiline );
+function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false, $sanitize_callback = null ) {
+	if (
+		! is_scalar( $string )
+		|| ! is_string( $name )
+		|| ! is_string( $context )
+		|| ! is_bool( $multiline )
+		|| ! ( null === $sanitize_callback || is_callable( $sanitize_callback ) )
+	) {
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Invalid arguments.', 'polylang' ), '3.8' );
+		return;
 	}
+
+	new Translator( (string) $string, $name, $context, $multiline, $sanitize_callback );
 }
 
 /**
