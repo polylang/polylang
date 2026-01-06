@@ -93,8 +93,8 @@ parameters:
 		-
 			identifier: return.type
 			count: 1
-			path: include/Strings/Translator.php
+			path: include/Strings/Translatable.php
 		-
 			identifier: argument.type
 			count: 1
-			path: include/Strings/Translator.php
+			path: include/Strings/Translatable.php
