@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Strings\Translator;
+use WP_Syntex\Polylang\Strings\Translatable;
 
 /**
  * A fully static class to manage strings translations on admin side
@@ -84,17 +84,17 @@ class PLL_Admin_Strings {
 
 				// Widget title.
 				if ( ! empty( $widget_settings[ $number ]['title'] ) ) {
-					new Translator( $widget_settings[ $number ]['title'], self::$default_strings['widget_title'], 'Widget', false, 'sanitize_text_field' );
+					new Translatable( $widget_settings[ $number ]['title'], self::$default_strings['widget_title'], 'Widget', false, 'sanitize_text_field' );
 				}
 
 				// Text of the Widget text.
 				if ( ! empty( $widget_settings[ $number ]['text'] ) ) {
-					new Translator( $widget_settings[ $number ]['text'], self::$default_strings['widget_text'], 'Widget', true );
+					new Translatable( $widget_settings[ $number ]['text'], self::$default_strings['widget_text'], 'Widget', true );
 				}
 
 				// Content of the widget custom html.
 				if ( $widget_instance instanceof WP_Widget_Custom_HTML && ! empty( $widget_settings[ $number ]['content'] ) ) {
-					new Translator( $widget_settings[ $number ]['content'], self::$default_strings['widget_text'], 'Widget', true );
+					new Translatable( $widget_settings[ $number ]['content'], self::$default_strings['widget_text'], 'Widget', true );
 				}
 			}
 		}

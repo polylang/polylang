@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Strings\Translator;
+use WP_Syntex\Polylang\Strings\Translatable;
 
 /**
  * Registers and translates strings in an option.
@@ -220,7 +220,7 @@ class PLL_Translate_Option {
 				}
 			}
 		} elseif ( is_scalar( $values ) ) {
-			new Translator( (string) $values, $option, $context, false, $this->sanitize_callback );
+			new Translatable( (string) $values, $option, $context, false, $this->sanitize_callback );
 		}
 	}
 

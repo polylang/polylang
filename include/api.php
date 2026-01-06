@@ -5,7 +5,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Strings\Translator;
+use WP_Syntex\Polylang\Strings\Translatable;
 
 /**
  * Template tag: displays the language switcher.
@@ -202,7 +202,7 @@ function pll_register_string( $name, $string, $context = 'Polylang', $multiline 
 		return;
 	}
 
-	new Translator( (string) $string, $name, $context, $multiline, $sanitize_callback );
+	new Translatable( (string) $string, $name, $context, $multiline, $sanitize_callback );
 }
 
 /**
