@@ -273,10 +273,34 @@ class PLL_Model {
 	}
 
 	/**
+	 * Checks if a term slug exists.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $slug     The term slug to test.
+	 * @param string $taxonomy Optional taxonomy name.
+	 * @return int The `term_id` of the found term. 0 otherwise.
+	 */
+	public function term_exists_by_slug_globally( string $slug, string $taxonomy = '' ): int {
+		global $wpdb;
+
+		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
+		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
+		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
+
+		if ( ! empty( $taxonomy ) ) {
+			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
+		}
+
+		return (int) $wpdb->get_var( $select . $join . $where );
+	}
+
+	/**
 	 * Checks if a term slug exists in a given language, taxonomy, hierarchy.
 	 *
 	 * @since 1.9
 	 * @since 2.8 Moved from PLL_Share_Term_Slug::term_exists() to PLL_Model::term_exists_by_slug().
+	 * @deprecated 3.8 Use `term_exists_by_slug_and_language()` instead.
 	 *
 	 * @param string              $slug     The term slug to test.
 	 * @param string|PLL_Language $language The language slug or object.
@@ -285,6 +309,22 @@ class PLL_Model {
 	 * @return int The `term_id` of the found term. 0 otherwise.
 	 */
 	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ): int {
+		_deprecated_function( __METHOD__, '3.8', 'PLL_Model::term_exists_by_slug_and_language()' );
+		return $this->term_exists_by_slug_and_language( $slug, $language, $taxonomy, $parent );
+	}
+
+	/**
+	 * Checks if a term slug exists in a given language, taxonomy, hierarchy.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string              $slug     The term slug to test.
+	 * @param string|PLL_Language $language The language slug or object.
+	 * @param string              $taxonomy Optional taxonomy name.
+	 * @param int                 $parent   Optional parent term id.
+	 * @return int The `term_id` of the found term. 0 otherwise.
+	 */
+	public function term_exists_by_slug_and_language( $slug, $language, $taxonomy = '', $parent = 0 ): int {
 		global $wpdb;
 
 		$language = $this->languages->get( $language );

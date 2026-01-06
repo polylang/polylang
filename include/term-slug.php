@@ -6,44 +6,47 @@
 /**
  * Class for handling term slugs.
  *
+ * This class determines when and how to add language suffixes to term slugs to avoid conflicts between terms in different languages.
+ *
  * @since 3.7
+ * @since 3.8 Extracted suffix logic to allow to override behavior.
  */
 class PLL_Term_Slug {
 
 	/**
 	 * @var PLL_Model
 	 */
-	private $model;
+	protected $model;
 
 	/**
 	 * @var string
 	 */
-	private $slug;
+	protected $slug;
 
 	/**
 	 * @var string
 	 */
-	private $taxonomy;
+	protected $taxonomy;
 
 	/**
 	 * @var string
 	 */
-	private $name;
+	protected $name;
 
 	/**
 	 * @var int
 	 */
-	private $term_id;
+	protected $term_id;
 
 	/**
 	 * @var PLL_Language
 	 */
-	private $lang;
+	protected $lang;
 
 	/**
 	 * @var int
 	 */
-	private $parent;
+	protected $parent;
 
 	/**
 	 * Constructor.
@@ -68,10 +71,11 @@ class PLL_Term_Slug {
 	 * Tells if the suffix can be added or not.
 	 *
 	 * @since 3.7
+	 * @since 3.8 Changed visibility from private to protected to allow to reuse this logic.
 	 *
 	 * @return bool True if the suffix can be added, false otherwise.
 	 */
-	private function can_add_suffix() {
+	protected function can_add_suffix() {
 		/**
 		 * Filters the subsequently inserted term language.
 		 *
@@ -113,10 +117,12 @@ class PLL_Term_Slug {
 			}
 		}
 
-		if ( ! term_exists( $this->slug, $this->taxonomy ) ) {
+		if ( ! $this->model->term_exists_by_slug_globally( $this->slug, $this->taxonomy ) ) {
+			// Slug doesn't exist anywhere: no suffix needed.
 			return false;
 		}
 
+		// Slug exists somewhere: need to determine if suffix is needed.
 		return true;
 	}
 
@@ -168,13 +174,39 @@ class PLL_Term_Slug {
 			return $this->slug;
 		}
 
-		$term_id = (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+		return $this->apply_suffix_logic( $separator );
+	}
 
-		// If no term exists in the given language with that slug, it can be created, or if we are editing the existing term.
-		if ( ! $term_id || $this->term_id === $term_id ) {
-			return $this->slug . $separator . $this->lang->slug;
+	/**
+	 * Applies the suffix logic specific to Polylang Free.
+	 *
+	 * Polylang uses permanent separators (e.g., '-') that are never removed.
+	 * The suffix is only added when there's a real conflict with a term in a different language.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $separator The separator for the slug suffix.
+	 * @return string The slug with or without suffix.
+	 */
+	protected function apply_suffix_logic( string $separator ): string {
+		$term_id = (int) $this->model->term_exists_by_slug_and_language( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+
+		// Editing same term: no suffix needed.
+		if ( $term_id && $this->term_id === $term_id ) {
+			return $this->slug;
 		}
 
-		return $this->slug;
+		// Conflict with different term in same language: let WordPress handle it.
+		if ( $term_id ) {
+			return $this->slug;
+		}
+
+		// Changing language of existing term: no suffix needed.
+		if ( $this->term_id > 0 ) {
+			return $this->slug;
+		}
+
+		// Add suffix to avoid conflict with term in another language.
+		return $this->slug . $separator . $this->lang->slug;
 	}
 }
