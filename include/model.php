@@ -292,6 +292,7 @@ class PLL_Model {
 			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
 		}
 
+		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return (int) $wpdb->get_var( $select . $join . $where );
 	}
 

@@ -281,7 +281,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public function test_creating_unrelated_term_with_existing_slug_adds_suffix() {
 		// Create "Dog" in French
 		$_POST['term_lang_choice'] = 'fr';
-		$fr_term_id = self::factory()->category->create(
+		self::factory()->category->create(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
@@ -332,7 +332,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public function test_cannot_use_conflicting_slug_in_same_language() {
 		// Create first term.
 		$_POST['term_lang_choice'] = 'en';
-		$term1_id = self::factory()->category->create(
+		self::factory()->category->create(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
