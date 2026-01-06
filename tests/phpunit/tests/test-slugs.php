@@ -14,7 +14,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
-		$factory->language->create_many( 2 );
+		$factory->language->create_many( 3 );
 	}
 
 	public function set_up() {
@@ -204,5 +204,152 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->assertInstanceOf( WP_Term::class, $term_updated, 'The term should still exist.' );
 		$this->assertSame( 'new name', $term_updated->name, 'The name should be modified.' );
 		$this->assertSame( 'test', $term_updated->slug, 'The slug should remain untouched.' );
+	}
+
+	/**
+	 * Test should be able to change slug back to original after forced suffix.
+	 *
+	 * @ticket #2857 {@see https://github.com/polylang/polylang/issues/2857}
+	 */
+	public function test_can_manually_update_term_slug_removing_suffix() {
+		// Create term, change language, gets forced suffix "dog-en".
+		$_POST['term_lang_choice'] = 'fr';
+		$term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog-en', // Simulating the bug where it got suffixed.
+				'lang' => 'en',
+			)
+		);
+
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog-en', $term->slug );
+
+		// Attempt to change the slug to "dog".
+		wp_update_term( $term_id, 'category', array( 'slug' => 'dog' ) );
+
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog', $term->slug, 'Should be able to change slug from "dog-en" to "dog"' );
+
+		// Change to "dog-2", then back to "dog".
+		wp_update_term( $term_id, 'category', array( 'slug' => 'dog-2' ) );
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog-2', $term->slug );
+
+		wp_update_term( $term_id, 'category', array( 'slug' => 'dog' ) );
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog', $term->slug, 'Should be able to change slug from "dog-2" to "dog"' );
+	}
+
+	/**
+	 * Test creating a translation with same slug adds suffix.
+	 */
+	public function test_creating_translation_adds_suffix() {
+		// Create "Dog" in French
+		$_POST['term_lang_choice'] = 'fr';
+		$fr_term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'fr',
+			)
+		);
+
+		$fr_term = get_term( $fr_term_id, 'category' );
+		$this->assertSame( 'dog', $fr_term->slug );
+
+		// Create translation in English
+		$_POST['term_lang_choice'] = 'en';
+		$en_term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'en',
+			)
+		);
+
+		// Link them as translations
+		$this->pll_context->get()->model->term->save_translations( $fr_term_id, compact( 'en_term_id', 'fr_term_id' ) );
+
+		$en_term = get_term( $en_term_id, 'category' );
+		$this->assertSame( 'dog-en', $en_term->slug, 'Translation should have suffix' );
+	}
+
+	/**
+	 * Test creating unrelated term with existing slug adds suffix.
+	 */
+	public function test_creating_unrelated_term_with_existing_slug_adds_suffix() {
+		// Create "Dog" in French
+		$_POST['term_lang_choice'] = 'fr';
+		$fr_term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'fr',
+			)
+		);
+
+		// Create unrelated "Dog" in German (not a translation)
+		$_POST['term_lang_choice'] = 'de';
+		$de_term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'de',
+			)
+		);
+
+		$de_term = get_term( $de_term_id, 'category' );
+		$this->assertSame( 'dog-de', $de_term->slug, 'Unrelated term should have suffix to avoid conflict' );
+	}
+
+	/**
+	 * Test editing term keeps its slug.
+	 */
+	public function test_editing_term_keeps_slug() {
+		$_POST['term_lang_choice'] = 'en';
+		$term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'en',
+			)
+		);
+
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog', $term->slug );
+
+		// Edit name only
+		wp_update_term( $term_id, 'category', array( 'name' => 'Chien' ) );
+
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog', $term->slug, 'Slug should remain unchanged when editing' );
+	}
+
+	/**
+	 * Test creating term with conflicting slug in same language.
+	 */
+	public function test_cannot_use_conflicting_slug_in_same_language() {
+		// Create first term.
+		$_POST['term_lang_choice'] = 'en';
+		$term1_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'en',
+			)
+		);
+
+		// Try to create second term with different name but same slug.
+		$_POST['term_lang_choice'] = 'en';
+		$term2_id = self::factory()->category->create(
+			array(
+				'name' => 'Doggy', // Different name.
+				'slug' => 'dog',   // Same slug.
+				'lang' => 'en',
+			)
+		);
+
+		$this->assertSame( 'dog-2', get_term( $term2_id, 'category' )->slug );
 	}
 }
