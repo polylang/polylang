@@ -4,6 +4,9 @@
  */
 
 use WP_Syntex\Polylang\Model\Languages;
+use WP_Syntex\Polylang\Strings\Collection;
+use WP_Syntex\Polylang\Strings\Database_Repository;
+use WP_Syntex\Polylang\Strings\Translatable;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // since WP 3.1
@@ -45,6 +48,20 @@ class PLL_Table_String extends WP_List_Table {
 	protected $selected_group;
 
 	/**
+	 * The database repository.
+	 *
+	 * @var Database_Repository
+	 */
+	private $repository;
+
+	/**
+	 * The collection of translatables.
+	 *
+	 * @var Collection
+	 */
+	private $collection;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 0.6
@@ -60,9 +77,24 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		$this->languages = $languages;
-		$this->strings   = PLL_Admin_Strings::get_strings();
-		$this->groups    = array_unique( wp_list_pluck( $this->strings, 'context' ) );
+		$this->languages  = $languages;
+		$this->strings    = PLL_Admin_Strings::get_strings();
+		$this->groups     = array_unique( wp_list_pluck( $this->strings, 'context' ) );
+		$this->repository = new Database_Repository();
+		$this->collection = $this->repository->find_all();
+
+		$translatables = array();
+		foreach ( $this->strings as $string_data ) {
+			$translatable = new Translatable(
+				$string_data['string'],
+				$string_data['name'],
+				$string_data['context'] ?? null,
+				$string_data['multiline'] ?? false,
+				$string_data['sanitize_callback'] ?? null
+			);
+			$translatables[ $translatable->get_id() ] = $translatable;
+			$this->collection->add( $translatable );
+		}
 
 		$this->selected_group = -1;
 
@@ -98,9 +130,11 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_cb( $item ) {
+		$translatable_id = md5( $item['string'] );
+
 		return sprintf(
 			'<label class="screen-reader-text" for="cb-select-%1$s">%2$s</label><input id="cb-select-%1$s" type="checkbox" name="strings[]" value="%1$s" %3$s />',
-			esc_attr( $item['row'] ),
+			esc_attr( $translatable_id ),
 			/* translators:  accessibility text, %s is a string potentially in any language */
 			sprintf( __( 'Select %s', 'polylang' ), format_to_edit( $item['string'] ) ),
 			disabled( empty( $item['icl'] ), true, false ) // Only strings registered with WPML API can be removed.
@@ -128,8 +162,9 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_translations( $item ) {
-		$out       = '';
-		$languages = array();
+		$out            = '';
+		$languages      = array();
+		$translatable_id = md5( $item['string'] );
 
 		foreach ( $this->languages->get_list() as $language ) {
 			$languages[ $language->slug ] = $language->name;
@@ -143,7 +178,7 @@ class PLL_Table_String extends WP_List_Table {
 			$out .= sprintf(
 				'<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . "</div>\n",
 				esc_attr( $key ),
-				esc_attr( $item['row'] ),
+				esc_attr( $translatable_id ),
 				esc_html( $languages[ $key ] ),
 				format_to_edit( $translation ), // Don't interpret special chars.
 				$item['disabled'][ $key ]
@@ -401,54 +436,37 @@ class PLL_Table_String extends WP_List_Table {
 					continue;
 				}
 
-				$translations = array_map( 'trim', (array) wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$translations_raw = array_map( 'trim', (array) wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-				$mo = new PLL_MO();
-				$mo->import_from_db( $language );
+				// Build translations map using translatable IDs directly.
+				$translations = array();
+				foreach ( $translations_raw as $translatable_id => $translation ) {
+					if ( ! $this->collection->has( $translatable_id ) ) {
+						continue;
+					}
 
-				foreach ( $translations as $key => $translation ) {
-					/**
-					 * Filters the string translation before it is saved in DB.
-					 * Allows to sanitize strings registered with pll_register_string().
-					 *
-					 * @since 1.6
-					 * @since 2.7 The translation passed to the filter is unslashed.
-					 * @since 3.7 Add original string as 4th parameter.
-					 * @since 3.8 Add previous translation as 5th parameter.
-					 *
-					 * @param string $translation The string translation.
-					 * @param string $name        The name as defined in pll_register_string.
-					 * @param string $context     The context as defined in pll_register_string.
-					 * @param string $original    The original string to translate.
-					 * @param string $previous    The previous translation if any.
-					 */
-					$translation = apply_filters(
-						'pll_sanitize_string_translation',
-						$translation,
-						$this->strings[ $key ]['name'],
-						$this->strings[ $key ]['context'],
-						$this->strings[ $key ]['string'],
-						$mo->translate_if_any( $this->strings[ $key ]['string'] )
-					);
+					$translations[ $translatable_id ] = $translation;
+				}
 
-					$mo->add_entry(
-						$mo->make_entry(
-							$this->strings[ $key ]['string'],
-							$translation
-						)
-					);
+				// Only save if there are translations to save.
+				if ( empty( $translations ) ) {
+					continue;
 				}
 
 				// Clean database (removes all strings which were registered some day but are no more).
 				if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
+					$mo = new PLL_MO();
+					$mo->import_from_db( $language );
+
 					$new_mo = new PLL_MO();
-
-					foreach ( $this->strings as $string ) {
-						$new_mo->add_entry( $mo->make_entry( $string['string'], $mo->translate( $string['string'] ) ) );
+					foreach ( $this->collection->all() as $translatable ) {
+						$translation = $mo->translate( $translatable->get_value() );
+						$new_mo->add_entry( $mo->make_entry( $translatable->get_value(), $translation ) );
 					}
+					$new_mo->export_to_db( $language );
+				} else {
+					$this->repository->save_translations( $this->collection, $language, $translations );
 				}
-
-				isset( $new_mo ) ? $new_mo->export_to_db( $language ) : $mo->export_to_db( $language );
 			}
 
 			pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
@@ -462,9 +480,11 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Unregisters strings registered through WPML API
-		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) && current_user_can( 'manage_options' ) ) {
-			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $key ) {
-				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
+		if ( 'delete' === $this->current_action() && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) && current_user_can( 'manage_options' ) ) {
+			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $translatable_id ) {
+				if ( $this->collection->has( $translatable_id ) ) {
+					$this->repository->remove( $translatable_id );
+				}
 			}
 		}
 
