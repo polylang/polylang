@@ -3,9 +3,12 @@
 namespace WP_Syntex\Polylang\Tests\Strings;
 
 use PLL_UnitTestCase;
-use WP_Syntex\Polylang\Strings\Translator;
+use WP_Syntex\Polylang\Strings\Translatable;
 
-class Translator_Test extends PLL_UnitTestCase {
+/**
+ * @group strings
+ */
+class Translatable_Test extends PLL_UnitTestCase {
 	/**
 	 * Test default sanitization (uses no sanitization when user has `unfiltered_html` capability).
 	 *
@@ -20,9 +23,9 @@ class Translator_Test extends PLL_UnitTestCase {
 	public function test_sanitize_default_with_user_having_unfiltered_html_capability( $input ) {
 		wp_set_current_user( 1 );
 
-		new Translator( 'Original String', 'test_string', 'FooContext' );
+		$translatable = new Translatable( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String', '' );
+		$sanitized = $translatable->sanitize( $input, 'test_string', 'FooContext', 'Original String', '' );
 
 		$this->assertSame( $input, $sanitized );
 	}
@@ -42,9 +45,9 @@ class Translator_Test extends PLL_UnitTestCase {
 	public function test_sanitize_default_with_user_lacking_unfiltered_html_capability( $input, $expected ) {
 		wp_set_current_user( 0 );
 
-		new Translator( 'Original String', 'test_string', 'FooContext' );
+		$translatable = new Translatable( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String', '' );
+		$sanitized = $translatable->sanitize( $input, 'test_string', 'FooContext', 'Original String', '' );
 
 		$this->assertSame( $expected, $sanitized );
 	}
@@ -61,7 +64,7 @@ class Translator_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function test_sanitize_custom_callback( $callback_name, $input, $expected ) {
-		new Translator(
+		$translatable = new Translatable(
 			'My String',
 			'my_string',
 			'FooContext',
@@ -69,7 +72,7 @@ class Translator_Test extends PLL_UnitTestCase {
 			$callback_name
 		);
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'my_string', 'FooContext', 'My String', '' );
+		$sanitized = $translatable->sanitize( $input, 'my_string', 'FooContext', 'My String', '' );
 
 		$this->assertSame( $expected, $sanitized );
 	}
@@ -84,7 +87,7 @@ class Translator_Test extends PLL_UnitTestCase {
 			return strtoupper( $string );
 		};
 
-		new Translator(
+		$translatable = new Translatable(
 			'Hello World',
 			'hello_world',
 			'FooContext',
@@ -93,7 +96,7 @@ class Translator_Test extends PLL_UnitTestCase {
 		);
 
 		$input     = 'hello world';
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'hello_world', 'FooContext', 'Hello World', '' );
+		$sanitized = $translatable->sanitize( $input, 'hello_world', 'FooContext', 'Hello World', '' );
 
 		$this->assertSame( 'HELLO WORLD', $sanitized );
 	}
@@ -111,10 +114,10 @@ class Translator_Test extends PLL_UnitTestCase {
 	public function test_sanitize_non_matching_with_user_lacking_unfiltered_html_capability( $name, $context ) {
 		wp_set_current_user( 0 );
 
-		new Translator( 'Original String', 'test_string', 'FooContext' );
+		$translatable = new Translatable( 'Original String', 'test_string', 'FooContext' );
 
 		$input     = '<script>alert("xss")</script><p>Safe</p>';
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, $name, $context, 'Original String', '' );
+		$sanitized = $translatable->sanitize( $input, $name, $context, 'Original String', '' );
 
 		$this->assertSame( $input, $sanitized, 'Expected input to be unchanged when name and context do not match' );
 	}
@@ -128,10 +131,10 @@ class Translator_Test extends PLL_UnitTestCase {
 		wp_set_current_user( 0 );
 
 		// First with default sanitization.
-		new Translator( 'Test String', 'test_string', 'FooContext' );
+		$translatable1 = new Translatable( 'Test String', 'test_string', 'FooContext' );
 
 		// Second with custom sanitization for same string but different context.
-		new Translator(
+		$translatable2 = new Translatable(
 			'Test String',
 			'test_string',
 			'BazContext',
@@ -142,11 +145,11 @@ class Translator_Test extends PLL_UnitTestCase {
 		$input = '<script>alert("xss")</script><p>Safe</p>';
 
 		// Should use default sanitization (wp_kses_post) for FooContext.
-		$sanitized1 = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Test String', '' );
+		$sanitized1 = $translatable1->sanitize( $input, 'test_string', 'FooContext', 'Test String', '' );
 		$this->assertSame( 'alert("xss")<p>Safe</p>', $sanitized1 );
 
-		// Should use sanitize_key for BarContext.
-		$sanitized2 = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'BazContext', 'Test String', '' );
+		// Should use sanitize_key for BazContext.
+		$sanitized2 = $translatable2->sanitize( $input, 'test_string', 'BazContext', 'Test String', '' );
 		$this->assertSame( 'scriptalertxssscriptpsafep', $sanitized2 );
 	}
 
@@ -175,9 +178,9 @@ class Translator_Test extends PLL_UnitTestCase {
 	public function test_sanitize_control_characters( $input, $expected ) {
 		wp_set_current_user( 0 );
 
-		new Translator( 'Original String', 'test_string', 'FooContext' );
+		$translatable = new Translatable( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', $input, 'test_string', 'FooContext', 'Original String', '' );
+		$sanitized = $translatable->sanitize( $input, 'test_string', 'FooContext', 'Original String', '' );
 
 		$this->assertSame( $expected, $sanitized );
 	}
@@ -185,9 +188,9 @@ class Translator_Test extends PLL_UnitTestCase {
 	public function test_should_not_stip_out_already_existing_safe_translation() {
 		wp_set_current_user( 0 );
 
-		new Translator( 'Original String', 'test_string', 'FooContext' );
+		$translatable = new Translatable( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', 'Translated String', 'test_string', 'FooContext', 'Original String', 'Translated String' );
+		$sanitized = $translatable->sanitize( 'Translated String', 'test_string', 'FooContext', 'Original String', 'Translated String' );
 
 		$this->assertSame( 'Translated String', $sanitized );
 	}
@@ -195,9 +198,9 @@ class Translator_Test extends PLL_UnitTestCase {
 	public function test_should_not_stip_out_already_existing_unsafe_translation() {
 		wp_set_current_user( 0 );
 
-		new Translator( 'Original String', 'test_string', 'FooContext' );
+		$translatable = new Translatable( 'Original String', 'test_string', 'FooContext' );
 
-		$sanitized = apply_filters( 'pll_sanitize_string_translation', "<script>alert('xss')</script>", 'test_string', 'FooContext', 'Original String', "<script>alert('xss')</script>" );
+		$sanitized = $translatable->sanitize( "<script>alert('xss')</script>", 'test_string', 'FooContext', 'Original String', "<script>alert('xss')</script>" );
 
 		$this->assertSame( "<script>alert('xss')</script>", $sanitized );
 	}
