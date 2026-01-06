@@ -9,11 +9,18 @@ use Closure;
 use PLL_Admin_Strings;
 
 /**
- * Class to translate strings.
+ * Entity representing a translatable string with registration and sanitization.
  *
  * @since 3.8
  */
-class Translator {
+class Translatable {
+	/**
+	 * The unique identifier for the string.
+	 *
+	 * @var string
+	 */
+	private $id;
+
 	/**
 	 * The name of the string.
 	 *
@@ -22,14 +29,14 @@ class Translator {
 	private $name;
 
 	/**
-	 * The string to translate.
+	 * The string value to translate.
 	 *
 	 * @var string
 	 */
 	private $string;
 
 	/**
-	 * The context of the string.
+	 * The context/group of the string.
 	 *
 	 * @var string
 	 */
@@ -67,6 +74,7 @@ class Translator {
 		bool $multiline = false,
 		?callable $sanitize_callback = null
 	) {
+		$this->id                = md5( $string );
 		$this->string            = $string;
 		$this->name              = $name;
 		$this->context           = $context;
@@ -79,7 +87,73 @@ class Translator {
 	}
 
 	/**
-	 * Sanitizes the string.
+	 * Gets the unique identifier.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public function get_id(): string {
+		return $this->id;
+	}
+
+	/**
+	 * Gets the name.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public function get_name(): string {
+		return $this->name;
+	}
+
+	/**
+	 * Gets the string value.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public function get_value(): string {
+		return $this->string;
+	}
+
+	/**
+	 * Gets the context.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public function get_context(): string {
+		return $this->context;
+	}
+
+	/**
+	 * Checks if the string is multiline.
+	 *
+	 * @since 3.8
+	 *
+	 * @return bool
+	 */
+	public function is_multiline(): bool {
+		return $this->multiline;
+	}
+
+	/**
+	 * Registers the string.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public function register(): void {
+		PLL_Admin_Strings::register_string( $this->name, $this->string, $this->context, $this->multiline );
+	}
+
+	/**
+	 * Sanitizes the string translation.
 	 *
 	 * @since 3.8
 	 *
@@ -103,23 +177,12 @@ class Translator {
 	}
 
 	/**
-	 * Registers the string.
+	 * Checks if the string matches the given name and context.
 	 *
 	 * @since 3.8
 	 *
-	 * @return void
-	 */
-	private function register(): void {
-		PLL_Admin_Strings::register_string( $this->name, $this->string, $this->context, $this->multiline );
-	}
-
-	/**
-	 * Checks if the string matches.
-	 *
-	 * @since 3.8
-	 *
-	 * @param string $name          The name to compare.
-	 * @param string $context       The context to compare.
+	 * @param string $name    The name to compare.
+	 * @param string $context The context to compare.
 	 * @return bool Whether the strings match.
 	 */
 	private function is_matching( string $name, string $context ): bool {
@@ -140,5 +203,22 @@ class Translator {
 		}
 
 		return $string;
+	}
+
+	/**
+	 * Converts the entity to an array representation.
+	 *
+	 * @since 3.8
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function to_array(): array {
+		return array(
+			'id'        => $this->id,
+			'name'      => $this->name,
+			'string'    => $this->string,
+			'context'   => $this->context,
+			'multiline' => $this->multiline,
+		);
 	}
 }
