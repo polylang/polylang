@@ -83,19 +83,6 @@ class PLL_Table_String extends WP_List_Table {
 		$this->repository = new Database_Repository();
 		$this->collection = $this->repository->find_all();
 
-		$translatables = array();
-		foreach ( $this->strings as $string_data ) {
-			$translatable = new Translatable(
-				$string_data['string'],
-				$string_data['name'],
-				$string_data['context'] ?? null,
-				$string_data['multiline'] ?? false,
-				$string_data['sanitize_callback'] ?? null
-			);
-			$translatables[ $translatable->get_id() ] = $translatable;
-			$this->collection->add( $translatable );
-		}
-
 		$this->selected_group = -1;
 
 		if ( ! empty( $_GET['group'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
