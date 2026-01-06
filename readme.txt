@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 3.7.5
+Stable tag: 3.7.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -105,6 +105,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.7.6 (2026-01-06) =
+
+* Pro: Add support for WP 6.9 new blocks #2790
+* Pro: Fix insertion of navigation language switcher block in WP 6.9 #2847
+* Pro: Fix current post URL in site editor for WP 6.8+ #2843
+* Pro: Fix a conflict with Sensei LMS #2845
+* Fix categories not filtered per post language in quick edit #1785
 
 = 3.7.5 (2025-11-10) =
 
