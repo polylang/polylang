@@ -241,7 +241,7 @@ class PLL_Canonical {
 	}
 
 	/**
-	 * Evaluates the canonical redirect url through the deidcated WP function.
+	 * Evaluates the canonical redirect url through the dedicated WP function.
 	 *
 	 * @since 3.3
 	 *
