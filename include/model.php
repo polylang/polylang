@@ -273,17 +273,18 @@ class PLL_Model {
 	}
 
 	/**
-	 * Checks if a term slug exists.
+	 * Checks if a term slug exists globally (any language).
+	 * Only checks by slug, not by name (unlike term_exists).
 	 *
 	 * @since 3.8
 	 *
-	 * @param string $slug     The term slug to test.
-	 * @param string $taxonomy Optional taxonomy name.
-	 * @return int The `term_id` of the found term. 0 otherwise.
+	 * @param string $slug            The term slug to test.
+	 * @param string $taxonomy        Optional taxonomy name.
+	 * @param int    $exclude_term_id Optional term ID to exclude from the search.
+	 * @return bool True if slug exists, false otherwise.
 	 */
-	public function term_exists_by_slug_globally( string $slug, string $taxonomy = '' ): int {
+	public function term_exists_by_slug_globally( string $slug, string $taxonomy = '', int $exclude_term_id = 0 ): bool {
 		global $wpdb;
-
 		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
 		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
 		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
@@ -292,8 +293,12 @@ class PLL_Model {
 			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
 		}
 
+		if ( $exclude_term_id > 0 ) {
+			$where .= $wpdb->prepare( ' AND t.term_id != %d', $exclude_term_id );
+		}
+
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		return (int) $wpdb->get_var( $select . $join . $where );
+		return (bool) $wpdb->get_var( $select . $join . $where );
 	}
 
 	/**
