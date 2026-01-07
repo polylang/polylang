@@ -24,13 +24,13 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		// Since WP 4.4, must be done before customize_register is fired
 		add_filter( 'theme_mod_nav_menu_locations', array( $this, 'theme_mod_nav_menu_locations' ), 20 );
 
-		// Integration in the WP menu interface
-		add_action( 'admin_init', array( $this, 'admin_init' ) ); // after Polylang upgrade
+		// Integration in the WP menu interface.
+		add_action( 'admin_init', array( $this, 'admin_init' ) ); // after Polylang upgrade.
+		add_action( 'load-nav-menus.php', array( $this, 'add_meta_box' ) );
 	}
 
 	/**
-	 * Setups filters and terms
-	 * adds the language switcher metabox and create new nav menu locations
+	 * Setups filters and terms and create new nav menu locations.
 	 *
 	 * @since 1.1
 	 *
@@ -40,15 +40,23 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'wp_update_nav_menu_item', array( $this, 'wp_update_nav_menu_item' ), 10, 2 );
 
-		// Translation of menus based on chosen locations
+		// Translation of menus based on chosen locations.
 		add_filter( 'pre_update_option_theme_mods_' . $this->theme, array( $this, 'pre_update_option_theme_mods' ) );
 		add_action( 'delete_nav_menu', array( $this, 'delete_nav_menu' ) );
 
-		// FIXME is it possible to choose the order ( after theme locations in WP3.5 and older ) ?
+		$this->create_nav_menu_locations();
+	}
+
+	/**
+	 * Adds the language switcher metabox.
+	 *
+	 * @since 3.7.7
+	 *
+	 * @return void
+	 */
+	public function add_meta_box() {
 		// FIXME not displayed if Polylang is activated before the first time the user goes to nav menus http://core.trac.wordpress.org/ticket/16828
 		add_meta_box( 'pll_lang_switch_box', __( 'Language switcher', 'polylang' ), array( $this, 'lang_switch' ), 'nav-menus', 'side', 'high' );
-
-		$this->create_nav_menu_locations();
 	}
 
 	/**
