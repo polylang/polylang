@@ -871,7 +871,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Pro: Fix conflict with Pods related to translated slugs for custom post types
 * Add Friulian to the predefined languages list
 * Fix conflict (javascript error) with Gütenberg #225
-* Fix conflict on ajax requests introduced by WooCoommerce 3.3.4
+* Fix conflict on ajax requests introduced by WooCommerce 3.3.4
 * Fix queries by 'category_name' not auto translated #238
 
 = 2.3.3 (2018-03-15) =
