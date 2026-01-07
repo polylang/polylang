@@ -70,8 +70,8 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Sets the current language
-	 * and fires the action 'pll_language_defined'.
+	 * Sets the current language.
+	 * Also fires the action 'pll_language_defined'.
 	 *
 	 * @since 1.2
 	 *
@@ -83,6 +83,15 @@ abstract class PLL_Choose_Lang {
 		if ( isset( $this->curlang ) ) {
 			return;
 		}
+
+		/**
+		 * Filters the current language to define on frontend.
+		 *
+		 * @since 3.8
+		 *
+		 * @param PLL_Language|false $curlang Instance of the current language.
+		 */
+		$curlang = apply_filters( 'pll_frontend_current_language', $curlang );
 
 		// Final check in case $curlang has an unexpected value
 		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
