@@ -62,7 +62,7 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 * @since 3.8 Returns a language object instead of a language slug.
 	 *
 	 * @param PLL_Language|false $lang  Current language code, false if not set yet.
-	 * @param WP_Query    $query Main WP query object.
+	 * @param WP_Query           $query Main WP query object.
 	 * @return PLL_Language|false
 	 */
 	public function set_language_from_query( $lang, $query ) {
