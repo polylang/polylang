@@ -98,6 +98,8 @@ class Languages {
 		$this->options              = $options;
 		$this->translatable_objects = $translatable_objects;
 		$this->cache                = $cache;
+
+		add_action( 'set_current_user', array( $this, 'maybe_clean_local_cache' ), -10000 );
 	}
 
 	/**
@@ -834,6 +836,7 @@ class Languages {
 	 * Cleans language cache.
 	 *
 	 * @since 3.7
+	 *
 	 * @return void
 	 */
 	public function clean_cache(): void {
@@ -845,10 +848,26 @@ class Languages {
 	 * Cleans local language cache.
 	 *
 	 * @since 3.8
+	 *
 	 * @return void
 	 */
 	public function clean_local_cache(): void {
 		$this->cache->clean();
+	}
+
+	/**
+	 * Cleans local language cache if automatic proxies are in use.
+	 * Hooked to `set_current_user`.
+	 *
+	 * @since 3.8
+	 * @see Languages::get_list()
+	 *
+	 * @return void
+	 */
+	public function maybe_clean_local_cache(): void {
+		if ( ! empty( $this->automatic_proxies ) ) {
+			$this->clean_local_cache();
+		}
 	}
 
 	/**
