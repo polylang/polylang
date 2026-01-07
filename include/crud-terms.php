@@ -96,6 +96,7 @@ class PLL_CRUD_Terms {
 		add_filter( 'pre_term_name', array( $this, 'set_pre_term_name' ) );
 		add_filter( 'pre_term_slug', array( $this, 'set_pre_term_slug' ), 10, 2 );
 		add_filter( 'pre_term_term_id', array( $this, 'set_pre_term_id' ) );
+		add_filter( 'pre_insert_term', array( $this, 'reset_pre_term_id' ) );
 
 		// Filters terms query by language.
 		add_filter( 'get_terms_args', array( $this, 'adjust_query_lang' ) );
@@ -310,6 +311,19 @@ class PLL_CRUD_Terms {
 		$this->pre_term_id = is_int( $term_id ) ? $term_id : 0;
 
 		return $term_id;
+	}
+
+	/**
+	 * Resets the stored term ID before inserting a new term.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string|WP_Error $term Term name or WP_Error object.
+	 * @return string|WP_Error Unmodified term.
+	 */
+	public function reset_pre_term_id( $term ) {
+		$this->pre_term_id = 0;
+		return $term;
 	}
 
 	/**
