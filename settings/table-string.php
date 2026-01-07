@@ -420,7 +420,7 @@ class PLL_Table_String extends WP_List_Table {
 					 * @param string $context     The context as defined in pll_register_string.
 					 * @param string $original    The original string to translate.
 					 */
-					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'], $this->strings[ $key ]['string'] );
+					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'], $this->strings[ $key ]['string'], $mo->translate_if_any( $this->strings[ $key ]['string'] ) );
 					$mo->add_entry(
 						$mo->make_entry(
 							$this->strings[ $key ]['string'],
