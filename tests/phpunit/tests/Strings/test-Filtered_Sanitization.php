@@ -29,7 +29,7 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 		self::$not_the_boss = $factory->user->create_and_get( array( 'role' => 'author' ) ); // Doesn't have the 'unfiltered_html' capability.
 	}
 
-	public function set_up(){
+	public function set_up() {
 		parent::set_up();
 
 		PLL_Admin_Strings::get_strings();

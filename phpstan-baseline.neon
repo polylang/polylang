@@ -219,7 +219,7 @@ parameters:
 		-
 			message: '#^Offset ''widget_text'' might not exist on array\<string\>\|null\.$#'
 			identifier: offsetAccess.notFound
-			count: 3
+			count: 2
 			path: admin/admin-strings.php
 
 		-
