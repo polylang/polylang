@@ -27,6 +27,10 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 
 		self::$the_boss     = $factory->user->create_and_get( array( 'role' => 'administrator' ) ); // Has the 'unfiltered_html' capability.
 		self::$not_the_boss = $factory->user->create_and_get( array( 'role' => 'author' ) ); // Doesn't have the 'unfiltered_html' capability.
+
+		if ( is_multisite() ) {
+			grant_super_admin( self::$the_boss->ID );
+		}
 	}
 
 	public function set_up() {
