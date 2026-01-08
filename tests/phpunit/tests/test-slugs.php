@@ -242,6 +242,53 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * Test that changing a term's language via quick edit doesn't add unwanted suffix.
+	 *
+	 * @ticket #2857 {@see https://github.com/polylang/polylang/issues/2857}
+	 */
+	public function test_changing_term_language_via_quick_edit_should_not_add_suffix() {
+		wp_set_current_user( 1 );
+
+		// Initialize admin for this test only.
+		$links_model = $this->pll_context->get()->model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$pll_admin->filters      = new PLL_Admin_Filters( $pll_admin );
+		$pll_admin->terms        = new PLL_CRUD_Terms( $pll_admin );
+		$pll_admin->filters_term = new PLL_Admin_Filters_Term( $pll_admin );
+
+		// Create category "Dog" in French.
+		$term_id = self::factory()->category->create(
+			array(
+				'name' => 'Dog',
+				'slug' => 'dog',
+				'lang' => 'fr',
+			)
+		);
+
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'dog', $term->slug, 'Initial slug should be "dog"' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $term_id )->slug );
+
+		// Simulate quick edit to change language to English.
+		$_POST = array(
+			'action'             => 'inline-save-tax',
+			'inline_lang_choice' => 'en',
+			'_inline_edit'       => wp_create_nonce( 'taxinlineeditnonce' ),
+		);
+		$_REQUEST = $_POST;
+
+		wp_update_term( $term_id, 'category' );
+
+		// Verify language changed and slug remained unchanged.
+		$term = get_term( $term_id, 'category' );
+		$this->assertSame( 'en', self::$model->term->get_language( $term_id )->slug, 'Language should be changed to English' );
+		$this->assertSame( 'dog', $term->slug, 'Slug should remain "dog" without suffix when changing language' );
+
+		// Clean up.
+		unset( $_REQUEST, $_POST );
+	}
+
+	/**
 	 * Test creating a translation with same slug adds suffix.
 	 */
 	public function test_creating_translation_adds_suffix() {
