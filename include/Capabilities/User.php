@@ -181,7 +181,7 @@ class User {
 	public function can_translate_or_die( PLL_Language $language ): void {
 		if ( ! $this->can_translate( $language ) ) {
 			/* translators: %s is a language name */
-			wp_die( esc_html( sprintf( __( 'Sorry, you are not allowed to create or edit content in %s.', 'polylang' ), $language->name ) ) );
+			wp_die( esc_html( sprintf( __( 'Sorry, you are not allowed to edit content in %s.', 'polylang' ), $language->name ) ) );
 		}
 	}
 }
