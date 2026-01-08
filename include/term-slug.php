@@ -13,37 +13,37 @@ class PLL_Term_Slug {
 	/**
 	 * @var PLL_Model
 	 */
-	protected $model;
+	private $model;
 
 	/**
 	 * @var string
 	 */
-	protected $slug;
+	private $slug;
 
 	/**
 	 * @var string
 	 */
-	protected $taxonomy;
+	private $taxonomy;
 
 	/**
 	 * @var string
 	 */
-	protected $name;
+	private $name;
 
 	/**
 	 * @var int
 	 */
-	protected $term_id;
+	private $term_id;
 
 	/**
 	 * @var PLL_Language
 	 */
-	protected $lang;
+	private $lang;
 
 	/**
 	 * @var int
 	 */
-	protected $parent;
+	private $parent;
 
 	/**
 	 * Constructor.
@@ -68,11 +68,10 @@ class PLL_Term_Slug {
 	 * Tells if the suffix can be added or not.
 	 *
 	 * @since 3.7
-	 * @since 3.7.7 Changed visibility from private to protected to allow to reuse this logic.
 	 *
 	 * @return bool True if the suffix can be added, false otherwise.
 	 */
-	protected function can_add_suffix() {
+	private function can_add_suffix() {
 		/**
 		 * Filters the subsequently inserted term language.
 		 *
@@ -116,7 +115,7 @@ class PLL_Term_Slug {
 
 		// Check if the slug exists globally, excluding the current term if we're editing.
 		if ( ! $this->model->term_exists_by_slug_globally( $this->slug, $this->taxonomy, $this->term_id ) ) {
-			// Slug doesn't exist anywhere: no suffix needed.
+			// Slug doesn't exist anywhere (or only exists for the current term): no suffix needed.
 			return false;
 		}
 
@@ -129,7 +128,7 @@ class PLL_Term_Slug {
 	 * Recursively appends the parents slugs like WordPress does.
 	 *
 	 * @since 3.3
-	 * @since 3.7 Moved from `PLL_Share_Term_Slug`to `PLL_Term_Slug`.
+	 * @since 3.7 Moved from `PLL_Share_Term_Slug` to `PLL_Term_Slug`.
 	 *
 	 * @return string Parents slugs if they are the same as the child slug, empty string otherwise.
 	 */
@@ -160,34 +159,6 @@ class PLL_Term_Slug {
 	}
 
 	/**
-	 * Applies the suffix logic.
-	 *
-	 * This method determines when to add a language suffix based on term conflicts.
-	 * Can be overridden by subclasses to implement different suffix behaviors.
-	 *
-	 * @since 3.7.7
-	 *
-	 * @param string $separator The separator for the slug suffix.
-	 * @return string The slug with or without suffix.
-	 */
-	protected function apply_suffix_logic( string $separator ): string {
-		$term_id = (int) $this->model->term_exists_by_slug_and_language( $this->slug, $this->lang, $this->taxonomy, $this->parent );
-
-		// Editing the same term: preserve slug without suffix.
-		if ( $term_id && $this->term_id === $term_id ) {
-			return $this->slug;
-		}
-
-		// No term exists in this language: add suffix.
-		if ( ! $term_id ) {
-			return $this->slug . $separator . $this->lang->slug;
-		}
-
-		// Different term exists in same language: no suffix, WordPress will handle uniqueness.
-		return $this->slug;
-	}
-
-	/**
 	 * Returns the term slug, suffixed or not.
 	 *
 	 * @since 3.7
@@ -200,6 +171,14 @@ class PLL_Term_Slug {
 			return $this->slug;
 		}
 
-		return $this->apply_suffix_logic( $separator );
+		$term_id = (int) $this->model->term_exists_by_slug_and_language( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+
+		// If no term exists in the given language with that slug, it can be created, or if we are editing the existing term.
+		if ( ! $term_id || $this->term_id === $term_id ) {
+			return $this->slug . $separator . $this->lang->slug;
+		}
+
+		// Different term exists in same language: no suffix, WordPress will handle uniqueness.
+		return $this->slug;
 	}
 }
