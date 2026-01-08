@@ -31,11 +31,9 @@ class PLL_Term_Slug {
 	protected $name;
 
 	/**
-	 * The term ID if editing an existing term, 0 otherwise.
-	 *
 	 * @var int
 	 */
-	protected $term_id = 0;
+	protected $term_id;
 
 	/**
 	 * @var PLL_Language
@@ -70,7 +68,7 @@ class PLL_Term_Slug {
 	 * Tells if the suffix can be added or not.
 	 *
 	 * @since 3.7
-	 * @since 3.8 Changed visibility from private to protected to allow to reuse this logic.
+	 * @since 3.7.7 Changed visibility from private to protected to allow to reuse this logic.
 	 *
 	 * @return bool True if the suffix can be added, false otherwise.
 	 */
@@ -167,7 +165,7 @@ class PLL_Term_Slug {
 	 * This method determines when to add a language suffix based on term conflicts.
 	 * Can be overridden by subclasses to implement different suffix behaviors.
 	 *
-	 * @since 3.8
+	 * @since 3.7.7
 	 *
 	 * @param string $separator The separator for the slug suffix.
 	 * @return string The slug with or without suffix.

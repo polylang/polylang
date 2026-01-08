@@ -274,9 +274,9 @@ class PLL_Model {
 
 	/**
 	 * Checks if a term slug exists globally (any language).
-	 * Only checks by slug, not by name (unlike term_exists).
+	 * Only checks by slug, not by name (unlike `term_exists`).
 	 *
-	 * @since 3.8
+	 * @since 3.7.7
 	 *
 	 * @param string $slug            The term slug to test.
 	 * @param string $taxonomy        Optional taxonomy name.
@@ -306,7 +306,7 @@ class PLL_Model {
 	 *
 	 * @since 1.9
 	 * @since 2.8 Moved from PLL_Share_Term_Slug::term_exists() to PLL_Model::term_exists_by_slug().
-	 * @deprecated 3.8 Use `term_exists_by_slug_and_language()` instead.
+	 * @deprecated 3.7.7 Use `term_exists_by_slug_and_language()` instead.
 	 *
 	 * @param string              $slug     The term slug to test.
 	 * @param string|PLL_Language $language The language slug or object.
@@ -315,14 +315,14 @@ class PLL_Model {
 	 * @return int The `term_id` of the found term. 0 otherwise.
 	 */
 	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ): int {
-		_deprecated_function( __METHOD__, '3.8', 'PLL_Model::term_exists_by_slug_and_language()' );
+		_deprecated_function( __METHOD__, '3.7.7', 'PLL_Model::term_exists_by_slug_and_language()' );
 		return $this->term_exists_by_slug_and_language( $slug, $language, $taxonomy, $parent );
 	}
 
 	/**
 	 * Checks if a term slug exists in a given language, taxonomy, hierarchy.
 	 *
-	 * @since 3.8
+	 * @since 3.7.7
 	 *
 	 * @param string              $slug     The term slug to test.
 	 * @param string|PLL_Language $language The language slug or object.

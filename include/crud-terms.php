@@ -302,7 +302,7 @@ class PLL_CRUD_Terms {
 	/**
 	 * Stores the term ID to use in `pre_term_slug`.
 	 *
-	 * @since 3.7
+	 * @since 3.7.7
 	 *
 	 * @param int $term_id Term ID.
 	 * @return int Unmodified term ID.
@@ -316,13 +316,14 @@ class PLL_CRUD_Terms {
 	/**
 	 * Resets the stored term ID before inserting a new term.
 	 *
-	 * @since 3.8
+	 * @since 3.7.7
 	 *
 	 * @param string|WP_Error $term Term name or WP_Error object.
 	 * @return string|WP_Error Unmodified term.
 	 */
 	public function reset_pre_term_id( $term ) {
 		$this->pre_term_id = 0;
+
 		return $term;
 	}
 
