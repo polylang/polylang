@@ -31,7 +31,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public function test_translated_terms_with_same_slug_get_suffix() {
 		// Create "Dog" in French.
 		$_POST['term_lang_choice'] = 'fr';
-		$fr_term_id = self::factory()->category->create(
+		$fr_term = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
@@ -39,12 +39,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$fr_term = get_term( $fr_term_id, 'category' );
 		$this->assertSame( 'dog', $fr_term->slug );
 
 		// Create translation in English.
 		$_POST['term_lang_choice'] = 'en';
-		$en_term_id = self::factory()->category->create(
+		$en_term = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
@@ -53,9 +52,8 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 
 		// Link them as translations.
-		self::$model->term->save_translations( $fr_term_id, array( 'en' => $en_term_id, 'fr' => $fr_term_id ) );
+		self::$model->term->save_translations( $fr_term->term_id, array( 'en' => $en_term->term_id, 'fr' => $fr_term->term_id ) );
 
-		$en_term = get_term( $en_term_id, 'category' );
 		$this->assertSame( 'dog-en', $en_term->slug, 'Translated term should have language suffix' );
 	}
 
@@ -77,7 +75,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		// Create unrelated "Dog" in German (not a translation).
 		$_POST['term_lang_choice'] = 'de';
-		$de_term_id = self::factory()->category->create(
+		$de_term = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
@@ -85,7 +83,6 @@ class Slugs_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$de_term = get_term( $de_term_id, 'category' );
 		$this->assertSame( 'dog-de', $de_term->slug, 'Unrelated term should have language suffix to avoid conflict' );
 	}
 
@@ -268,7 +265,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$pll_admin->filters_term = new PLL_Admin_Filters_Term( $pll_admin );
 
 		// Create category "Dog" in French.
-		$term_id = self::factory()->category->create(
+		$term = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
@@ -276,9 +273,8 @@ class Slugs_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$term = get_term( $term_id, 'category' );
 		$this->assertSame( 'dog', $term->slug, 'Initial slug should be "dog"' );
-		$this->assertSame( 'fr', self::$model->term->get_language( $term_id )->slug );
+		$this->assertSame( 'fr', self::$model->term->get_language( $term->term_id )->slug );
 
 		// Simulate quick edit to change language to English.
 		$_POST = array(
@@ -288,11 +284,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 		$_REQUEST = $_POST;
 
-		wp_update_term( $term_id, 'category' );
+		wp_update_term( $term->term_id, 'category' );
 
 		// Verify language changed and slug remained unchanged.
-		$term = get_term( $term_id, 'category' );
-		$this->assertSame( 'en', self::$model->term->get_language( $term_id )->slug, 'Language should be changed to English' );
+		$term = get_term( $term->term_id, 'category' );
+		$this->assertSame( 'en', self::$model->term->get_language( $term->term_id )->slug, 'Language should be changed to English' );
 		$this->assertSame( 'dog', $term->slug, 'Slug should remain "dog" without suffix when changing language' );
 	}
 
@@ -305,7 +301,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	 */
 	public function test_term_slug_can_be_changed_manually() {
 		$_POST['term_lang_choice'] = 'en';
-		$term_id = self::factory()->category->create(
+		$term = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog-en',
@@ -313,22 +309,21 @@ class Slugs_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$term = get_term( $term_id, 'category' );
 		$this->assertSame( 'dog-en', $term->slug );
 
 		// Change slug from "dog-en" to "dog".
-		wp_update_term( $term_id, 'category', array( 'slug' => 'dog' ) );
+		wp_update_term( $term->term_id, 'category', array( 'slug' => 'dog' ) );
 
-		$term = get_term( $term_id, 'category' );
+		$term = get_term( $term->term_id, 'category' );
 		$this->assertSame( 'dog', $term->slug, 'Should be able to manually change slug from "dog-en" to "dog"' );
 
 		// Change to "dog-2", then back to "dog".
-		wp_update_term( $term_id, 'category', array( 'slug' => 'dog-2' ) );
-		$term = get_term( $term_id, 'category' );
+		wp_update_term( $term->term_id, 'category', array( 'slug' => 'dog-2' ) );
+		$term = get_term( $term->term_id, 'category' );
 		$this->assertSame( 'dog-2', $term->slug );
 
-		wp_update_term( $term_id, 'category', array( 'slug' => 'dog' ) );
-		$term = get_term( $term_id, 'category' );
+		wp_update_term( $term->term_id, 'category', array( 'slug' => 'dog' ) );
+		$term = get_term( $term->term_id, 'category' );
 		$this->assertSame( 'dog', $term->slug, 'Should be able to change slug from "dog-2" back to "dog"' );
 	}
 
@@ -339,7 +334,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	 */
 	public function test_editing_term_name_preserves_slug() {
 		$_POST['term_lang_choice'] = 'en';
-		$term_id = self::factory()->category->create(
+		$term = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Dog',
 				'slug' => 'dog',
@@ -347,13 +342,12 @@ class Slugs_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$term = get_term( $term_id, 'category' );
 		$this->assertSame( 'dog', $term->slug );
 
 		// Edit name only.
-		wp_update_term( $term_id, 'category', array( 'name' => 'Chien' ) );
+		wp_update_term( $term->term_id, 'category', array( 'name' => 'Chien' ) );
 
-		$term = get_term( $term_id, 'category' );
+		$term = get_term( $term->term_id, 'category' );
 		$this->assertSame( 'dog', $term->slug, 'Slug should remain unchanged when editing name' );
 	}
 
@@ -376,7 +370,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		// Try to create second term with different name but same slug.
 		$_POST['term_lang_choice'] = 'en';
-		$term2_id = self::factory()->category->create(
+		$term2 = self::factory()->category->create_and_get(
 			array(
 				'name' => 'Doggy', // Different name.
 				'slug' => 'dog',   // Same slug.
@@ -384,6 +378,6 @@ class Slugs_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$this->assertSame( 'dog-2', get_term( $term2_id, 'category' )->slug, 'WordPress should add numeric suffix for conflict in same language' );
+		$this->assertSame( 'dog-2', $term2->slug, 'WordPress should add numeric suffix for conflict in same language' );
 	}
 }
