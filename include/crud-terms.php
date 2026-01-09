@@ -308,7 +308,7 @@ class PLL_CRUD_Terms {
 	 * @return int Unmodified term ID.
 	 */
 	public function set_pre_term_id( $term_id ) {
-		$this->pre_term_id = is_int( $term_id ) ? $term_id : 0;
+		$this->pre_term_id = is_numeric( $term_id ) ? (int) $term_id : 0;
 
 		return $term_id;
 	}
