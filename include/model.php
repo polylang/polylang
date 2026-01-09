@@ -298,7 +298,8 @@ class PLL_Model {
 		}
 
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		return (bool) $wpdb->get_var( $select . $join . $where );
+		$term_id = $wpdb->get_var( $select . $join . $where );
+		return max( 0, (int) $term_id ) > 0;
 	}
 
 	/**
@@ -329,6 +330,7 @@ class PLL_Model {
 	 * @param string              $taxonomy Optional taxonomy name.
 	 * @param int                 $parent   Optional parent term id.
 	 * @return int The `term_id` of the found term. 0 otherwise.
+	 * @phpstan-return int<0, max>
 	 */
 	public function term_exists_by_slug_and_language( $slug, $language, $taxonomy = '', $parent = 0 ): int {
 		global $wpdb;
@@ -353,7 +355,8 @@ class PLL_Model {
 		}
 
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		return (int) $wpdb->get_var( $select . $join . $where );
+		$term_id = $wpdb->get_var( $select . $join . $where );
+		return max( 0, (int) $term_id );
 	}
 
 	/**
