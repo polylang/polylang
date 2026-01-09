@@ -294,9 +294,6 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$term = get_term( $term_id, 'category' );
 		$this->assertSame( 'en', self::$model->term->get_language( $term_id )->slug, 'Language should be changed to English' );
 		$this->assertSame( 'dog', $term->slug, 'Slug should remain "dog" without suffix when changing language' );
-
-		// Clean up.
-		unset( $_REQUEST, $_POST );
 	}
 
 	/**
