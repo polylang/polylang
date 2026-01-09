@@ -75,4 +75,17 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 
 		$this->assertSame( $expected, apply_filters( 'pll_sanitize_string_translation', $string, 'test', 'test', 'test', 'test' ) );
 	}
+
+	/**
+	 * @testWith ["the_boss", "<script>alert('heck');</script>", "alert('heck');"]
+	 *           ["not_the_boss", "<script>alert('heck');</script>", "alert('heck');"]
+	 *
+	 * @param string $user   The user to set as current user.
+	 * @param string $string The string to sanitize.
+	 * @param string $expected The expected string.
+	 * @return void
+	 */
+	public function test_sanitize_widget_title( $user, $string, $expected ) {
+		$this->assertSame( $expected, PLL_Admin_Strings::sanitize_string_translation( $string, 'widget_title', 'test', 'test', 'test' ) );
+	}
 }

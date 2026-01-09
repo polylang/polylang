@@ -414,6 +414,7 @@ class PLL_Table_String extends WP_List_Table {
 					 * @since 1.6
 					 * @since 2.7 The translation passed to the filter is unslashed.
 					 * @since 3.7 Add original string as 4th parameter.
+					 * @since 3.8 Add previous string translation as 5th parameter.
 					 *
 					 * @param string $translation The string translation.
 					 * @param string $name        The name as defined in pll_register_string.

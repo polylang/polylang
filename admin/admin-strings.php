@@ -135,12 +135,12 @@ class PLL_Admin_Strings {
 	 */
 	public static function sanitize_string_translation( $translation, $name, $context, $original, $previous ) {
 		if ( trim( $previous ) === trim( $translation ) ) {
-			// Don't overwrite the translation to prevent to break string.
+			// Don't overwrite the translation to prevent breaking the string.
 			return $translation;
 		}
 
-		if ( $name == self::$default_strings['widget_title'] ) {
-			$translation = sanitize_text_field( $translation );
+		if ( $name === self::$default_strings['widget_title'] ) {
+			return sanitize_text_field( $translation );
 		}
 
 		if ( ! current_user_can( 'unfiltered_html' ) ) {
