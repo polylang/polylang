@@ -27,6 +27,7 @@
  *     term_group: int,
  *     is_rtl: int<0, 1>,
  *     facebook?: string,
+ *     deepl?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
  *     host: non-empty-string,
@@ -112,6 +113,13 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @var string
 	 */
 	public $facebook = '';
+
+	/**
+	 * DeepL locale.
+	 *
+	 * @var string
+	 */
+	public $deepl;
 
 	/**
 	 * Home URL in this language.
@@ -276,6 +284,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *     @type int      $term_group      Order of the language when displayed in a list of languages.
 	 *     @type int      $is_rtl          `1` if the language is rtl, `0` otherwise.
 	 *     @type string   $facebook        Optional. Facebook locale.
+	 *     @type string   $deepl           Optional. DeepL locale.
 	 *     @type string   $home_url        Home URL in this language.
 	 *     @type string   $search_url      Home URL to use in search forms.
 	 *     @type string   $host            Host corresponding to this language.

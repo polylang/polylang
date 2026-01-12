@@ -75,8 +75,7 @@ class PLL_Language_Factory {
 			return null;
 		}
 
-		$languages = $this->get_languages();
-		$data      = array(
+		$data = array(
 			'name'       => $terms['language']->name,
 			'slug'       => $terms['language']->slug,
 			'term_group' => $terms['language']->term_group,
@@ -110,22 +109,6 @@ class PLL_Language_Factory {
 			}
 		}
 
-		if ( ! empty( $data['locale'] ) ) {
-			if ( isset( $languages[ $data['locale'] ]['w3c'] ) ) {
-				$data['w3c'] = $languages[ $data['locale'] ]['w3c'];
-			} else {
-				$data['w3c'] = str_replace( '_', '-', $data['locale'] );
-			}
-
-			if ( isset( $languages[ $data['locale'] ]['facebook'] ) ) {
-				$data['facebook'] = $languages[ $data['locale'] ]['facebook'];
-			}
-		}
-
-		$flag_props = $this->get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
-		$data       = array_merge( $data, $flag_props );
-
-		$additional_data = array();
 		/**
 		 * Filters additional data to add to the language before it is created.
 		 *
@@ -139,7 +122,7 @@ class PLL_Language_Factory {
 		 * @phpstan-param array<non-empty-string, mixed> $additional_data
 		 * @phpstan-param non-empty-array<non-empty-string, mixed> $data
 		 */
-		$additional_data = apply_filters( 'pll_additional_language_data', $additional_data, $data );
+		$additional_data = apply_filters( 'pll_additional_language_data', array(), $data );
 
 		$allowed_additional_data = array(
 			'home_url'       => '',
@@ -148,7 +131,12 @@ class PLL_Language_Factory {
 			'page_for_posts' => 0,
 		);
 
-		$data = array_merge( $data, array_intersect_key( $additional_data, $allowed_additional_data ) );
+		$data = array_merge(
+			$data,
+			$this->get_additional_locales( $data['locale'] ),
+			$this->get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] ),
+			array_intersect_key( $additional_data, $allowed_additional_data )
+		);
 
 		return new PLL_Language( $this->sanitize_data( $data ) );
 	}
@@ -190,22 +178,42 @@ class PLL_Language_Factory {
 	}
 
 	/**
-	 * Returns predefined languages data.
+	 * Returns additional locales (W3C, Facebook, DeepL...) for a given WP locale.
 	 *
-	 * @since 3.4
+	 * @since 3.8
 	 *
-	 * @return array[]
-	 *
-	 * @phpstan-return array<string, array<string, string>>
+	 * @param string $locale WordPress locale.
+	 * @return string[]
 	 */
-	private function get_languages() {
+	private function get_additional_locales( $locale ) {
 		if ( empty( self::$languages ) ) {
 			self::$languages = include POLYLANG_DIR . '/settings/languages.php';
 		}
 
-		return self::$languages;
-	}
+		/**
+		 * Filters the additional locales.
+		 *
+		 * @since 3.8
+		 *
+		 * @param array  $locales {
+		 *   Additional locales.
+		 *
+		 *   @type string $w3c      W3C locale.
+		 *   @type string $deepl    Optional, DeepL locale.
+		 *   @type string $facebook Optional, Facebok locale.
+		 * }
+		 * @param string $locale WordPress locale.
+		 */
+		$locales = apply_filters( 'pll_additional_locales', array(), $locale );
 
+		$default = array(
+			'w3c'      => self::$languages[ $locale ]['w3c'] ?? str_replace( '_', '-', $locale ),
+			'facebook' => self::$languages[ $locale ]['facebook'] ?? '',
+			'deepl'    => self::$languages[ $locale ]['deepl'] ?? '',
+		);
+
+		return array_merge( $default, array_intersect_key( $locales, $default ) );
+	}
 
 	/**
 	 * Creates flag_url and flag language properties. Also takes care of custom flag.
