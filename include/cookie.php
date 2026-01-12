@@ -85,12 +85,7 @@ class PLL_Cookie {
 		$args = self::parse_args( $args );
 
 		if ( ! headers_sent() && PLL_COOKIE !== false && self::get() !== $lang ) {
-			if ( version_compare( PHP_VERSION, '7.3', '<' ) ) {
-				$args['path'] .= '; SameSite=' . $args['samesite']; // Hack to set SameSite value in PHP < 7.3. Doesn't work with newer versions.
-				setcookie( PLL_COOKIE, $lang, $args['expires'], $args['path'], $args['domain'], $args['secure'], $args['httponly'] );
-			} else {
-				setcookie( PLL_COOKIE, $lang, $args );
-			}
+			setcookie( PLL_COOKIE, $lang, $args );
 		}
 	}
 
