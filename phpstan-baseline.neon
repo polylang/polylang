@@ -715,42 +715,6 @@ parameters:
 			path: include/functions.php
 
 		-
-			message: '#^Parameter \#1 \$flag_code of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: include/language-factory.php
-
-		-
-			message: '#^Parameter \#2 \$name of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: include/language-factory.php
-
-		-
-			message: '#^Parameter \#3 \$slug of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: include/language-factory.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: include/language-factory.php
-
-		-
-			message: '#^Parameter \#4 \$locale of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: include/language-factory.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
-			count: 4
-			path: include/language-factory.php
-
-		-
 			message: '#^@readonly property cannot have a default value\.$#'
 			identifier: property.readOnlyByPhpDocDefaultValue
 			count: 7

@@ -94,20 +94,15 @@ class PLL_Language_Factory {
 		// The description fields can contain any property.
 		$description = maybe_unserialize( $terms['language']->description );
 
-		if ( is_array( $description ) ) {
-			$description = array_intersect_key(
-				$description,
-				array( 'locale' => null, 'rtl' => null, 'flag_code' => null, 'active' => null, 'fallbacks' => null )
-			);
-
-			foreach ( $description as $prop => $value ) {
-				if ( 'rtl' === $prop ) {
-					$data['is_rtl'] = $value;
-				} else {
-					$data[ $prop ] = $value;
-				}
-			}
+		if ( ! is_array( $description ) || empty( $description['locale'] ) || ! is_string( $description['locale'] ) ) {
+			return null;
 		}
+
+		$data['locale']    = $description['locale'];
+		$data['is_rtl']    = ! empty( $description['rtl'] ) ? 1 : 0;
+		$data['flag_code'] = isset( $description['flag_code'] ) && is_string( $description['flag_code'] ) ? $description['flag_code'] : '';
+		$data['active']    = isset( $description['active'] ) ? (bool) $description['active'] : true;
+		$data['fallbacks'] = isset( $description['fallbacks'] ) && is_array( $description['fallbacks'] ) ? $description['fallbacks'] : array();
 
 		/**
 		 * Filters additional data to add to the language before it is created.
@@ -157,18 +152,10 @@ class PLL_Language_Factory {
 			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
 
-		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
-
 		$positive_fields = array( 'term_group', 'page_on_front', 'page_for_posts' );
 
 		foreach ( $positive_fields as $field ) {
 			$data[ $field ] = ! empty( $data[ $field ] ) ? absint( $data[ $field ] ) : 0;
-		}
-
-		$data['active'] = isset( $data['active'] ) ? (bool) $data['active'] : true;
-
-		if ( array_key_exists( 'fallbacks', $data ) && ! is_array( $data['fallbacks'] ) ) {
-			unset( $data['fallbacks'] );
 		}
 
 		/**
