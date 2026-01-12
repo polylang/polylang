@@ -299,7 +299,7 @@ class PLL_Model {
 
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$term_id = $wpdb->get_var( $select . $join . $where );
-		return max( 0, (int) $term_id ) > 0;
+		return (int) $term_id > 0;
 	}
 
 	/**
