@@ -282,8 +282,6 @@ class PLL_Model {
 	 * @param string $taxonomy        Optional taxonomy name.
 	 * @param int    $exclude_term_id Optional term ID to exclude from the search.
 	 * @return bool True if slug exists, false otherwise.
-	 *
-	 * @phpstan-return int<0, max>
 	 */
 	public function term_exists_by_slug_globally( string $slug, string $taxonomy = '', int $exclude_term_id = 0 ): bool {
 		global $wpdb;
