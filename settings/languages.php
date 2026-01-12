@@ -61,6 +61,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'za',
 		'facebook' => 'af_ZA',
+		'deepl'    => 'AF',
 	),
 	'ak' => array(
 		'facebook' => 'ak_GH',
@@ -88,6 +89,7 @@ return array(
 		'name'     => 'Aragonés',
 		'dir'      => 'ltr',
 		'flag'     => 'es',
+		'deepl'    => 'AN',
 	),
 	'arq' => array(
 		'facebook' => 'ar_AR',
@@ -108,6 +110,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'as_IN',
+		'deepl'    => 'AS',
 	),
 	'az' => array(
 		'code'     => 'az',
@@ -116,6 +119,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'az',
 		'facebook' => 'az_AZ',
+		'deepl'    => 'AZ',
 	),
 	'azb' => array(
 		'code'     => 'az',
@@ -132,6 +136,7 @@ return array(
 		'flag'     => 'by',
 		'w3c'      => 'be',
 		'facebook' => 'be_BY',
+		'deepl'    => 'BE',
 	),
 	'bg_BG' => array(
 		'code'     => 'bg',
@@ -149,6 +154,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'bd',
 		'facebook' => 'bn_IN',
+		'deepl'    => 'BN',
 	),
 	'bo' => array(
 		'code'     => 'bo',
@@ -168,6 +174,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ba',
 		'facebook' => 'bs_BA',
+		'deepl'    => 'BS',
 	),
 	'ca' => array(
 		'code'     => 'ca',
@@ -176,6 +183,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'catalonia',
 		'facebook' => 'ca_ES',
+		'deepl'    => 'CA',
 	),
 	'ceb' => array(
 		'code'     => 'ceb',
@@ -184,6 +192,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ph',
 		'facebook' => 'cx_PH',
+		'deepl'    => 'CEB',
 	),
 	'ckb' => array(
 		'code'     => 'ku',
@@ -192,6 +201,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'kurdistan',
 		'facebook' => 'cb_IQ',
+		'deepl'    => 'CKB',
 	),
 	'co' => array(
 		'facebook' => 'co_FR',
@@ -212,6 +222,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'wales',
 		'facebook' => 'cy_GB',
+		'deepl'    => 'CY',
 	),
 	'da_DK' => array(
 		'code'     => 'da',
@@ -354,6 +365,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'esperanto',
 		'facebook' => 'eo_EO',
+		'deepl'    => 'EO',
 	),
 	'es_AR' => array(
 		'code'     => 'es',
@@ -488,6 +500,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'basque',
 		'facebook' => 'eu_ES',
+		'deepl'    => 'EU',
 	),
 	'fa_AF' => array(
 		'code'     => 'fa',
@@ -496,6 +509,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'af',
 		'facebook' => 'fa_IR',
+		'deepl'    => 'FA',
 	),
 	'fa_IR' => array(
 		'code'     => 'fa',
@@ -504,6 +518,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'ir',
 		'facebook' => 'fa_IR',
+		'deepl'    => 'FA',
 	),
 	'fi' => array(
 		'code'     => 'fi',
@@ -587,6 +602,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'galicia',
 		'facebook' => 'gl_ES',
+		'deepl'    => 'GL',
 	),
 	'gn' => array(
 		'facebook' => 'gn_PY',
@@ -598,6 +614,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'gu_IN',
+		'deepl'    => 'GU',
 	),
 	'hat' => array(
 		'facebook' => 'ht_HT',
@@ -628,6 +645,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'hi_IN',
+		'deepl'    => 'HI',
 	),
 	'hr' => array(
 		'code'     => 'hr',
@@ -636,6 +654,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'hr',
 		'facebook' => 'hr_HR',
+		'deepl'    => 'HR',
 	),
 	'hu_HU' => array(
 		'code'     => 'hu',
@@ -660,6 +679,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'am',
 		'facebook' => 'hy_AM',
+		'deepl'    => 'HY',
 	),
 	'id_ID' => array(
 		'code'     => 'id',
@@ -680,6 +700,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'is',
 		'facebook' => 'is_IS',
+		'deepl'    => 'IS',
 	),
 	'it_IT' => array(
 		'code'     => 'it',
@@ -706,6 +727,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'id',
 		'facebook' => 'jv_ID',
+		'deepl'    => 'JV',
 	),
 	'ka_GE' => array(
 		'code'     => 'ka',
@@ -714,6 +736,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ge',
 		'facebook' => 'ka_GE',
+		'deepl'    => 'KA',
 	),
 	'kab' => array(
 		'code'     => 'kab',
@@ -732,6 +755,7 @@ return array(
 		'name'     => 'Кыргызча',
 		'dir'      => 'ltr',
 		'flag'     => 'kg',
+		'deepl'    => 'KY',
 	),
 	'kk' => array(
 		'code'     => 'kk',
@@ -740,6 +764,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'kz',
 		'facebook' => 'kk_KZ',
+		'deepl'    => 'KK',
 	),
 	'km' => array(
 		'code'     => 'km',
@@ -817,6 +842,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'mk',
 		'facebook' => 'mk_MK',
+		'deepl'    => 'MK',
 	),
 	'ml_IN' => array(
 		'code'     => 'ml',
@@ -825,6 +851,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'ml_IN',
+		'deepl'    => 'ML',
 	),
 	'mlt' => array(
 		'facebook' => 'mt_MT',
@@ -836,6 +863,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'mn',
 		'facebook' => 'mn_MN',
+		'deepl'    => 'MN',
 	),
 	'mr' => array(
 		'code'     => 'mr',
@@ -844,6 +872,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'mr_IN',
+		'deepl'    => 'MR',
 	),
 	'mri' => array(
 		'w3c'      => 'mi',
@@ -856,6 +885,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'my',
 		'facebook' => 'ms_MY',
+		'deepl'    => 'MS',
 	),
 	'my_MM' => array(
 		'code'     => 'my',
@@ -864,6 +894,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'mm',
 		'facebook' => 'my_MM',
+		'deepl'    => 'MY',
 	),
 	'nb_NO' => array(
 		'code'     => 'nb',
@@ -881,6 +912,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'np',
 		'facebook' => 'ne_NP',
+		'deepl'    => 'NE',
 	),
 	'nl_BE' => array(
 		'code'     => 'nl',
@@ -925,6 +957,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'occitania',
 		'w3c'      => 'oc',
+		'deepl'    => 'OC',
 	),
 	'ory' => array(
 		'facebook' => 'or_IN',
@@ -936,6 +969,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'pa_IN',
+		'deepl'    => 'PA',
 	),
 	'pl_PL' => array(
 		'code'     => 'pl',
@@ -953,6 +987,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'af',
 		'facebook' => 'ps_AF',
+		'deepl'    => 'PS',
 	),
 	'pt_AO' => array(
 		'code'     => 'pt',
@@ -1087,6 +1122,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'al',
 		'facebook' => 'sq_AL',
+		'deepl'    => 'SQ',
 	),
 	'sr_RS' => array(
 		'code'     => 'sr',
@@ -1095,6 +1131,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'rs',
 		'facebook' => 'sr_RS',
+		'deepl'    => 'SR',
 	),
 	'srd' => array(
 		'w3c'      => 'sc',
@@ -1107,6 +1144,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'id',
 		'facebook' => 'su_ID',
+		'deepl'    => 'SU',
 	),
 	'sv_SE' => array(
 		'code'     => 'sv',
@@ -1124,6 +1162,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ke',
 		'facebook' => 'sw_KE',
+		'deepl'    => 'SW',
 	),
 	'syr' => array(
 		'facebook' => 'sy_SY',
@@ -1143,6 +1182,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'ta_IN',
+		'deepl'    => 'TA',
 	),
 	'ta_LK' => array(
 		'code'     => 'ta',
@@ -1151,6 +1191,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'lk',
 		'facebook' => 'ta_IN',
+		'deepl'    => 'TA',
 	),
 	'tah' => array(
 		'code'     => 'ty',
@@ -1166,6 +1207,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'te_IN',
+		'deepl'    => 'TE',
 	),
 	'tg' => array(
 		'facebook' => 'tg_TJ',
@@ -1186,6 +1228,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ph',
 		'facebook' => 'tl_PH',
+		'deepl'    => 'TL',
 	),
 	'tr_TR' => array(
 		'code'     => 'tr',
@@ -1203,6 +1246,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ru',
 		'facebook' => 'tt_RU',
+		'deepl'    => 'TT',
 	),
 	'tuk' => array(
 		'w3c'      => 'tk',
@@ -1234,6 +1278,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'pk',
 		'facebook' => 'ur_PK',
+		'deepl'    => 'UR',
 	),
 	'uz_UZ' => array(
 		'code'     => 'uz',
@@ -1242,6 +1287,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'uz',
 		'facebook' => 'uz_UZ',
+		'deepl'    => 'UZ',
 	),
 	'vec' => array(
 		'code'     => 'vec',
