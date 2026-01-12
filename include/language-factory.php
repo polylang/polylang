@@ -187,7 +187,7 @@ class PLL_Language_Factory {
 		 *
 		 *   @type string $w3c      W3C locale.
 		 *   @type string $deepl    Optional, DeepL locale.
-		 *   @type string $facebook Optional, Facebok locale.
+		 *   @type string $facebook Optional, Facebook locale.
 		 * }
 		 * @param string $locale WordPress locale.
 		 */
