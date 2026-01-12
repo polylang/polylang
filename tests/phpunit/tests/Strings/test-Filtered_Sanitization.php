@@ -88,4 +88,17 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 	public function test_sanitize_widget_title( $user, $string, $expected ) {
 		$this->assertSame( $expected, PLL_Admin_Strings::sanitize_string_translation( $string, 'widget_title', 'test', 'test', 'test' ) );
 	}
+
+	/**
+	 * @testWith ["the_boss"]
+	 *           ["not_the_boss"]
+	 *
+	 * @param string $user The user to set as current user.
+	 * @return void
+	 */
+	public function test_sanitize_already_existing_unsafe_translation( $user ) {
+		wp_set_current_user( self::${$user}->ID );
+
+		$this->assertSame( '<script>alert(\'heck\');</script>', PLL_Admin_Strings::sanitize_string_translation( '<script>alert(\'heck\');</script>', 'widget_title', 'test', 'test', '<script>alert(\'heck\');</script>' ) );
+	}
 }
