@@ -313,14 +313,14 @@ class PLL_Model {
 	/**
 	 * Checks if a term slug exists in a given language, taxonomy, hierarchy.
 	 *
-	 * @since 3.7.7
+	 * @since 1.9
+	 * @since 2.8 Moved from PLL_Share_Term_Slug::term_exists() to PLL_Model::term_exists_by_slug().
 	 *
 	 * @param string              $slug     The term slug to test.
 	 * @param string|PLL_Language $language The language slug or object.
 	 * @param string              $taxonomy Optional taxonomy name.
 	 * @param int                 $parent   Optional parent term id.
 	 * @return int The `term_id` of the found term. 0 otherwise.
-	 * @phpstan-return int<0, max>
 	 */
 	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ): int {
 		global $wpdb;
@@ -345,8 +345,7 @@ class PLL_Model {
 		}
 
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$term_id = $wpdb->get_var( $select . $join . $where );
-		return max( 0, (int) $term_id );
+		return (int) $wpdb->get_var( $select . $join . $where );
 	}
 
 	/**
