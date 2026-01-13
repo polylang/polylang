@@ -37,7 +37,7 @@ class PLL_Admin_Strings {
 	 */
 	public static function init() {
 		// default strings translations sanitization
-		add_filter( 'pll_sanitize_string_translation', array( self::class, 'sanitize_string_translation' ), 10, 2 );
+		add_filter( 'pll_sanitize_string_translation', array( self::class, 'sanitize_string_translation' ), 10, 5 );
 	}
 
 	/**
@@ -126,16 +126,24 @@ class PLL_Admin_Strings {
 	 *
 	 * @since 1.6
 	 *
-	 * @param string $translation translation to sanitize
-	 * @param string $name        unique name for the string
+	 * @param string $translation The string translation.
+	 * @param string $name        The name as defined in pll_register_string. Unused.
+	 * @param string $context     The context as defined in pll_register_string. Unused.
+	 * @param string $original    The original string to translate. Unused.
+	 * @param string $previous    The previous string translation.
 	 * @return string
 	 */
-	public static function sanitize_string_translation( $translation, $name ) {
-		if ( $name == self::$default_strings['widget_title'] ) {
-			$translation = sanitize_text_field( $translation );
+	public static function sanitize_string_translation( $translation, $name, $context, $original, $previous ) {
+		if ( trim( $previous ) === trim( $translation ) ) {
+			// Don't overwrite the translation to prevent breaking the string.
+			return $translation;
 		}
 
-		if ( $name == self::$default_strings['widget_text'] && ! current_user_can( 'unfiltered_html' ) ) {
+		if ( $name === self::$default_strings['widget_title'] ) {
+			return sanitize_text_field( $translation );
+		}
+
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
 			$translation = wp_kses_post( $translation );
 		}
 
