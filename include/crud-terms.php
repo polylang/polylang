@@ -299,20 +299,6 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Stores the term ID to use in `pre_term_slug`.
-	 *
-	 * @since 3.7.7
-	 *
-	 * @param int $term_id Term ID.
-	 * @return int Unmodified term ID.
-	 */
-	public function set_pre_term_id( $term_id ) {
-		$this->pre_term_id = is_numeric( $term_id ) ? (int) $term_id : 0;
-
-		return $term_id;
-	}
-
-	/**
 	 * Appends language slug to the term slug if needed.
 	 *
 	 * @since 3.3
@@ -329,5 +315,19 @@ class PLL_CRUD_Terms {
 		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name, $this->pre_term_id );
 
 		return $term_slug->get_suffixed_slug( '-' );
+	}
+
+	/**
+	 * Stores the term ID to use in `pre_term_slug`.
+	 *
+	 * @since 3.7.7
+	 *
+	 * @param int $term_id Term ID.
+	 * @return int Unmodified term ID.
+	 */
+	public function set_pre_term_id( $term_id ) {
+		$this->pre_term_id = is_numeric( $term_id ) ? (int) $term_id : 0;
+
+		return $term_id;
 	}
 }
