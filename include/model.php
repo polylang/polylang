@@ -273,44 +273,6 @@ class PLL_Model {
 	}
 
 	/**
-	 * Checks if a term slug exists globally (any language).
-	 * Only checks by slug, not by name (unlike `term_exists`).
-	 *
-	 * @since 3.7.7
-	 *
-	 * @param string $slug            The term slug to test.
-	 * @param string $taxonomy        Optional taxonomy name.
-	 * @param int    $exclude_term_id Optional term ID to exclude from the search.
-	 * @return bool True if slug exists, false otherwise.
-	 */
-	public function term_exists_by_slug_globally( string $slug, string $taxonomy = '', int $exclude_term_id = 0 ): bool {
-		$args = array(
-			'slug'                   => $slug,
-			'hide_empty'             => false,
-			'fields'                 => 'ids',
-			'lang'                   => '', // Disable our language filter.
-			'update_term_meta_cache' => false, // We don't need term meta.
-		);
-
-		if ( ! empty( $taxonomy ) ) {
-			$args['taxonomy'] = $taxonomy;
-		}
-
-		$terms = get_terms( $args );
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			return false;
-		}
-
-		// Exclude current term if specified.
-		if ( $exclude_term_id > 0 ) {
-			$terms = array_diff( $terms, array( $exclude_term_id ) );
-		}
-
-		return ! empty( $terms );
-	}
-
-	/**
 	 * Checks if a term slug exists in a given language, taxonomy, hierarchy.
 	 *
 	 * @since 1.9
