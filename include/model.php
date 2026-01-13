@@ -284,22 +284,30 @@ class PLL_Model {
 	 * @return bool True if slug exists, false otherwise.
 	 */
 	public function term_exists_by_slug_globally( string $slug, string $taxonomy = '', int $exclude_term_id = 0 ): bool {
-		global $wpdb;
-		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
-		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
-		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
+		$args = array(
+			'slug'                   => $slug,
+			'hide_empty'             => false,
+			'fields'                 => 'ids',
+			'lang'                   => '', // Disable our language filter.
+			'update_term_meta_cache' => false, // We don't need term meta.
+		);
 
 		if ( ! empty( $taxonomy ) ) {
-			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
+			$args['taxonomy'] = $taxonomy;
 		}
 
+		$terms = get_terms( $args );
+
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
+			return false;
+		}
+
+		// Exclude current term if specified.
 		if ( $exclude_term_id > 0 ) {
-			$where .= $wpdb->prepare( ' AND t.term_id != %d', $exclude_term_id );
+			$terms = array_diff( $terms, array( $exclude_term_id ) );
 		}
 
-		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$term_id = $wpdb->get_var( $select . $join . $where );
-		return (int) $term_id > 0;
+		return ! empty( $terms );
 	}
 
 	/**
