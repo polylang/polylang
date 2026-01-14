@@ -156,7 +156,7 @@ return array(
 		'facebook' => 'bg_BG',
 		'deepl'    => 'BG',
 	),
-	'bho' => array( // ISO 639-2 (no ISO 639-1 equivalent)
+	'bho' => array(
 		'code'     => 'bho',
 		'locale'   => 'bho',
 		'name'     => 'भोजपुरी',
@@ -695,7 +695,7 @@ return array(
 		'facebook' => 'hr_HR',
 		'deepl'    => 'HR',
 	),
-	'hsb' => array( // ISO 639-2 (no ISO 639-1 equivalent)
+	'hsb' => array(
 		'code'     => 'hsb',
 		'locale'   => 'hsb',
 		'name'     => 'Hornjoserbšćina',
@@ -876,7 +876,7 @@ return array(
 		'facebook' => 'ln_CD',
 		'deepl'    => 'LN',
 	),
-	'lmo' => array( // ISO 639-2 (no ISO 639-1 equivalent)
+	'lmo' => array(
 		'code'     => 'lmo',
 		'locale'   => 'lmo',
 		'name'     => 'Lombardo',
@@ -920,7 +920,7 @@ return array(
 		'facebook' => 'lv_LV',
 		'deepl'    => 'LV',
 	),
-	'mai' => array( // ISO 639-2 (no ISO 639-1 equivalent)
+	'mai' => array(
 		'code'     => 'mai',
 		'locale'   => 'mai',
 		'name'     => 'मैथिली',
@@ -1161,7 +1161,7 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'ru',
 	),
-	'scn' => array( // ISO 639-2 (no ISO 639-1 equivalent)
+	'scn' => array(
 		'code'     => 'scn',
 		'locale'   => 'scn',
 		'name'     => 'Sicilianu',
