@@ -124,17 +124,9 @@ class PLL_Term_Slug {
 		);
 
 		$terms = get_terms( $args );
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			// Slug doesn't exist anywhere: no suffix needed.
-			return false;
-		}
 
-		// Exclude current term if we're editing.
-		if ( $this->term_id > 0 ) {
-			$terms = array_diff( $terms, array( $this->term_id ) );
-		}
-
-		return ! empty( $terms );
+		// Return true if the slug is already used by another term (excluding the term being edited).
+		return is_array( $terms ) && ! empty( array_diff( $terms, array( $this->term_id ) ) );
 	}
 
 	/**
