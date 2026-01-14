@@ -75,26 +75,32 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Language|false $curlang Current language.
+	 * @param PLL_Language|false $curlang Optional. Current language. Default is `false`.
 	 * @return void
 	 */
-	protected function set_language( $curlang ) {
-		// Don't set the language a second time
+	protected function set_language( $curlang = false ): void {
+		// Don't set the language a second time.
 		if ( isset( $this->curlang ) ) {
 			return;
 		}
 
-		/**
-		 * Filters the current language to define on frontend.
-		 *
-		 * @since 3.8
-		 *
-		 * @param PLL_Language|false $curlang Instance of the current language.
-		 */
-		$curlang = apply_filters( 'pll_frontend_current_language', $curlang );
+		if ( ! $curlang instanceof PLL_Language ) {
+			$curlang = $this->get_current_language();
 
-		// Final check in case $curlang has an unexpected value
-		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
+			if ( ! $curlang instanceof PLL_Language ) {
+				$curlang = $this->get_preferred_language();
+			}
+		}
+
+		/**
+		 * Filters the language before it is set.
+		 *
+		 * @since 0.9
+		 *
+		 * @param PLL_Language|false $curlang Language object or false if none was found.
+		 */
+		$curlang = apply_filters( 'pll_get_current_language', $curlang ?? false );
+
 		if ( ! $curlang instanceof PLL_Language ) {
 			$curlang = $this->model->get_default_language();
 
@@ -120,6 +126,15 @@ abstract class PLL_Choose_Lang {
 		 */
 		do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 	}
+
+	/**
+	 * Returns the language to assign as the current one.
+	 *
+	 * @since 3.8
+	 *
+	 * @return PLL_Language|false
+	 */
+	abstract protected function get_current_language();
 
 	/**
 	 * Set a cookie to remember the language.
@@ -219,12 +234,23 @@ abstract class PLL_Choose_Lang {
 	 * @return void
 	 */
 	protected function home_language() {
+		$this->set_language( $this->get_home_language() );
+	}
+
+	/**
+	 * Returns the language when home page is requested.
+	 *
+	 * @since 3.8
+	 *
+	 * @return PLL_Language|false
+	 */
+	protected function get_home_language() {
 		// Test referer in case PLL_COOKIE is set to false. Since WP 3.6.1, wp_get_referer() validates the host which is exactly what we want
 		// Thanks to Ov3rfly http://wordpress.org/support/topic/enhance-feature-when-front-page-is-visited-set-language-according-to-browser
-		$language = $this->options['hide_default'] && ( wp_get_referer() || ! $this->options['browser'] ) ?
-			$this->model->get_default_language() :
-			$this->get_preferred_language(); // Sets the language according to browser preference or default language
-		$this->set_language( $language );
+		if ( $this->options['hide_default'] && ( wp_get_referer() || ! $this->options['browser'] ) ) {
+			return $this->model->get_default_language();
+		}
+		return $this->get_preferred_language(); // Returns the language according to browser preference or default language.
 	}
 
 	/**

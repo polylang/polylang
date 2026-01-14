@@ -31,20 +31,21 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 		parent::init();
 
 		if ( ! did_action( 'pll_language_defined' ) ) {
-			$this->set_language_from_url();
+			$this->set_language();
 		}
 
 		add_filter( 'request', array( $this, 'request' ) );
 	}
 
 	/**
-	 * Finds the language according to information found in the url.
+	 * Returns the language according to information found in the url.
 	 *
 	 * @since 1.2
+	 * @since 3.8 Renamed from `get_language_from_url()`.
 	 *
-	 * @return void
+	 * @return PLL_Language|false
 	 */
-	public function set_language_from_url() {
+	protected function get_current_language() {
 		$host      = str_replace( 'www.', '', (string) wp_parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison.
 		$home_path = (string) wp_parse_url( $this->links_model->home, PHP_URL_PATH );
 
@@ -55,35 +56,41 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 
 		// Home is requested.
 		if ( $requested_host === $host && $requested_path === $home_path && empty( $requested_query ) ) {
-			$this->home_language();
 			add_action( 'setup_theme', array( $this, 'home_requested' ) );
+			return $this->get_home_language();
 		}
 
 		// Take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information.
-		elseif ( isset( $_GET['preview'] ) && ( ( isset( $_GET['p'] ) && $id = (int) $_GET['p'] ) || ( isset( $_GET['page_id'] ) && $id = (int) $_GET['page_id'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang    = $this->model->post->get_language( $id );
-			$curlang = $lang ?: $this->model->get_default_language();
+		if ( isset( $_GET['preview'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			foreach ( array( 'p', 'page_id' ) as $var ) {
+				if ( ! isset( $_GET[ $var ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+					continue;
+				}
+				$id = (int) $_GET[ $var ]; // phpcs:ignore WordPress.Security.NonceVerification
+
+				if ( ! empty( $id ) ) {
+					return $this->model->post->get_language( $id );
+				}
+			}
+			return $this->model->get_default_language();
 		}
 
-		// Take care to ( unattached ) attachments.
-		elseif ( isset( $_GET['attachment_id'] ) && $id = (int) $_GET['attachment_id'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang    = $this->model->post->get_language( $id );
-			$curlang = $lang ?: $this->get_preferred_language();
+		// Take care to (unattached) attachments.
+		if ( ! empty( $_GET['attachment_id'] ) && is_numeric( $_GET['attachment_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return $this->model->post->get_language( (int) $_GET['attachment_id'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
-		elseif ( $slug = $this->links_model->get_language_from_url() ) {
-			$curlang = $this->model->get_language( $slug );
+		$slug = $this->links_model->get_language_from_url();
+
+		if ( ! empty( $slug ) ) {
+			return $this->model->get_language( $slug );
 		}
 
-		elseif ( $this->options['hide_default'] ) {
-			$curlang = $this->model->get_default_language();
+		if ( $this->options['hide_default'] ) {
+			return $this->model->get_default_language();
 		}
 
-		/*
-		 * If no language is found, check_canonical_url() will attempt to find one and redirect to the correct url.
-		 * Otherwise a 404 will be fired in the preferred language.
-		 */
-		$this->set_language( empty( $curlang ) ? $this->get_preferred_language() : $curlang );
+		return false;
 	}
 
 
