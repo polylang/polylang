@@ -98,8 +98,6 @@ class Languages {
 		$this->options              = $options;
 		$this->translatable_objects = $translatable_objects;
 		$this->cache                = $cache;
-
-		add_action( 'set_current_user', array( $this, 'maybe_clean_local_cache' ), -10000 );
 	}
 
 	/**
