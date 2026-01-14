@@ -802,7 +802,6 @@ return array(
 		'flag'     => 'rw',
 		'w3c'      => 'rw',
 		'facebook' => 'rw_RW',
-		'deepl'    => 'RW',
 	),
 	'kir' => array(
 		'code'     => 'ky',
@@ -911,7 +910,6 @@ return array(
 		'flag'     => 'ug',
 		'w3c'      => 'lg',
 		'facebook' => 'lg_UG',
-		'deepl'    => 'LG',
 	),
 	'lv' => array(
 		'code'     => 'lv',
@@ -1213,7 +1211,6 @@ return array(
 		'flag'     => 'zw',
 		'w3c'      => 'sn',
 		'facebook' => 'sn_ZW',
-		'deepl'    => 'SN',
 	),
 	'snd' => array(
 		'code'     => 'sd',
@@ -1343,7 +1340,6 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'et',
 		'w3c'      => 'ti',
-		'deepl'    => 'TI',
 	),
 	'tl' => array(
 		'code'     => 'tl',
@@ -1450,7 +1446,6 @@ return array(
 		'flag'     => 'ng',
 		'w3c'      => 'yo',
 		'facebook' => 'yo_NG',
-		'deepl'    => 'YO',
 	),
 	'zh_CN' => array(
 		'code'     => 'zh',
