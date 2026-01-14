@@ -119,14 +119,23 @@ class PLL_Term_Slug {
 			'taxonomy'               => $this->taxonomy,
 			'hide_empty'             => false,
 			'fields'                 => 'ids',
-			'exclude'                => $this->term_id > 0 ? array( $this->term_id ) : array(), // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			'lang'                   => '', // Disable Polylang language filter.
 			'update_term_meta_cache' => false,  // Don't need term meta.
 		);
 
 		$terms = get_terms( $args );
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			// Slug doesn't exist anywhere (or only exists for the current term): no suffix needed.
+			// Slug doesn't exist anywhere: no suffix needed.
+			return false;
+		}
+
+		// Exclude current term if we're editing.
+		if ( $this->term_id > 0 ) {
+			$terms = array_diff( $terms, array( $this->term_id ) );
+		}
+
+		if ( empty( $terms ) ) {
+			// Only the current term has this slug: no suffix needed.
 			return false;
 		}
 
