@@ -134,13 +134,7 @@ class PLL_Term_Slug {
 			$terms = array_diff( $terms, array( $this->term_id ) );
 		}
 
-		if ( empty( $terms ) ) {
-			// Only the current term has this slug: no suffix needed.
-			return false;
-		}
-
-		// Slug exists for other terms: suffix needed.
-		return true;
+		return ! empty( $terms );
 	}
 
 	/**
