@@ -63,7 +63,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 		// Take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information.
 		if ( isset( $_GET['preview'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			foreach ( array( 'p', 'page_id' ) as $var ) {
-				if ( ! isset( $_GET[ $var ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				if ( ! isset( $_GET[ $var ] ) || ! is_numeric( $_GET[ $var ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 					continue;
 				}
 				$id = (int) $_GET[ $var ]; // phpcs:ignore WordPress.Security.NonceVerification
