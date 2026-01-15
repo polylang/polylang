@@ -226,4 +226,15 @@ class Request {
 
 		return null;
 	}
+
+	/**
+	 * Returns the route of the current request.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string Route of the current request, or empty string if no request is set.
+	 */
+	public function get_route(): ?string {
+		return $this->request && is_string( $this->request->get_route() ) ? $this->request->get_route() : '';
+	}
 }
