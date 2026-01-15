@@ -96,6 +96,7 @@ abstract class PLL_Choose_Lang {
 		 * Filters the language before it is set.
 		 *
 		 * @since 0.9
+		 * @since 3.8 Is used all the time, not only when the language is defined by the content.
 		 *
 		 * @param PLL_Language|false $curlang Language object or false if none was found.
 		 */
