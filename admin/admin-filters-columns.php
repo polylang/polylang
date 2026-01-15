@@ -290,6 +290,22 @@ class PLL_Admin_Filters_Columns {
 			return $out;
 		}
 
+		if ( $this->get_first_language_column() === $column ) {
+			// Hidden field containing the term language for quick edit.
+			$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term->term_id, esc_html( $lang->slug ) );
+
+			/**
+			 * Filters the output of the first language column in the terms list table.
+			 *
+			 * @since 3.7
+			 *
+			 * @param string $output  First language column output.
+			 * @param int    $term_id Term ID.
+			 * @param string $lang    Language code.
+			 */
+			$out = apply_filters( 'pll_first_language_term_column', $out, $term->term_id, $lang->slug );
+		}
+
 		$tr_id   = $this->model->term->get( $term->term_id, $language );
 		$tr_term = $tr_id ? get_term( $tr_id, $taxonomy ) : null;
 
@@ -299,24 +315,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		// Link to edit (or not) the term or a translation.
-		$out .= $this->links->get_edit_term_link_html( $tr_term, $post_type, $tr_term->term_id === $term->term_id ? 'list_current' : 'list_translation' );
-
-		if ( $this->get_first_language_column() !== $column ) {
-			return $out;
-		}
-
-		$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term->term_id, esc_html( $lang->slug ) );
-
-		/**
-		 * Filters the output of the first language column in the terms list table.
-		 *
-		 * @since 3.7
-		 *
-		 * @param string $output  First language column output.
-		 * @param int    $term_id Term ID.
-		 * @param string $lang    Language code.
-		 */
-		return apply_filters( 'pll_first_language_term_column', $out, $term->term_id, $lang->slug );
+		return $out . $this->links->get_edit_term_link_html( $tr_term, $post_type, $tr_term->term_id === $term->term_id ? 'list_current' : 'list_translation' );
 	}
 
 	/**
