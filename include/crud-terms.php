@@ -51,6 +51,13 @@ class PLL_CRUD_Terms {
 	private $pre_term_name = '';
 
 	/**
+	 * Stores the term ID before creating a slug if needed.
+	 *
+	 * @var int
+	 */
+	private $pre_term_id = 0;
+
+	/**
 	 * Reference to the Polylang options array.
 	 *
 	 * @var array
@@ -76,6 +83,7 @@ class PLL_CRUD_Terms {
 		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // After PLL_Admin_Filters_Term
 		add_filter( 'pre_term_name', array( $this, 'set_pre_term_name' ) );
 		add_filter( 'pre_term_slug', array( $this, 'set_pre_term_slug' ), 10, 2 );
+		add_filter( 'pre_term_term_id', array( $this, 'set_pre_term_id' ) );
 
 		// Adds cache domain when querying terms
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
@@ -299,8 +307,22 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name );
+		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name, $this->pre_term_id );
 
 		return $term_slug->get_suffixed_slug( '-' );
+	}
+
+	/**
+	 * Stores the term ID to use in `pre_term_slug`.
+	 *
+	 * @since 3.7.7
+	 *
+	 * @param int $term_id Term ID.
+	 * @return int Unmodified term ID.
+	 */
+	public function set_pre_term_id( $term_id ) {
+		$this->pre_term_id = is_numeric( $term_id ) ? (int) $term_id : 0;
+
+		return $term_id;
 	}
 }
