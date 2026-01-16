@@ -110,6 +110,21 @@ class Request {
 	}
 
 	/**
+	 * Returns the parameters of the current request.
+	 *
+	 * @since 3.8
+	 *
+	 * @return array Parameters of the current request if any.
+	 */
+	public function get_params(): array {
+		if ( ! $this->request ) {
+			return array();
+		}
+
+		return $this->request->get_params();
+	}
+
+	/**
 	 * Returns the language of the current request.
 	 *
 	 * @since 3.8
@@ -234,7 +249,18 @@ class Request {
 	 *
 	 * @return string Route of the current request, or empty string if no request is set.
 	 */
-	public function get_route(): ?string {
+	public function get_route(): string {
 		return $this->request && is_string( $this->request->get_route() ) ? $this->request->get_route() : '';
+	}
+
+	/**
+	 * Returns the HTTP method of the current request.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public function get_method(): string {
+		return $this->request ? $this->request->get_method() : '';
 	}
 }
