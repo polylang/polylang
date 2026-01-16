@@ -4,7 +4,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
+	exit; // Don't access directly.
 }
 
 /**
@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * For W3C locales, see http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
  * See also #33511
  * Facebook locales used to be available at https://www.facebook.com/translations/FacebookLocales.xml
+ * For DeepL locales, see https://developers.deepl.com/docs/getting-started/supported-languages
  *
  * For each language:
  * [code]     => ISO 639-1 language code
@@ -22,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * [flag]     => flag code
  * [w3c]      => W3C locale
  * [facebook] => Facebook locale
+ * [deepl]    => DeepL locale
  *
  * Facebook locales without equivalent WordPress locale:
  * 'ay_BO' (Aymara)
@@ -47,6 +49,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 've_ZA' (Venda)
  * 'yi_DE' (Yiddish)
  * 'zz_TR' (Zazaki)
+ *
+ * DeepL locales without equivalent WordPress locale:
+ * 'ACE' (Acehnese)
+ * 'AY'  (Aymara)
+ * 'GN'  (Guarani)
+ * 'GOM' (Konkani)
+ * 'OM'  (Oromo)
+ * 'PAG' (Pangasinan)
+ * 'PAM' (Kapampangan)
+ * 'PRS' (Dari)
+ * 'ST'  (Sesotho)
+ * 'TN'  (Tswana)
+ * 'TS'  (Tsonga)
+ * 'YI'  (Yiddish)
+ * 'YUE' (Cantonese)
  */
 return array(
 	'af' => array(
@@ -644,7 +661,9 @@ return array(
 		'deepl'    => 'GU',
 	),
 	'hat' => array(
+		'w3c'      => 'ht',
 		'facebook' => 'ht_HT',
+		'deepl'    => 'HT',
 	),
 	'hau' => array(
 		'code'     => 'ha',
@@ -823,6 +842,9 @@ return array(
 		'flag'     => 'kh',
 		'facebook' => 'km_KH',
 	),
+	'kmr' => array(
+		'deepl'    => 'KMR',
+	),
 	'kn' => array(
 		'code'     => 'kn',
 		'locale'   => 'kn',
@@ -848,6 +870,7 @@ return array(
 	),
 	'la' => array(
 		'facebook' => 'la_VA',
+		'deepl'    => 'LA',
 	),
 	'lb_LU' => array(
 		'code'     => 'lb',
@@ -925,7 +948,13 @@ return array(
 		'deepl'    => 'MAI',
 	),
 	'mg_MG' => array(
+		'code'     => 'mg',
+		'locale'   => 'mg_MG',
+		'name'     => 'malagasy',
+		'dir'      => 'ltr',
+		'flag'     => 'mg',
 		'facebook' => 'mg_MG',
+		'deepl'    => 'MG',
 	),
 	'mk_MK' => array(
 		'code'     => 'mk',
@@ -946,7 +975,13 @@ return array(
 		'deepl'    => 'ML',
 	),
 	'mlt' => array(
+		'code'     => 'mt',
+		'locale'   => 'mlt',
+		'name'     => 'Malti',
+		'dir'      => 'ltr',
+		'flag'     => 'mt',
 		'facebook' => 'mt_MT',
+		'deepl'    => 'MT',
 	),
 	'mn' => array(
 		'code'     => 'mn',
@@ -967,8 +1002,14 @@ return array(
 		'deepl'    => 'MR',
 	),
 	'mri' => array(
+		'code'     => 'mi',
+		'locale'   => 'mri',
+		'name'     => 'Te reo Māori',
+		'dir'      => 'ltr',
+		'flag'     => 'nz',
 		'w3c'      => 'mi',
 		'facebook' => 'mi_NZ',
+		'deepl'    => 'MI',
 	),
 	'ms_MY' => array(
 		'code'     => 'ms',
@@ -1147,7 +1188,13 @@ return array(
 		'deepl'    => 'RU',
 	),
 	'sa_IN' => array(
+		'code'     => 'sa',
+		'locale'   => 'sa_IN',
+		'name'     => 'संस्कृतम्',
+		'dir'      => 'ltr',
+		'flag'     => 'in',
 		'facebook' => 'sa_IN',
+		'deepl'    => 'SA',
 	),
 	'sah' => array(
 		'code'     => 'sah',
@@ -1317,7 +1364,13 @@ return array(
 		'deepl'    => 'TE',
 	),
 	'tg' => array(
+		'code'     => 'tg',
+		'locale'   => 'tg',
+		'name'     => 'Тоҷикӣ',
+		'dir'      => 'ltr',
+		'flag'     => 'tj',
 		'facebook' => 'tg_TJ',
+		'deepl'    => 'TG',
 	),
 	'th' => array(
 		'code'     => 'th',
@@ -1366,6 +1419,7 @@ return array(
 	'tuk' => array(
 		'w3c'      => 'tk',
 		'facebook' => 'tk_TM',
+		'deepl'    => 'TK',
 	),
 	'tzm' => array(
 		'facebook' => 'tz_MA',
@@ -1431,7 +1485,14 @@ return array(
 		'deepl'    => 'WO',
 	),
 	'xho' => array(
+		'code'     => 'xh',
+		'locale'   => 'xho',
+		'name'     => 'isiXhosa',
+		'dir'      => 'ltr',
+		'flag'     => 'za',
+		'w3c'      => 'xh',
 		'facebook' => 'xh_ZA',
+		'deepl'    => 'XH',
 	),
 	'yor' => array(
 		'code'     => 'yo',
