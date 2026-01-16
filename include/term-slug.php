@@ -79,7 +79,7 @@ class PLL_Term_Slug {
 		 *
 		 * @param PLL_Language|null $lang     Found language object, null otherwise.
 		 * @param string            $taxonomy Term taxonomy.
-		 * @param string            $slug     Term slug
+		 * @param string            $slug     Term slug.
 		 */
 		$lang = apply_filters( 'pll_inserted_term_language', null, $this->taxonomy, $this->slug );
 		if ( ! $lang instanceof PLL_Language ) {
@@ -94,9 +94,9 @@ class PLL_Term_Slug {
 			 *
 			 * @since 3.3
 			 *
-			 * @param int          $parent   Parent term ID, 0 if none.
-			 * @param string       $taxonomy Term taxonomy.
-			 * @param string       $slug     Term slug
+			 * @param int    $parent   Parent term ID, 0 if none.
+			 * @param string $taxonomy Term taxonomy.
+			 * @param string $slug     Term slug.
 			 */
 			$this->parent = apply_filters( 'pll_inserted_term_parent', 0, $this->taxonomy, $this->slug );
 
@@ -113,11 +113,20 @@ class PLL_Term_Slug {
 			}
 		}
 
-		if ( ! term_exists( $this->slug, $this->taxonomy ) ) {
-			return false;
-		}
+		// Check if the slug exists globally, excluding the current term if we're editing.
+		$args = array(
+			'slug'                   => $this->slug,
+			'taxonomy'               => $this->taxonomy,
+			'hide_empty'             => false,
+			'fields'                 => 'ids',
+			'lang'                   => '', // Disable Polylang language filter.
+			'update_term_meta_cache' => false,  // Don't need term meta.
+		);
 
-		return true;
+		$terms = get_terms( $args );
+
+		// Return true if the slug is already used by another term (excluding the term being edited).
+		return is_array( $terms ) && ! empty( array_diff( $terms, array( $this->term_id ) ) );
 	}
 
 	/**
@@ -125,7 +134,7 @@ class PLL_Term_Slug {
 	 * Recursively appends the parents slugs like WordPress does.
 	 *
 	 * @since 3.3
-	 * @since 3.7 Moved from `PLL_Share_Term_Slug`to `PLL_Term_Slug`.
+	 * @since 3.7 Moved from `PLL_Share_Term_Slug` to `PLL_Term_Slug`.
 	 *
 	 * @return string Parents slugs if they are the same as the child slug, empty string otherwise.
 	 */
@@ -161,7 +170,7 @@ class PLL_Term_Slug {
 	 * @since 3.7
 	 *
 	 * @param string $separator The separator for the slug suffix.
-	 * @return string The suffixed slug, or not if the lang isn't defined.
+	 * @return string The slug with or without suffix.
 	 */
 	public function get_suffixed_slug( string $separator ): string {
 		if ( ! $this->can_add_suffix() ) {
@@ -175,6 +184,7 @@ class PLL_Term_Slug {
 			return $this->slug . $separator . $this->lang->slug;
 		}
 
+		// Different term exists in same language: no suffix, WordPress will handle uniqueness.
 		return $this->slug;
 	}
 }
