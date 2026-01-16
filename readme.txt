@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.5
 Tested up to: 6.9
-Requires PHP: 7.2
+Requires PHP: 7.4
 Stable tag: 3.7.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -73,7 +73,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Installation ==
 
-1. Make sure you are using WordPress 6.5 or later and that your server is running PHP 7.2 or later (same requirement as WordPress itself).
+1. Make sure you are using WordPress 6.5 or later and that your server is running PHP 7.4 or later (same requirement as WordPress itself).
 1. If you tried other multilingual plugins, deactivate them before activating Polylang, otherwise, you may get unexpected results!
 1. Install and activate the plugin as usual from the 'Plugins' menu in WordPress.
 1. The [setup wizard](https://polylang.pro/documentation/support/getting-started/setup-wizard/) is automatically launched to help you get started more easily with Polylang by configuring the main features.
