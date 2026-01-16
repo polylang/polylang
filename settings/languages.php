@@ -25,16 +25,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Facebook locales without equivalent WordPress locale:
  * 'ay_BO' (Aymara)
- * 'bp_IN' (Bhojpuri)
  * 'ck_US' (Cherokee)
  * 'en_IN' (English India)
  * 'gx_GR' (Classical Greek)
- * 'ig_NG' (Igbo)
  * 'ik_US' (Inupiak)
  * 'iu_CA' (Inuktitut)
  * 'ja_KS' (Japanese Kansai)
  * 'ks_IN' (Cachemiri)
- * 'lg_UG' (Ganda)
  * 'nd_ZW' (Ndebele)
  * 'nr_ZA' (Southern Ndebele)
  * 'ns_ZA' (Northern Sotho)
@@ -48,9 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 'tn_BW' (Tswana)
  * 'ts_ZA' (Tsonga)
  * 've_ZA' (Venda)
- * 'wo_SN' (Wolof)
  * 'yi_DE' (Yiddish)
- * 'zu_ZA' (Zulu)
  * 'zz_TR' (Zazaki)
  */
 return array(
