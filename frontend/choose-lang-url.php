@@ -68,11 +68,12 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 				}
 				$id = (int) $_GET[ $var ]; // phpcs:ignore WordPress.Security.NonceVerification
 
-				if ( ! empty( $id ) ) {
-					return $this->model->post->get_language( $id );
+				if ( empty( $id ) ) {
+					continue;
 				}
+				$lang = $this->model->post->get_language( $id );
+				return $lang ?: $this->model->get_default_language();
 			}
-			return $this->model->get_default_language();
 		}
 
 		// Take care to (unattached) attachments.
