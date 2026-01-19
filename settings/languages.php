@@ -635,7 +635,7 @@ return array(
 		'name'     => 'Afaan Oromoo',
 		'dir'      => 'ltr',
 		'flag'     => 'et',
-		'w3c'      => 'om',
+		'w3c'      => 'gax',
 		'facebook' => 'om_ET',
 		'deepl'    => 'OM',
 	),
