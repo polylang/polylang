@@ -55,7 +55,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 'AY'  (Aymara)
  * 'GN'  (Guarani)
  * 'GOM' (Konkani)
- * 'OM'  (Oromo)
  * 'PAG' (Pangasinan)
  * 'PAM' (Kapampangan)
  * 'PRS' (Dari)
@@ -630,7 +629,14 @@ return array(
 		'deepl'    => 'GA',
 	),
 	'gax' => array(
+		'code'     => 'om',
+		'locale'   => 'gax',
+		'name'     => 'Afaan Oromoo',
+		'dir'      => 'ltr',
+		'flag'     => 'et',
+		'w3c'      => 'om',
 		'facebook' => 'om_ET',
+		'deepl'    => 'OM',
 	),
 	'gd' => array(
 		'code'     => 'gd',
