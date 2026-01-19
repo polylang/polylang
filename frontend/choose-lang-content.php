@@ -127,7 +127,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		// Homepage is requested, let's set the language
 		// Take care to avoid posts page for which is_home = 1
 		if ( empty( $query->query ) && ( is_home() || is_page() ) ) {
-			$this->home_language();
+			$this->set_language( $this->get_home_language() );
 			$this->home_requested();
 		}
 

@@ -228,17 +228,6 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Sets the language when home page is requested
-	 *
-	 * @since 1.2
-	 *
-	 * @return void
-	 */
-	protected function home_language() {
-		$this->set_language( $this->get_home_language() );
-	}
-
-	/**
 	 * Returns the language when home page is requested.
 	 *
 	 * @since 3.8
