@@ -854,21 +854,6 @@ class Languages {
 	}
 
 	/**
-	 * Cleans local language cache if automatic proxies are in use.
-	 * Hooked to `set_current_user`.
-	 *
-	 * @since 3.8
-	 * @see Languages::get_list()
-	 *
-	 * @return void
-	 */
-	public function maybe_clean_local_cache(): void {
-		if ( ! empty( $this->automatic_proxies ) ) {
-			$this->clean_local_cache();
-		}
-	}
-
-	/**
 	 * Deletes the transient from the options table since WordPress does not do it when using object cache.
 	 *
 	 * @since 3.8
