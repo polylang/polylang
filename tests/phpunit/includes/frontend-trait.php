@@ -36,13 +36,13 @@ trait PLL_Frontend_Trait {
 		$_SERVER['REQUEST_URI'] = $req;
 		unset( $_SERVER['PATH_INFO'] );
 
-		$this->flush_cache();
-		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
-
 		// Insert Polylang specificity.
 		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
 		unset( $this->frontend->curlang );
 		$this->frontend->init();
+
+		$this->flush_cache();
+		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
 
 		// Restart copy paste of WP_UnitTestCase::go_to().
 		$GLOBALS['wp_the_query'] = new WP_Query();

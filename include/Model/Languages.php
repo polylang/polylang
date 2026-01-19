@@ -66,7 +66,16 @@ class Languages {
 	private $languages_ready = false;
 
 	/**
-	 * Languages list proxies.
+	 * List of automatic language proxies.
+	 *
+	 * @var Languages_Proxy_Interface[]
+	 *
+	 * @phpstan-var array<non-falsy-string, Languages_Proxy_Interface>
+	 */
+	private $automatic_proxies = array();
+
+	/**
+	 * List of language proxies.
 	 *
 	 * @var Languages_Proxy_Interface[]
 	 *
@@ -656,6 +665,10 @@ class Languages {
 			 */
 			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4' );
 
+			foreach ( $this->automatic_proxies as $proxy ) {
+				$languages = $proxy->filter( $languages );
+			}
+
 			if ( $this->are_ready() ) {
 				$this->cache->set( self::CACHE_KEY, $languages );
 			}
@@ -821,10 +834,22 @@ class Languages {
 	 * Cleans language cache.
 	 *
 	 * @since 3.7
+	 *
 	 * @return void
 	 */
 	public function clean_cache(): void {
 		delete_transient( self::TRANSIENT_NAME );
+		$this->clean_local_cache();
+	}
+
+	/**
+	 * Cleans local language cache.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public function clean_local_cache(): void {
 		$this->cache->clean();
 	}
 
@@ -865,10 +890,20 @@ class Languages {
 	 * @since 3.8
 	 *
 	 * @param Languages_Proxy_Interface $proxy Proxy instance.
+	 * @param string                    $mode  Optional. Tell how the proxy must be applied. Possible values are:
+	 *                                         - `callable`: the proxy must be called manually with `filter()`.
+	 *                                         - `automatic`: the proxy is meant to be always called, automatically.
+	 *                                         Default is `callable`.
 	 * @return self
+	 *
+	 * @phpstan-param 'callable'|'automatic' $mode
 	 */
-	public function register_proxy( Languages_Proxy_Interface $proxy ): self {
-		$this->proxies[ $proxy->key() ] = $proxy;
+	public function register_proxy( Languages_Proxy_Interface $proxy, string $mode = 'callable' ): self {
+		if ( 'automatic' === $mode ) {
+			$this->automatic_proxies[ $proxy->key() ] = $proxy;
+		} else {
+			$this->proxies[ $proxy->key() ] = $proxy;
+		}
 		return $this;
 	}
 

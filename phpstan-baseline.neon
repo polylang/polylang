@@ -289,24 +289,6 @@ parameters:
 			path: frontend/canonical.php
 
 		-
-			message: '#^Parameter \#1 \$curlang of method PLL_Choose_Lang_Content\:\:set_language\(\) expects PLL_Language, PLL_Language\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
-			message: '#^Parameter \#1 \$query_var of function get_query_var expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
 			message: '#^Method PLL_Choose_Lang_Domain\:\:get_preferred_language\(\) should return PLL_Language but returns PLL_Language\|false\.$#'
 			identifier: return.type
 			count: 1
@@ -317,12 +299,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: frontend/choose-lang-domain.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: frontend/choose-lang-url.php
 
 		-
 			message: '#^Parameter \#1 \$query of method PLL_Choose_Lang\:\:set_curlang_in_query\(\) expects WP_Query, mixed given\.$#'
