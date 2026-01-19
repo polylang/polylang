@@ -58,6 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 'PAG' (Pangasinan)
  * 'PAM' (Kapampangan)
  * 'PRS' (Dari)
+ * 'QU'  (Quechua)
  * 'ST'  (Sesotho)
  * 'TN'  (Tswana)
  * 'TS'  (Tsonga)
