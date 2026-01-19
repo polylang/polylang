@@ -235,8 +235,8 @@ abstract class PLL_Choose_Lang {
 	 * @return PLL_Language|false
 	 */
 	protected function get_home_language() {
-		// Test referer in case PLL_COOKIE is set to false. Since WP 3.6.1, wp_get_referer() validates the host which is exactly what we want
-		// Thanks to Ov3rfly http://wordpress.org/support/topic/enhance-feature-when-front-page-is-visited-set-language-according-to-browser
+		// Test referer in case PLL_COOKIE is set to false. Since WP 3.6.1, wp_get_referer() validates the host which is exactly what we want.
+		// Thanks to Ov3rfly http://wordpress.org/support/topic/enhance-feature-when-front-page-is-visited-set-language-according-to-browser.
 		if ( $this->options['hide_default'] && ( wp_get_referer() || ! $this->options['browser'] ) ) {
 			return $this->model->get_default_language();
 		}
