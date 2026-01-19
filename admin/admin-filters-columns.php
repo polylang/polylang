@@ -290,13 +290,6 @@ class PLL_Admin_Filters_Columns {
 			return $out;
 		}
 
-		$is_first_column = $this->get_first_language_column() === $column;
-
-		if ( $is_first_column ) {
-			// Hidden field containing the term language for quick edit.
-			$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term->term_id, esc_html( $lang->slug ) );
-		}
-
 		$tr_id   = $this->model->term->get( $term->term_id, $language );
 		$tr_term = $tr_id ? get_term( $tr_id, $taxonomy ) : null;
 
@@ -308,7 +301,10 @@ class PLL_Admin_Filters_Columns {
 			$out .= $this->links->get_edit_term_link_html( $tr_term, $post_type, $tr_term->term_id === $term->term_id ? 'list_current' : 'list_translation' );
 		}
 
-		if ( $is_first_column ) {
+		if ( $this->get_first_language_column() === $column ) {
+			// Hidden field containing the term language for quick edit.
+			$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term->term_id, esc_html( $lang->slug ) );
+
 			/**
 			 * Filters the output of the first language column in the terms list table.
 			 *
