@@ -277,6 +277,7 @@ class PLL_Model {
 	 *
 	 * @since 1.9
 	 * @since 2.8 Moved from PLL_Share_Term_Slug::term_exists() to PLL_Model::term_exists_by_slug().
+	 * @since 3.8 Refactored to use `get_terms()` instead of direct SQL query.
 	 *
 	 * @param string              $slug     The term slug to test.
 	 * @param string|PLL_Language $language The language slug or object.
@@ -285,29 +286,30 @@ class PLL_Model {
 	 * @return int The `term_id` of the found term. 0 otherwise.
 	 */
 	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ): int {
-		global $wpdb;
-
 		$language = $this->languages->get( $language );
 		if ( empty( $language ) ) {
 			return 0;
 		}
 
-		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
-		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
-		$join  .= $this->term->join_clause();
-		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
-		$where .= $this->term->where_clause( $language );
+		$args = array(
+			'slug'                   => $slug,
+			'hide_empty'             => false,
+			'fields'                 => 'ids',
+			'lang'                   => $language->slug,
+			'update_term_meta_cache' => false,
+		);
 
 		if ( ! empty( $taxonomy ) ) {
-			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
+			$args['taxonomy'] = $taxonomy;
 		}
 
 		if ( $parent > 0 ) {
-			$where .= $wpdb->prepare( ' AND tt.parent = %d', $parent );
+			$args['parent'] = $parent;
 		}
 
-		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		return (int) $wpdb->get_var( $select . $join . $where );
+		$terms = get_terms( $args );
+
+		return ! empty( $terms ) && is_array( $terms ) ? (int) $terms[0] : 0;
 	}
 
 	/**
