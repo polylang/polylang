@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 3.7.6
+Stable tag: 3.7.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -105,6 +105,12 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.7.7 (2026-01-26) =
+
+* Pro: Add DeepL support for 70 new languages. #1793 #2871
+* Fix advanced menu properties not displayed in customizer. Props Viktor Szépe. #1722
+* Fix incorrect slug when changing the language of a term. #1790
 
 = 3.7.6 (2026-01-06) =
 
