@@ -495,6 +495,54 @@ class Options implements ArrayAccess, IteratorAggregate {
 		);
 	}
 
+
+	/**
+	 * Adds a value to an option.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key   The name of the option to add the value to.
+	 * @param mixed  $value The value to add.
+	 * @return WP_Error An error object, empty if the value was added successfully.
+	 */
+	public function add( string $key, $value ): WP_Error {
+		if ( ! $this->has( $key ) ) {
+			return new WP_Error(
+				'pll_unknown_option_key',
+				/* translators: %s is the name of an option. */
+				sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" )
+			);
+		}
+
+		if ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_List ) {
+			/** @var array $updated_value */
+			$updated_value   = $this->options[ $this->current_blog_id ][ $key ]->get();
+			$updated_value[] = $value;
+			$this->options[ $this->current_blog_id ][ $key ]->set(
+				$updated_value,
+				$this
+			);
+		} elseif ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Map && is_array( $value ) ) {
+			/** @var array $old_value */
+			$old_value = $this->options[ $this->current_blog_id ][ $key ]->get();
+			$this->options[ $this->current_blog_id ][ $key ]->set(
+				array_merge(
+					$old_value,
+					$value
+				),
+				$this
+			);
+		} else {
+			return new WP_Error(
+				'pll_invalid_option_type',
+				/* translators: %s is the name of an option. */
+				sprintf( __( 'Option %s is not a list or map.', 'polylang' ), "'$key'" )
+			);
+		}
+
+		return $this->options[ $this->current_blog_id ][ $key ]->get_errors();
+	}
+
 	/**
 	 * Tells if an option exists.
 	 * Required by interface `ArrayAccess`.
