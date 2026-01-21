@@ -29,7 +29,7 @@ abstract class Abstract_Option {
 	 *
 	 * @var mixed
 	 */
-	private $value;
+	protected $value;
 
 	/**
 	 * Cached option JSON schema.

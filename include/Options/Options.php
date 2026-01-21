@@ -10,6 +10,8 @@ use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
 use WP_Syntex\Polylang\Options\Abstract_Option;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_Map;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_List;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -453,6 +455,47 @@ class Options implements ArrayAccess, IteratorAggregate {
 	}
 
 	/**
+	 * Removes an option sub value from its array.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key   The name of the option to splice.
+	 * @param mixed  $value The value to remove.
+	 * @return WP_Error An error object, empty if the value was removed successfully.
+	 */
+	public function remove( string $key, $value ): WP_Error {
+		if ( ! $this->has( $key ) ) {
+			return new WP_Error(
+				'pll_unknown_option_key',
+				/* translators: %s is the name of an option. */
+				sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" )
+			);
+		}
+
+		if ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_List ) {
+			$done = $this->options[ $this->current_blog_id ][ $key ]->remove( $value );
+		} elseif ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Map && is_string( $value ) ) {
+			$done = $this->options[ $this->current_blog_id ][ $key ]->remove( $value );
+		} else {
+			return new WP_Error(
+				'pll_invalid_option_type',
+				/* translators: %s is the name of an option. */
+				sprintf( __( 'Option %s is not a list or map.', 'polylang' ), "'$key'" )
+			);
+		}
+
+		if ( $done ) {
+			return new WP_Error();
+		}
+
+		return new WP_Error(
+			'pll_remove_failed',
+			/* translators: %1$s is the value to remove. %2$s is the name of an option. */
+			sprintf( __( 'Failed to remove %1$s from %2$s.', 'polylang' ), print_r( $value, true ), "'$key'" ) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		);
+	}
+
+	/**
 	 * Tells if an option exists.
 	 * Required by interface `ArrayAccess`.
 	 *
@@ -535,9 +578,9 @@ class Options implements ArrayAccess, IteratorAggregate {
 			if ( ! $option instanceof Abstract_Option ) {
 				continue;
 			}
-			
+
 			$info = $option->get_site_health_info( $this );
-			
+
 			if ( ! empty( $info ) ) {
 				$infos[ $option::key() ] = $info;
 			}

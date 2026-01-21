@@ -18,6 +18,13 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_List extends Abstract_Option {
 	/**
+	 * Option value.
+	 *
+	 * @var array
+	 */
+	protected $value;
+
+	/**
 	 * Prepares a value before validation.
 	 * Allows to receive a string-keyed array but returns an integer-keyed array.
 	 *
@@ -76,5 +83,26 @@ abstract class Abstract_List extends Abstract_Option {
 				'type' => $this->get_type(),
 			),
 		);
+	}
+
+	/**
+	 * Removes an item from the list.
+	 *
+	 * @since 3.8
+	 *
+	 * @param mixed $item The item to remove.
+	 * @return bool True if the value has been removed. False otherwise.
+	 */
+	public function remove( $item ): bool {
+		if ( ! in_array( $item, $this->value, true ) ) {
+			return false;
+		}
+
+		$this->value = array_diff(
+			$this->value,
+			array( $item )
+		);
+
+		return true;
 	}
 }
