@@ -1,0 +1,21 @@
+name: Trigger Polylang Stubs Generator
+
+on:
+  push:
+    branches: master
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - '.github/workflows/trigger-stubs-generator.yml'
+
+jobs:
+  trigger-polylang-stubs-generator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Polylang stubs generator
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GH_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"event_type": "polylang-commit"}' \
+            https://api.github.com/repos/polylang/polylang-stubs/dispatches
