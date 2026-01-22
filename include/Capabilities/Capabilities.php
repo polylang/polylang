@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Capabilities;
 
+use WP_User;
 use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
 use WP_Syntex\Polylang\Capabilities\User\User_Interface;
 
@@ -56,9 +57,10 @@ class Capabilities {
 	 *
 	 * @since 3.8
 	 *
-	 * @return User_Interface
+	 * @param WP_User|null $user The user to decorate. If null, the current user is used.
+	 * @return User_Interface The user instance.
 	 */
-	public static function get_user(): User_Interface {
+	public static function get_user( ?WP_User $user = null ): User_Interface {
 		if ( ! self::$user_prototype ) {
 			/**
 			 * Filters the user prototype to be used for capability checks.
@@ -70,10 +72,10 @@ class Capabilities {
 			self::$user_prototype = apply_filters( 'pll_user_prototype', null );
 
 			if ( ! self::$user_prototype ) {
-				self::$user_prototype = new NOOP_User( wp_get_current_user() );
+				self::$user_prototype = new NOOP_User( $user ?? wp_get_current_user() );
 			}
 		}
 
-		return self::$user_prototype->clone( wp_get_current_user() );
+		return self::$user_prototype->clone( $user ?? wp_get_current_user() );
 	}
 }

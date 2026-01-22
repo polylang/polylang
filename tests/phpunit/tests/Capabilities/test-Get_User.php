@@ -123,6 +123,13 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->assertSame( $user_id_2, $user_2->get_id() );
 	}
 
+	public function test_get_injected_user_returns_the_correct_instance() {
+		$user = self::factory()->user->create_and_get();
+		$user = Capabilities::get_user( $user );
+
+		$this->assertSame( $user->get_id(), $user->get_id() );
+	}
+
 	/**
 	 * Reset the user_prototype static property in the Capabilities class.
 	 *
