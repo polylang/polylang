@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
  * Manages links related functions.
@@ -14,7 +14,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Current user.
 	 *
-	 * @var User
+	 * @var \WP_Syntex\Polylang\Capabilities\User\User_Interface
 	 */
 	protected $user;
 
@@ -27,7 +27,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	public function __construct( PLL_Base &$polylang ) {
 		parent::__construct( $polylang );
-		$this->user = new User();
+		$this->user = Capabilities::get_user();
 	}
 
 	/**

@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
  * Manages filters and actions related to posts on admin side
@@ -150,7 +150,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		$user = new User();
+		$user = Capabilities::get_user();
 		if ( ! $user->has_cap( $post_type_object->cap->edit_post, $post_id ) ) {
 			return;
 		}
@@ -198,7 +198,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		$user = new User();
+		$user = Capabilities::get_user();
 		$user->can_translate_or_die( $language );
 
 		$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
@@ -231,7 +231,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		$user = new User();
+		$user = Capabilities::get_user();
 		$user->can_translate_or_die( $language );
 
 		$post_id = (int) $_POST['post_ID'];

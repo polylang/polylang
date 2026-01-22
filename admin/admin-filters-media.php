@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
  * Manages filters and actions related to media on admin side
@@ -56,7 +56,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 
 		$post_id   = $post->ID;
 		$lang      = $this->model->post->get_language( $post_id );
-		$user      = new User();
+		$user      = Capabilities::get_user();
 		$languages = $this->model->languages->filter( 'translator' )->get_list();
 
 		if ( empty( $lang ) ) {
@@ -140,7 +140,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			return $post;
 		}
 
-		( new User() )->can_translate_or_die( $language );
+		Capabilities::get_user()->can_translate_or_die( $language );
 
 		$this->model->post->set_language( $post['ID'], $language );
 
