@@ -11,10 +11,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
-		$reflection = new \ReflectionClass( Capabilities::class );
-		$property   = $reflection->getProperty( 'user_prototype' );
-		$property->setAccessible( true );
-		$property->setValue( null, null );
+		$this->reset_prototype();
 	}
 
 	public function test_get_user_returns_user_interface() {
@@ -77,10 +74,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 			}
 		);
 
-		$reflection = new \ReflectionClass( Capabilities::class );
-		$property   = $reflection->getProperty( 'user_prototype' );
-		$property->setAccessible( true );
-		$property->setValue( null, null );
+		$this->reset_prototype();
 
 		$user = Capabilities::get_user();
 
@@ -99,10 +93,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 			}
 		);
 
-		$reflection = new \ReflectionClass( Capabilities::class );
-		$property   = $reflection->getProperty( 'user_prototype' );
-		$property->setAccessible( true );
-		$property->setValue( null, null );
+		$this->reset_prototype();
 
 		Capabilities::get_user();
 		Capabilities::get_user();
@@ -115,10 +106,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$user_id_1 = self::factory()->user->create();
 		$user_id_2 = self::factory()->user->create();
 
-		$reflection = new \ReflectionClass( Capabilities::class );
-		$property   = $reflection->getProperty( 'user_prototype' );
-		$property->setAccessible( true );
-		$property->setValue( null, null );
+		$this->reset_prototype();
 
 		wp_set_current_user( $user_id_1 );
 		$user_1a = Capabilities::get_user();
@@ -133,5 +121,17 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->assertNotSame( $user_1a->get_id(), $user_2->get_id() );
 		$this->assertSame( $user_id_1, $user_1a->get_id() );
 		$this->assertSame( $user_id_2, $user_2->get_id() );
+	}
+
+	/**
+	 * Reset the user_prototype static property in the Capabilities class.
+	 *
+	 * @return void
+	 */
+	private function reset_prototype() {
+		$reflection = new \ReflectionClass( Capabilities::class );
+		$property   = $reflection->getProperty( 'user_prototype' );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $property->setAccessible( true );
+		$property->setValue( null, null );
 	}
 }
