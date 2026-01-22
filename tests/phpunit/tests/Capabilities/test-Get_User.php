@@ -1,0 +1,137 @@
+<?php
+
+use WP_Syntex\Polylang\Capabilities\Capabilities;
+use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
+use WP_Syntex\Polylang\Capabilities\User\User_Interface;
+
+/**
+ * Test the get_user method of the Capabilities class.
+ */
+class Test_Get_User extends PLL_UnitTestCase {
+	public function tear_down() {
+		parent::tear_down();
+
+		$reflection = new \ReflectionClass( Capabilities::class );
+		$property   = $reflection->getProperty( 'user_prototype' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+	}
+
+	public function test_get_user_returns_user_interface() {
+		$user = Capabilities::get_user();
+
+		$this->assertInstanceOf( User_Interface::class, $user );
+	}
+
+	public function test_get_user_returns_noop_user_by_default() {
+		$user = Capabilities::get_user();
+
+		$this->assertInstanceOf( NOOP_User::class, $user );
+	}
+
+	public function test_get_user_returns_current_user_id() {
+		$current_user = wp_get_current_user();
+		$user         = Capabilities::get_user();
+
+		$this->assertSame( $current_user->ID, $user->get_id() );
+	}
+
+	public function test_get_user_returns_different_instances_for_different_users() {
+		$user_id_1 = self::factory()->user->create();
+		$user_id_2 = self::factory()->user->create();
+
+		wp_set_current_user( $user_id_1 );
+		$user_1 = Capabilities::get_user();
+
+		wp_set_current_user( $user_id_2 );
+		$user_2 = Capabilities::get_user();
+
+		$this->assertNotSame( $user_1->get_id(), $user_2->get_id() );
+		$this->assertSame( $user_id_1, $user_1->get_id() );
+		$this->assertSame( $user_id_2, $user_2->get_id() );
+	}
+
+	public function test_get_user_returns_same_instance_for_same_user() {
+		$user_id = self::factory()->user->create();
+		wp_set_current_user( $user_id );
+
+		$user_1 = Capabilities::get_user();
+		$user_2 = Capabilities::get_user();
+
+		$this->assertSame( $user_1, $user_2 );
+		$this->assertSame( $user_id, $user_1->get_id() );
+	}
+
+	public function test_get_user_uses_filter_to_override_prototype() {
+		$mock_prototype = $this->createMock( User_Interface::class );
+		$mock_clone     = $this->createMock( User_Interface::class );
+
+		$mock_prototype->expects( $this->once() )
+			->method( 'clone' )
+			->willReturn( $mock_clone );
+
+		add_filter(
+			'pll_user_prototype',
+			function () use ( $mock_prototype ) {
+				return $mock_prototype;
+			}
+		);
+
+		$reflection = new \ReflectionClass( Capabilities::class );
+		$property   = $reflection->getProperty( 'user_prototype' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+
+		$user = Capabilities::get_user();
+
+		$this->assertSame( $mock_clone, $user );
+	}
+
+	public function test_get_user_filter_is_called_once() {
+		$filter_call_count = 0;
+
+		add_filter(
+			'pll_user_prototype',
+			function ( $user ) use ( &$filter_call_count ) {
+				$filter_call_count++;
+
+				return $user;
+			}
+		);
+
+		$reflection = new \ReflectionClass( Capabilities::class );
+		$property   = $reflection->getProperty( 'user_prototype' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+
+		Capabilities::get_user();
+		Capabilities::get_user();
+		Capabilities::get_user();
+
+		$this->assertSame( 1, $filter_call_count );
+	}
+
+	public function test_get_user_prototype_pattern_with_user_switching() {
+		$user_id_1 = self::factory()->user->create();
+		$user_id_2 = self::factory()->user->create();
+
+		$reflection = new \ReflectionClass( Capabilities::class );
+		$property   = $reflection->getProperty( 'user_prototype' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+
+		wp_set_current_user( $user_id_1 );
+		$user_1a = Capabilities::get_user();
+
+		wp_set_current_user( $user_id_2 );
+		$user_2 = Capabilities::get_user();
+
+		wp_set_current_user( $user_id_1 );
+		$user_1b = Capabilities::get_user();
+
+		$this->assertSame( $user_1a->get_id(), $user_1b->get_id() );
+		$this->assertNotSame( $user_1a->get_id(), $user_2->get_id() );
+		$this->assertSame( $user_id_1, $user_1a->get_id() );
+		$this->assertSame( $user_id_2, $user_2->get_id() );
+	}
+}
