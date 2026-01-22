@@ -4,6 +4,7 @@ namespace WP_Syntex\Polylang\Tests\Integration\Options\Options;
 
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
+use WP_Syntex\Polylang\Options\Options;
 
 class Remove_Test extends PLL_UnitTestCase {
 
@@ -105,5 +106,37 @@ class Remove_Test extends PLL_UnitTestCase {
 		$this->assertWPError( $result );
 		$this->assertTrue( $result->has_errors() );
 		$this->assertSame( 'pll_remove_failed', $result->get_error_code() );
+	}
+
+	public function test_save_after_remove_from_list() {
+		$options = self::create_options(
+			array(
+				'post_types' => array( 'gandalf', 'saruman' ),
+			)
+		);
+
+		$options->remove( 'post_types', 'saruman' );
+
+		$this->assertTrue( $options->save(), 'The options should be saved.' );
+
+		$options = new Options(); // Reload the options to check if the value is persisted.
+
+		$this->assertSame( array( 'gandalf' ), $options->get( 'post_types' ), 'The value should be persisted.' );
+	}
+
+	public function test_save_after_remove_from_map() {
+		$options = self::create_options(
+			array(
+				'domains' => array( 'en' => 'https://example.com', 'fr' => 'https://example.fr' ),
+			)
+		);
+
+		$options->remove( 'domains', 'fr' );
+
+		$this->assertTrue( $options->save(), 'The options should be saved.' );
+
+		$options = new Options(); // Reload the options to check if the value is persisted.
+
+		$this->assertSame( array( 'en' => 'https://example.com', 'fr' => '' ), $options->get( 'domains' ), 'English domain should remain, French domain should be set to default value.' );
 	}
 }

@@ -485,6 +485,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 		}
 
 		if ( $done ) {
+			$this->modified[ $this->current_blog_id ] = true;
 			return new WP_Error();
 		}
 
@@ -518,14 +519,14 @@ class Options implements ArrayAccess, IteratorAggregate {
 			/** @var array $updated_value */
 			$updated_value   = $this->options[ $this->current_blog_id ][ $key ]->get();
 			$updated_value[] = $value;
-			$this->options[ $this->current_blog_id ][ $key ]->set(
+			$done            = $this->options[ $this->current_blog_id ][ $key ]->set(
 				$updated_value,
 				$this
 			);
 		} elseif ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Map && is_array( $value ) ) {
 			/** @var array $old_value */
 			$old_value = $this->options[ $this->current_blog_id ][ $key ]->get();
-			$this->options[ $this->current_blog_id ][ $key ]->set(
+			$done      = $this->options[ $this->current_blog_id ][ $key ]->set(
 				array_merge(
 					$old_value,
 					$value
@@ -538,6 +539,10 @@ class Options implements ArrayAccess, IteratorAggregate {
 				/* translators: %s is the name of an option. */
 				sprintf( __( 'Option %s is not a list or map.', 'polylang' ), "'$key'" )
 			);
+		}
+
+		if ( $done ) {
+			$this->modified[ $this->current_blog_id ] = true;
 		}
 
 		return $this->options[ $this->current_blog_id ][ $key ]->get_errors();

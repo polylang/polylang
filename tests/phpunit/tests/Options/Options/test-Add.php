@@ -4,6 +4,7 @@ namespace WP_Syntex\Polylang\Tests\Integration\Options\Options;
 
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
+use WP_Syntex\Polylang\Options\Options;
 
 class Add_Test extends PLL_UnitTestCase {
 
@@ -126,5 +127,34 @@ class Add_Test extends PLL_UnitTestCase {
 		$this->assertWPError( $result );
 		$this->assertTrue( $result->has_errors() );
 		$this->assertSame( 'pll_invalid_option_type', $result->get_error_code() );
+	}
+
+	public function test_save_after_add_to_list() {
+		$options = self::create_options();
+
+		$options->add( 'post_types', 'sauron' );
+
+		$this->assertTrue( $options->save(), 'The options should be saved.' );
+
+		$options = new Options(); // Reload the options to check if the value is persisted.
+
+		$this->assertSame( array( 'sauron' ), $options->get( 'post_types' ), 'The value should be persisted.' );
+	}
+
+	public function test_save_after_add_to_map() {
+		$options = self::create_options();
+
+		$options->add(
+			'domains',
+			array(
+				'en' => 'https://example.com',
+			)
+		);
+
+		$this->assertTrue( $options->save(), 'The options should be saved.' );
+
+		$options = new Options(); // Reload the options to check if the value is persisted.
+
+		$this->assertSame( array( 'en' => 'https://example.com', 'fr' => '' ), $options->get( 'domains' ), 'English domain should be persisted, French domain should be set to default value.' );
 	}
 }
