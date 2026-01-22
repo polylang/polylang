@@ -157,4 +157,29 @@ class Add_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( array( 'en' => 'https://example.com', 'fr' => '' ), $options->get( 'domains' ), 'English domain should be persisted, French domain should be set to default value.' );
 	}
+
+	public function test_add_should_override_existing_value_in_map() {
+		$options = self::create_options(
+			array(
+				'domains' => array( 'en' => 'https://example.com', 'fr' => 'https://example.fr' ),
+			)
+		);
+
+		$result = $options->add(
+			'domains',
+			array(
+				'en' => 'https://do-no-click-me.com',
+			)
+		);
+
+		$this->assertWPError( $result );
+		$this->assertFalse( $result->has_errors() );
+		$this->assertSame( array( 'en' => 'https://do-no-click-me.com', 'fr' => 'https://example.fr' ), $options->get( 'domains' ), 'English domain should have been overridden.' );
+
+		$this->assertTrue( $options->save(), 'The options should be saved.' );
+
+		$options = new Options(); // Reload the options to check if the value is persisted.
+
+		$this->assertSame( array( 'en' => 'https://do-no-click-me.com', 'fr' => 'https://example.fr' ), $options->get( 'domains' ), 'English domain should have been overridden.' );
+	}
 }
