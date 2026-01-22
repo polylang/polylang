@@ -309,7 +309,7 @@ class PLL_Model {
 
 		$terms = get_terms( $args );
 
-		return ! empty( $terms ) && is_array( $terms ) ? (int) $terms[0] : 0;
+		return ! empty( $terms ) && is_array( $terms ) ? (int) reset( $terms ) : 0;
 	}
 
 	/**
