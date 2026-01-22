@@ -28,7 +28,7 @@ class Remove_Test extends PLL_UnitTestCase {
 
 		$this->assertWPError( $result );
 		$this->assertFalse( $result->has_errors() );
-		$this->assertSame( array( 'gandalf' ), $options->get( 'post_types' ), 'Saruman should have been removeed.' );
+		$this->assertSame( array( 'gandalf' ), $options->get( 'post_types' ), 'Saruman should have been removed.' );
 	}
 
 	public function test_remove_map() {
@@ -51,7 +51,7 @@ class Remove_Test extends PLL_UnitTestCase {
 				'fr' => '',
 			),
 			$options->get( 'domains' ),
-			'The french domain should have been removeed.',
+			'The french domain should have been removed.',
 		);
 	}
 
