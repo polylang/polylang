@@ -1315,12 +1315,6 @@ parameters:
 			path: src/settings/table-string.php
 
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: src/settings/table-string.php
-
-		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''trim'' given\.$#'
 			identifier: argument.type
 			count: 1
