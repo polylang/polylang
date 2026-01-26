@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 /**
  * This class is only for updating options.
  * Registering and translating options is already tested in WPML_Config_Test
@@ -28,6 +30,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->flush_pll_mo_cache( $this->pll_admin->model->languages->get_list() );
 
 		unset( $GLOBALS['polylang'] );
+		Database_Repository::reset();
 
 		parent::tear_down();
 	}
@@ -422,7 +425,11 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		new PLL_Translate_Option( 'my_option1', array(), array( 'sanitize_callback' => '__return_empty_string' ) );
 		new PLL_Translate_Option( 'my_option2' );
 
-		$this->assertEmpty( apply_filters( 'pll_sanitize_string_translation', 'tr_val1', 'my_option1', 'Polylang', 'val1' ) ); // Sanitized.
-		$this->assertSame( 'tr_val2', apply_filters( 'pll_sanitize_string_translation', 'tr_val2', 'my_option2', 'Polylang', 'val2' ) ); // Not sanitized.
+		// Gets collection to init sanitization hooks.
+		$collection   = ( new Database_Repository() )->find_all( self::$model->get_language( 'en' ) );
+		$translatable = $collection->get( md5( 'val1Polylang' ) );
+		$this->assertEmpty( apply_filters( 'pll_sanitize_string_translation', 'tr_val1', $translatable->get_name(), $translatable->get_context(), 'val1', '' ) ); // Sanitized.
+		$translatable = $collection->get( md5( 'val2Polylang' ) );
+		$this->assertSame( 'tr_val2', apply_filters( 'pll_sanitize_string_translation', 'tr_val2', $translatable->get_name(), $translatable->get_context(), 'val2', '' ) ); // Not sanitized.
 	}
 }
