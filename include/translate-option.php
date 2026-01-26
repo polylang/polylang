@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 /**
  * Registers and translates strings in an option.
  * When a string is updated in an original option, the translations of the old string are assigned to the new original string.
@@ -24,13 +26,6 @@ class PLL_Translate_Option {
 	 * @var callable|null
 	 */
 	private $sanitize_callback;
-
-	/**
-	 * Hashes for registered strings for this option.
-	 *
-	 * @var string[]
-	 */
-	private $hashes = array();
 
 	/**
 	 * Used to prevent filtering when retrieving the raw value of the option.
@@ -83,7 +78,8 @@ class PLL_Translate_Option {
 	 * }
 	 */
 	public function __construct( $name, $keys = array(), $args = array() ) {
-		$this->cache = new PLL_Cache();
+		$this->cache             = new PLL_Cache();
+		$this->sanitize_callback = $args['sanitize_callback'] ?? Closure::fromCallable( array( $this, 'default_sanitize_option' ) );
 
 		// Registers the strings.
 		$context = $args['context'] ?? 'Polylang';
@@ -96,12 +92,6 @@ class PLL_Translate_Option {
 		// Filters updated values.
 		add_filter( 'pre_update_option_' . $name, array( $this, 'pre_update_option' ), 10, 3 );
 		add_action( 'update_option_' . $name, array( $this, 'update_option' ) );
-
-		// Sanitizes translated strings.
-		if ( ! empty( $args['sanitize_callback'] ) ) {
-			$this->sanitize_callback = $args['sanitize_callback'];
-		}
-		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize_option' ), 10, 4 );
 	}
 
 	/**
@@ -230,9 +220,13 @@ class PLL_Translate_Option {
 				}
 			}
 		} elseif ( is_scalar( $values ) ) {
-			$string         = (string) $values;
-			$this->hashes[] = md5( "$string|$option|$context" );
-			PLL_Admin_Strings::register_string( $option, $string, $context, true );
+			PLL_Admin_Strings::register_string( $option, (string) $values, $context );
+			Database_Repository::register(
+				$option,
+				(string) $values,
+				$context,
+				$this->sanitize_callback,
+			);
 		}
 	}
 
@@ -414,22 +408,13 @@ class PLL_Translate_Option {
 	 *
 	 * @since 2.9
 	 * @since 3.7 Add $context and $original parameters.
+	 * @since 3.8 Remove $context and $original parameters and now private.
 	 *
-	 * @param string $value    The unsanitised string translation value.
-	 * @param string $name     The name registered for the string.
-	 * @param string $context  The context registered for the string.
-	 * @param string $original The original string to translate.
+	 * @param string $value The unsanitised string translation value.
+	 * @param string $name  The name registered for the string.
 	 * @return string Sanitized value.
 	 */
-	public function sanitize_option( $value, $name, $context, $original ) {
-		if ( ! in_array( md5( "$original|$name|$context" ), $this->hashes, true ) ) {
-			return $value;
-		}
-
-		if ( is_callable( $this->sanitize_callback ) ) {
-			return call_user_func( $this->sanitize_callback, $value, $name, $context, $original );
-		}
-
+	private function default_sanitize_option( $value, $name ): string {
 		/** @var string $sanitized_value */
 		$sanitized_value = sanitize_option( $name, $value );
 
