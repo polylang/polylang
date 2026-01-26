@@ -139,11 +139,17 @@ class PLL_MO extends MO {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $source The source string to translate.
+	 * @param string      $source  The source string to translate.
+	 * @param string|null $context Optional. The context to translate.
 	 * @return string The translated string or empty string if not found.
 	 */
-	public function translate_if_any( string $source ) {
-		$entry = new Translation_Entry( array( 'singular' => $source ) );
+	public function translate_if_any( string $source, ?string $context = null ) {
+		$entry_args = array( 'singular' => $source );
+		if ( $context ) {
+			$entry_args['context'] = $context;
+		}
+
+		$entry = new Translation_Entry( $entry_args );
 		$entry = $this->translate_entry( $entry );
 
 		if ( ! $entry instanceof Translation_Entry || empty( $entry->translations ) ) {
