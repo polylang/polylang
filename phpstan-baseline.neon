@@ -835,30 +835,6 @@ parameters:
 			path: src/links-subdomain.php
 
 		-
-			message: '#^Cannot access offset 0 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/mo.php
-
-		-
-			message: '#^Cannot access offset 1 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/mo.php
-
-		-
-			message: '#^Parameter \#1 \$original of method MO\:\:make_entry\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/mo.php
-
-		-
-			message: '#^Parameter \#2 \$translation of method MO\:\:make_entry\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/mo.php
-
-		-
 			message: '#^Method PLL_Model\:\:count_posts\(\) should return int\<0, max\> but returns mixed\.$#'
 			identifier: return.type
 			count: 1
