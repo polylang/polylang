@@ -39,7 +39,7 @@ class Database_Repository {
 	 * @return Collection The collection of translatables.
 	 */
 	public function find_all( PLL_Language $language ): Collection {
-		$strings = self::get_strings();
+		$strings       = self::get_strings();
 		$translatables = array();
 
 		$mo = new PLL_MO();
@@ -48,7 +48,7 @@ class Database_Repository {
 		foreach ( $strings as $string_data ) {
 			$translatable = new Translatable(
 				$string_data['string'],
-				$mo->translate_if_any( $string_data['string'] ),
+				$mo->translate_if_any( $string_data['string'], $string_data['context'] ?? null ),
 				$string_data['name'],
 				$string_data['context'] ?? null,
 				$string_data['sanitize_callback'] ?? null,
@@ -83,7 +83,7 @@ class Database_Repository {
 
 			$translatable = new Translatable(
 				$string_data['string'],
-				$mo->translate_if_any( $string_data['string'] ),
+				$mo->translate_if_any( $string_data['string'], $string_data['context'] ?? null ),
 				$string_data['name'],
 				$string_data['context'] ?? null,
 				$string_data['sanitize_callback'] ?? null,
@@ -118,6 +118,27 @@ class Database_Repository {
 	}
 
 	/**
+	 * Cleans the database from non-registered strings for a language.
+	 *
+	 * @since 3.8
+	 *
+	 * @param PLL_Language $language The language to clean the database for.
+	 * @return void
+	 */
+	public function clean( PLL_Language $language ): void {
+		$collection = $this->find_all( $language );
+		$mo         = new PLL_MO();
+		$mo->import_from_db( $language );
+		foreach ( $mo->entries as $entry ) {
+			if ( $collection->has( md5( $entry->singular . $entry->context ) ) ) {
+				continue;
+			}
+			$mo->delete_entry( $entry->singular );
+		}
+		$mo->export_to_db( $language );
+	}
+
+	/**
 	 * Saves translations for a language.
 	 *
 	 * @since 3.8
@@ -141,17 +162,17 @@ class Database_Repository {
 			 * @param string $original  The original string to translate.
 			 * @param string $previous  The previous translation if any.
 			 */
-			$translation = apply_filters(
+			$sanitized_translation = apply_filters(
 				'pll_sanitize_string_translation',
 				$translatable->get_translation(),
 				$translatable->get_name(),
 				$translatable->get_context(),
-				$mo->translate_if_any( $translatable->get_source() ),
+				$mo->translate_if_any( $translatable->get_source(), $translatable->get_context() ),
 				$translatable->get_previous_translation(),
 			);
 
 			$mo->add_entry(
-				$translatable->set_translation( $translation )
+				$translatable->set_translation( $sanitized_translation )
 					->get_entry()
 			);
 		}
