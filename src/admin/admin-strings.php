@@ -53,7 +53,7 @@ class PLL_Admin_Strings {
 	 */
 	public static function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
 		if ( $string && is_scalar( $string ) ) {
-			self::$strings[ md5( $string ) ] = compact( 'name', 'string', 'context', 'multiline' );
+			self::$strings[ md5( $string . $context ) ] = compact( 'name', 'string', 'context', 'multiline' );
 		}
 	}
 
