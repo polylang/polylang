@@ -16,26 +16,6 @@ use PLL_Admin_Strings;
  */
 class Database_Repository {
 	/**
-	 * Saves a collection of registered strings.
-	 * Note: This integrates with PLL_Admin_Strings for backwards compatibility.
-	 *
-	 * @since 3.8
-	 *
-	 * @param Collection $collection The collection to save.
-	 * @return void
-	 */
-	public function save( Collection $collection ): void {
-		foreach ( $collection->all() as $translatable ) {
-			PLL_Admin_Strings::register_string(
-				$translatable->get_name(),
-				$translatable->get_value(),
-				$translatable->get_context(),
-				$translatable->is_multiline()
-			);
-		}
-	}
-
-	/**
 	 * Finds all registered translatables from PLL_Admin_Strings.
 	 *
 	 * @since 3.8
@@ -61,32 +41,6 @@ class Database_Repository {
 	}
 
 	/**
-	 * Finds a translatable by ID.
-	 *
-	 * @since 3.8
-	 *
-	 * @param string $id The identifier (md5 hash of the string).
-	 * @return Translatable|null The translatable if found, null otherwise.
-	 */
-	public function find_by_id( string $id ): ?Translatable {
-		$strings = PLL_Admin_Strings::get_strings();
-
-		foreach ( $strings as $string_data ) {
-			if ( md5( $string_data['string'] ) === $id ) {
-				return new Translatable(
-					$string_data['string'],
-					$string_data['name'],
-					$string_data['context'] ?? null,
-					$string_data['multiline'] ?? false,
-					$string_data['sanitize_callback'] ?? null
-				);
-			}
-		}
-
-		return null;
-	}
-
-	/**
 	 * Removes a translatable string by ID.
 	 * Note: This only works for strings registered via WPML API (icl_register_string).
 	 *
@@ -95,7 +49,7 @@ class Database_Repository {
 	 * @param string $id The identifier.
 	 * @return void
 	 */
-	public function remove( string $id ): void {
+	public function remove_wpml_string( string $id ): void {
 		$strings = PLL_Admin_Strings::get_strings();
 
 		foreach ( $strings as $string_data ) {
@@ -113,22 +67,13 @@ class Database_Repository {
 	 *
 	 * @param Collection            $collection The collection of translatables.
 	 * @param PLL_Language          $language The language to save translations for.
-	 * @param array<string, string> $translations Map of translatable IDs to translation values.
 	 * @return void
 	 */
-	public function save_translations( Collection $collection, PLL_Language $language, array $translations ): void {
+	public function save( Collection $collection, PLL_Language $language ): void {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 
-		foreach ( $collection->all() as $translatable ) {
-			$id = $translatable->get_id();
-
-			if ( ! isset( $translations[ $id ] ) ) {
-				continue;
-			}
-
-			$translation = $translations[ $id ];
-
+		foreach ( $collection as $translatable ) {
 			/**
 			 * Filters the translation before it is saved in DB.
 			 *
@@ -142,45 +87,22 @@ class Database_Repository {
 			 */
 			$translation = apply_filters(
 				'pll_sanitize_string_translation',
-				$translation,
+				$translatable->get_value(),
 				$translatable->get_name(),
 				$translatable->get_context(),
-				$translatable->get_value(),
-				$mo->translate_if_any( $translatable->get_value() )
+				$mo->translate_if_any( $translatable->get_previous_value() ),
+				$translatable->get_previous_value(),
 			);
+			$translatable->set_value( $translation );
 
 			$mo->add_entry(
 				$mo->make_entry(
-					$translatable->get_value(),
-					$translation
+					$translatable->get_previous_value(),
+					$translatable->get_value()
 				)
 			);
 		}
 
 		$mo->export_to_db( $language );
-	}
-
-	/**
-	 * Gets translations for a language.
-	 *
-	 * @since 3.8
-	 *
-	 * @param Collection   $collection The collection of translatables.
-	 * @param PLL_Language $language The language to get translations for.
-	 * @return array<string, string> Map of translatable IDs to translation values.
-	 */
-	public function get_translations( Collection $collection, PLL_Language $language ): array {
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
-		$translations = array();
-
-		foreach ( $collection->all() as $translatable ) {
-			$translation = $mo->translate_if_any( $translatable->get_value() );
-			if ( '' !== $translation ) {
-				$translations[ $translatable->get_id() ] = $translation;
-			}
-		}
-
-		return $translations;
 	}
 }

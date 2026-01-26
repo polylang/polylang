@@ -425,18 +425,18 @@ class PLL_Table_String extends WP_List_Table {
 
 				$translations_raw = array_map( 'trim', (array) wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-				// Build translations map using translatable IDs directly.
-				$translations = array();
 				foreach ( $translations_raw as $translatable_id => $translation ) {
-					if ( ! $this->collection->has( $translatable_id ) ) {
+					$translatable = $this->collection->get( $translatable_id );
+
+					if ( ! $translatable ) {
 						continue;
 					}
 
-					$translations[ $translatable_id ] = $translation;
+					$translatable->set_value( $translation );
 				}
 
 				// Only save if there are translations to save.
-				if ( empty( $translations ) ) {
+				if ( 0 === $this->collection->count() ) {
 					continue;
 				}
 
@@ -446,13 +446,13 @@ class PLL_Table_String extends WP_List_Table {
 					$mo->import_from_db( $language );
 
 					$new_mo = new PLL_MO();
-					foreach ( $this->collection->all() as $translatable ) {
+					foreach ( $this->collection as $translatable ) {
 						$translation = $mo->translate( $translatable->get_value() );
 						$new_mo->add_entry( $mo->make_entry( $translatable->get_value(), $translation ) );
 					}
 					$new_mo->export_to_db( $language );
 				} else {
-					$this->repository->save_translations( $this->collection, $language, $translations );
+					$this->repository->save( $this->collection, $language );
 				}
 			}
 
@@ -470,7 +470,7 @@ class PLL_Table_String extends WP_List_Table {
 		if ( 'delete' === $this->current_action() && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) && current_user_can( 'manage_options' ) ) {
 			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $translatable_id ) {
 				if ( $this->collection->has( $translatable_id ) ) {
-					$this->repository->remove( $translatable_id );
+					$this->repository->remove_wpml_string( $translatable_id );
 				}
 			}
 		}

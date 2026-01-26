@@ -5,12 +5,16 @@
 
 namespace WP_Syntex\Polylang\Strings;
 
+use Countable;
+use ArrayIterator;
+use IteratorAggregate;
+
 /**
  * Collection aggregate root that stores multiple Translatable entities.
  *
  * @since 3.8
  */
-class Collection {
+class Collection implements IteratorAggregate, Countable {
 	/**
 	 * The translatables stored in this collection.
 	 *
@@ -80,17 +84,6 @@ class Collection {
 	}
 
 	/**
-	 * Gets all translatables in the collection.
-	 *
-	 * @since 3.8
-	 *
-	 * @return Translatable[]
-	 */
-	public function all(): array {
-		return $this->translatables;
-	}
-
-	/**
 	 * Gets the count of translatables in the collection.
 	 *
 	 * @since 3.8
@@ -122,36 +115,13 @@ class Collection {
 	}
 
 	/**
-	 * Gets all unique contexts from the translatables.
+	 * Gets an iterator for the translatables.
 	 *
 	 * @since 3.8
 	 *
-	 * @return string[]
+	 * @return \ArrayIterator<string, Translatable>
 	 */
-	public function get_contexts(): array {
-		$contexts = array();
-
-		foreach ( $this->translatables as $translatable ) {
-			$contexts[] = $translatable->get_context();
-		}
-
-		return array_unique( $contexts );
-	}
-
-	/**
-	 * Converts the collection to an array representation.
-	 *
-	 * @since 3.8
-	 *
-	 * @return array<int, array<string, mixed>>
-	 */
-	public function to_array(): array {
-		$result = array();
-
-		foreach ( $this->translatables as $translatable ) {
-			$result[] = $translatable->to_array();
-		}
-
-		return $result;
+	public function getIterator(): \ArrayIterator {
+		return new ArrayIterator( $this->translatables );
 	}
 }

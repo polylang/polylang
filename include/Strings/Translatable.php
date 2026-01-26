@@ -36,6 +36,13 @@ class Translatable {
 	private $string;
 
 	/**
+	 * The previous string value.
+	 *
+	 * @var string
+	 */
+	private $previous_string;
+
+	/**
 	 * The context/group of the string.
 	 *
 	 * @var string
@@ -76,6 +83,7 @@ class Translatable {
 	) {
 		$this->id                = md5( $string );
 		$this->string            = $string;
+		$this->previous_string   = $string;
 		$this->name              = $name;
 		$this->context           = $context;
 		$this->multiline         = $multiline;
@@ -117,6 +125,30 @@ class Translatable {
 	 */
 	public function get_value(): string {
 		return $this->string;
+	}
+
+	/**
+	 * Gets the previous string value.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string
+	 */
+	public function get_previous_value(): string {
+		return $this->previous_string;
+	}
+
+	/**
+	 * Sets the string value.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $value The string value.
+	 * @return void
+	 */
+	public function set_value( string $value ): void {
+		$this->previous_string = $this->string;
+		$this->string          = $value;
 	}
 
 	/**

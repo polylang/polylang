@@ -14,7 +14,6 @@ class Collection_Test extends PLL_UnitTestCase {
 		$collection = new Collection();
 
 		$this->assertSame( 0, $collection->count() );
-		$this->assertSame( array(), $collection->all() );
 	}
 
 	public function test_collection_can_be_created_with_initial_translatables() {
@@ -124,7 +123,7 @@ class Collection_Test extends PLL_UnitTestCase {
 		$translatable2 = new Translatable( 'String Two', 'name_two', 'ContextB' );
 		$collection    = new Collection( array( $translatable1, $translatable2 ) );
 
-		$all = $collection->all();
+		$all = iterator_to_array( $collection );
 
 		$this->assertCount( 2, $all );
 		$this->assertArrayHasKey( $translatable1->get_id(), $all );
@@ -134,7 +133,7 @@ class Collection_Test extends PLL_UnitTestCase {
 	public function test_all_should_return_empty_array_for_empty_collection() {
 		$collection = new Collection();
 
-		$this->assertSame( array(), $collection->all() );
+		$this->assertSame( array(), iterator_to_array( $collection ) );
 	}
 
 	public function test_count_should_return_correct_count() {
@@ -194,72 +193,6 @@ class Collection_Test extends PLL_UnitTestCase {
 		$collection->filter_by_context( 'ContextA' );
 
 		$this->assertSame( 2, $collection->count() );
-	}
-
-	public function test_get_contexts_should_return_all_unique_contexts() {
-		$translatable1 = new Translatable( 'String One', 'name_one', 'ContextA' );
-		$translatable2 = new Translatable( 'String Two', 'name_two', 'ContextB' );
-		$translatable3 = new Translatable( 'String Three', 'name_three', 'ContextA' );
-		$collection    = new Collection( array( $translatable1, $translatable2, $translatable3 ) );
-
-		$contexts = $collection->get_contexts();
-
-		$this->assertCount( 2, $contexts );
-		$this->assertContains( 'ContextA', $contexts );
-		$this->assertContains( 'ContextB', $contexts );
-	}
-
-	public function test_get_contexts_should_return_empty_array_for_empty_collection() {
-		$collection = new Collection();
-
-		$this->assertSame( array(), $collection->get_contexts() );
-	}
-
-	public function test_get_contexts_should_return_single_context_when_all_share_same() {
-		$translatable1 = new Translatable( 'String One', 'name_one', 'SharedContext' );
-		$translatable2 = new Translatable( 'String Two', 'name_two', 'SharedContext' );
-		$collection    = new Collection( array( $translatable1, $translatable2 ) );
-
-		$contexts = $collection->get_contexts();
-
-		$this->assertCount( 1, $contexts );
-		$this->assertContains( 'SharedContext', $contexts );
-	}
-
-	public function test_to_array_should_return_array_representation() {
-		$translatable1 = new Translatable( 'String One', 'name_one', 'ContextA' );
-		$translatable2 = new Translatable( 'String Two', 'name_two', 'ContextB', true );
-		$collection    = new Collection( array( $translatable1, $translatable2 ) );
-
-		$array = $collection->to_array();
-
-		$this->assertCount( 2, $array );
-		$this->assertSame(
-			array(
-				'id'        => md5( 'String One' ),
-				'name'      => 'name_one',
-				'string'    => 'String One',
-				'context'   => 'ContextA',
-				'multiline' => false,
-			),
-			$array[0]
-		);
-		$this->assertSame(
-			array(
-				'id'        => md5( 'String Two' ),
-				'name'      => 'name_two',
-				'string'    => 'String Two',
-				'context'   => 'ContextB',
-				'multiline' => true,
-			),
-			$array[1]
-		);
-	}
-
-	public function test_to_array_should_return_empty_array_for_empty_collection() {
-		$collection = new Collection();
-
-		$this->assertSame( array(), $collection->to_array() );
 	}
 
 	public function test_collection_operations_should_chain_correctly() {

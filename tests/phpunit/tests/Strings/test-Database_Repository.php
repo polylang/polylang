@@ -2,9 +2,10 @@
 
 namespace WP_Syntex\Polylang\Tests\Strings;
 
-use PLL_Admin_Strings;
 use PLL_MO;
+use PLL_Model;
 use PLL_UnitTestCase;
+use PLL_Admin_Strings;
 use PLL_UnitTest_Factory;
 use WP_Syntex\Polylang\Strings\Collection;
 use WP_Syntex\Polylang\Strings\Database_Repository;
@@ -30,6 +31,8 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
+		$options          = self::create_options();
+		$this->pll_model  = new PLL_Model( $options );
 		$this->repository = new Database_Repository();
 	}
 
@@ -57,7 +60,7 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		}
 
 		// Flush the PLL_MO cache.
-		$this->flush_pll_mo_cache( self::$model->get_languages_list() );
+		$this->flush_pll_mo_cache( $this->pll_model->get_languages_list() );
 
 		parent::tear_down();
 	}
@@ -67,7 +70,7 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$translatable2 = new Translatable( 'String Two', 'name_two', 'ContextB', true );
 		$collection    = new Collection( array( $translatable1, $translatable2 ) );
 
-		$this->repository->save( $collection );
+		$this->repository->save( $collection, $this->pll_model->get_language( 'en' ) );
 
 		$strings = PLL_Admin_Strings::get_strings();
 		$this->assertArrayHasKey( md5( 'String One' ), $strings );
@@ -83,7 +86,7 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	public function test_save_with_empty_collection_should_not_register_any_strings() {
 		$collection = new Collection();
 
-		$this->repository->save( $collection );
+		$this->repository->save( $collection, $this->pll_model->get_language( 'en' ) );
 
 		$strings = PLL_Admin_Strings::get_strings();
 		// Only default widget strings might be present, so we check no custom strings were added.
@@ -120,36 +123,6 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$this->assertInstanceOf( Collection::class, $collection );
 	}
 
-	public function test_find_by_id_should_return_translatable_when_found() {
-		PLL_Admin_Strings::register_string( 'my_string', 'My Test String', 'TestContext', true );
-
-		$id           = md5( 'My Test String' );
-		$translatable = $this->repository->find_by_id( $id );
-
-		$this->assertInstanceOf( Translatable::class, $translatable );
-		$this->assertSame( $id, $translatable->get_id() );
-		$this->assertSame( 'my_string', $translatable->get_name() );
-		$this->assertSame( 'My Test String', $translatable->get_value() );
-		$this->assertSame( 'TestContext', $translatable->get_context() );
-		$this->assertTrue( $translatable->is_multiline() );
-	}
-
-	public function test_find_by_id_should_return_null_when_not_found() {
-		PLL_Admin_Strings::register_string( 'existing', 'Existing String', 'Context' );
-
-		$translatable = $this->repository->find_by_id( 'nonexistent_id' );
-
-		$this->assertNull( $translatable );
-	}
-
-	public function test_find_by_id_with_empty_id_should_return_null() {
-		PLL_Admin_Strings::register_string( 'my_string', 'My Test String', 'TestContext' );
-
-		$translatable = $this->repository->find_by_id( '' );
-
-		$this->assertNull( $translatable );
-	}
-
 	public function test_remove_should_unregister_string_when_registered_via_icl_api() {
 		// Initialize a minimal Polylang environment for icl_register_string to work.
 		$options     = self::create_options( array( 'default_lang' => 'en' ) );
@@ -176,46 +149,27 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$property->setAccessible( true );
 		$property->setValue( null, array() );
 
-		// Verify the string is registered (via pll_get_strings filter).
-		$translatable_before = $this->repository->find_by_id( $id );
-		$this->assertInstanceOf( Translatable::class, $translatable_before );
-
 		// Remove the string.
-		$this->repository->remove( $id );
-
-		// Reset strings to get fresh data.
-		$property->setValue( null, array() );
+		$this->repository->remove_wpml_string( $id );
 
 		// Verify the string is no longer registered.
-		$translatable_after = $this->repository->find_by_id( $id );
-		$this->assertNull( $translatable_after );
-	}
-
-	public function test_remove_with_nonexistent_id_should_do_nothing() {
-		PLL_Admin_Strings::register_string( 'existing', 'Existing String', 'Context' );
-
-		// This should not throw any errors.
-		$this->repository->remove( 'nonexistent_id' );
-
-		// Existing string should still be there.
-		$translatable = $this->repository->find_by_id( md5( 'Existing String' ) );
-		$this->assertInstanceOf( Translatable::class, $translatable );
+		$mo =new PLL_MO();
+		$mo->import_from_db( $this->pll_model->get_language( 'en' ) );
+		$this->assertArrayNotHasKey( $id, $mo->entries );
 	}
 
 	public function test_save_translations_should_save_translations_for_language() {
-		$language = self::$model->get_language( 'en' );
+		$language = $this->pll_model->get_language( 'en' );
 		$this->assertNotNull( $language );
 
 		$translatable1 = new Translatable( 'Hello', 'hello_string', 'TestContext' );
 		$translatable2 = new Translatable( 'World', 'world_string', 'TestContext' );
 		$collection    = new Collection( array( $translatable1, $translatable2 ) );
 
-		$translations = array(
-			$translatable1->get_id() => 'Hello translated',
-			$translatable2->get_id() => 'World translated',
-		);
+		$translatable1->set_value( 'Hello translated' );
+		$translatable2->set_value( 'World translated' );
 
-		$this->repository->save_translations( $collection, $language, $translations );
+		$this->repository->save( $collection, $language );
 
 		// Verify translations were saved.
 		$mo = new PLL_MO();
@@ -226,7 +180,7 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_save_translations_should_skip_translatables_without_translations() {
-		$language = self::$model->get_language( 'en' );
+		$language = $this->pll_model->get_language( 'en' );
 		$this->assertNotNull( $language );
 
 		$translatable1 = new Translatable( 'Hello', 'hello_string', 'TestContext' );
@@ -234,11 +188,9 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$collection    = new Collection( array( $translatable1, $translatable2 ) );
 
 		// Only provide translation for one string.
-		$translations = array(
-			$translatable1->get_id() => 'Hello translated',
-		);
+		$translatable1->set_value( 'Hello translated' );
 
-		$this->repository->save_translations( $collection, $language, $translations );
+		$this->repository->save( $collection, $language );
 
 		// Verify only the provided translation was saved.
 		$mo = new PLL_MO();
@@ -249,13 +201,13 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_save_translations_with_empty_translations_should_do_nothing() {
-		$language = self::$model->get_language( 'en' );
+		$language = $this->pll_model->get_language( 'en' );
 		$this->assertNotNull( $language );
 
 		$translatable = new Translatable( 'Hello', 'hello_string', 'TestContext' );
 		$collection   = new Collection( array( $translatable ) );
 
-		$this->repository->save_translations( $collection, $language, array() );
+		$this->repository->save( $collection, $language );
 
 		// Verify no translations were saved.
 		$mo = new PLL_MO();
@@ -265,14 +217,13 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_save_translations_with_empty_collection_should_do_nothing() {
-		$language = self::$model->get_language( 'en' );
+		$language = $this->pll_model->get_language( 'en' );
 		$this->assertNotNull( $language );
 
-		$collection   = new Collection();
-		$translations = array( 'some_id' => 'Some translation' );
+		$collection = new Collection();
 
 		// This should not throw any errors.
-		$this->repository->save_translations( $collection, $language, $translations );
+		$this->repository->save( $collection, $language );
 
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
@@ -282,7 +233,7 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_save_translations_should_apply_sanitization_filter() {
-		$language = self::$model->get_language( 'en' );
+		$language = $this->pll_model->get_language( 'en' );
 		$this->assertNotNull( $language );
 
 		$translatable = new Translatable( 'Hello', 'hello_string', 'TestContext' );
@@ -298,11 +249,9 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 			}
 		);
 
-		$translations = array(
-			$translatable->get_id() => 'hello translated',
-		);
+		$translatable->set_value( 'hello translated' );
 
-		$this->repository->save_translations( $collection, $language, $translations );
+		$this->repository->save( $collection, $language );
 
 		$this->assertTrue( $filter_called );
 
@@ -313,103 +262,8 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'HELLO TRANSLATED', $mo->translate( 'Hello' ) );
 	}
 
-	public function test_get_translations_should_return_translations_map() {
-		$language = self::$model->get_language( 'en' );
-		$this->assertNotNull( $language );
-
-		// First save some translations.
-		$mo = new PLL_MO();
-		$mo->add_entry( $mo->make_entry( 'Hello', 'Hello EN' ) );
-		$mo->add_entry( $mo->make_entry( 'World', 'World EN' ) );
-		$mo->export_to_db( $language );
-
-		$translatable1 = new Translatable( 'Hello', 'hello_string', 'TestContext' );
-		$translatable2 = new Translatable( 'World', 'world_string', 'TestContext' );
-		$collection    = new Collection( array( $translatable1, $translatable2 ) );
-
-		$translations = $this->repository->get_translations( $collection, $language );
-
-		$this->assertIsArray( $translations );
-		$this->assertArrayHasKey( $translatable1->get_id(), $translations );
-		$this->assertArrayHasKey( $translatable2->get_id(), $translations );
-		$this->assertSame( 'Hello EN', $translations[ $translatable1->get_id() ] );
-		$this->assertSame( 'World EN', $translations[ $translatable2->get_id() ] );
-	}
-
-	public function test_get_translations_should_return_empty_array_when_no_translations_exist() {
-		$language = self::$model->get_language( 'en' );
-		$this->assertNotNull( $language );
-
-		$translatable = new Translatable( 'Hello', 'hello_string', 'TestContext' );
-		$collection   = new Collection( array( $translatable ) );
-
-		$translations = $this->repository->get_translations( $collection, $language );
-
-		$this->assertIsArray( $translations );
-		$this->assertEmpty( $translations );
-	}
-
-	public function test_get_translations_with_empty_collection_should_return_empty_array() {
-		$language = self::$model->get_language( 'en' );
-		$this->assertNotNull( $language );
-
-		// Save some translations that won't be in the collection.
-		$mo = new PLL_MO();
-		$mo->add_entry( $mo->make_entry( 'Hello', 'Hello EN' ) );
-		$mo->export_to_db( $language );
-
-		$collection   = new Collection();
-		$translations = $this->repository->get_translations( $collection, $language );
-
-		$this->assertIsArray( $translations );
-		$this->assertEmpty( $translations );
-	}
-
-	public function test_get_translations_should_only_return_translations_for_strings_in_collection() {
-		$language = self::$model->get_language( 'en' );
-		$this->assertNotNull( $language );
-
-		// Save translations for multiple strings.
-		$mo = new PLL_MO();
-		$mo->add_entry( $mo->make_entry( 'Hello', 'Hello EN' ) );
-		$mo->add_entry( $mo->make_entry( 'World', 'World EN' ) );
-		$mo->add_entry( $mo->make_entry( 'Foo', 'Foo EN' ) );
-		$mo->export_to_db( $language );
-
-		// Only include one string in the collection.
-		$translatable = new Translatable( 'Hello', 'hello_string', 'TestContext' );
-		$collection   = new Collection( array( $translatable ) );
-
-		$translations = $this->repository->get_translations( $collection, $language );
-
-		$this->assertCount( 1, $translations );
-		$this->assertArrayHasKey( $translatable->get_id(), $translations );
-		$this->assertArrayNotHasKey( md5( 'World' ), $translations );
-		$this->assertArrayNotHasKey( md5( 'Foo' ), $translations );
-	}
-
-	public function test_get_translations_should_exclude_empty_translations() {
-		$language = self::$model->get_language( 'en' );
-		$this->assertNotNull( $language );
-
-		// Save a non-empty translation.
-		$mo = new PLL_MO();
-		$mo->add_entry( $mo->make_entry( 'Hello', 'Hello EN' ) );
-		$mo->export_to_db( $language );
-
-		$translatable1 = new Translatable( 'Hello', 'hello_string', 'TestContext' );
-		$translatable2 = new Translatable( 'World', 'world_string', 'TestContext' ); // Not translated.
-		$collection    = new Collection( array( $translatable1, $translatable2 ) );
-
-		$translations = $this->repository->get_translations( $collection, $language );
-
-		$this->assertCount( 1, $translations );
-		$this->assertArrayHasKey( $translatable1->get_id(), $translations );
-		$this->assertArrayNotHasKey( $translatable2->get_id(), $translations );
-	}
-
 	public function test_save_translations_should_update_existing_translations() {
-		$language = self::$model->get_language( 'en' );
+		$language = $this->pll_model->get_language( 'en' );
 		$this->assertNotNull( $language );
 
 		// First save initial translation.
@@ -421,11 +275,9 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$collection   = new Collection( array( $translatable ) );
 
 		// Update with new translation.
-		$translations = array(
-			$translatable->get_id() => 'Hello updated',
-		);
+		$translatable->set_value( 'Hello updated' );
 
-		$this->repository->save_translations( $collection, $language, $translations );
+		$this->repository->save( $collection, $language );
 
 		// Verify translation was updated.
 		$mo = new PLL_MO();
@@ -435,8 +287,8 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translations_should_be_language_specific() {
-		$language_en = self::$model->get_language( 'en' );
-		$language_fr = self::$model->get_language( 'fr' );
+		$language_en = $this->pll_model->get_language( 'en' );
+		$language_fr = $this->pll_model->get_language( 'fr' );
 		$this->assertNotNull( $language_en );
 		$this->assertNotNull( $language_fr );
 
@@ -444,22 +296,17 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		$collection   = new Collection( array( $translatable ) );
 
 		// Save different translations for each language.
-		$this->repository->save_translations(
-			$collection,
-			$language_en,
-			array( $translatable->get_id() => 'Hello in English' )
-		);
-		$this->repository->save_translations(
-			$collection,
-			$language_fr,
-			array( $translatable->get_id() => 'Bonjour en français' )
-		);
+		$translatable->set_value( 'Hello in English' );
+		$this->repository->save( $collection, $language_en );
+		$translatable->set_value( 'Bonjour en français' );
+		$this->repository->save( $collection, $language_fr );
 
 		// Retrieve and verify translations.
-		$translations_en = $this->repository->get_translations( $collection, $language_en );
-		$translations_fr = $this->repository->get_translations( $collection, $language_fr );
+		$mo = new PLL_MO();
+		$mo->import_from_db( $language_en );
+		$mo->import_from_db( $language_fr );
 
-		$this->assertSame( 'Hello in English', $translations_en[ $translatable->get_id() ] );
-		$this->assertSame( 'Bonjour en français', $translations_fr[ $translatable->get_id() ] );
+		$this->assertSame( 'Hello in English', $mo->translate( 'Hello' ) );
+		$this->assertSame( 'Bonjour en français', $mo->translate( 'Hello' ) );
 	}
 }
