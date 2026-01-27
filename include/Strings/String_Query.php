@@ -44,6 +44,20 @@ class String_Query {
 	private string $order = 'asc';
 
 	/**
+	 * Number of items per page (null = no pagination).
+	 *
+	 * @var int|null
+	 */
+	private ?int $per_page = null;
+
+	/**
+	 * Current page number (1-indexed).
+	 *
+	 * @var int
+	 */
+	private int $page = 1;
+
+	/**
 	 * The repository instance.
 	 *
 	 * @var Database_Repository
@@ -78,7 +92,7 @@ class String_Query {
 	 * @param string $context The context to filter by.
 	 * @return self For method chaining.
 	 */
-	public function by_context( string $context ): self {
+	public function by_context( ?string $context = null ): self {
 		$this->context = $context;
 
 		return $this;
@@ -92,8 +106,24 @@ class String_Query {
 	 * @param string $fragment The fragment to search for.
 	 * @return self For method chaining.
 	 */
-	public function by_fragment( string $fragment ): self {
+	public function by_fragment( ?string $fragment = null ): self {
 		$this->fragment = $fragment;
+
+		return $this;
+	}
+
+	/**
+	 * Sets pagination parameters.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int $per_page Number of items per page.
+	 * @param int $page     Page number (1-indexed). Default 1.
+	 * @return self For method chaining.
+	 */
+	public function paginate( int $per_page, int $page = 1 ): self {
+		$this->per_page = max( 1, $per_page );
+		$this->page     = max( 1, $page );
 
 		return $this;
 	}
@@ -156,12 +186,26 @@ class String_Query {
 			$translatables = $this->sort( $translatables );
 		}
 
+		// Store total count before pagination
+		$total_count = count( $translatables );
+
+		if ( $this->per_page ) {
+			$offset        = ( $this->page - 1 ) * $this->per_page;
+			$translatables = array_slice( $translatables, $offset, $this->per_page, true );
+		}
+
+		// Reset state
 		$this->context  = null;
 		$this->fragment = null;
 		$this->order_by = 'name';
 		$this->order    = 'asc';
+		$this->per_page = null;
+		$this->page     = 1;
 
-		return new Collection( $translatables );
+		$collection = new Collection( $translatables );
+		$collection->set_total( $total_count );
+
+		return $collection;
 	}
 
 	/**

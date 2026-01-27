@@ -270,4 +270,119 @@ class String_Query_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( 'a_name', $first->get_name() );
 	}
+
+	public function test_paginate_returns_self_for_chaining() {
+		$result = $this->query->paginate( 10, 1 );
+
+		$this->assertSame( $this->query, $result );
+	}
+
+	public function test_paginate_returns_correct_page_size() {
+		Database_Repository::register( 'string_1', 'source_1', 'context' );
+		Database_Repository::register( 'string_2', 'source_2', 'context' );
+		Database_Repository::register( 'string_3', 'source_3', 'context' );
+		Database_Repository::register( 'string_4', 'source_4', 'context' );
+		Database_Repository::register( 'string_5', 'source_5', 'context' );
+
+		$result = $this->query->paginate( 2, 1 )->get();
+
+		$this->assertCount( 2, $result );
+	}
+
+	public function test_paginate_returns_correct_page() {
+		Database_Repository::register( 'a_name', 'a_source', 'context' );
+		Database_Repository::register( 'b_name', 'b_source', 'context' );
+		Database_Repository::register( 'c_name', 'c_source', 'context' );
+		Database_Repository::register( 'd_name', 'd_source', 'context' );
+		Database_Repository::register( 'e_name', 'e_source', 'context' );
+
+		$result = $this->query->order_by( 'name', 'asc' )->paginate( 2, 2 )->get();
+		$items  = iterator_to_array( $result );
+
+		$this->assertCount( 2, $items );
+
+		$first = reset( $items );
+		$this->assertSame( 'c_name', $first->get_name() );
+	}
+
+	public function test_paginate_stores_total_count() {
+		Database_Repository::register( 'string_1', 'source_1', 'context' );
+		Database_Repository::register( 'string_2', 'source_2', 'context' );
+		Database_Repository::register( 'string_3', 'source_3', 'context' );
+		Database_Repository::register( 'string_4', 'source_4', 'context' );
+		Database_Repository::register( 'string_5', 'source_5', 'context' );
+
+		$result = $this->query->paginate( 2, 1 )->get();
+
+		$this->assertCount( 2, $result );
+		$this->assertSame( 5, $result->get_total() );
+	}
+
+	public function test_paginate_with_filters() {
+		Database_Repository::register( 'string_1', 'source_1', 'context_a' );
+		Database_Repository::register( 'string_2', 'source_2', 'context_a' );
+		Database_Repository::register( 'string_3', 'source_3', 'context_b' );
+		Database_Repository::register( 'string_4', 'source_4', 'context_a' );
+		Database_Repository::register( 'string_5', 'source_5', 'context_a' );
+
+		$result = $this->query
+			->by_context( 'context_a' )
+			->paginate( 2, 1 )
+			->get();
+
+		$this->assertCount( 2, $result );
+		$this->assertSame( 4, $result->get_total() );
+	}
+
+	public function test_paginate_handles_last_partial_page() {
+		Database_Repository::register( 'string_1', 'source_1', 'context' );
+		Database_Repository::register( 'string_2', 'source_2', 'context' );
+		Database_Repository::register( 'string_3', 'source_3', 'context' );
+
+		$result = $this->query->paginate( 2, 2 )->get();
+
+		$this->assertCount( 1, $result );
+		$this->assertSame( 3, $result->get_total() );
+	}
+
+	public function test_paginate_handles_page_beyond_total() {
+		Database_Repository::register( 'string_1', 'source_1', 'context' );
+		Database_Repository::register( 'string_2', 'source_2', 'context' );
+
+		$result = $this->query->paginate( 10, 5 )->get();
+
+		$this->assertCount( 0, $result );
+		$this->assertSame( 2, $result->get_total() );
+	}
+
+	public function test_paginate_enforces_minimum_per_page() {
+		Database_Repository::register( 'string_1', 'source_1', 'context' );
+		Database_Repository::register( 'string_2', 'source_2', 'context' );
+
+		$result = $this->query->paginate( 0, 1 )->get();
+
+		$this->assertCount( 1, $result );
+	}
+
+	public function test_paginate_enforces_minimum_page() {
+		Database_Repository::register( 'a_name', 'a_source', 'context' );
+		Database_Repository::register( 'b_name', 'b_source', 'context' );
+
+		$result = $this->query->order_by( 'name', 'asc' )->paginate( 1, 0 )->get();
+		$items  = iterator_to_array( $result );
+		$first  = reset( $items );
+
+		$this->assertSame( 'a_name', $first->get_name() );
+	}
+
+	public function test_pagination_resets_after_get() {
+		Database_Repository::register( 'string_1', 'source_1', 'context' );
+		Database_Repository::register( 'string_2', 'source_2', 'context' );
+		Database_Repository::register( 'string_3', 'source_3', 'context' );
+
+		$this->query->paginate( 1, 1 )->get();
+		$result = $this->query->get();
+
+		$this->assertCount( 3, $result );
+	}
 }
