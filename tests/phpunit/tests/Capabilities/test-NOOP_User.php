@@ -48,8 +48,8 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_get_id_returns_user_id( $user_type ) {
+		$user    = $this->get_user( $user_type );
 		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
 
 		$this->assertSame( $wp_user->ID, $user->get_id() );
 	}
@@ -60,8 +60,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_is_translator_always_returns_false( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertFalse( $user->is_translator() );
 	}
@@ -72,8 +71,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_always_returns_true( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$language = $this->createMock( PLL_Language::class );
 
@@ -86,8 +84,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_with_real_language( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertTrue( $user->can_translate( self::$language_fr ) );
 	}
@@ -98,8 +95,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_all_with_empty_array( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertTrue( $user->can_translate_all( array() ) );
 	}
@@ -110,8 +106,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_all_with_single_language( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertTrue( $user->can_translate_all( array( 'en' ) ) );
 	}
@@ -122,8 +117,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_all_with_multiple_languages( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertTrue( $user->can_translate_all( array( 'en', 'fr', 'de', 'es' ) ) );
 		$this->assertTrue( $user->can_translate_all( array( 'fr' ) ) );
@@ -135,8 +129,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_all_with_real_languages( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertTrue( $user->can_translate_all( array( 'en', 'fr' ) ) );
 	}
@@ -167,8 +160,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_has_cap_with_user_capabilities( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		// Should delegate to WP_User and return true for edit_posts capability.
 		$this->assertTrue( $user->has_cap( 'edit_posts' ) );
@@ -194,8 +186,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_get_preferred_language_slug_returns_empty_string( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$this->assertSame( '', $user->get_preferred_language_slug() );
 	}
@@ -206,8 +197,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_or_die_does_not_die( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		$language = $this->createMock( PLL_Language::class );
 
@@ -224,8 +214,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	 * @param string $user_type User type to test.
 	 */
 	public function test_can_translate_or_die_with_real_language( $user_type ) {
-		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
-		$user    = new NOOP_User( $wp_user );
+		$user = $this->get_user( $user_type );
 
 		// This should not throw any exception or call wp_die()
 		$user->can_translate_or_die( self::$language_fr );
@@ -277,5 +266,17 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 			'administrator'  => array( 'administrator' ),
 			'translator_fr' => array( 'translator_fr' ),
 		);
+	}
+
+	/**
+	 * Get a NOOP_User instance based on user type.
+	 *
+	 * @param string $user_type User type ('administrator' or 'translator_fr').
+	 * @return NOOP_User
+	 */
+	private function get_user( string $user_type ): NOOP_User {
+		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
+
+		return new NOOP_User( $wp_user );
 	}
 }
