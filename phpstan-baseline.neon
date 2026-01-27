@@ -1345,10 +1345,100 @@ parameters:
 			path: src/settings/table-string.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, mixed given\.$#'
+			message: '#^Method PLL_Translate_Option\:\:translate_string_recursive\(\) should return array\|string but returns array\|string\|Traversable\.$#'
+			identifier: return.type
+			count: 1
+			path: src/translate-option.php
+
+		-
+			message: '#^Parameter \#1 \$singular of method Translations\:\:translate\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/settings/view-languages.php
+			path: src/translate-option.php
+
+		-
+			message: '#^Parameter \#1 \$string of function pll__ expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/translate-option.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/translate-option.php
+
+		-
+			message: '#^Method PLL_Translated_Object\:\:get_raw_objects_translations\(\) should return array\<int, array\<non\-empty\-string, int\<1, max\>\>\> but returns array\<int, array\<mixed\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/translated-object.php
+
+		-
+			message: '#^Parameter \#1 \$translations of method PLL_Translated_Object\:\:validate_translations\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/translated-object.php
+
+		-
+			message: '#^Parameter \#3 \$args of function wp_insert_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/translated-object.php
+
+		-
+			message: '#^Parameter \#3 \$args of function wp_update_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/translated-object.php
+
+		-
+			message: '#^Cannot access property \$posts on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/translated-post.php
+
+		-
+			message: '#^Cannot call method add_query_var\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/translated-post.php
+
+		-
+			message: '#^Parameter \#1 \$id of method PLL_Translated_Object\:\:get_translation\(\) expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/translated-post.php
+
+		-
+			message: '#^Cannot access property \$term_taxonomy on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/translated-term.php
+
+		-
+			message: '#^Parameter \#3 \$args of function wp_insert_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/translated-term.php
+
+		-
+			message: '#^Parameter \#2 \$max_depth of method Walker\:\:walk\(\) expects int, array\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/walker-dropdown.php
+
+		-
+			message: '#^Parameter \#2 \$max_depth of method Walker\:\:walk\(\) expects int, array\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/walker-list.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_attr expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/widget-languages.php
 
 		-
 			message: '#^Cannot access property \$model on PLL_Links\|null\.$#'
