@@ -41,19 +41,12 @@ class Test_Prepare_Items extends PLL_UnitTestCase {
 	}
 
 	private function register_test_strings(): void {
-		PLL_Admin_Strings::register_string( 'alpha', 'First string', 'Animals', false );
-		PLL_Admin_Strings::register_string( 'beta', 'Second string', 'Animals', false );
-		PLL_Admin_Strings::register_string( 'gamma', 'Third string', 'Plants', false );
-		PLL_Admin_Strings::register_string( 'delta', 'Fourth string', 'Plants', false );
-		PLL_Admin_Strings::register_string( 'epsilon', "Multi\nLine\nString", 'Colors', true );
-		PLL_Admin_Strings::register_string( 'zeta', 'Last string', 'Colors', false );
-		PLL_Admin_Strings::init();
-		// Database_Repository::register( 'alpha', 'First string', 'Animals', null, false );
-		// Database_Repository::register( 'beta', 'Second string', 'Animals', null, false );
-		// Database_Repository::register( 'gamma', 'Third string', 'Plants', null, false );
-		// Database_Repository::register( 'delta', 'Fourth string', 'Plants', null, false );
-		// Database_Repository::register( 'epsilon', "Multi\nLine\nString", 'Colors', null, true );
-		// Database_Repository::register( 'zeta', 'Last string', 'Colors', null, false );
+		Database_Repository::register( 'alpha', 'First string', 'Animals', null, false );
+		Database_Repository::register( 'beta', 'Second string', 'Animals', null, false );
+		Database_Repository::register( 'gamma', 'Third string', 'Plants', null, false );
+		Database_Repository::register( 'delta', 'Fourth string', 'Plants', null, false );
+		Database_Repository::register( 'epsilon', "Multi\nLine\nString", 'Colors', null, true );
+		Database_Repository::register( 'zeta', 'Last string', 'Colors', null, false );
 	}
 
 	public function test_prepare_items_basic() {
