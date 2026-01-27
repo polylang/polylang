@@ -143,4 +143,23 @@ class Collection_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( 2, $count );
 	}
+
+	public function test_get_total_returns_count_when_not_set() {
+		$translatable1 = new Translatable( 'First', 'first', 'test' );
+		$translatable2 = new Translatable( 'Second', 'second', 'test' );
+
+		$collection = new Collection( array( $translatable1, $translatable2 ) );
+
+		$this->assertSame( 2, $collection->get_total() );
+	}
+
+	public function test_set_total_and_get_total() {
+		$translatable1 = new Translatable( 'First', 'first', 'test' );
+
+		$collection = new Collection( array( $translatable1 ) );
+		$collection->set_total( 10 );
+
+		$this->assertSame( 1, $collection->count() );
+		$this->assertSame( 10, $collection->get_total() );
+	}
 }
