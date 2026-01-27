@@ -25,6 +25,13 @@ class Collection implements IteratorAggregate, Countable {
 	private array $translatables = array();
 
 	/**
+	 * The total count before pagination (if applicable).
+	 *
+	 * @var int|null
+	 */
+	private ?int $total_count = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.8
@@ -108,5 +115,28 @@ class Collection implements IteratorAggregate, Countable {
 	 */
 	public function getIterator(): \ArrayIterator {
 		return new ArrayIterator( $this->translatables );
+	}
+
+	/**
+	 * Sets the total count (before pagination).
+	 *
+	 * @since 3.8
+	 *
+	 * @param int $total The total count.
+	 * @return void
+	 */
+	public function set_total( int $total ): void {
+		$this->total_count = $total;
+	}
+
+	/**
+	 * Gets the total count (before pagination).
+	 *
+	 * @since 3.8
+	 *
+	 * @return int The total count, or the current count if total was not set.
+	 */
+	public function get_total(): int {
+		return $this->total_count ?? $this->count();
 	}
 }
