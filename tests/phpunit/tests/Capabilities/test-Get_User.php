@@ -53,49 +53,6 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->assertSame( $user_id, $user_1->get_id() );
 	}
 
-	public function test_get_user_uses_filter_to_override_prototype() {
-		$mock_prototype = $this->createMock( User_Interface::class );
-		$mock_clone     = $this->createMock( User_Interface::class );
-
-		$mock_prototype->expects( $this->once() )
-			->method( 'clone' )
-			->willReturn( $mock_clone );
-
-		add_filter(
-			'pll_user_prototype',
-			function () use ( $mock_prototype ) {
-				return $mock_prototype;
-			}
-		);
-
-		$this->reset_prototype();
-
-		$user = Capabilities::get_user();
-
-		$this->assertSame( $mock_clone, $user );
-	}
-
-	public function test_get_user_filter_is_called_once() {
-		$filter_call_count = 0;
-
-		add_filter(
-			'pll_user_prototype',
-			function ( $user ) use ( &$filter_call_count ) {
-				$filter_call_count++;
-
-				return $user;
-			}
-		);
-
-		$this->reset_prototype();
-
-		Capabilities::get_user();
-		Capabilities::get_user();
-		Capabilities::get_user();
-
-		$this->assertSame( 1, $filter_call_count );
-	}
-
 	public function test_get_user_prototype_pattern_with_user_switching() {
 		$user_id_1 = self::factory()->user->create();
 		$user_id_2 = self::factory()->user->create();
@@ -122,6 +79,36 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$user = Capabilities::get_user( $user );
 
 		$this->assertSame( $user->get_id(), $user->get_id() );
+	}
+
+	public function test_set_user_prototype_changes_returned_user_type() {
+		$user_id = self::factory()->user->create();
+		wp_set_current_user( $user_id );
+
+		// Set a custom prototype.
+		$custom_prototype = $this->createMock( User_Interface::class );
+		Capabilities::set_user_prototype( $custom_prototype );
+
+		$user = Capabilities::get_user();
+
+		$this->assertInstanceOf( User_Interface::class, $user );
+	}
+
+	public function test_set_user_prototype_persists_across_multiple_calls() {
+		$user_id = self::factory()->user->create();
+		wp_set_current_user( $user_id );
+
+		// Set a custom prototype.
+		$custom_prototype = new NOOP_User( wp_get_current_user() );
+		Capabilities::set_user_prototype( $custom_prototype );
+
+		$user_1 = Capabilities::get_user();
+		$user_2 = Capabilities::get_user();
+
+		$this->assertInstanceOf( NOOP_User::class, $user_1 );
+		$this->assertInstanceOf( NOOP_User::class, $user_2 );
+		$this->assertSame( $user_id, $user_1->get_id() );
+		$this->assertSame( $user_id, $user_2->get_id() );
 	}
 
 	/**

@@ -62,20 +62,21 @@ class Capabilities {
 	 */
 	public static function get_user( ?WP_User $user = null ): User_Interface {
 		if ( ! self::$user_prototype ) {
-			/**
-			 * Filters the user prototype to be used for capability checks.
-			 *
-			 * @since 3.8
-			 *
-			 * @param User_Interface|null $user_prototype The user prototype to be used for capability checks.
-			 */
-			self::$user_prototype = apply_filters( 'pll_user_prototype', null );
-
-			if ( ! self::$user_prototype ) {
-				self::$user_prototype = new NOOP_User( $user ?? wp_get_current_user() );
-			}
+			self::$user_prototype = new NOOP_User( $user ?? wp_get_current_user() );
 		}
 
 		return self::$user_prototype->clone( $user ?? wp_get_current_user() );
+	}
+
+	/**
+	 * Sets the user prototype to be used for capability checks.
+	 *
+	 * @since 3.8
+	 *
+	 * @param User_Interface $user_prototype The user prototype to be used for capability checks.
+	 * @return void
+	 */
+	public static function set_user_prototype( User_Interface $user_prototype ): void {
+		self::$user_prototype = $user_prototype;
 	}
 }
