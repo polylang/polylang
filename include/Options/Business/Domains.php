@@ -204,7 +204,7 @@ class Domains extends Abstract_Map {
 	 * @param string $key The key to reset. Unused.
 	 * @return mixed The reset value.
 	 */
-	protected function get_reset_value( string $key ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function reset_value( string $key ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return '';
 	}
 }

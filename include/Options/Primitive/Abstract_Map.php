@@ -51,10 +51,7 @@ abstract class Abstract_Map extends Abstract_Option {
 			return false;
 		}
 
-		$this->value = array_merge(
-			$this->value,
-			array( $key => $this->get_reset_value( $key ) )
-		);
+		$this->value[ $key ] = $this->reset_value( $key );
 
 		return true;
 	}
@@ -76,5 +73,5 @@ abstract class Abstract_Map extends Abstract_Option {
 	 * @param string $key The key to reset.
 	 * @return mixed The reset value.
 	 */
-	abstract protected function get_reset_value( string $key );
+	abstract protected function reset_value( string $key );
 }
