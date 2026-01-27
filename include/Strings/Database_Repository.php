@@ -50,6 +50,17 @@ class Database_Repository {
 	}
 
 	/**
+	 * Creates a new query builder.
+	 *
+	 * @since 3.8
+	 *
+	 * @return String_Query The query builder.
+	 */
+	public function query(): String_Query {
+		return new String_Query( $this, $this->languages );
+	}
+
+	/**
 	 * Finds all translatable strings with translations for all languages.
 	 *
 	 * @since 3.8
@@ -61,48 +72,6 @@ class Database_Repository {
 		$translatables = array();
 
 		foreach ( $strings as $string_data ) {
-			$translatable = new Translatable(
-				$string_data['string'],
-				$string_data['name'],
-				$string_data['context'] ?? null,
-				$string_data['sanitize_callback'] ?? null,
-				$string_data['multiline'] ?? false
-			);
-			$translatables[ $translatable->get_id() ] = $translatable;
-		}
-
-		foreach ( $this->languages->get_list() as $language ) {
-			$mo = new PLL_MO();
-			$mo->import_from_db( $language );
-
-			foreach ( $translatables as $translatable ) {
-				$translation = $mo->translate_if_any( $translatable->get_source(), $translatable->get_context() );
-				if ( $translation !== $translatable->get_source() ) {
-					$translatable->set_translation( $language, $translation );
-				}
-			}
-		}
-
-		return new Collection( $translatables );
-	}
-
-	/**
-	 * Filters translatables by context with translations for all languages.
-	 *
-	 * @since 3.8
-	 *
-	 * @param string $context The context to filter by.
-	 * @return Collection A new collection with filtered translatables.
-	 */
-	public function find_by_context( string $context ): Collection {
-		$strings       = self::get_strings();
-		$translatables = array();
-
-		foreach ( $strings as $string_data ) {
-			if ( $string_data['context'] !== $context ) {
-				continue;
-			}
-
 			$translatable = new Translatable(
 				$string_data['string'],
 				$string_data['name'],
