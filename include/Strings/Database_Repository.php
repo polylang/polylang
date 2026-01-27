@@ -9,6 +9,7 @@ use PLL_MO;
 use WP_Widget;
 use PLL_Language;
 use WP_Widget_Custom_HTML;
+use WP_Syntex\Polylang\Model\Languages;
 
 /**
  * Database repository for storing and retrieving Translatable string entities and their translations.
@@ -31,68 +32,100 @@ class Database_Repository {
 	private static bool $read = false;
 
 	/**
-	 * Finds all translatable strings for a language.
+	 * The languages model.
+	 *
+	 * @var Languages
+	 */
+	private Languages $languages;
+
+	/**
+	 * Constructor.
 	 *
 	 * @since 3.8
 	 *
-	 * @param PLL_Language $language The language to find translatables for.
+	 * @param Languages $languages The languages model.
+	 */
+	public function __construct( Languages $languages ) {
+		$this->languages = $languages;
+	}
+
+	/**
+	 * Finds all translatable strings with translations for all languages.
+	 *
+	 * @since 3.8
+	 *
 	 * @return Collection The collection of translatables.
 	 */
-	public function find_all( PLL_Language $language ): Collection {
+	public function find_all(): Collection {
 		$strings       = self::get_strings();
 		$translatables = array();
-
-		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
 
 		foreach ( $strings as $string_data ) {
 			$translatable = new Translatable(
 				$string_data['string'],
-				$mo->translate_if_any( $string_data['string'], $string_data['context'] ?? null ),
 				$string_data['name'],
 				$string_data['context'] ?? null,
 				$string_data['sanitize_callback'] ?? null,
-				$string_data['multiline'] ?? false,
+				$string_data['multiline'] ?? false
 			);
 			$translatables[ $translatable->get_id() ] = $translatable;
 		}
 
-		return new Collection( $translatables, $language );
+		foreach ( $this->languages->get_list() as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+
+			foreach ( $translatables as $translatable ) {
+				$translation = $mo->translate_if_any( $translatable->get_source(), $translatable->get_context() );
+				if ( $translation !== $translatable->get_source() ) {
+					$translatable->set_translation( $language, $translation );
+				}
+			}
+		}
+
+		return new Collection( $translatables );
 	}
 
 	/**
-	 * Filters translatables by context.
+	 * Filters translatables by context with translations for all languages.
 	 *
 	 * @since 3.8
 	 *
-	 * @param string       $context  The context to filter by.
-	 * @param PLL_Language $language The language to find translatables for.
+	 * @param string $context The context to filter by.
 	 * @return Collection A new collection with filtered translatables.
 	 */
-	public function find_by_context( string $context, PLL_Language $language ): Collection {
-		$strings = self::get_strings();
-		$mo      = new PLL_MO();
-		$mo->import_from_db( $language );
-
+	public function find_by_context( string $context ): Collection {
+		$strings       = self::get_strings();
 		$translatables = array();
+
 		foreach ( $strings as $string_data ) {
 			if ( $string_data['context'] !== $context ) {
 				continue;
 			}
 
-
 			$translatable = new Translatable(
 				$string_data['string'],
-				$mo->translate_if_any( $string_data['string'], $string_data['context'] ?? null ),
 				$string_data['name'],
 				$string_data['context'] ?? null,
 				$string_data['sanitize_callback'] ?? null,
-				$string_data['multiline'] ?? false,
+				$string_data['multiline'] ?? false
 			);
 			$translatables[ $translatable->get_id() ] = $translatable;
 		}
 
-		return new Collection( $translatables, $language );
+		foreach ( $this->languages->get_list() as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+
+			foreach ( $translatables as $translatable ) {
+				$translation = $mo->translate_if_any( $translatable->get_source(), $translatable->get_context() );
+				if ( $translation !== $translatable->get_source() ) {
+					$translatable->set_translation( $language, $translation );
+				}
+			}
+		}
+
+		return new Collection( $translatables );
 	}
 
 	/**
@@ -118,28 +151,32 @@ class Database_Repository {
 	}
 
 	/**
-	 * Cleans the database from non-registered strings for a language.
+	 * Cleans the database from non-registered strings for all languages.
 	 *
 	 * @since 3.8
 	 *
-	 * @param PLL_Language $language The language to clean the database for.
 	 * @return void
 	 */
-	public function clean( PLL_Language $language ): void {
-		$collection = $this->find_all( $language );
-		$mo         = new PLL_MO();
-		$mo->import_from_db( $language );
-		foreach ( $mo->entries as $entry ) {
-			if ( $collection->has( md5( $entry->singular . $entry->context ) ) ) {
-				continue;
+	public function clean(): void {
+		$collection = $this->find_all();
+
+		foreach ( $this->languages->get_list() as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+
+			foreach ( $mo->entries as $entry ) {
+				if ( $collection->has( md5( $entry->singular . $entry->context ) ) ) {
+					continue;
+				}
+				$mo->delete_entry( $entry->singular );
 			}
-			$mo->delete_entry( $entry->singular );
+
+			$mo->export_to_db( $language );
 		}
-		$mo->export_to_db( $language );
 	}
 
 	/**
-	 * Saves translations for a language.
+	 * Saves translations for all languages in the collection.
 	 *
 	 * @since 3.8
 	 *
@@ -147,37 +184,42 @@ class Database_Repository {
 	 * @return void
 	 */
 	public function save( Collection $collection ): void {
-		$mo = new PLL_MO();
-		$mo->import_from_db( $collection->target_language() );
+		foreach ( $this->languages->get_list() as $language ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
 
-		foreach ( $collection as $translatable ) {
-			/**
-			 * Filters the translation before it is saved in DB.
-			 *
-			 * @since 3.8
-			 *
-			 * @param string $translation The translation value.
-			 * @param string $name      The name as defined in pll_register_string.
-			 * @param string $context   The context as defined in pll_register_string.
-			 * @param string $original  The original string to translate.
-			 * @param string $previous  The previous translation if any.
-			 */
-			$sanitized_translation = apply_filters(
-				'pll_sanitize_string_translation',
-				$translatable->get_translation(),
-				$translatable->get_name(),
-				$translatable->get_context(),
-				$mo->translate_if_any( $translatable->get_source(), $translatable->get_context() ),
-				$translatable->get_previous_translation(),
-			);
+			foreach ( $collection as $translatable ) {
+				/**
+				 * Filters the translation before it is saved in DB.
+				 *
+				 * @since 1.6
+				 * @since 2.7 The translation passed to the filter is unslashed.
+				 * @since 3.7 Add original string as 4th parameter.
+				 * @since 3.8 Add previous string translation as 5th parameter.
+				 *
+				 * @param string $translation The translation value.
+				 * @param string $name        The name as defined in pll_register_string.
+				 * @param string $context     The context as defined in pll_register_string.
+				 * @param string $original    The original string to translate.
+				 * @param string $previous    The previous translation if any.
+				 */
+				$sanitized_translation = apply_filters(
+					'pll_sanitize_string_translation',
+					$translatable->get_translation( $language ),
+					$translatable->get_name(),
+					$translatable->get_context(),
+					$mo->translate_if_any( $translatable->get_source(), $translatable->get_context() ),
+					$translatable->get_previous_translation( $language )
+				);
 
-			$mo->add_entry(
-				$translatable->set_translation( $sanitized_translation )
-					->get_entry()
-			);
+				$mo->add_entry(
+					$translatable->set_translation( $language, $sanitized_translation )
+						->get_entry( $language )
+				);
+			}
+
+			$mo->export_to_db( $language );
 		}
-
-		$mo->export_to_db( $collection->target_language() );
 	}
 
 	/**

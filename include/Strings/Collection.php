@@ -6,7 +6,6 @@
 namespace WP_Syntex\Polylang\Strings;
 
 use Countable;
-use PLL_Language;
 use ArrayIterator;
 use IteratorAggregate;
 
@@ -26,25 +25,19 @@ class Collection implements IteratorAggregate, Countable {
 	private array $translatables = array();
 
 	/**
-	 * The target language of the collection.
-	 *
-	 * @var PLL_Language
-	 */
-	private PLL_Language $language;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 3.8
 	 *
 	 * @param Translatable[] $translatables Initial translatables to add to the collection.
-	 * @param PLL_Language   $language      The target language of the collection.
 	 */
-	public function __construct( array $translatables, PLL_Language $language ) {
-		$this->language = $language;
-		foreach ( $translatables as $translatable ) {
-			$this->add( $translatable );
-		}
+	public function __construct( array $translatables = array() ) {
+		array_map(
+			function ( Translatable $translatable ) {
+				$this->add( $translatable );
+			},
+			$translatables
+		);
 	}
 
 	/**
@@ -93,17 +86,6 @@ class Collection implements IteratorAggregate, Countable {
 	 */
 	public function has( string $id ): bool {
 		return isset( $this->translatables[ $id ] );
-	}
-
-	/**
-	 * Gets the target language of the collection.
-	 *
-	 * @since 3.8
-	 *
-	 * @return PLL_Language The target language.
-	 */
-	public function target_language(): PLL_Language {
-		return $this->language;
 	}
 
 	/**

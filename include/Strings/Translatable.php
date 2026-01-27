@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Strings;
 
 use Closure;
+use PLL_Language;
 use Translation_Entry;
 use WP_Syntex\Polylang\Strings\Database_Repository;
 
@@ -37,18 +38,12 @@ class Translatable {
 	private string $source;
 
 	/**
-	 * The string value to translate.
+	 * The translations for each language.
+	 * Format: ['en' => ['current' => '...', 'previous' => '...'], 'fr' => [...]]
 	 *
-	 * @var string
+	 * @var array<string, array{current: string, previous: string}>
 	 */
-	private string $translation;
-
-	/**
-	 * The previous string value.
-	 *
-	 * @var string
-	 */
-	private string $previous_translation;
+	private array $translations = array();
 
 	/**
 	 * The context/group of the string.
@@ -77,29 +72,25 @@ class Translatable {
 	 * @since 3.8
 	 *
 	 * @param string        $source            The string to translate.
-	 * @param string        $translation       The translation of the string.
 	 * @param string        $name              The name as defined in pll_register_string.
-	 * @param string        $context           The context of the string.
+	 * @param string|null   $context           The context of the string.
 	 * @param callable|null $sanitize_callback The sanitization callback for the string.
 	 * @param bool          $multiline         Whether the string is multiline.
 	 */
 	public function __construct(
 		string $source,
-		string $translation,
 		string $name,
 		?string $context = null,
 		?callable $sanitize_callback = null,
-		bool $multiline = false,
+		bool $multiline = false
 	) {
-		$context                    = $context ?? 'Polylang';
-		$this->id                   = md5( $source . $context );
-		$this->source               = $source;
-		$this->translation          = $translation;
-		$this->previous_translation = $translation;
-		$this->name                 = $name;
-		$this->context              = $context;
-		$this->multiline            = $multiline;
-		$this->sanitize_callback    = $sanitize_callback ?? Closure::fromCallable( array( $this, 'default_sanitization' ) );
+		$context                 = $context ?? 'Polylang';
+		$this->id                = md5( $source . $context );
+		$this->source            = $source;
+		$this->name              = $name;
+		$this->context           = $context;
+		$this->multiline         = $multiline;
+		$this->sanitize_callback = $sanitize_callback ?? Closure::fromCallable( array( $this, 'default_sanitization' ) );
 
 		add_filter( 'pll_sanitize_string_translation', array( $this, 'sanitize' ), 10, 5 );
 	}
@@ -127,18 +118,23 @@ class Translatable {
 	}
 
 	/**
-	 * Gets the string value.
+	 * Gets the translation for a specific language.
 	 *
 	 * @since 3.8
 	 *
-	 * @return string
+	 * @param PLL_Language $language The language.
+	 * @return string The translation, or the source if no translation exists.
 	 */
-	public function get_translation(): string {
-		return $this->translation;
+	public function get_translation( PLL_Language $language ): string {
+		if ( ! isset( $this->translations[ $language->slug ] ) ) {
+			return $this->source;
+		}
+
+		return $this->translations[ $language->slug ]['current'];
 	}
 
 	/**
-	 * Gets the string value.
+	 * Gets the source string.
 	 *
 	 * @since 3.8
 	 *
@@ -149,27 +145,37 @@ class Translatable {
 	}
 
 	/**
-	 * Gets the previous string value.
+	 * Gets the previous translation for a specific language.
 	 *
 	 * @since 3.8
 	 *
-	 * @return string
+	 * @param PLL_Language $language The language.
+	 * @return string The previous translation, or the source if no translation exists.
 	 */
-	public function get_previous_translation(): string {
-		return $this->previous_translation;
+	public function get_previous_translation( PLL_Language $language ): string {
+		if ( ! isset( $this->translations[ $language->slug ] ) ) {
+			return '';
+		}
+
+		return $this->translations[ $language->slug ]['previous'];
 	}
 
 	/**
-	 * Sets the string value.
+	 * Sets the translation for a specific language.
 	 *
 	 * @since 3.8
 	 *
-	 * @param string $translation The translation value.
+	 * @param PLL_Language $language    The language.
+	 * @param string       $translation The translation value.
 	 * @return self The current instance.
 	 */
-	public function set_translation( string $translation ): self {
-		$this->previous_translation = $this->translation;
-		$this->translation          = $translation;
+	public function set_translation( PLL_Language $language, string $translation ): self {
+		$previous = $this->translations[ $language->slug ]['current'] ?? '';
+
+		$this->translations[ $language->slug ] = array(
+			'current'  => $translation,
+			'previous' => $previous,
+		);
 
 		return $this;
 	}
@@ -197,17 +203,18 @@ class Translatable {
 	}
 
 	/**
-	 * Gets the translation entry for the current translatable string.
+	 * Gets the translation entry for a specific language.
 	 *
 	 * @since 3.8
 	 *
+	 * @param PLL_Language $language The language.
 	 * @return Translation_Entry The translation entry.
 	 */
-	public function get_entry(): Translation_Entry {
+	public function get_entry( PLL_Language $language ): Translation_Entry {
 		return new Translation_Entry(
 			array(
 				'singular'     => $this->source,
-				'translations' => array( $this->translation ),
+				'translations' => array( $this->get_translation( $language ) ),
 				'context'      => $this->context,
 			)
 		);
