@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Syntex\Polylang\Tests\Strings;
+namespace WP_Syntex\Polylang\Tests\Strings\Table;
 
 use PLL_MO;
 use PLL_Model;
