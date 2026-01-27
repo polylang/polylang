@@ -71,7 +71,7 @@ class PLL_Table_String extends WP_List_Table {
 		$this->languages  = $languages;
 		$this->strings    = PLL_Admin_Strings::get_strings();
 		$this->groups     = array_unique( wp_list_pluck( $this->strings, 'context' ) );
-		$this->repository = new Database_Repository();
+		$this->repository = new Database_Repository( $languages );
 
 		$this->selected_group = -1;
 
@@ -412,36 +412,38 @@ class PLL_Table_String extends WP_List_Table {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
 		if ( ! empty( $_POST['submit'] ) ) {
+			$collection = $this->repository->find_all();
+
 			foreach ( $this->languages->filter( 'translator' )->get_list() as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) || ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
 				}
 
 				$translations = (array) wp_unslash( $_POST['translation'][ $language->slug ] );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$collection   = $this->repository->find_all( $language );
 
 				array_map(
-					function ( $key, $translation ) use ( $collection ) {
+					function ( $key, $translation ) use ( $collection, $language ) {
 						if ( ! is_string( $translation ) ) {
 							return;
 						}
 
 						$translatable = $collection->get( $key );
 						if ( $translatable ) {
-							$translatable->set_translation( trim( $translation ) );
+							$translatable->set_translation( $language, trim( $translation ) );
 							return;
 						}
 					},
 					array_keys( $translations ),
-					array_values( $translations ),
+					array_values( $translations )
 				);
+			}
 
-				// Clean database (removes all strings which were registered some day but are no more).
-				if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
-					$this->repository->clean( $language );
-				}
+			// Save all languages at once
+			$this->repository->save( $collection );
 
-				$this->repository->save( $collection );
+			// Clean database (removes all strings which were registered some day but are no more).
+			if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
+				$this->repository->clean();
 			}
 
 			pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
