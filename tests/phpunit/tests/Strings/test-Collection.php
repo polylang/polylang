@@ -31,10 +31,10 @@ class Collection_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_constructor_with_translatables() {
-		$translatable1 = new Translatable( 'Hello', 'Bonjour', 'greeting', 'test' );
-		$translatable2 = new Translatable( 'Goodbye', 'Au revoir', 'farewell', 'test' );
+		$translatable1 = new Translatable( 'Hello', 'greeting', 'test' );
+		$translatable2 = new Translatable( 'Goodbye', 'farewell', 'test' );
 
-		$collection = new Collection( array( $translatable1, $translatable2 ), $this->pll_model->languages->get( 'en' ) );
+		$collection = new Collection( array( $translatable1, $translatable2 ) );
 
 		$this->assertSame( 2, $collection->count() );
 		$this->assertTrue( $collection->has( $translatable1->get_id() ) );
@@ -42,8 +42,8 @@ class Collection_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_add_translatable() {
-		$collection   = new Collection( array(), $this->pll_model->languages->get( 'en' ) );
-		$translatable = new Translatable( 'Test', 'Test translation', 'test_name', 'test_context' );
+		$collection   = new Collection( array() );
+		$translatable = new Translatable( 'Test', 'test_name', 'test_context' );
 
 		$this->assertCount( 0, $collection );
 
@@ -54,9 +54,9 @@ class Collection_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_add_same_translatable_twice_overwrites() {
-		$collection = new Collection( array(), $this->pll_model->languages->get( 'en' ) );
-		$translatable1 = new Translatable( 'Same', 'Translation 1', 'same_name', 'test' );
-		$translatable2 = new Translatable( 'Same', 'Translation 2', 'same_name', 'test' );
+		$collection = new Collection( array() );
+		$translatable1 = new Translatable( 'Same', 'same_name', 'test' );
+		$translatable2 = new Translatable( 'Same', 'same_name', 'test' );
 
 		$this->assertCount( 0, $collection );
 
@@ -64,12 +64,13 @@ class Collection_Test extends PLL_UnitTestCase {
 		$collection->add( $translatable2 );
 
 		$this->assertCount( 1, $collection );
-		$this->assertSame( 'Translation 2', $collection->get( $translatable2->get_id() )->get_translation() );
+		// Both should have the same ID since they have the same source and context
+		$this->assertSame( $translatable1->get_id(), $translatable2->get_id() );
 	}
 
 	public function test_get_existing_translatable() {
-		$translatable = new Translatable( 'Test', 'Test translation', 'test_name', 'test_context' );
-		$collection   = new Collection( array( $translatable ), $this->pll_model->languages->get( 'en' ) );
+		$translatable = new Translatable( 'Test', 'test_name', 'test_context' );
+		$collection   = new Collection( array( $translatable ) );
 
 		$retrieved = $collection->get( $translatable->get_id() );
 
@@ -78,27 +79,27 @@ class Collection_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_non_existing_translatable_returns_null() {
-		$collection = new Collection( array(), $this->pll_model->languages->get( 'en' ) );
+		$collection = new Collection( array() );
 
 		$this->assertNull( $collection->get( 'non_existing_id' ) );
 	}
 
 	public function test_has_returns_true_for_existing_translatable() {
-		$translatable = new Translatable( 'Test', 'Test translation', 'test_name', 'test_context' );
-		$collection = new Collection( array( $translatable ), $this->pll_model->languages->get( 'en' ) );
+		$translatable = new Translatable( 'Test', 'test_name', 'test_context' );
+		$collection = new Collection( array( $translatable ) );
 
 		$this->assertTrue( $collection->has( $translatable->get_id() ) );
 	}
 
 	public function test_has_returns_false_for_non_existing_translatable() {
-		$collection = new Collection( array(), $this->pll_model->languages->get( 'en' ) );
+		$collection = new Collection( array() );
 
 		$this->assertFalse( $collection->has( 'non_existing_id' ) );
 	}
 
 	public function test_remove_existing_translatable() {
-		$translatable = new Translatable( 'Test', 'Test translation', 'test_name', 'test_context' );
-		$collection   = new Collection( array( $translatable ), $this->pll_model->languages->get( 'en' ) );
+		$translatable = new Translatable( 'Test', 'test_name', 'test_context' );
+		$collection   = new Collection( array( $translatable ) );
 
 		$this->assertCount( 1, $collection );
 
@@ -106,12 +107,6 @@ class Collection_Test extends PLL_UnitTestCase {
 
 		$this->assertCount( 0, $collection );
 		$this->assertFalse( $collection->has( $translatable->get_id() ) );
-	}
-
-	public function test_target_language_returns_correct_language() {
-		$collection = new Collection( array(), $this->pll_model->languages->get( 'en' ) );
-
-		$this->assertSame( $this->pll_model->languages->get( 'en' ), $collection->target_language() );
 	}
 
 	/**
@@ -125,19 +120,19 @@ class Collection_Test extends PLL_UnitTestCase {
 		$translatables = array();
 
 		for ( $i = 0; $i < $count; ++$i ) {
-			$translatables[] = new Translatable( "String $i", "Translation $i", "name_$i", 'test' );
+			$translatables[] = new Translatable( "String $i", "name_$i", 'test' );
 		}
 
-		$collection = new Collection( $translatables, $this->pll_model->languages->get( 'en' ) );
+		$collection = new Collection( $translatables );
 
 		$this->assertSame( $count, $collection->count() );
 	}
 
 	public function test_collection_is_iterable() {
-		$translatable1 = new Translatable( 'First', 'Premier', 'first', 'test' );
-		$translatable2 = new Translatable( 'Second', 'Deuxième', 'second', 'test' );
+		$translatable1 = new Translatable( 'First', 'first', 'test' );
+		$translatable2 = new Translatable( 'Second', 'second', 'test' );
 
-		$collection = new Collection( array( $translatable1, $translatable2 ), $this->pll_model->languages->get( 'en' ) );
+		$collection = new Collection( array( $translatable1, $translatable2 ) );
 
 		$count = 0;
 		foreach ( $collection as $id => $translatable ) {

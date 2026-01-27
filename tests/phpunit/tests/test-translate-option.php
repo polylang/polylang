@@ -426,7 +426,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		new PLL_Translate_Option( 'my_option2' );
 
 		// Gets collection to init sanitization hooks.
-		$collection   = ( new Database_Repository() )->find_all( self::$model->get_language( 'en' ) );
+		$collection   = ( new Database_Repository( $this->pll_admin->model->languages ) )->find_all();
 		$translatable = $collection->get( md5( 'val1Polylang' ) );
 		$this->assertEmpty( apply_filters( 'pll_sanitize_string_translation', 'tr_val1', $translatable->get_name(), $translatable->get_context(), 'val1', '' ) ); // Sanitized.
 		$translatable = $collection->get( md5( 'val2Polylang' ) );
