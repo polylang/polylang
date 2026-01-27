@@ -14,25 +14,7 @@ use PLL_Language;
  *
  * @since 3.8
  */
-class NOOP_User implements User_Interface {
-	/**
-	 * User instance to decorate.
-	 *
-	 * @var WP_User
-	 */
-	private WP_User $user;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 3.8
-	 *
-	 * @param WP_User $user An instance of `WP_User`.
-	 */
-	public function __construct( WP_User $user ) {
-		$this->user = $user;
-	}
-
+class NOOP_User extends Abstract_User {
 	/**
 	 * Clones the user.
 	 *
@@ -47,17 +29,6 @@ class NOOP_User implements User_Interface {
 		}
 
 		return new self( $user );
-	}
-
-	/**
-	 * Returns the user ID.
-	 *
-	 * @since 3.8
-	 *
-	 * @return int
-	 */
-	public function get_id(): int {
-		return $this->user->ID;
 	}
 
 	/**
@@ -98,20 +69,6 @@ class NOOP_User implements User_Interface {
 	 */
 	public function can_translate_all( array $languages ): bool { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return true;
-	}
-
-	/**
-	 * Tells if the user has the specified capability.
-	 * Delegates to WP_User.
-	 *
-	 * @since 3.8
-	 *
-	 * @param string $capability Capability name.
-	 * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
-	 * @return bool
-	 */
-	public function has_cap( $capability, ...$args ): bool {
-		return $this->user->has_cap( $capability, ...$args );
 	}
 
 	/**

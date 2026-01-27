@@ -9,20 +9,28 @@ use WP_User;
 use PLL_Language;
 
 /**
- * An interface for user with translation management feature.
+ * An abstract class for user with translation management feature.
  *
  * @since 3.8
  */
-interface User_Interface {
+abstract class Abstract_User {
 	/**
-	 * Clones the user.
+	 * User instance to decorate.
+	 *
+	 * @var WP_User
+	 */
+	protected WP_User $user;
+
+	/**
+	 * Constructor.
 	 *
 	 * @since 3.8
 	 *
-	 * @param WP_User $user The user to decorate.
-	 * @return User_Interface
+	 * @param WP_User $user An instance of `WP_User`.
 	 */
-	public function clone( WP_User $user ): User_Interface;
+	public function __construct( WP_User $user ) {
+		$this->user = $user;
+	}
 
 	/**
 	 * Returns the user ID.
@@ -31,7 +39,33 @@ interface User_Interface {
 	 *
 	 * @return int
 	 */
-	public function get_id(): int;
+	public function get_id(): int {
+		return $this->user->ID;
+	}
+
+	/**
+	 * Tells if the user has the specified capability.
+	 * Delegates to WP_User.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $capability Capability name.
+	 * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
+	 * @return bool
+	 */
+	public function has_cap( $capability, ...$args ): bool {
+		return $this->user->has_cap( $capability, ...$args );
+	}
+
+	/**
+	 * Clones the user.
+	 *
+	 * @since 3.8
+	 *
+	 * @param WP_User $user The user to decorate.
+	 * @return NOOP_User New instance of NOOP_User.
+	 */
+	abstract public function clone( WP_User $user ): Abstract_User;
 
 	/**
 	 * Tells if the user is a translator (has a translator capability).
@@ -42,7 +76,7 @@ interface User_Interface {
 	 *
 	 * @return bool
 	 */
-	public function is_translator(): bool;
+	abstract public function is_translator(): bool;
 
 	/**
 	 * Tells if the user can translate to the given language.
@@ -52,7 +86,7 @@ interface User_Interface {
 	 * @param PLL_Language $language A language object.
 	 * @return bool
 	 */
-	public function can_translate( PLL_Language $language ): bool;
+	abstract public function can_translate( PLL_Language $language ): bool;
 
 	/**
 	 * Tells if the user can translate to all the given languages.
@@ -64,18 +98,7 @@ interface User_Interface {
 	 *
 	 * @phpstan-param array<non-empty-string> $languages
 	 */
-	public function can_translate_all( array $languages ): bool;
-
-	/**
-	 * Tells if the user has the specified capability.
-	 *
-	 * @since 3.8
-	 *
-	 * @param string $capability Capability name.
-	 * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
-	 * @return bool
-	 */
-	public function has_cap( $capability, ...$args ): bool;
+	abstract public function can_translate_all( array $languages ): bool;
 
 	/**
 	 * Returns the preferred language of the user.
@@ -84,7 +107,7 @@ interface User_Interface {
 	 *
 	 * @return string The preferred language slug, empty string if no preferred language is found.
 	 */
-	public function get_preferred_language_slug(): string;
+	abstract public function get_preferred_language_slug(): string;
 
 	/**
 	 * Checks if the current user has the rights to assign a language to an object and dies if not.
@@ -94,5 +117,5 @@ interface User_Interface {
 	 * @param PLL_Language $language The language to assign.
 	 * @return void|never Dies if the user does not have the rights, does nothing otherwise.
 	 */
-	public function can_translate_or_die( PLL_Language $language ): void;
+	abstract public function can_translate_or_die( PLL_Language $language ): void;
 }
