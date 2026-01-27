@@ -8,12 +8,6 @@ use WP_Syntex\Polylang\Capabilities\User\User_Interface;
  * Test the get_user method of the Capabilities class.
  */
 class Test_Get_User extends PLL_UnitTestCase {
-	public function tear_down() {
-		parent::tear_down();
-
-		$this->reset_prototype();
-	}
-
 	public function test_get_user_returns_noop_user_by_default() {
 		$user = Capabilities::get_user();
 
@@ -56,8 +50,6 @@ class Test_Get_User extends PLL_UnitTestCase {
 	public function test_get_user_prototype_pattern_with_user_switching() {
 		$user_id_1 = self::factory()->user->create();
 		$user_id_2 = self::factory()->user->create();
-
-		$this->reset_prototype();
 
 		wp_set_current_user( $user_id_1 );
 		$user_1a = Capabilities::get_user();
@@ -109,17 +101,5 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->assertInstanceOf( NOOP_User::class, $user_2 );
 		$this->assertSame( $user_id, $user_1->get_id() );
 		$this->assertSame( $user_id, $user_2->get_id() );
-	}
-
-	/**
-	 * Reset the user_prototype static property in the Capabilities class.
-	 *
-	 * @return void
-	 */
-	private function reset_prototype() {
-		$reflection = new \ReflectionClass( Capabilities::class );
-		$property   = $reflection->getProperty( 'user_prototype' );
-		version_compare( PHP_VERSION, '8.1', '<' ) && $property->setAccessible( true );
-		$property->setValue( null, null );
 	}
 }
