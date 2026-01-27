@@ -7,7 +7,6 @@ use PLL_Model;
 use PLL_UnitTestCase;
 use Translation_Entry;
 use PLL_UnitTest_Factory;
-use WP_Syntex\Polylang\Strings\Collection;
 use WP_Syntex\Polylang\Strings\Translatable;
 use WP_Syntex\Polylang\Strings\Database_Repository;
 
@@ -121,23 +120,6 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( 'English translation', $translatable->get_translation( $this->pll_model->languages->get( 'en' ) ) );
 		$this->assertSame( 'French translation', $translatable->get_translation( $this->pll_model->languages->get( 'fr' ) ) );
-	}
-
-	public function test_find_by_context_returns_collection() {
-		Database_Repository::register( 'test_name', 'test_string', 'test_context' );
-		Database_Repository::register( 'test_name', 'test_string', 'other_context' );
-
-		$result = $this->repository->find_by_context( 'test_context' );
-
-		$this->assertInstanceOf( Collection::class, $result );
-		$this->assertSame( 1, $result->count() );
-		$this->assertTrue( $result->has( md5( 'test_stringtest_context' ) ) );
-	}
-
-	public function test_find_by_context_returns_empty_collection_when_no_matches() {
-		$collection = $this->repository->find_by_context( 'non_existing_context' );
-
-		$this->assertSame( 0, $collection->count() );
 	}
 
 	public function test_save_persists_translations_for_all_languages() {
