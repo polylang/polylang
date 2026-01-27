@@ -201,6 +201,18 @@ class Database_Repository {
 		self::$registered_strings = array();
 		self::$read               = false;
 	}
+
+	/**
+	 * Gets the groups of registered strings.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string[] The groups of registered strings.
+	 */
+	public function get_groups(): array {
+		return array_unique( wp_list_pluck( self::get_strings(), 'context' ) );
+	}
+
 	/**
 	 * Gets registered strings at runtime.
 	 *
