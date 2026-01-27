@@ -1303,18 +1303,6 @@ parameters:
 			path: src/settings/table-string.php
 
 		-
-			message: '#^Parameter \#2 \$needle of function stripos expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/settings/table-string.php
-
-		-
-			message: '#^Parameter \#2 \$s of method PLL_Table_String\:\:search_in_translations\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/settings/table-string.php
-
-		-
 			message: '#^Parameter \#1 \$text of function esc_html expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
