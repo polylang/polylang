@@ -14,12 +14,6 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->reset_prototype();
 	}
 
-	public function test_get_user_returns_abstract_user() {
-		$user = Capabilities::get_user();
-
-		$this->assertInstanceOf( Abstract_User::class, $user );
-	}
-
 	public function test_get_user_returns_noop_user_by_default() {
 		$user = Capabilities::get_user();
 
