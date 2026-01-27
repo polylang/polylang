@@ -296,7 +296,6 @@ class PLL_Table_String extends WP_List_Table {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		$total_items = count( $data );
-		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page, true );
 
 		$this->set_pagination_args(
 			array(
@@ -305,6 +304,14 @@ class PLL_Table_String extends WP_List_Table {
 				'total_pages' => (int) ceil( $total_items / $per_page ),
 			)
 		);
+
+		/**
+		 * Use the requested page number (not the capped value from get_pagenum) for accurate slicing.
+		 *
+		 * @var string[] $_GET
+		 */
+		$paged       = ! empty( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
+		$this->items = array_slice( $data, ( $paged - 1 ) * $per_page, $per_page, true );
 
 		$allowed_language_slugs = $this->languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
 
