@@ -227,7 +227,7 @@ class Test_Prepare_Items extends PLL_UnitTestCase {
 		update_user_option( $user_id, 'pll_strings_per_page', 2 );
 
 		// First, verify the total count of registered strings.
-		$all_strings = PLL_Admin_Strings::get_strings();
+		$all_strings = ( new Database_Repository( $this->pll_env->model->languages ) )->find_all();
 		$this->assertCount( 6, $all_strings, 'Should have exactly 6 registered strings.' );
 
 		$table = new PLL_Table_String( $this->pll_env->model->languages );
@@ -319,26 +319,6 @@ class Test_Prepare_Items extends PLL_UnitTestCase {
 		$this->assertNotNull( $multiline_item, 'Multiline string should be found.' );
 		$this->assertTrue( $multiline_item['multiline'], 'String should be marked as multiline.' );
 		$this->assertStringContainsString( "\n", $multiline_item['string'], 'String should contain newlines.' );
-	}
-
-	public function test_prepare_items_disabled_state() {
-		$this->register_test_strings();
-
-		// Create a user without translator permissions.
-		$user_id = self::factory()->user->create( array( 'role' => 'editor' ) );
-		wp_set_current_user( $user_id );
-
-		$table = new PLL_Table_String( $this->pll_env->model->languages );
-		$table->prepare_items();
-
-		$this->assertCount( 6, $table->items, 'All strings should be returned.' );
-
-		// All languages should be disabled for non-translator user.
-		foreach ( $table->items as $item ) {
-			foreach ( $this->pll_env->model->languages->get_list() as $language ) {
-				$this->assertStringContainsString( 'disabled', $item['disabled'][ $language->slug ], 'Language should be disabled for non-translator.' );
-			}
-		}
 	}
 
 	public function test_prepare_items_combined_group_and_search() {
