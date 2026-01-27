@@ -14,7 +14,7 @@ class PLL_Admin_Links extends PLL_Links {
 	/**
 	 * Current user.
 	 *
-	 * @var \WP_Syntex\Polylang\Capabilities\User\Abstract_User
+	 * @var \WP_Syntex\Polylang\Capabilities\User\User_Interface
 	 */
 	protected $user;
 

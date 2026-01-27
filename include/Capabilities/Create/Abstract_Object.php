@@ -8,7 +8,7 @@ namespace WP_Syntex\Polylang\Capabilities\Create;
 use PLL_Model;
 use PLL_Language;
 use WP_Syntex\Polylang\REST\Request;
-use WP_Syntex\Polylang\Capabilities\User\Abstract_User;
+use WP_Syntex\Polylang\Capabilities\User\User_Interface;
 
 /**
  * Class to manage the language context for posts creation or update.
@@ -58,9 +58,9 @@ abstract class Abstract_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param Abstract_User $user The user object.
-	 * @param int           $id   The object ID.
+	 * @param User_Interface $user The user object.
+	 * @param int            $id   The object ID.
 	 * @return PLL_Language The language defined from the global context.
 	 */
-	abstract public function get_language( Abstract_User $user, int $id = 0 ): PLL_Language;
+	abstract public function get_language( User_Interface $user, int $id = 0 ): PLL_Language;
 }

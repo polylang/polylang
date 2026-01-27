@@ -7,7 +7,7 @@ namespace WP_Syntex\Polylang\Capabilities;
 
 use WP_User;
 use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
-use WP_Syntex\Polylang\Capabilities\User\Abstract_User;
+use WP_Syntex\Polylang\Capabilities\User\User_Interface;
 
 /**
  * A class allowing to map Polylang's custom user capabilities to WP's native ones.
@@ -21,9 +21,9 @@ class Capabilities {
 	/**
 	 * The user prototype to be used for capability checks.
 	 *
-	 * @var Abstract_User|null
+	 * @var User_Interface|null
 	 */
-	private static ?Abstract_User $user_prototype = null;
+	private static ?User_Interface $user_prototype = null;
 
 	/**
 	 * Constructor.
@@ -58,16 +58,16 @@ class Capabilities {
 	 * @since 3.8
 	 *
 	 * @param WP_User|null $user The user to decorate. If null, the current user is used.
-	 * @return Abstract_User The user instance.
+	 * @return User_Interface The user instance.
 	 */
-	public static function get_user( ?WP_User $user = null ): Abstract_User {
+	public static function get_user( ?WP_User $user = null ): User_Interface {
 		if ( ! self::$user_prototype ) {
 			/**
 			 * Filters the user prototype to be used for capability checks.
 			 *
 			 * @since 3.8
 			 *
-			 * @param Abstract_User|null $user_prototype The user prototype to be used for capability checks.
+			 * @param User_Interface|null $user_prototype The user prototype to be used for capability checks.
 			 */
 			self::$user_prototype = apply_filters( 'pll_user_prototype', null );
 

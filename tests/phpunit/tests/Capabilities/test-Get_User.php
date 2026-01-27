@@ -2,7 +2,7 @@
 
 use WP_Syntex\Polylang\Capabilities\Capabilities;
 use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
-use WP_Syntex\Polylang\Capabilities\User\Abstract_User;
+use WP_Syntex\Polylang\Capabilities\User\User_Interface;
 
 /**
  * Test the get_user method of the Capabilities class.
@@ -54,8 +54,8 @@ class Test_Get_User extends PLL_UnitTestCase {
 	}
 
 	public function test_get_user_uses_filter_to_override_prototype() {
-		$mock_prototype = $this->createMock( Abstract_User::class );
-		$mock_clone     = $this->createMock( Abstract_User::class );
+		$mock_prototype = $this->createMock( User_Interface::class );
+		$mock_clone     = $this->createMock( User_Interface::class );
 
 		$mock_prototype->expects( $this->once() )
 			->method( 'clone' )
