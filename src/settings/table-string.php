@@ -4,6 +4,7 @@
  */
 
 use WP_Syntex\Polylang\Model\Languages;
+use WP_Syntex\Polylang\Strings\String_Query;
 use WP_Syntex\Polylang\Strings\Database_Repository;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -23,20 +24,6 @@ class PLL_Table_String extends WP_List_Table {
 	 * @var Languages
 	 */
 	protected $languages;
-
-	/**
-	 * Registered strings.
-	 *
-	 * @var array
-	 */
-	protected $strings;
-
-	/**
-	 * The string groups.
-	 *
-	 * @var string[]
-	 */
-	protected $groups;
 
 	/**
 	 * The selected string group or -1 if none is selected.
@@ -68,16 +55,15 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
+		$this->items      = array(); // `WP_List_Table::$items` doesn't have a default value, let's be explicit.
 		$this->languages  = $languages;
-		$this->strings    = PLL_Admin_Strings::get_strings();
-		$this->groups     = array_unique( wp_list_pluck( $this->strings, 'context' ) );
 		$this->repository = new Database_Repository( $languages );
 
 		$this->selected_group = -1;
 
 		if ( ! empty( $_GET['group'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			if ( in_array( $group, $this->groups ) ) {
+			if ( in_array( $group, $this->repository->get_groups() ) ) {
 				$this->selected_group = $group;
 			}
 		}
@@ -267,51 +253,27 @@ class PLL_Table_String extends WP_List_Table {
 			$languages = wp_list_filter( $languages, array( 'slug' => $filter ) );
 		}
 
-		$data = $this->strings;
-
-		// Filter by selected group.
-		if ( -1 !== $this->selected_group ) {
-			$data = wp_list_filter( $data, array( 'context' => $this->selected_group ) );
-		}
-
-		// Filter by searched string.
-		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
-
-		if ( ! empty( $s ) ) {
-			// Search in translations.
-			$in_translations = $this->search_in_translations( $languages, $s );
-
-			foreach ( $data as $key => $row ) {
-				if ( stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false && ! in_array( $row['string'], $in_translations ) ) {
-					unset( $data[ $key ] );
-				}
-			}
-		}
-
-		// Sorting.
-		uasort( $data, array( $this, 'usort_reorder' ) );
-
-		// Paging.
-		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
+		$per_page              = $this->get_items_per_page( 'pll_strings_per_page' );
+		$paged                 = ! empty( $_GET['paged'] ) && is_numeric( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
-		$total_items = count( $data );
+		$items = ( new String_Query( $this->repository, $this->languages ) )
+			->by_context( -1 !== $this->selected_group && is_string( $this->selected_group ) ? $this->selected_group : null )
+			->by_fragment( ! empty( $_GET['s'] ) && is_string( $_GET['s'] ) ? wp_unslash( $_GET['s'] ) : null ) // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
+			->order_by(
+				! empty( $_GET['orderby'] ) ? sanitize_key( $_GET['orderby'] ) : 'name', // phpcs:ignore WordPress.Security.NonceVerification
+				! empty( $_GET['order'] ) ? sanitize_key( $_GET['order'] ) : 'asc' // phpcs:ignore WordPress.Security.NonceVerification
+			)
+			->paginate( $per_page, $paged )
+			->get();
 
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
+				'total_items' => $items->get_total(),
 				'per_page'    => $per_page,
-				'total_pages' => (int) ceil( $total_items / $per_page ),
+				'total_pages' => (int) ceil( $items->get_total() / $per_page ),
 			)
 		);
-
-		/**
-		 * Use the requested page number (not the capped value from get_pagenum) for accurate slicing.
-		 *
-		 * @var string[] $_GET
-		 */
-		$paged       = ! empty( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
-		$this->items = array_slice( $data, ( $paged - 1 ) * $per_page, $per_page, true );
 
 		$allowed_language_slugs = $this->languages->filter( 'translator' )->get_list( array( 'fields' => 'slug' ) );
 
@@ -320,14 +282,16 @@ class PLL_Table_String extends WP_List_Table {
 		 * Kept for the end as it is a slow process.
 		 */
 		foreach ( $languages as $language ) {
-			$disabled = disabled( in_array( $language->slug, $allowed_language_slugs, true ), false, false );
-
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
-			foreach ( $this->items as $key => $row ) {
-				$this->items[ $key ]['translations'][ $language->slug ] = $mo->translate_if_any( $row['string'], $row['context'] ?? null );
-				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience.
-				$this->items[ $key ]['disabled'][ $language->slug ]     = $disabled;
+			foreach ( $items as $translatable ) {
+				$this->items[ $translatable->get_id() ]['string']                          = $translatable->get_source();
+				$this->items[ $translatable->get_id() ]['name']                            = $translatable->get_name();
+				$this->items[ $translatable->get_id() ]['context']                         = $translatable->get_context();
+				$this->items[ $translatable->get_id() ]['translations'][ $language->slug ] = $mo->translate_if_any( $translatable->get_source(), $translatable->get_context() );
+				$this->items[ $translatable->get_id() ]['row']                             = $translatable->get_id();                                                          // Store the row number for convenience.
+				$this->items[ $translatable->get_id() ]['multiline']                       = $translatable->is_multiline();
+				$this->items[ $translatable->get_id() ]['disabled'][ $language->slug ]     = disabled( in_array( $language->slug, $allowed_language_slugs, true ), false, false );
 			}
 		}
 	}
@@ -384,7 +348,7 @@ class PLL_Table_String extends WP_List_Table {
 			esc_html__( 'View all groups', 'polylang' )
 		);
 
-		foreach ( $this->groups as $group ) {
+		foreach ( $this->repository->get_groups() as $group ) {
 			printf(
 				'<option value="%s"%s>%s</option>' . "\n",
 				esc_attr( urlencode( $group ) ),
