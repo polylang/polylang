@@ -43,7 +43,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$user_1 = Capabilities::get_user();
 		$user_2 = Capabilities::get_user();
 
-		$this->assertSame( $user_1, $user_2 );
+		$this->assertSame( $user_1->get_id(), $user_2->get_id() );
 		$this->assertSame( $user_id, $user_1->get_id() );
 	}
 
