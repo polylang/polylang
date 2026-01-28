@@ -15,16 +15,6 @@ use PLL_Language;
  */
 interface User_Interface {
 	/**
-	 * Clones the user.
-	 *
-	 * @since 3.8
-	 *
-	 * @param WP_User $user The user to decorate.
-	 * @return User_Interface
-	 */
-	public function clone( WP_User $user ): User_Interface;
-
-	/**
 	 * Returns the user ID.
 	 *
 	 * @since 3.8

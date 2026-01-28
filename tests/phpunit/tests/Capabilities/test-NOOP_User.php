@@ -227,7 +227,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 		$wp_user = self::factory()->user->create_and_get();
 		$user    = new NOOP_User( $wp_user );
 
-		$cloned_user = $user->clone( $wp_user );
+		$cloned_user = $user->get( $wp_user );
 
 		$this->assertSame( $user, $cloned_user );
 	}
@@ -237,7 +237,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 		$wp_user_2 = self::factory()->user->create_and_get();
 
 		$user_1 = new NOOP_User( $wp_user_1 );
-		$user_2 = $user_1->clone( $wp_user_2 );
+		$user_2 = $user_1->get( $wp_user_2 );
 
 		$this->assertNotSame( $user_1->get_id(), $user_2->get_id() );
 		$this->assertInstanceOf( NOOP_User::class, $user_2 );
@@ -249,7 +249,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 		$wp_user_2 = self::factory()->user->create_and_get();
 
 		$user_1 = new NOOP_User( $wp_user_1 );
-		$user_2 = $user_1->clone( $wp_user_2 );
+		$user_2 = $user_1->get( $wp_user_2 );
 
 		// Both should be NOOP_User instances
 		$this->assertInstanceOf( NOOP_User::class, $user_1 );

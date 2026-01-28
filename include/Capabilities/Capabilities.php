@@ -8,6 +8,7 @@ namespace WP_Syntex\Polylang\Capabilities;
 use WP_User;
 use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
 use WP_Syntex\Polylang\Capabilities\User\User_Interface;
+use WP_Syntex\Polylang\Capabilities\User\Prototype_Interface;
 
 /**
  * A class allowing to map Polylang's custom user capabilities to WP's native ones.
@@ -21,9 +22,9 @@ class Capabilities {
 	/**
 	 * The user prototype to be used for capability checks.
 	 *
-	 * @var User_Interface|null
+	 * @var Prototype_Interface|null
 	 */
-	private static ?User_Interface $user_prototype = null;
+	private static ?Prototype_Interface $user_prototype = null;
 
 	/**
 	 * Constructor.
@@ -65,7 +66,7 @@ class Capabilities {
 			self::$user_prototype = new NOOP_User( $user ?? wp_get_current_user() );
 		}
 
-		return self::$user_prototype->clone( $user ?? wp_get_current_user() );
+		return self::$user_prototype->get( $user ?? wp_get_current_user() );
 	}
 
 	/**
@@ -73,10 +74,10 @@ class Capabilities {
 	 *
 	 * @since 3.8
 	 *
-	 * @param User_Interface $user_prototype The user prototype to be used for capability checks.
+	 * @param Prototype_Interface $user_prototype The user prototype to be used for capability checks.
 	 * @return void
 	 */
-	public static function set_user_prototype( User_Interface $user_prototype ): void {
+	public static function set_user_prototype( Prototype_Interface $user_prototype ): void {
 		self::$user_prototype = $user_prototype;
 	}
 }

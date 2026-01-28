@@ -3,6 +3,7 @@
 use WP_Syntex\Polylang\Capabilities\Capabilities;
 use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
 use WP_Syntex\Polylang\Capabilities\User\User_Interface;
+use WP_Syntex\Polylang\Capabilities\User\Prototype_Interface;
 
 /**
  * Test the get_user method of the Capabilities class.
@@ -78,8 +79,8 @@ class Test_Get_User extends PLL_UnitTestCase {
 		wp_set_current_user( $user_id );
 
 		// Set a custom prototype.
-		$custom_prototype = $this->createMock( User_Interface::class );
-		Capabilities::set_user_prototype( $custom_prototype );
+		$prototype_stub = $this->createStub( Prototype_Interface::class );
+		Capabilities::set_user_prototype( $prototype_stub );
 
 		$user = Capabilities::get_user();
 

@@ -14,7 +14,7 @@ use PLL_Language;
  *
  * @since 3.8
  */
-class NOOP_User implements User_Interface {
+class NOOP_User implements User_Interface, Prototype_Interface {
 	/**
 	 * User instance to decorate.
 	 *
@@ -41,7 +41,7 @@ class NOOP_User implements User_Interface {
 	 * @param WP_User $user The user to decorate.
 	 * @return NOOP_User New instance of NOOP_User.
 	 */
-	public function clone( WP_User $user ): NOOP_User {
+	public function get( WP_User $user ): NOOP_User {
 		if ( $user->ID === $this->get_id() ) {
 			return $this;
 		}
