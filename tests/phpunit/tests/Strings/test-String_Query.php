@@ -8,22 +8,22 @@ use PLL_UnitTestCase;
 use Translation_Entry;
 use PLL_UnitTest_Factory;
 use WP_Syntex\Polylang\Strings\Collection;
-use WP_Syntex\Polylang\Strings\String_Query;
+use WP_Syntex\Polylang\Strings\Query;
 use WP_Syntex\Polylang\Strings\Database_Repository;
 
 /**
  * @group strings
  */
-class String_Query_Test extends PLL_UnitTestCase {
+class Query_Test extends PLL_UnitTestCase {
 	/**
 	 * @var Database_Repository
 	 */
 	private Database_Repository $repository;
 
 	/**
-	 * @var String_Query
+	 * @var Query
 	 */
-	private String_Query $query;
+	private Query $query;
 
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
@@ -43,7 +43,7 @@ class String_Query_Test extends PLL_UnitTestCase {
 		);
 
 		$this->repository = new Database_Repository( $this->pll_model->languages );
-		$this->query      = new String_Query( $this->repository, $this->pll_model->languages );
+		$this->query      = new Query( $this->repository, $this->pll_model->languages );
 	}
 
 	public function tear_down() {
@@ -216,7 +216,7 @@ class String_Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_order_by_triggers_doing_it_wrong_for_invalid_field() {
-		$this->setExpectedIncorrectUsage( 'WP_Syntex\Polylang\Strings\String_Query::order_by' );
+		$this->setExpectedIncorrectUsage( 'WP_Syntex\Polylang\Strings\Query::order_by' );
 
 		$this->query->order_by( 'invalid_field' );
 	}

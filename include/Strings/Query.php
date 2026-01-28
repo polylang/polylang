@@ -12,7 +12,7 @@ use WP_Syntex\Polylang\Model\Languages;
  *
  * @since 3.8
  */
-class String_Query {
+class Query {
 	/**
 	 * Context filter.
 	 *
