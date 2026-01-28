@@ -49,6 +49,11 @@ class Query_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		Database_Repository::reset();
 
+		foreach ( $this->pll_model->languages->get_list() as $language ) {
+			$mo = new PLL_MO();
+			$mo->export_to_db( $language ); // Clean MO entries for following test.
+		}
+
 		parent::tear_down();
 	}
 
