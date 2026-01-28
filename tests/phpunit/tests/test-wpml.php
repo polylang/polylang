@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class WPML_Test extends PLL_UnitTestCase {
 	public $structure = '/%postname%/';
 
@@ -35,6 +37,8 @@ class WPML_Test extends PLL_UnitTestCase {
 		add_filter( 'pll_get_strings', '__return_empty_array' ); // Remove all registered strings.
 
 		unset( $GLOBALS['polylang'] );
+
+		Database_Repository::reset();
 	}
 
 	/**
@@ -442,12 +446,15 @@ class WPML_Test extends PLL_UnitTestCase {
 		// Register
 		do_action( 'wpml_register_single_string', 'wpml_string_context', 'wpml_string_name', 'wpml_string_test' );
 
-		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => true ) );
-		$str = reset( $str );
+		Database_Repository::reset();
+		$translatables = ( new Database_Repository( self::$model->languages ) )->find_all();
 
-		$this->assertEquals( 'wpml_string_context', $str['context'] );
-		$this->assertEquals( 'wpml_string_name', $str['name'] );
-		$this->assertEquals( 'wpml_string_test', $str['string'] );
+		$this->assertTrue( $translatables->has( md5( 'wpml_string_testwpml_string_context' ) ) );
+
+		$registered_string = $translatables->get( md5( 'wpml_string_testwpml_string_context' ) );
+		$this->assertEquals( 'wpml_string_context', $registered_string->get_context() );
+		$this->assertEquals( 'wpml_string_name', $registered_string->get_name() );
+		$this->assertEquals( 'wpml_string_test', $registered_string->get_source() );
 
 		// Translate
 		foreach ( array( 'en', 'fr' ) as $lang ) {
@@ -479,15 +486,17 @@ class WPML_Test extends PLL_UnitTestCase {
 				'context' => 'taxonomy singular name',
 			),
 			'',
-			'My taxononomy'
+			'My taxonomy'
 		);
 
-		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => true ) );
-		$str = reset( $str );
+		Database_Repository::reset();
+		$translatables = ( new Database_Repository( self::$model->languages ) )->find_all();
+		$this->assertTrue( $translatables->has( md5( 'My taxonomyTypes-TAX' ) ) );
 
-		$this->assertSame( 'Types-TAX', $str['context'] );
-		$this->assertSame( 'taxonomy singular name', $str['name'] );
-		$this->assertSame( 'My taxononomy', $str['string'] );
+		$registered_string = $translatables->get( md5( 'My taxonomyTypes-TAX' ) );
+		$this->assertEquals( 'Types-TAX', $registered_string->get_context() );
+		$this->assertEquals( 'taxonomy singular name', $registered_string->get_name() );
+		$this->assertEquals( 'My taxonomy', $registered_string->get_source() );
 	}
 
 	/**
