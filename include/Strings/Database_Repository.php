@@ -54,10 +54,10 @@ class Database_Repository {
 	 *
 	 * @since 3.8
 	 *
-	 * @return String_Query The query builder.
+	 * @return Query The query builder.
 	 */
-	public function query(): String_Query {
-		return new String_Query( $this, $this->languages );
+	public function query(): Query {
+		return new Query( $this, $this->languages );
 	}
 
 	/**
