@@ -112,7 +112,7 @@ class Add_Test extends PLL_UnitTestCase {
 
 		$this->assertWPError( $result );
 		$this->assertTrue( $result->has_errors() );
-		$this->assertSame( 'pll_invalid_option_type', $result->get_error_code() );
+		$this->assertSame( 'pll_add_failed', $result->get_error_code() );
 	}
 
 	public function test_add_invalid_subvalue_type_map() {
@@ -126,7 +126,7 @@ class Add_Test extends PLL_UnitTestCase {
 
 		$this->assertWPError( $result );
 		$this->assertTrue( $result->has_errors() );
-		$this->assertSame( 'pll_invalid_option_type', $result->get_error_code() );
+		$this->assertSame( 'pll_add_failed', $result->get_error_code() );
 	}
 
 	public function test_save_after_add_to_list() {

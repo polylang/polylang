@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Options\Primitive;
 
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -54,6 +55,33 @@ abstract class Abstract_Map extends Abstract_Option {
 		$this->value[ $key ] = $this->reset_value( $key );
 
 		return true;
+	}
+
+	/**
+	 * Adds an item to the map.
+	 *
+	 * @since 3.8
+	 *
+	 * @param array<string, mixed> $item The item(s) to add. Must be a key-value pair.
+	 * @param Options              $options The options instance.
+	 * @return bool True if the value was added successfully. False otherwise.
+	 */
+	public function add( $item, Options $options ): bool {
+		if ( ! is_array( $item ) ) {
+			return false;
+		}
+
+		/** @var array<string, mixed> $old_value */
+		$old_value     = $this->get();
+		$updated_value = array_merge(
+			$old_value,
+			$item
+		);
+
+		return $this->set(
+			$updated_value,
+			$options
+		);
 	}
 
 	/**

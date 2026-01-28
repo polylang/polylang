@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Options\Primitive;
 
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -104,5 +105,25 @@ abstract class Abstract_List extends Abstract_Option {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Adds an item to the list.
+	 *
+	 * @since 3.8
+	 *
+	 * @param mixed   $item    The item to add.
+	 * @param Options $options The options instance.
+	 * @return bool True if the value was added successfully. False otherwise.
+	 */
+	public function add( $item, Options $options ): bool {
+		/** @var array $updated_value */
+		$updated_value   = $this->get();
+		$updated_value[] = $item;
+
+		return $this->set(
+			$updated_value,
+			$options
+		);
 	}
 }

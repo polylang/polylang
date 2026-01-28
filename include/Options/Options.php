@@ -513,25 +513,9 @@ class Options implements ArrayAccess, IteratorAggregate {
 			);
 		}
 
-		if ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_List ) {
-			/** @var array $updated_value */
-			$updated_value   = $this->options[ $this->current_blog_id ][ $key ]->get();
-			$updated_value[] = $value;
-			$done            = $this->options[ $this->current_blog_id ][ $key ]->set(
-				$updated_value,
-				$this
-			);
-		} elseif ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Map && is_array( $value ) ) {
-			/** @var array $old_value */
-			$old_value = $this->options[ $this->current_blog_id ][ $key ]->get();
-			$done      = $this->options[ $this->current_blog_id ][ $key ]->set(
-				array_merge(
-					$old_value,
-					$value
-				),
-				$this
-			);
-		} else {
+		$option = $this->options[ $this->current_blog_id ][ $key ];
+
+		if ( ! $option instanceof Abstract_List && ! $option instanceof Abstract_Map ) {
 			return new WP_Error(
 				'pll_invalid_option_type',
 				/* translators: %s is the name of an option. */
@@ -539,11 +523,16 @@ class Options implements ArrayAccess, IteratorAggregate {
 			);
 		}
 
-		if ( $done ) {
+		if ( $option->add( $value, $this ) ) {
 			$this->modified[ $this->current_blog_id ] = true;
+			return new WP_Error();
 		}
 
-		return $this->options[ $this->current_blog_id ][ $key ]->get_errors();
+		return new WP_Error(
+			'pll_add_failed',
+			/* translators: %1$s is the value to add. %2$s is the name of an option. */
+			sprintf( __( 'Failed to add %1$s to %2$s.', 'polylang' ), print_r( $value, true ), "'$key'" ) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		);
 	}
 
 	/**
