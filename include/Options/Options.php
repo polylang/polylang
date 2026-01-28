@@ -472,21 +472,19 @@ class Options implements ArrayAccess, IteratorAggregate {
 			);
 		}
 
-		if ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_List ) {
-			$done = $this->options[ $this->current_blog_id ][ $key ]->remove( $value );
-		} elseif ( $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Map && is_string( $value ) ) {
-			$done = $this->options[ $this->current_blog_id ][ $key ]->remove( $value );
-		} else {
+		$option = $this->options[ $this->current_blog_id ][ $key ];
+		
+		if ( ! $option instanceof Abstract_List || ! $option instanceof Abstract_Map ) {
 			return new WP_Error(
 				'pll_invalid_option_type',
 				/* translators: %s is the name of an option. */
 				sprintf( __( 'Option %s is not a list or map.', 'polylang' ), "'$key'" )
 			);
 		}
-
-		if ( $done ) {
+		
+		if ( $option->remove( $value ) ) {
 			$this->modified[ $this->current_blog_id ] = true;
-			return new WP_Error();
+			return new WP_Error(); 
 		}
 
 		return new WP_Error(
