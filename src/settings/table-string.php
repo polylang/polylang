@@ -257,7 +257,7 @@ class PLL_Table_String extends WP_List_Table {
 		$paged                 = ! empty( $_GET['paged'] ) && is_numeric( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
-		$items = ( new Query( $this->repository, $this->languages ) )
+		$items = $this->repository->query()
 			->by_context( -1 !== $this->selected_group && is_string( $this->selected_group ) ? $this->selected_group : null )
 			->by_fragment( ! empty( $_GET['s'] ) && is_string( $_GET['s'] ) ? wp_unslash( $_GET['s'] ) : null ) // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
 			->order_by(
