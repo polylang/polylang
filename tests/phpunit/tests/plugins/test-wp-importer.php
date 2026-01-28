@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class WP_Importer_Test extends PLL_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -112,6 +114,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
 
 		// Strings translations.
+		( new Database_Repository( self::$model->languages ) )->find_all(); // Load the strings into the repository.
 		$en_mo = new PLL_MO();
 		$en_mo->import_from_db( self::$model->languages->get( 'en' ) );
 		$en_mo->export_to_db( self::$model->languages->get( 'en' ) ); // To clean `PLL_MO` cache for following test.
