@@ -5,7 +5,6 @@ namespace WP_Syntex\Polylang\Tests\Strings\Table;
 use PLL_MO;
 use PLL_Model;
 use PLL_Admin;
-use PLL_Admin_Strings;
 use PLL_Table_String;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
