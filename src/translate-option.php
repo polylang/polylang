@@ -220,7 +220,6 @@ class PLL_Translate_Option {
 				}
 			}
 		} elseif ( is_scalar( $values ) ) {
-			PLL_Admin_Strings::register_string( $option, (string) $values, $context );
 			Database_Repository::register(
 				$option,
 				(string) $values,
