@@ -1,7 +1,8 @@
 <?php
 
+use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
+use WP_Syntex\Polylang\Capabilities\User\Prototype;
 use WP_Syntex\Polylang\Capabilities\User\User_Interface;
 use WP_Syntex\Polylang\Capabilities\User\Prototype_Interface;
 
@@ -12,7 +13,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 	public function test_get_user_returns_noop_user_by_default() {
 		$user = Capabilities::get_user();
 
-		$this->assertInstanceOf( NOOP_User::class, $user );
+		$this->assertInstanceOf( NOOP::class, $user );
 	}
 
 	public function test_get_user_returns_current_user_id() {
@@ -92,14 +93,12 @@ class Test_Get_User extends PLL_UnitTestCase {
 		wp_set_current_user( $user_id );
 
 		// Set a custom prototype.
-		$custom_prototype = new NOOP_User( wp_get_current_user() );
+		$custom_prototype = new Prototype();
 		Capabilities::set_user_prototype( $custom_prototype );
 
-		$user_1 = Capabilities::get_user();
-		$user_2 = Capabilities::get_user();
+		$user_1 = $custom_prototype->get( wp_get_current_user() );
+		$user_2 = $custom_prototype->get( wp_get_current_user() );
 
-		$this->assertInstanceOf( NOOP_User::class, $user_1 );
-		$this->assertInstanceOf( NOOP_User::class, $user_2 );
 		$this->assertSame( $user_id, $user_1->get_id() );
 		$this->assertSame( $user_id, $user_2->get_id() );
 	}

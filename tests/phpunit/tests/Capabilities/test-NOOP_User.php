@@ -1,11 +1,12 @@
 <?php
 
-use WP_Syntex\Polylang\Capabilities\User\NOOP_User;
+use WP_Syntex\Polylang\Capabilities\User\NOOP;
+use WP_Syntex\Polylang\Capabilities\User\Prototype;
 
 /**
- * Test the NOOP_User class.
+ * Test the NOOP class.
  */
-class Test_NOOP_User extends PLL_UnitTestCase {
+class Test_NOOP extends PLL_UnitTestCase {
 	/**
 	 * @var PLL_Language
 	 */
@@ -137,7 +138,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	public function test_has_cap_delegates_to_wp_user() {
 		$user_id = self::factory()->user->create( array( 'role' => 'editor' ) );
 		$wp_user = get_user_by( 'ID', $user_id );
-		$user    = new NOOP_User( $wp_user );
+		$user    = new NOOP( $wp_user );
 
 		$this->assertTrue( $user->has_cap( 'edit_posts' ) );
 		$this->assertFalse( $user->has_cap( 'manage_options' ) );
@@ -146,7 +147,7 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	public function test_has_cap_with_multiple_arguments() {
 		$user_id = self::factory()->user->create( array( 'role' => 'editor' ) );
 		$wp_user = get_user_by( 'ID', $user_id );
-		$user    = new NOOP_User( $wp_user );
+		$user    = new NOOP( $wp_user );
 		$post_id = self::factory()->post->create();
 
 		$result = $user->has_cap( 'edit_post', $post_id );
@@ -224,23 +225,24 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	}
 
 	public function test_clone_returns_self_for_same_user() {
-		$wp_user = self::factory()->user->create_and_get();
-		$user    = new NOOP_User( $wp_user );
+		$prototype = new Prototype();
+		$wp_user     = self::factory()->user->create_and_get();
+		$user        = $prototype->get( $wp_user );
+		$cloned_user = $prototype->get( $wp_user );
 
-		$cloned_user = $user->get( $wp_user );
-
-		$this->assertSame( $user, $cloned_user );
+		$this->assertSame( $user->get_id(), $cloned_user->get_id() );
 	}
 
 	public function test_clone_returns_new_instance_for_different_user() {
+		$prototype = new Prototype();
 		$wp_user_1 = self::factory()->user->create_and_get();
 		$wp_user_2 = self::factory()->user->create_and_get();
 
-		$user_1 = new NOOP_User( $wp_user_1 );
-		$user_2 = $user_1->get( $wp_user_2 );
+		$user_1 = $prototype->get( $wp_user_1 );
+		$user_2 = $prototype->get( $wp_user_2 );
 
 		$this->assertNotSame( $user_1->get_id(), $user_2->get_id() );
-		$this->assertInstanceOf( NOOP_User::class, $user_2 );
+		$this->assertInstanceOf( NOOP::class, $user_2 );
 		$this->assertSame( $wp_user_2->ID, $user_2->get_id() );
 	}
 
@@ -248,12 +250,13 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 		$wp_user_1 = self::factory()->user->create_and_get();
 		$wp_user_2 = self::factory()->user->create_and_get();
 
-		$user_1 = new NOOP_User( $wp_user_1 );
-		$user_2 = $user_1->get( $wp_user_2 );
+		$prototype = new Prototype();
+		$user_1 = $prototype->get( $wp_user_1 );
+		$user_2 = $prototype->get( $wp_user_2 );
 
-		// Both should be NOOP_User instances
-		$this->assertInstanceOf( NOOP_User::class, $user_1 );
-		$this->assertInstanceOf( NOOP_User::class, $user_2 );
+		// Both should be NOOP instances
+		$this->assertInstanceOf( NOOP::class, $user_1 );
+		$this->assertInstanceOf( NOOP::class, $user_2 );
 	}
 
 	/**
@@ -269,14 +272,14 @@ class Test_NOOP_User extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Get a NOOP_User instance based on user type.
+	 * Get a NOOP instance based on user type.
 	 *
 	 * @param string $user_type User type ('administrator' or 'translator_fr').
-	 * @return NOOP_User
+	 * @return NOOP
 	 */
-	private function get_user( string $user_type ): NOOP_User {
+	private function get_user( string $user_type ): NOOP {
 		$wp_user = 'administrator' === $user_type ? self::$administrator : self::$translator_fr;
 
-		return new NOOP_User( $wp_user );
+		return new NOOP( $wp_user );
 	}
 }

@@ -10,6 +10,7 @@ use PLL_Language;
 
 /**
  * An interface for user with translation management feature.
+ * Implements decorator pattern for `WP_User`.
  *
  * @since 3.8
  */

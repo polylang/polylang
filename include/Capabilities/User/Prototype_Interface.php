@@ -9,6 +9,7 @@ use WP_User;
 
 /**
  * An interface for user prototypes.
+ * Allows to change the user decoration behavior at runtime.
  *
  * @since 3.8
  */
