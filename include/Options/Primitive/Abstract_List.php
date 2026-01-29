@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Options\Primitive;
 
+use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -17,6 +18,13 @@ defined( 'ABSPATH' ) || exit;
  * @phpstan-import-type SchemaType from Abstract_Option
  */
 abstract class Abstract_List extends Abstract_Option {
+	/**
+	 * Option value.
+	 *
+	 * @var array
+	 */
+	protected $value;
+
 	/**
 	 * Prepares a value before validation.
 	 * Allows to receive a string-keyed array but returns an integer-keyed array.
@@ -75,6 +83,47 @@ abstract class Abstract_List extends Abstract_Option {
 			'items' => array(
 				'type' => $this->get_type(),
 			),
+		);
+	}
+
+	/**
+	 * Removes an item from the list.
+	 *
+	 * @since 3.8
+	 *
+	 * @param mixed $item The item to remove.
+	 * @return bool True if the value has been removed. False otherwise.
+	 */
+	public function remove( $item ): bool {
+		if ( ! in_array( $item, $this->value, true ) ) {
+			return false;
+		}
+
+		$this->value = array_diff(
+			$this->value,
+			array( $item )
+		);
+
+		return true;
+	}
+
+	/**
+	 * Adds an item to the list.
+	 *
+	 * @since 3.8
+	 *
+	 * @param mixed   $item    The item to add.
+	 * @param Options $options The options instance.
+	 * @return bool True if the value was added successfully. False otherwise.
+	 */
+	public function add( $item, Options $options ): bool {
+		/** @var array $updated_value */
+		$updated_value   = $this->get();
+		$updated_value[] = $item;
+
+		return $this->set(
+			$updated_value,
+			$options
 		);
 	}
 }

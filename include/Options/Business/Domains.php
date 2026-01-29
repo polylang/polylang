@@ -6,9 +6,9 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Abstract_Option;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Model\Languages;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_Map;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-type DomainsValue array<non-falsy-string, string>
  */
-class Domains extends Abstract_Option {
+class Domains extends Abstract_Map {
 	/**
 	 * Returns option key.
 	 *
@@ -46,21 +46,14 @@ class Domains extends Abstract_Option {
 	}
 
 	/**
-	 * Returns the JSON schema part specific to this option.
+	 * Returns the JSON schema part specific to the inner structure of this option.
 	 *
-	 * @since 3.7
+	 * @since 3.8
 	 *
-	 * @return array Partial schema.
-	 *
-	 * @phpstan-return array{
-	 *     type: 'object',
-	 *     patternProperties: non-empty-array<non-empty-string, array{type: 'string', format: 'uri'}>,
-	 *     additionalProperties: false
-	 * }
+	 * @return array Inner structure.
 	 */
-	protected function get_data_structure(): array {
+	protected function get_inner_structure(): array {
 		return array(
-			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
 			'patternProperties'    => array(
 				Languages::SLUG_PATTERN => array( // Language slug as key.
 					'type'   => 'string',
@@ -201,5 +194,17 @@ class Domains extends Abstract_Option {
 		}
 
 		return parent::get_site_health_info( $options );
+	}
+
+	/**
+	 * Returns the reset value for a key.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $key The key to reset. Unused.
+	 * @return mixed The reset value.
+	 */
+	protected function reset_value( string $key ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return '';
 	}
 }
