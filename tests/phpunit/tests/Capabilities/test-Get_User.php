@@ -49,7 +49,7 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->assertSame( $user_id, $user_1->get_id() );
 	}
 
-	public function test_get_user_prototype_pattern_with_user_switching() {
+	public function test_get_user_with_user_switching() {
 		$user_id_1 = self::factory()->user->create();
 		$user_id_2 = self::factory()->user->create();
 
@@ -79,9 +79,9 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$user_id = self::factory()->user->create();
 		wp_set_current_user( $user_id );
 
-		// Set a custom prototype.
-		$prototype_stub = $this->createStub( Creator_Interface::class );
-		Capabilities::set_user_creator( $prototype_stub );
+		// Set a custom creator.
+		$creator_stub = $this->createStub( Creator_Interface::class );
+		Capabilities::set_user_creator( $creator_stub );
 
 		$user = Capabilities::get_user();
 
@@ -92,12 +92,12 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$user_id = self::factory()->user->create();
 		wp_set_current_user( $user_id );
 
-		// Set a custom prototype.
-		$custom_prototype = new Creator();
-		Capabilities::set_user_creator( $custom_prototype );
+		// Set a custom creator.
+		$custom_creator = new Creator();
+		Capabilities::set_user_creator( $custom_creator );
 
-		$user_1 = $custom_prototype->get( wp_get_current_user() );
-		$user_2 = $custom_prototype->get( wp_get_current_user() );
+		$user_1 = $custom_creator->get( wp_get_current_user() );
+		$user_2 = $custom_creator->get( wp_get_current_user() );
 
 		$this->assertSame( $user_id, $user_1->get_id() );
 		$this->assertSame( $user_id, $user_2->get_id() );

@@ -202,10 +202,10 @@ class Test_NOOP extends PLL_UnitTestCase {
 
 		$language = $this->createMock( PLL_Language::class );
 
-		// This should not throw any exception or call wp_die()
+		// This should not throw any exception or call wp_die().
 		$user->can_translate_or_die( $language );
 
-		// If we reach this point, the test passes
+		// If we reach this point, the test passes.
 		$this->assertTrue( true );
 	}
 
@@ -217,29 +217,29 @@ class Test_NOOP extends PLL_UnitTestCase {
 	public function test_can_translate_or_die_with_real_language( $user_type ) {
 		$user = $this->get_user( $user_type );
 
-		// This should not throw any exception or call wp_die()
+		// This should not throw any exception or call wp_die().
 		$user->can_translate_or_die( self::$language_fr );
 
-		// If we reach this point, the test passes
+		// If we reach this point, the test passes.
 		$this->assertTrue( true );
 	}
 
 	public function test_creator_returns_self_for_same_user() {
-		$prototype = new Creator();
+		$creator = new Creator();
 		$wp_user     = self::factory()->user->create_and_get();
-		$user        = $prototype->get( $wp_user );
-		$creatord_user = $prototype->get( $wp_user );
+		$user        = $creator->get( $wp_user );
+		$creatord_user = $creator->get( $wp_user );
 
 		$this->assertSame( $user->get_id(), $creatord_user->get_id() );
 	}
 
 	public function test_creator_returns_new_instance_for_different_user() {
-		$prototype = new Creator();
+		$creator = new Creator();
 		$wp_user_1 = self::factory()->user->create_and_get();
 		$wp_user_2 = self::factory()->user->create_and_get();
 
-		$user_1 = $prototype->get( $wp_user_1 );
-		$user_2 = $prototype->get( $wp_user_2 );
+		$user_1 = $creator->get( $wp_user_1 );
+		$user_2 = $creator->get( $wp_user_2 );
 
 		$this->assertNotSame( $user_1->get_id(), $user_2->get_id() );
 		$this->assertInstanceOf( NOOP::class, $user_2 );
@@ -250,11 +250,11 @@ class Test_NOOP extends PLL_UnitTestCase {
 		$wp_user_1 = self::factory()->user->create_and_get();
 		$wp_user_2 = self::factory()->user->create_and_get();
 
-		$prototype = new Creator();
-		$user_1 = $prototype->get( $wp_user_1 );
-		$user_2 = $prototype->get( $wp_user_2 );
+		$creator = new Creator();
+		$user_1 = $creator->get( $wp_user_1 );
+		$user_2 = $creator->get( $wp_user_2 );
 
-		// Both should be NOOP instances
+		// Both should be NOOP instances.
 		$this->assertInstanceOf( NOOP::class, $user_1 );
 		$this->assertInstanceOf( NOOP::class, $user_2 );
 	}
