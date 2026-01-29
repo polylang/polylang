@@ -126,7 +126,7 @@ class PLL_CRUD_Terms {
 
 		$this->model->term->set_language(
 			$term_id,
-			$term_language->get_language( Capabilities::get_user(), (int) $term_id, (string) $taxonomy )
+			$term_language->get_language( (int) $term_id, (string) $taxonomy )
 		);
 	}
 

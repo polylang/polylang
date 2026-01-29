@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Capabilities\Create;
 
 use PLL_Language;
-use WP_Syntex\Polylang\Capabilities\User\User_Interface;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
  * Class to manage the language context for terms creation or update.
@@ -19,14 +19,14 @@ class Term extends Abstract_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param User_Interface $user     The user object.
-	 * @param int            $id       The term ID for which to set the language. Default `0`.
-	 * @param string         $taxonomy The taxonomy for which to set the language. Default `''`.
+	 * @param int    $id       The term ID for which to set the language. Default `0`.
+	 * @param string $taxonomy The taxonomy for which to set the language. Default `''`.
 	 * @return PLL_Language The language context.
 	 */
-	public function get_language( User_Interface $user, int $id = 0, string $taxonomy = '' ): PLL_Language {
+	public function get_language( int $id = 0, string $taxonomy = '' ): PLL_Language {
 		/** @var PLL_Language $default_language The default language is always defined. */
 		$default_language = $this->model->get_default_language();
+		$user             = Capabilities::get_user();
 
 		if ( ! empty( $_GET['new_lang'] ) && $lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Defined only on admin.

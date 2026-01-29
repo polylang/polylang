@@ -101,7 +101,7 @@ class PLL_CRUD_Posts {
 
 		$this->model->post->set_language(
 			$post_id,
-			$post_language->get_language( Capabilities::get_user(), (int) $post_id )
+			$post_language->get_language( (int) $post_id )
 		);
 	}
 
