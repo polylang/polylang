@@ -22,7 +22,7 @@ class Creator implements Creator_Interface {
 	private ?NOOP $instance = null;
 
 	/**
-	 * Clones the user.
+	 * Creates and returns the user.
 	 *
 	 * @since 3.8
 	 *
