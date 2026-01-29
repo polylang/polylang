@@ -5,7 +5,10 @@
 
 namespace WP_Syntex\Polylang\Capabilities;
 
-defined( 'ABSPATH' ) || exit;
+use WP_User;
+use WP_Syntex\Polylang\Capabilities\User\Prototype;
+use WP_Syntex\Polylang\Capabilities\User\User_Interface;
+use WP_Syntex\Polylang\Capabilities\User\Prototype_Interface;
 
 /**
  * A class allowing to map Polylang's custom user capabilities to WP's native ones.
@@ -15,6 +18,13 @@ defined( 'ABSPATH' ) || exit;
 class Capabilities {
 	public const LANGUAGES    = 'manage_languages';
 	public const TRANSLATIONS = 'manage_translations';
+
+	/**
+	 * The user prototype to be used for capability checks.
+	 *
+	 * @var Prototype_Interface|null
+	 */
+	private static ?Prototype_Interface $user_prototype = null;
 
 	/**
 	 * Constructor.
@@ -41,5 +51,35 @@ class Capabilities {
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Returns the user instance to be used for capability checks using prototype pattern.
+	 *
+	 * @since 3.8
+	 *
+	 * @param WP_User|null $user The user to decorate. If null, the current user is used.
+	 * @return User_Interface The user instance.
+	 */
+	public static function get_user( ?WP_User $user = null ): User_Interface {
+		if ( ! self::$user_prototype ) {
+			self::$user_prototype = new Prototype();
+		}
+
+		return self::$user_prototype->get( $user ?? wp_get_current_user() );
+	}
+
+	/**
+	 * Sets the user prototype to be used for capability checks.
+	 * Having two different interfaces for the prototype and the decorated user allows for better decoupling.
+	 * That way, the prototype doesn't depend on `WP_User`.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Prototype_Interface $user_prototype The user prototype to be used for capability checks.
+	 * @return void
+	 */
+	public static function set_user_prototype( Prototype_Interface $user_prototype ): void {
+		self::$user_prototype = $user_prototype;
 	}
 }

@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -188,7 +188,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( esc_html( "{$lang_slug} is not a valid language code." ) );
 		}
 
-		( new User() )->can_translate_or_die( $lang );
+		Capabilities::get_user()->can_translate_or_die( $lang );
 
 		$post_type_object = get_post_type_object( $post->post_type );
 
