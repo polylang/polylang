@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "polylang/navigation-language-switcher",
+    "version": "3.8",
+    "title": "Navigation Language Switcher",
+    "category": "design",
+	"parent": [ "core/navigation" ],
+    "description": "Language switcher suitable for navigation.",
+    "example": {},
+	"attributes": {
+		"dropdown": {
+			"type": "boolean",
+			"default": 0
+		},
+		"show_names": {
+			"type": "boolean",
+			"default": 1
+		},
+		"show_flags": {
+			"type": "boolean",
+			"default": 0
+		},
+		"force_home": {
+			"type": "boolean",
+			"default": 0
+		},
+		"hide_current": {
+			"type": "boolean",
+			"default": 0
+		},
+		"hide_if_no_translation": {
+			"type": "boolean",
+			"default": 0
+		},
+		"className": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"usesContext": [
+		"textColor",
+		"customTextColor",
+		"backgroundColor",
+		"customBackgroundColor",
+		"overlayTextColor",
+		"customOverlayTextColor",
+		"overlayBackgroundColor",
+		"customOverlayBackgroundColor",
+		"fontSize",
+		"customFontSize",
+		"showSubmenuIcon",
+		"maxNestingLevel",
+		"openSubmenusOnClick",
+		"style",
+		"isResponsive"
+	],
+	"supports": {
+		"contentRole": true
+	},
+    "textdomain": "polylang-pro",
+    "editorScript": "pll_blocks",
+    "editorStyle": "pll-navigation-language-switcher-editor-style"
+}
