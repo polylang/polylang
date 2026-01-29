@@ -81,6 +81,6 @@ class Capabilities {
 	 * @return void
 	 */
 	public static function set_user_creator( Creator_Interface $creator ): void {
-		self::$creator = $creator
+		self::$creator = $creator;
 	}
 }

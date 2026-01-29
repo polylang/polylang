@@ -2,9 +2,9 @@
 
 use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Capabilities\User\Prototype;
+use WP_Syntex\Polylang\Capabilities\User\Creator;
 use WP_Syntex\Polylang\Capabilities\User\User_Interface;
-use WP_Syntex\Polylang\Capabilities\User\Prototype_Interface;
+use WP_Syntex\Polylang\Capabilities\User\Creator_Interface;
 
 /**
  * Test the get_user method of the Capabilities class.
@@ -75,26 +75,26 @@ class Test_Get_User extends PLL_UnitTestCase {
 		$this->assertSame( $user->get_id(), $user->get_id() );
 	}
 
-	public function test_set_user_prototype_changes_returned_user_type() {
+	public function test_set_user_creator_changes_returned_user_type() {
 		$user_id = self::factory()->user->create();
 		wp_set_current_user( $user_id );
 
 		// Set a custom prototype.
-		$prototype_stub = $this->createStub( Prototype_Interface::class );
-		Capabilities::set_user_prototype( $prototype_stub );
+		$prototype_stub = $this->createStub( Creator_Interface::class );
+		Capabilities::set_user_creator( $prototype_stub );
 
 		$user = Capabilities::get_user();
 
 		$this->assertInstanceOf( User_Interface::class, $user );
 	}
 
-	public function test_set_user_prototype_persists_across_multiple_calls() {
+	public function test_set_user_creator_persists_across_multiple_calls() {
 		$user_id = self::factory()->user->create();
 		wp_set_current_user( $user_id );
 
 		// Set a custom prototype.
-		$custom_prototype = new Prototype();
-		Capabilities::set_user_prototype( $custom_prototype );
+		$custom_prototype = new Creator();
+		Capabilities::set_user_creator( $custom_prototype );
 
 		$user_1 = $custom_prototype->get( wp_get_current_user() );
 		$user_2 = $custom_prototype->get( wp_get_current_user() );

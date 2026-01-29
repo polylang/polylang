@@ -1,7 +1,7 @@
 <?php
 
 use WP_Syntex\Polylang\Capabilities\User\NOOP;
-use WP_Syntex\Polylang\Capabilities\User\Prototype;
+use WP_Syntex\Polylang\Capabilities\User\Creator;
 
 /**
  * Test the NOOP class.
@@ -224,17 +224,17 @@ class Test_NOOP extends PLL_UnitTestCase {
 		$this->assertTrue( true );
 	}
 
-	public function test_clone_returns_self_for_same_user() {
-		$prototype = new Prototype();
+	public function test_creator_returns_self_for_same_user() {
+		$prototype = new Creator();
 		$wp_user     = self::factory()->user->create_and_get();
 		$user        = $prototype->get( $wp_user );
-		$cloned_user = $prototype->get( $wp_user );
+		$creatord_user = $prototype->get( $wp_user );
 
-		$this->assertSame( $user->get_id(), $cloned_user->get_id() );
+		$this->assertSame( $user->get_id(), $creatord_user->get_id() );
 	}
 
-	public function test_clone_returns_new_instance_for_different_user() {
-		$prototype = new Prototype();
+	public function test_creator_returns_new_instance_for_different_user() {
+		$prototype = new Creator();
 		$wp_user_1 = self::factory()->user->create_and_get();
 		$wp_user_2 = self::factory()->user->create_and_get();
 
@@ -246,11 +246,11 @@ class Test_NOOP extends PLL_UnitTestCase {
 		$this->assertSame( $wp_user_2->ID, $user_2->get_id() );
 	}
 
-	public function test_clone_preserves_noop_user_class() {
+	public function test_creator_preserves_noop_user_class() {
 		$wp_user_1 = self::factory()->user->create_and_get();
 		$wp_user_2 = self::factory()->user->create_and_get();
 
-		$prototype = new Prototype();
+		$prototype = new Creator();
 		$user_1 = $prototype->get( $wp_user_1 );
 		$user_2 = $prototype->get( $wp_user_2 );
 
