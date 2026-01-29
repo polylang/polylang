@@ -19,7 +19,7 @@ interface Creator_Interface {
 	 *
 	 * @since 3.8
 	 *
-	 * @param WP_User $user The user to decorate. If null, the current user is used.
+	 * @param WP_User $user The user to decorate.
 	 * @return User_Interface The user instance.
 	 */
 	public function get( WP_User $user ): User_Interface;
