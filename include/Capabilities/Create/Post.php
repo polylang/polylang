@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Capabilities\Create;
 
 use PLL_Language;
-use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
  * Class to manage the language context for posts creation or update.
@@ -19,13 +19,13 @@ class Post extends Abstract_Object {
 	 *
 	 * @since 3.8
 	 *
-	 * @param User $user The user object.
-	 * @param int  $id   The post ID for which to set the language. Default `0`.
+	 * @param int $id The post ID for which to set the language. Default `0`.
 	 * @return PLL_Language The language context.
 	 */
-	public function get_language( User $user, int $id = 0 ): PLL_Language {
+	public function get_language( int $id = 0 ): PLL_Language {
 		/** @var PLL_Language $default_language The default language is always defined. */
 		$default_language = $this->model->get_default_language();
+		$user             = Capabilities::get_user();
 
 		if ( ! empty( $_GET['new_lang'] ) && $lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Defined only on admin.

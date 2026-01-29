@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Capabilities\User;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -305,7 +305,7 @@ class PLL_Admin_Filters_Term {
 					return;
 				}
 
-				( new User() )->can_translate_or_die( $language );
+				Capabilities::get_user()->can_translate_or_die( $language );
 
 				$this->model->term->set_language( $term_id, $language );
 				$term = get_term( $term_id, $taxonomy );
@@ -371,7 +371,7 @@ class PLL_Admin_Filters_Term {
 			return;
 		}
 
-		( new User() )->can_translate_or_die( $language );
+		Capabilities::get_user()->can_translate_or_die( $language );
 
 		$this->model->term->set_language( $term_id, $language );
 	}
