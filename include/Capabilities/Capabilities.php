@@ -6,9 +6,9 @@
 namespace WP_Syntex\Polylang\Capabilities;
 
 use WP_User;
-use WP_Syntex\Polylang\Capabilities\User\Prototype;
+use WP_Syntex\Polylang\Capabilities\User\Creator;
 use WP_Syntex\Polylang\Capabilities\User\User_Interface;
-use WP_Syntex\Polylang\Capabilities\User\Prototype_Interface;
+use WP_Syntex\Polylang\Capabilities\User\Creator_Interface;
 
 /**
  * A class allowing to map Polylang's custom user capabilities to WP's native ones.
@@ -20,11 +20,11 @@ class Capabilities {
 	public const TRANSLATIONS = 'manage_translations';
 
 	/**
-	 * The user prototype to be used for capability checks.
+	 * The user creator to be used for capability checks.
 	 *
-	 * @var Prototype_Interface|null
+	 * @var Creator_Interface|null
 	 */
-	private static ?Prototype_Interface $user_prototype = null;
+	private static ?Creator_Interface $creator = null;
 
 	/**
 	 * Constructor.
@@ -54,7 +54,7 @@ class Capabilities {
 	}
 
 	/**
-	 * Returns the user instance to be used for capability checks using prototype pattern.
+	 * Returns the user instance to be used for capability checks.
 	 *
 	 * @since 3.8
 	 *
@@ -62,24 +62,25 @@ class Capabilities {
 	 * @return User_Interface The user instance.
 	 */
 	public static function get_user( ?WP_User $user = null ): User_Interface {
-		if ( ! self::$user_prototype ) {
-			self::$user_prototype = new Prototype();
+		if ( ! self::$creator ) {
+			self::$creator = new Creator();
 		}
 
-		return self::$user_prototype->get( $user ?? wp_get_current_user() );
+		return self::$creator->get( $user ?? wp_get_current_user() );
 	}
 
 	/**
-	 * Sets the user prototype to be used for capability checks.
-	 * Having two different interfaces for the prototype and the decorated user allows for better decoupling.
-	 * That way, the prototype doesn't depend on `WP_User`.
+	 * Sets the user creator to be used for capability checks.
+	 *
+	 * Having a separate class to create the decorated user allows for better decoupling.
+	 * This allows to set a creator object without dependence to a `WP_User`.
 	 *
 	 * @since 3.8
 	 *
-	 * @param Prototype_Interface $user_prototype The user prototype to be used for capability checks.
+	 * @param Creator_Interface $creator The user creator to be used for capability checks.
 	 * @return void
 	 */
-	public static function set_user_prototype( Prototype_Interface $user_prototype ): void {
-		self::$user_prototype = $user_prototype;
+	public static function set_user_creator( Creator_Interface $creator ): void {
+		self::$creator = $creator
 	}
 }

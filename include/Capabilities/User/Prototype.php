@@ -8,12 +8,12 @@ namespace WP_Syntex\Polylang\Capabilities\User;
 use WP_User;
 
 /**
- * A class for user prototypes.
+ * A class to create a decorated user.
  * Always returns a `NOOP` instance so capabilities features are disabled by default.
  *
  * @since 3.8
  */
-class Prototype implements Prototype_Interface {
+class Creator implements Creator_Interface {
 	/**
 	 * The user instance to be used for capability checks.
 	 *
