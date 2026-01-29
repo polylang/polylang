@@ -99,7 +99,7 @@ function pll_use_block_editor_plugin() {
 	 *
 	 * @param bool $use_plugin True when loading the block editor plugin.
 	 */
-	return class_exists( 'WP_Syntex\Polylang_Pro\Editors\Screens\Abstract_Screen' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
+	return apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
 }
 
 /**
@@ -153,4 +153,22 @@ function pll_add_notice( WP_Error $error ) {
 
 		add_settings_error( 'polylang', $error_code, $message, $type );
 	}
+}
+
+/**
+ * Tells if the given REST request is in the edit context.
+ *
+ * @since 3.5
+ *
+ * @param WP_REST_Request $request A REST request.
+ * @return bool
+ *
+ * @phpstan-param WP_REST_Request<array> $request
+ */
+function pll_is_edit_rest_request( WP_REST_Request $request ): bool {
+	if ( in_array( $request->get_method(), array( 'PATCH', 'POST', 'PUT' ), true ) ) {
+		return true;
+	}
+
+	return 'GET' === $request->get_method() && 'edit' === $request->get_param( 'context' );
 }
