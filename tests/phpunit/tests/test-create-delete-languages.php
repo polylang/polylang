@@ -101,6 +101,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'is_rtl',
 			'w3c',
 			'facebook',
+			'deepl',
 			'home_url',
 			'search_url',
 			'host',
