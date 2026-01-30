@@ -27,9 +27,9 @@ class Creator implements Creator_Interface {
 	 * @since 3.8
 	 *
 	 * @param WP_User $user The user to decorate.
-	 * @return NOOP New instance of NOOP.
+	 * @return User_Interface Instance of `NOOP`.
 	 */
-	public function get( WP_User $user ): NOOP {
+	public function get( WP_User $user ): User_Interface {
 		if ( $this->instance && $user->ID === $this->instance->get_id() ) {
 			return $this->instance;
 		}
