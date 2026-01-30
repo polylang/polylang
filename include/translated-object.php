@@ -91,7 +91,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return false;
 		}
 
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		$translations = $this->get_translations( $id );
 
@@ -116,7 +116,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	public function get_translations_from_term_id( $term_id ) {
-		$term_id = $this->sanitize_int_id( $term_id );
+		$term_id = pll_sanitize_id( $term_id );
 
 		if ( empty( $term_id ) ) {
 			return array();
@@ -147,7 +147,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	public function save_translations( $id, array $translations = array() ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return array();
@@ -220,7 +220,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return;
@@ -260,7 +260,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	public function get_translations( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return array();
@@ -281,7 +281,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	public function get_raw_translations( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return array();
@@ -326,7 +326,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return int<0, max>
 	 */
 	public function get( $id, $lang ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return 0;
@@ -356,7 +356,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @return bool
 	 */
 	public function current_user_can_synchronize( $id ) {
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return false;
@@ -499,7 +499,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		// Make sure values are clean before working with them.
 		/** @phpstan-var array<non-empty-string, positive-int> $translations */
-		$translations = $this->sanitize_int_ids_list( $translations );
+		$translations = pll_sanitize_ids( $translations );
 
 		if ( 'save' === $context ) {
 			/**
@@ -520,7 +520,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			$translations = $valid_translations;
 		}
 
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return $translations;

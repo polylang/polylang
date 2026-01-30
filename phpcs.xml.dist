@@ -73,6 +73,7 @@
 		<properties>
 			<property name="customUnslashingSanitizingFunctions" type="array">
 				<element value="wp_verify_nonce"/>
+				<element value="pll_sanitize_id"/>
 			</property>
 		</properties>
 	</rule>
