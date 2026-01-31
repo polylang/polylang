@@ -29,6 +29,8 @@ class PLL_Admin_Site_Health {
 	 */
 	protected $static_pages;
 
+	public $mofiles;
+
 	/**
 	 * PLL_Admin_Site_Health constructor.
 	 *
@@ -44,12 +46,20 @@ class PLL_Admin_Site_Health {
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info' ), 15 );
+		add_filter( 'debug_information', array( $this, 'info_translations' ), 0 );
+		add_filter( 'load_textdomain_mofile', array( $this, 'preload_textdomain' ), 10, 2 );
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
 		add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 	}
 
+	public function preload_textdomain( $mofile, $domain ) {
+
+			$this->mofiles[] = $mofile;
+
+		return $mofile;
+	}
 	/**
 	 * Returns a list of keys to exclude from the site health information.
 	 *
@@ -315,6 +325,182 @@ class PLL_Admin_Site_Health {
 		}
 
 		return $debug_info;
+	}
+
+	/**
+	 * Display the list of available translation for Core, plugins and theme.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
+	 * @return array
+	 */
+	public function info_translations( $debug_info ) {
+		// Translation updates available.
+		$translation_updates = wp_get_translation_updates();
+		$fields = array();
+
+		$translation_updates_list = $this->get_translations_update_list( $translation_updates );
+		if ( ! empty( $translation_updates_list ) ) {
+			foreach ( $translation_updates_list as $type => $values ) {
+				$type_label = __( 'WordPress', 'polylang' );
+
+				if ( 'plugin' === $type ) {
+					$type = 'plugins';
+					$type_label = __( 'Plugins', 'polylang' );
+				}
+				if ( 'theme' === $type ) {
+					$type = 'themes';
+					$type_label = __( 'Themes', 'polylang' );
+
+				}
+				$fields[ 'translation_' . $type ]['label'] = '=== ' . $type_label . ' ===';
+				$fields[ 'translation_' . $type ]['value'] = ' '; // needed to avoid a "undefined" when copy to clipboard. Empty string is skipped.
+				foreach ( $values as $name => $value ) {
+					$fields[ 'translation_' . $name ]['label'] = $name;
+					$is_locales_installed = $this->is_wp_language_installed( $value, $type, $name );
+					$locales = implode( ', ', $value );
+					$fields[ 'translation_' . $name ]['value'] = sprintf(
+					/* translators: the placeholder is a WordPress locale */
+						__( 'A translation is updatable for %s .', 'polylang' ),
+						$locales
+					);
+					if ( ! $is_locales_installed ) {
+						$fields[ 'translation_' . $name ]['value'] = sprintf(
+						/* translators: the placeholder is a WordPress locale */
+							__( 'A translation is missing for %s .', 'polylang' ),
+							$locales
+						);
+					}
+				}
+			}
+		}
+
+		// Create the section.
+		if ( ! empty( $fields ) ) {
+			$debug_info['pll_translation'] = array(
+				/* translators: placeholder is the plugin name */
+				'label'  => sprintf( __( 'Translations information', 'polylang' ), POLYLANG ),
+				'fields' => $fields,
+			);
+		}
+
+		return $debug_info;
+	}
+
+	/**
+	 * Is the language pack already installed ?
+	 *
+	 * @since 3.7
+	 *
+	 * @param array  $locales array of WordPress locales.
+	 * @param string $type type of update (may be core, plugin or theme and sometimes core, plugins or themes ).
+	 * @param string $name name of the element (plugin/theme) currently updated. In case of Core update, it's "default"
+	 * @param array|bool  $already_installed array of already installed language packs.
+	 * @param array  $update_list array of wp.org translation pack update
+	 * @return boolean|array
+	 */
+	public function is_wp_language_installed( $locales, $type, $name, $already_installed = array(), $update_list = array() ) {
+
+		$installed_translations = wp_get_installed_translations( $type );
+		foreach ( $locales as $locale ) {
+			if ( $update_list['plugin'][ $name ][ $locale ] ) {
+				break;
+			}
+			if ( ! empty( $installed_translations[ $name ] ) && $installed_translations[ $name ][ $locale ] ) {
+				$already_installed[ $type ][ $name ][ $locale ] = $locale;
+			}
+		}
+
+		if ( ! empty( $already_installed ) ) {
+			return $already_installed;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns all available translation updates.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $updates The available updates.
+	 * @return array The available translation updates formatted for the Site Health Report.
+	 */
+	public function get_translations_update_list( array $updates ): array {
+		$pll_locales = $this->model->get_languages_list();
+		foreach ( $pll_locales as $key => $locale ) {
+			if ( $locale->get_locale() === 'en_US' ) {
+				unset( $pll_locales[ $key ] );
+			}
+		}
+		$update_list = array();
+		$locales     = array();
+		foreach ( $pll_locales as $locale ) {
+			$locales[ $locale->locale ] = $locale->locale;
+			if ( ! empty( $locale->fallbacks ) ) {
+				foreach ( $locale->fallbacks as $fallback ) {
+					$locales[ $fallback ] = $fallback;
+				}
+			}
+		}
+		$update_list = array();
+
+		foreach ( $updates as $update ) {
+			if ( in_array( $update->language, $locales ) ) {
+				$update_list[ $update->type ][ $update->slug ][ $update->language ] = $update->language;
+			}
+		}
+
+		// Premium plugins
+		$activated_plugins = get_option( 'active_plugins' );
+		if ( ! empty( $activated_plugins ) ) {
+			foreach ( $activated_plugins as $activated_plugin ) {
+				$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $activated_plugin );
+
+				$already_installed = $this->is_wp_language_installed( $locales, 'plugins', strtolower( $plugin_data['Name'] ), $already_installed, $update_list );
+				foreach ( $pll_locales as $locale ) {
+
+					if ( ! $update_list['plugin'][ strtolower( $plugin_data['Name'] ) ][ $locale->get_locale() ] ) { // Polylang/Polylang Pro case maybe others.
+						$mo_path     = trailingslashit( WP_PLUGIN_DIR ) . dirname( $activated_plugin ) . trailingslashit( $plugin_data['DomainPath'] ) . $plugin_data['TextDomain'] . '-' . $locale->get_locale() . '.mo';
+						$file_exists = file_exists( $mo_path );
+						if ( ! $file_exists ) {
+							$update_list['plugin'][ strtolower( $plugin_data['Name'] ) ][ $locale->get_locale() ] = $locale->get_locale();
+						}
+					}
+				}
+			}
+		}
+
+		// Premium themes
+		$theme_data = wp_get_theme( get_stylesheet() );
+		$name = strtolower( $theme_data->get( 'Name' ) );
+		$textdomain = $theme_data->get( 'TextDomain' );
+		$domain_path = $theme_data->get( 'DomainPath' );
+		$child = is_child_theme();
+
+		foreach ( $pll_locales as $locale ) {
+		//	$path['activated'] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
+			$themes[ $locale->get_locale() ]['path'][ $name ] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
+			$themes[ $locale->get_locale() ]['name'][ $name ] = $name;
+			if ( $child ){
+				$parent_domain_path = $theme_data->parent()->get('DomainPath');
+				$themes[ $locale->get_locale() ]['path'][ $theme_data->parent()->get('Name') ] = get_template_directory() .$parent_domain_path . '/' . $locale->get_locale() . '.mo';
+				$themes[ $locale->get_locale() ]['name'][ $theme_data->parent()->get('Name') ] = $theme_data->parent()->get('Name');
+			}
+
+			if ( ! empty( $themes ) ) {
+				foreach ( $themes as $theme_locale => $themepath ) {
+					$file_exists = file_exists( $path );
+					if ( ! $file_exists ) {
+						$update_list['theme'][ $name ][ $locale->get_locale() ] = $locale->get_locale();
+					}
+				}
+			}
+
+		}
+
+		return array_filter( $update_list );
 	}
 
 	/**
