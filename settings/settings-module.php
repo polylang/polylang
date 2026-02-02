@@ -366,10 +366,11 @@ class PLL_Settings_Module {
 	 * Get the buttons.
 	 *
 	 * @since 1.9
+	 * @since 3.8 Returns a string instead of an array.
 	 *
-	 * @return string[] An array of html fragment for the buttons.
+	 * @return string The HTML fragment for the buttons.
 	 */
-	public function get_buttons() {
-		return $this->buttons;
+	public function get_buttons(): string {
+		return implode( '', $this->buttons);
 	}
 }

@@ -73,17 +73,16 @@ class PLL_Table_Settings extends WP_List_Table {
 			printf(
 				'<tr id="pll-configure-%s" class="pll-configure inactive inline-edit-row" style="display: none;">
 					<td colspan="3">
-						<legend>%s</legend>
-						%s
-						<p class="submit inline-edit-save">
-							%s
-						</p>
+						<legend>%1s</legend>
+						%2s
+						%3s
+
 					</td>
 				</tr>',
 				esc_attr( $item->module ),
 				esc_html( $item->title ),
 				$form, // phpcs:ignore
-				implode( $item->get_buttons() ) // phpcs:ignore
+				$item->get_buttons()
 			);
 		}
 	}

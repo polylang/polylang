@@ -40,8 +40,6 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			)
 		);
 
-		$this->buttons['cancel'] = sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', __( 'Close', 'polylang' ) );
-
 		$this->items = apply_filters( 'pll_settings_licenses', array() );
 
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
@@ -143,5 +141,20 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 				'html' => $this->get_row( $this->items[ $id ]->deactivate_license() ),
 			)
 		);
+	}
+
+	/**
+	 * Get the buttons.
+	 *
+	 * @since 1.9
+	 * @since 3.8 Returns a string instead of an array.
+	 *
+	 * @return string The HTML fragment for the buttons.
+	 */
+	public function get_buttons(): string {
+		if ( ! defined( 'POLYLANG_LICENSE_KEY' ) ) {
+			return parent::get_buttons();
+		}
+		return '';
 	}
 }
