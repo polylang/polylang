@@ -22,13 +22,7 @@
 	"prefer-stable": true,
 	"autoload": {
 		"classmap": [
-            "src/admin/",
-			"src/frontend/",
-			"src/include/",
-			"src/integrations/",
-			"src/install/",
-			"src/modules/",
-			"src/settings/"
+            "src/"
 		],
 		"psr-4": {
 			"WP_Syntex\\Polylang\\Script\\": "bin/"
