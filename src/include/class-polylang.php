@@ -268,13 +268,13 @@ class Polylang {
 		do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
 
 		// Loads the API
-		require_once POLYLANG_DIR . '/include/api.php';
+		require_once POLYLANG_DIR . '/src/include/api.php';
 
 		// Loads the modules.
-		$load_scripts = require POLYLANG_DIR . '/modules/module-build.php';
+		$load_scripts = require POLYLANG_DIR . '/src/modules/module-build.php';
 
 		foreach ( $load_scripts as $load_script ) {
-			require_once POLYLANG_DIR . "/modules/{$load_script}/load.php";
+			require_once POLYLANG_DIR . "/src/modules/{$load_script}/load.php";
 		}
 
 		$polylang->init();

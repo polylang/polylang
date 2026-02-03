@@ -379,16 +379,16 @@ class PLL_Language extends PLL_Language_Deprecated {
 		);
 
 		// Polylang builtin flags.
-		if ( ! empty( $code ) && is_readable( POLYLANG_ROOT . ( $file = '/flags/' . $code . '.png' ) ) ) {
+		if ( ! empty( $code ) && is_readable( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
 			$default_flag['url'] = plugins_url( $file, POLYLANG_FILE );
 
 			// If base64 encoded flags are preferred.
 			if ( pll_get_constant( 'PLL_ENCODED_FLAGS', true ) ) {
-				$imagesize = getimagesize( POLYLANG_ROOT . $file );
+				$imagesize = getimagesize( POLYLANG_DIR . $file );
 				if ( is_array( $imagesize ) ) {
 					list( $default_flag['width'], $default_flag['height'] ) = $imagesize;
 				}
-				$file_contents       = file_get_contents( POLYLANG_ROOT . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+				$file_contents       = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 				$default_flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			}
 		}

@@ -186,7 +186,7 @@ class Languages {
 		$args['term_group'] = $args['term_group'] ?? 0;
 
 		if ( ! empty( $args['locale'] ) && ( ! isset( $args['name'] ) || ! isset( $args['slug'] ) ) ) {
-			$languages = include POLYLANG_DIR . '/settings/languages.php';
+			$languages = include POLYLANG_DIR . '/src/settings/languages.php';
 			if ( ! empty( $languages[ $args['locale'] ] ) ) {
 				$found        = $languages[ $args['locale'] ];
 				$args['name'] = $args['name'] ?? $found['name'];
@@ -1051,7 +1051,7 @@ class Languages {
 		}
 
 		// Validate flag.
-		if ( ! empty( $args['flag'] ) && ! is_readable( POLYLANG_ROOT . '/flags/' . $args['flag'] . '.png' ) ) {
+		if ( ! empty( $args['flag'] ) && ! is_readable( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
 			$flag = PLL_Language::get_flag_information( $args['flag'] );
 
 			if ( ! empty( $flag['url'] ) ) {
