@@ -10,7 +10,19 @@ parameters:
 		- **/load.php
 		- src/include/widget-calendar.php
 		- src/install/plugin-updater.php
-		- src/integrations/
+		- src/integrations/aqua-resizer/
+		- src/integrations/cache/
+		- src/integrations/custom-field-template/
+		- src/integrations/domain-mapping/
+		- src/integrations/duplicate-post/
+		- src/integrations/jetpack/
+		- src/integrations/no-category-base/
+		- src/integrations/twenty-seventeen/
+		- src/integrations/wp-importer/
+		- src/integrations/wp-offload-media/
+		- src/integrations/wp-sweep/
+		- src/integrations/wpseo/
+		- src/integrations/yarpp/
 	treatPhpDocTypesAsCertain: false
 	stubFiles:
 		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
