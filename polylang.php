@@ -58,7 +58,8 @@ define( 'PLL_MIN_WP_VERSION', '6.5' );
 define( 'PLL_MIN_PHP_VERSION', '7.4' );
 
 define( 'POLYLANG_FILE', __FILE__ );
-define( 'POLYLANG_DIR', __DIR__ );
+define( 'POLYLANG_ROOT', __DIR__ );
+define( 'POLYLANG_DIR', __DIR__ . '/src' );
 
 // Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
 if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
@@ -76,7 +77,7 @@ if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Secur
 	return;
 }
 
-require __DIR__ . '/include/constant-functions.php';
+require POLYLANG_DIR . '/include/constant-functions.php';
 if ( ! PLL_Usable::can_activate() ) {
 	// WP version or php version is too old.
 	return;

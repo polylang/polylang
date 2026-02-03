@@ -8,7 +8,7 @@
 	<arg name="cache"/>
 
 	<file>./polylang.php</file>
-	<file>./install/usable.php</file>
+	<file>./src/install/usable.php</file>
 	<file>./vendor/autoload.php</file>
 
 	<config name="testVersion" value="5.6-"/>

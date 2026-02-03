@@ -21,7 +21,7 @@ abstract class PLL_Object_Cache_TestCase extends PLL_UnitTestCase {
 		register_shutdown_function( Closure::fromCallable( array( self::class, 'remove_annihilator' ) ) );
 
 		// Drop in the annihilator.
-		$base_path    = defined( 'WPSYNTEX_PROJECT_PATH' ) ? WPSYNTEX_PROJECT_PATH : POLYLANG_DIR . '/';
+		$base_path    = defined( 'WPSYNTEX_PROJECT_PATH' ) ? WPSYNTEX_PROJECT_PATH : POLYLANG_ROOT . '/';
 		$drop_in_path = $base_path . 'vendor/wpsyntex/object-cache-annihilator/drop-in.php';
 		copy( $drop_in_path, WP_CONTENT_DIR . '/object-cache.php' );
 		require_once WP_CONTENT_DIR . '/object-cache.php';

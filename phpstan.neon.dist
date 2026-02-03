@@ -5,16 +5,16 @@ parameters:
 	level: 9
 	paths:
 		- polylang.php
-		- admin/
-		- frontend/
-		- include/
-		- install/
-		- modules/
-		- settings/
+		- src/admin/
+		- src/frontend/
+		- src/include/
+		- src/install/
+		- src/modules/
+		- src/settings/
 	excludePaths:
 		- **/load.php
-		- include/widget-calendar.php
-		- install/plugin-updater.php
+		- src/include/widget-calendar.php
+		- src/install/plugin-updater.php
 	treatPhpDocTypesAsCertain: false
 	stubFiles:
 		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
@@ -26,7 +26,7 @@ parameters:
 		-
 			message: "#^Left side of \\|\\| is always false\\.$#"
 			count: 1
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		# Ignored because the WordPress stubs doesn't know a dynamic key in the associative array passed to the get_terms() parameter
 		- "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"
@@ -35,25 +35,25 @@ parameters:
 		-
 			message: "#^Action callback returns string\\|void but should not return anything\\.$#"
 			count: 1
-			path: frontend/frontend.php
+			path: src/frontend/frontend.php
 
 		# Ignored because PHPStan is confused about the objects and method names (classes with same method names).
 		-
 			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
 			count: 1
-			path: include/model.php
+			path: src/include/model.php
 
 		# Ignored because the cache is initialized in the constructor.
 		-
 			message: "#^Static property PLL_MO\\:\\:\\$cache \\(PLL_Cache\\<array\\>\\) in empty\\(\\) is not falsy\\.$#"
 			count: 1
-			path: include/mo.php
+			path: src/include/mo.php
 
 		# Ignored because $object_id isn't declared and documented in WP_Term class.
 		-
 			message: "#^Access to an undefined property WP_Term\\:\\:\\$object_id\\.$#"
 			count: 1
-			path: include/translatable-object.php
+			path: src/include/translatable-object.php
 
 
 		# Ignored because the function wp_slash accepts mixed although not documented.
@@ -63,27 +63,27 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$array of function implode expects array, mixed given\\.$#"
 			count: 1
-			path: include/Options/Business/Sync.php
+			path: src/include/Options/Business/Sync.php
 		-
 			message: "#^Parameter \\#2 \\$timestamp of function wp_date expects int\\|null, mixed given\\.$#"
 			count: 1
-			path: include/Options/Business/First_Activation.php
+			path: src/include/Options/Business/First_Activation.php
 		-
 			message: "#^Parameter \\#1 \\$format of function wp_date expects string, mixed given\\.$#"
 			count: 1
-			path: include/Options/Business/First_Activation.php
+			path: src/include/Options/Business/First_Activation.php
 
 		# Ignored because the return type of `PLL_Frontend_Auto_Translate::get_translated_term_by` is always a string in `PLL_Frontend_Auto_Translate::translate_terms_list`.
 		-
 			identifier: return.type
 			count: 1
-			path: frontend/frontend-auto-translate.php
+			path: src/frontend/frontend-auto-translate.php
 
 		# Ignored because PHPStan is drunk ¯\(°_o)/¯
 		-
 			identifier: deadCode.unreachable
 			count: 1
-			path: admin/admin-filters-columns.php
+			path: src/admin/admin-filters-columns.php
 
 		# Ignored globally
 		-
