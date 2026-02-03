@@ -13,6 +13,7 @@ add_action(
 		if ( $polylang->model->has_languages() && pll_use_block_editor_plugin() ) {
 			$polylang->switcher_block   = ( new PLL_Language_Switcher_Block( $polylang ) )->init();
 			$polylang->navigation_block = ( new PLL_Navigation_Language_Switcher_Block( $polylang ) )->init();
+			$polylang->javascript_ssr   = $polylang instanceof PLL_Admin ? ( new Javascript_SSR( $polylang->curlang ) )->init() : null;
 		}
 	}
 );
