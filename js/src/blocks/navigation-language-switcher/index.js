@@ -11,7 +11,7 @@ import { addFilter } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { translation as translationIcon } from '@wpsyntex/polylang-pro-icons';
+import { translation as translationIcon } from '@wpsyntex/polylang-react-library';
 import { Edit } from './edit';
 import { menuItemsToBlocksFilter } from './menu-items-converter';
 import metadata from '../../../../modules/blocks/language-switcher/navigation/block.json';

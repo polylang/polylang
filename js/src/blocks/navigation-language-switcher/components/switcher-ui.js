@@ -7,7 +7,7 @@ import { Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import { SwitcherLinkElement } from './switcher-link-element';
-import { SubmenuIcon } from '@wpsyntex/polylang-pro-icons';
+import { SubmenuIcon } from '@wpsyntex/polylang-react-library';
 
 /**
  * Switcher UI component.

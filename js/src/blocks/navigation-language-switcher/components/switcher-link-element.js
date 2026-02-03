@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { useMemoizedSwitcherLabel } from '../../hooks/use-memoized-switcher-label';
+import { useMemoizedSwitcherLabel } from '@wpsyntex/polylang-react-library';
 
 /**
  * Switcher link element component.

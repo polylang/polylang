@@ -15,7 +15,7 @@ import { Disabled, PanelBody } from '@wordpress/components';
 import { createLanguageSwitcherEdit } from '../language-switcher-edit';
 import { SwitcherContainer } from './components/switcher-container';
 import { LanguagesContext } from '../languages-context';
-import { useLanguagesList } from '../hooks/use-languages-list';
+import { useLanguagesList } from '@wpsyntex/polylang-react-library';
 
 /**
  * Edit callback for language switcher block.

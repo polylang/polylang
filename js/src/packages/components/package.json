@@ -1,8 +1,0 @@
-{
-  "name": "@wpsyntex/polylang-components",
-  "version": "1.0.0",
-  "description": "Polylang React Components.",
-  "main": "index.js",
-  "author": "WP Syntex",
-  "license": "GPL-3.0+"
-}
