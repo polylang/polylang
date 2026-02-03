@@ -62,19 +62,19 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 		);
 
 		$public_post_types = get_post_types( array( 'public' => true, '_builtin' => false ) );
-		/** This filter is documented in src/include/model.php */
+		/** This filter is documented in src/model.php */
 		$this->post_types = array_unique( apply_filters( 'pll_get_post_types', $public_post_types, true ) );
 
-		/** This filter is documented in src/include/model.php */
+		/** This filter is documented in src/model.php */
 		$programmatically_active_post_types = array_unique( apply_filters( 'pll_get_post_types', array(), false ) );
 		$this->disabled_post_types = array_intersect( $programmatically_active_post_types, $this->post_types );
 
 		$public_taxonomies = get_taxonomies( array( 'public' => true, '_builtin' => false ) );
 		$public_taxonomies = array_diff( $public_taxonomies, get_taxonomies( array( '_pll' => true ) ) );
-		/** This filter is documented in src/include/model.php */
+		/** This filter is documented in src/model.php */
 		$this->taxonomies = array_unique( apply_filters( 'pll_get_taxonomies', $public_taxonomies, true ) );
 
-		/** This filter is documented in src/include/model.php */
+		/** This filter is documented in src/model.php */
 		$programmatically_active_taxonomies = array_unique( apply_filters( 'pll_get_taxonomies', array(), false ) );
 		$this->disabled_taxonomies = array_intersect( $programmatically_active_taxonomies, $this->taxonomies );
 	}

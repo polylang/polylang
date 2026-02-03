@@ -8,7 +8,7 @@ parameters:
 		- src/
 	excludePaths:
 		- **/load.php
-		- src/include/widget-calendar.php
+		- src/widget-calendar.php
 		- src/install/plugin-updater.php
 		- src/integrations/aqua-resizer/
 		- src/integrations/cache/
@@ -49,19 +49,19 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
 			count: 1
-			path: src/include/model.php
+			path: src/model.php
 
 		# Ignored because the cache is initialized in the constructor.
 		-
 			message: "#^Static property PLL_MO\\:\\:\\$cache \\(PLL_Cache\\<array\\>\\) in empty\\(\\) is not falsy\\.$#"
 			count: 1
-			path: src/include/mo.php
+			path: src/mo.php
 
 		# Ignored because $object_id isn't declared and documented in WP_Term class.
 		-
 			message: "#^Access to an undefined property WP_Term\\:\\:\\$object_id\\.$#"
 			count: 1
-			path: src/include/translatable-object.php
+			path: src/translatable-object.php
 
 
 		# Ignored because the function wp_slash accepts mixed although not documented.
@@ -71,15 +71,15 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$array of function implode expects array, mixed given\\.$#"
 			count: 1
-			path: src/include/Options/Business/Sync.php
+			path: src/Options/Business/Sync.php
 		-
 			message: "#^Parameter \\#2 \\$timestamp of function wp_date expects int\\|null, mixed given\\.$#"
 			count: 1
-			path: src/include/Options/Business/First_Activation.php
+			path: src/Options/Business/First_Activation.php
 		-
 			message: "#^Parameter \\#1 \\$format of function wp_date expects string, mixed given\\.$#"
 			count: 1
-			path: src/include/Options/Business/First_Activation.php
+			path: src/Options/Business/First_Activation.php
 
 		# Ignored because the return type of `PLL_Frontend_Auto_Translate::get_translated_term_by` is always a string in `PLL_Frontend_Auto_Translate::translate_terms_list`.
 		-
