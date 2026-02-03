@@ -157,13 +157,13 @@ class Languages {
 	 *
 	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
 	 *                                not be loaded...
-	 *   @type string $name           Optional. Language name (used only for display). Default to the language name from {@see settings/languages.php}.
-	 *   @type string $slug           Optional. Language code (ideally 2-letters ISO 639-1 language code). Default to the language code from {@see settings/languages.php}.
+	 *   @type string $name           Optional. Language name (used only for display). Default to the language name from {@see src/settings/languages.php}.
+	 *   @type string $slug           Optional. Language code (ideally 2-letters ISO 639-1 language code). Default to the language code from {@see src/settings/languages.php}.
 	 *   @type bool   $rtl            Optional. True if rtl language, false otherwise. Default is false.
 	 *   @type bool   $is_rtl         Optional. True if rtl language, false otherwise. Will be converted to rtl. Default is false.
 	 *   @type int    $term_group     Optional. Language order when displayed. Default is 0.
-	 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
-	 *   @type string $flag_code      Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
+	 *   @type string $flag           Optional. Country code, {@see src/settings/flags.php}.
+	 *   @type string $flag_code      Optional. Country code, {@see src/settings/flags.php}. Will be converted to flag.
 	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language. Default is false.
 	 * }
 	 * @return PLL_Language|WP_Error The object language on success, a `WP_Error` otherwise.
@@ -267,7 +267,7 @@ class Languages {
 		 *                                not be loaded...
 		 *   @type bool   $rtl            True if rtl language, false otherwise.
 		 *   @type int    $term_group     Language order when displayed.
-		 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+		 *   @type string $flag           Optional. Country code, {@see src/settings/flags.php}.
 		 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
 		 * }
 		 */
@@ -294,8 +294,8 @@ class Languages {
 	 *   @type bool   $rtl        Optional. True if rtl language, false otherwise.
 	 *   @type bool   $is_rtl     Optional. True if rtl language, false otherwise. Will be converted to rtl.
 	 *   @type int    $term_group Optional. Language order when displayed.
-	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
-	 *   @type string $flag_code  Optional. Country code, {@see settings/flags.php}. Will be converted to flag.
+	 *   @type string $flag       Optional, country code, {@see src/settings/flags.php}.
+	 *   @type string $flag_code  Optional. Country code, {@see src/settings/flags.php}. Will be converted to flag.
 	 * }
 	 * @return PLL_Language|WP_Error The updated object language on success, a `WP_Error` otherwise.
 	 *
@@ -936,7 +936,7 @@ class Languages {
 	 *   @type int    $term_group Language order when displayed.
 	 *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
 	 *                            created.
-	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+	 *   @type string $flag       Optional, country code, {@see src/settings/flags.php}.
 	 * }
 	 * @return string The serialized description array updated.
 	 *
@@ -987,7 +987,7 @@ class Languages {
 		 *     @type int    $term_group Language order when displayed.
 		 *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
 		 *                              being created.
-		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
+		 *     @type string $flag       Optional, country code, {@see src/settings/flags.php}.
 		 * }
 		 * @param mixed[] $new_data New data.
 		 * @param mixed[] $old_data {
