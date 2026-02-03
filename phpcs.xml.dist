@@ -173,6 +173,10 @@
 
 	<rule ref="Squiz.Commenting.FileComment.MissingPackageTag">
 		<exclude-pattern>*-build.php</exclude-pattern>
+		<exclude-pattern>*.js</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment.SpacingAfterComment">
+		<exclude-pattern>*.js</exclude-pattern>
 	</rule>
 
 	<exclude-pattern>js/*.min.js</exclude-pattern>

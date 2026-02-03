@@ -141,7 +141,7 @@ class PLL_Navigation_Language_Switcher_Block extends PLL_Abstract_Language_Switc
 			'_pll_menu_item',
 			array(
 				'object_subtype' => 'nav_menu_item',
-				'description'    => __( 'Language switcher settings', 'polylang-pro' ),
+				'description'    => __( 'Language switcher settings', 'polylang' ),
 				'single'         => true,
 				'show_in_rest'   => array(
 					'schema' => array(
@@ -230,7 +230,7 @@ class PLL_Navigation_Language_Switcher_Block extends PLL_Abstract_Language_Switc
 					'aria-label',
 					str_replace(
 						static::PLACEHOLDER,
-						__( 'Languages', 'polylang-pro' ),
+						__( 'Languages', 'polylang' ),
 						(string) $content_tags->get_attribute( 'aria-label' )
 					)
 				);

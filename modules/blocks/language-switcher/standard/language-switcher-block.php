@@ -51,7 +51,7 @@ class PLL_Language_Switcher_Block extends PLL_Abstract_Language_Switcher_Block {
 			return '';
 		}
 
-		$aria_label = __( 'Choose a language', 'polylang-pro' );
+		$aria_label = __( 'Choose a language', 'polylang' );
 		if ( $attributes['dropdown'] ) {
 			$switcher_output = '<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $attributes['dropdown'] ) . '">' . esc_html( $aria_label ) . '</label>' . $switcher_output;
 
