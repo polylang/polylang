@@ -10,6 +10,7 @@ parameters:
 		- **/load.php
 		- src/include/widget-calendar.php
 		- src/install/plugin-updater.php
+		- src/integrations/
 	treatPhpDocTypesAsCertain: false
 	stubFiles:
 		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
