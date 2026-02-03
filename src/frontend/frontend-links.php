@@ -139,7 +139,7 @@ class PLL_Frontend_Links extends PLL_Links {
 					$args = array( 'post_type' => $qv['post_type'] );
 					$count = $this->model->count_posts( $language, $args );
 
-					/** This filter is documented in frontend/frontend-links.php */
+					/** This filter is documented in src/frontend/frontend-links.php */
 					if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, $args ) ) {
 						$url = $this->get_archive_url( $language );
 					}
@@ -153,7 +153,7 @@ class PLL_Frontend_Links extends PLL_Links {
 				$args = array_intersect_key( $qv, array_flip( $keys ) );
 				$count = $this->model->count_posts( $language, $args );
 
-				/** This filter is documented in frontend/frontend-links.php */
+				/** This filter is documented in src/frontend/frontend-links.php */
 				if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, $args ) ) {
 					$url = $this->get_archive_url( $language );
 				}

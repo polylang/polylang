@@ -39,7 +39,7 @@ class PLL_Choose_Lang_Domain extends PLL_Choose_Lang_Url {
 	 */
 	public function home_requested() {
 		$this->set_curlang_in_query( $GLOBALS['wp_query'] );
-		/** This action is documented in include/choose-lang.php */
+		/** This action is documented in src/include/choose-lang.php */
 		do_action( 'pll_home_requested' );
 	}
 }

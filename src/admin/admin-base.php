@@ -437,10 +437,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		// Inform that the admin language has been set.
 		if ( $this->curlang instanceof PLL_Language ) {
-			/** This action is documented in frontend/choose-lang.php */
+			/** This action is documented in src/frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
-			/** This action is documented in include/class-polylang.php */
+			/** This action is documented in src/include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 		}
 	}

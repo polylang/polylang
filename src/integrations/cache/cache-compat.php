@@ -46,7 +46,7 @@ class PLL_Cache_Compat {
 		$domain   = ( 2 === PLL()->options['force_lang'] ) ? wp_parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
 		$samesite = ( 3 === PLL()->options['force_lang'] ) ? 'None' : 'Lax';
 
-		/** This filter is documented in include/cookie.php */
+		/** This filter is documented in src/include/cookie.php */
 		$expiration = (int) apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		if ( 0 !== $expiration ) {

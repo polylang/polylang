@@ -163,7 +163,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			if ( in_array( $tax, $this->model->get_filtered_taxonomies() ) ) {
 				$_link = $this->links_model->switch_language_in_link( $link, $this->curlang );
 
-				/** This filter is documented in include/filters-links.php */
+				/** This filter is documented in src/include/filters-links.php */
 				$_link = apply_filters( 'pll_term_link', $_link, $this->curlang, $term );
 			}
 
