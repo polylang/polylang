@@ -451,7 +451,7 @@ class Languages {
 		 *   @type bool   $rtl            True if rtl language, false otherwise.
 		 *   @type int    $term_group     Language order when displayed.
 		 *   @type string $no_default_cat Optional, if set, no default category has been created for this language.
-		 *   @type string $flag           Optional, country code, @see flags.php.
+		 *   @type string $flag           Optional, country code, @see src/settings/flags.php.
 		 * }
 		 * @param PLL_Language $lang Previous value of the language being edited.
 		 */
