@@ -17,14 +17,23 @@ class Javascript_SSR {
 	private $current_language;
 
 	/**
+	 * The default language.
+	 *
+	 * @var PLL_Language
+	 */
+	private $default_language;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.8
 	 *
+	 * @param PLL_Language      $default_language The default language.
 	 * @param PLL_Language|null $current_language The current language.
 	 */
-	public function __construct( ?PLL_Language &$current_language = null ) {
+	public function __construct( PLL_Language $default_language, ?PLL_Language &$current_language = null ) {
 		$this->current_language = &$current_language;
+		$this->default_language = $default_language;
 	}
 
 	/**
@@ -35,23 +44,23 @@ class Javascript_SSR {
 	 * @return void
 	 */
 	public function init() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_js_variable' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'render_js_variable' ) );
 	}
 
 	/**
-	 * Adds current language slug JavaScript variable to the block editor.
+	 * Adds current language slug JavaScript variable to the editors.
 	 *
 	 * @since 3.8
 	 *
 	 * @return void
 	 */
-	public function add_js_variable() {
-		if ( ! $this->current_language ) {
-			return;
-		}
+	public function render_js_variable() {
+		// Fallback to default language if current language is not set, usually happens in Site Editor.
+		$current_language_slug = $this->current_language ? $this->current_language->slug : $this->default_language->slug;
 
-		$pll_settings_script = 'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $this->current_language->slug );
+		$pll_settings_script = 'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language_slug );
 
-		wp_add_inline_script( 'pll_block-editor', $pll_settings_script, 'after' ); // Script handle matching the one in `admin-base.php~$scripts['block-editor']`
+		// Script handles matches the one for Polylang blocks.
+		wp_add_inline_script( 'pll_blocks', $pll_settings_script, 'after' );
 	}
 }
