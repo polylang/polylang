@@ -394,6 +394,7 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		/**
 		 * Filters the list of predefined languages.
+		 *
 		 * @see src/settings/languages.php the list of predefined languages.
 		 *
 		 * @since 1.7.10
