@@ -22,13 +22,7 @@
 	"prefer-stable": true,
 	"autoload": {
 		"classmap": [
-			"admin/",
-			"frontend/",
-			"include/",
-			"integrations/",
-			"install/",
-			"modules/",
-			"settings/"
+            "src/"
 		],
 		"psr-4": {
 			"WP_Syntex\\Polylang\\Script\\": "bin/"
@@ -70,8 +64,8 @@
 		"dist": "bin/distribute.sh",
 		"build-loader": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
 		"post-autoload-dump": [
-			"@build-loader ./integrations",
-			"@build-loader ./modules"
+			"@build-loader ./src/integrations",
+			"@build-loader ./src/modules"
 		]
 	},
 	"scripts-descriptions": {

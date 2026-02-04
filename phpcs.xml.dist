@@ -185,6 +185,6 @@
 
 	<!-- Specific to Polylang -->
 	<exclude-pattern>bin/*.php</exclude-pattern>
-	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
-	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
+	<exclude-pattern>src/install/plugin-updater.php</exclude-pattern>
+	<exclude-pattern>src/widget-calendar.php</exclude-pattern>
 </ruleset>

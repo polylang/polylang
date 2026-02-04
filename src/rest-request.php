@@ -127,10 +127,10 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		if ( ! empty( $this->curlang ) ) {
-			/** This action is documented in frontend/choose-lang.php */
+			/** This action is documented in src/frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
-			/** This action is documented in include/class-polylang.php */
+			/** This action is documented in src/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 		}
 

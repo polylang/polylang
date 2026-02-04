@@ -393,11 +393,12 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		/**
-		 * Filter the list of predefined languages
+		 * Filters the list of predefined languages.
+		 *
+		 * @see src/settings/languages.php the list of predefined languages.
 		 *
 		 * @since 1.7.10
-		 * @since 2.3 The languages arrays use associative keys instead of numerical keys
-		 * @see https://github.com/polylang/polylang/blob/2.8.2/settings/languages.php the list of predefined languages
+		 * @since 2.3 The languages arrays use associative keys instead of numerical keys.
 		 *
 		 * @param array $languages
 		 */

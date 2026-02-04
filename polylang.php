@@ -76,7 +76,7 @@ if ( ! empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Secur
 	return;
 }
 
-require __DIR__ . '/include/constant-functions.php';
+require POLYLANG_DIR . '/src/constant-functions.php';
 if ( ! PLL_Usable::can_activate() ) {
 	// WP version or php version is too old.
 	return;

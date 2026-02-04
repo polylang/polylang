@@ -47,7 +47,7 @@ class Test_Object_Cache extends PLL_Object_Cache_TestCase {
 		$this->assertSame( 'fr', $object_cache_languages[1]['slug'], 'The second language should be fr.' );
 
 		// Let's mess around and create a new language. We have to manually create the language to use only one instance of the model.
-		$languages        = include POLYLANG_DIR . '/settings/languages.php';
+		$languages        = include POLYLANG_DIR . '/src/settings/languages.php';
 		$de               = $languages['de_DE'];
 		$de['slug']       = $de['code'];
 		$de['rtl']        = 0;

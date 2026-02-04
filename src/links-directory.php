@@ -223,7 +223,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			// Rewrite rules filtered by language.
 			elseif ( in_array( $filter, $this->always_rewrite ) || in_array( $filter, $this->model->get_filtered_taxonomies() ) || ( $cpts && preg_match( $cpts, $rule, $matches ) && ! strpos( $rule, 'name=' ) ) || ( 'rewrite_rules_array' != $filter && $this->options['force_lang'] ) ) {
 
-				/** This filter is documented in include/links-directory.php */
+				/** This filter is documented in src/links-directory.php */
 				if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $key => $rule ), $filter, empty( $matches[1] ) ? false : $matches[1] ) ) {
 					if ( isset( $slug ) ) {
 						$newrules[ $slug . str_replace( $wp_rewrite->root, '', ltrim( $key, '^' ) ) ] = str_replace(

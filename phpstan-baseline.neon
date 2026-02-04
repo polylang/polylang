@@ -4,1349 +4,1349 @@ parameters:
 			message: '#^@param PLL_Language \$pref_lang does not accept actual type of parameter\: PLL_Language\|false\.$#'
 			identifier: parameter.phpDocType
 			count: 1
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 4
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Parameter \#1 \$post_type of method PLL_Model\:\:is_translated_post_type\(\) expects array\<string\>\|string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Property PLL_Admin_Base\:\:\$curlang \(PLL_Language\|null\) does not accept PLL_Language\|false\.$#'
 			identifier: assign.propertyType
 			count: 2
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Property PLL_Admin_Base\:\:\$curlang \(PLL_Language\|null\) does not accept PLL_Language\|false\|null\.$#'
 			identifier: assign.propertyType
 			count: 2
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Property PLL_Admin_Base\:\:\$filter_lang \(PLL_Language\|null\) does not accept PLL_Language\|false\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Property PLL_Admin_Base\:\:\$pref_lang \(PLL_Language\|null\) does not accept PLL_Language\|false\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin-base.php
+			path: src/admin/admin-base.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Translated_Object\:\:get_translation\(\) expects PLL_Language\|string, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-classic-editor.php
+			path: src/admin/admin-classic-editor.php
 
 		-
 			message: '#^Parameter \#2 \$untranslated_in of method PLL_Translated_Post\:\:get_untranslated\(\) expects PLL_Language, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-classic-editor.php
+			path: src/admin/admin-classic-editor.php
 
 		-
 			message: '#^Parameter \#3 \$lang of method PLL_Translated_Post\:\:get_untranslated\(\) expects PLL_Language, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-classic-editor.php
+			path: src/admin/admin-classic-editor.php
 
 		-
 			message: '#^Parameter \#4 \$search of method PLL_Translated_Post\:\:get_untranslated\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-classic-editor.php
+			path: src/admin/admin-classic-editor.php
 
 		-
 			message: '#^Parameter \#1 \$location of function wp_safe_redirect expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-media.php
+			path: src/admin/admin-filters-media.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 2
-			path: admin/admin-filters-post.php
+			path: src/admin/admin-filters-post.php
 
 		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''intval'' given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-post.php
+			path: src/admin/admin-filters-post.php
 
 		-
 			message: '#^Parameter \#1 \$lang of method PLL_Query\:\:filter_query\(\) expects PLL_Language\|false, PLL_Language\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-post.php
+			path: src/admin/admin-filters-post.php
 
 		-
 			message: '#^Parameter \#1 \$posts of function update_post_caches expects array\<WP_Post\>, array\<WP_Post\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-post.php
+			path: src/admin/admin-filters-post.php
 
 		-
 			message: '#^Cannot access offset non\-empty\-string on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Cannot access offset string on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|false\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Cannot call method is_default_term\(\) on PLL_Admin_Default_Term\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 6
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''absint'' given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Parameter \#1 \$post_type of function post_type_exists expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 2
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Parameter \#1 \$value of function intval expects array\|bool\|float\|int\|resource\|string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Translated_Object\:\:get_translation\(\) expects PLL_Language\|string, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 3
-			path: admin/admin-filters-term.php
+			path: src/admin/admin-filters-term.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translated_Object\:\:get_translations\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters.php
+			path: src/admin/admin-filters.php
 
 		-
 			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters.php
+			path: src/admin/admin-filters.php
 
 		-
 			message: '#^Parameter \#4 \.\.\.\$values of function printf expects bool\|float\|int\|string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-filters.php
+			path: src/admin/admin-filters.php
 
 		-
 			message: '#^Cannot access an offset on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: admin/admin-notices.php
+			path: src/admin/admin-notices.php
 
 		-
 			message: '#^Parameter \#1 \$array of function array_unique expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-notices.php
+			path: src/admin/admin-notices.php
 
 		-
 			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-notices.php
+			path: src/admin/admin-notices.php
 
 		-
 			message: '#^Parameter \#2 \$haystack of function in_array expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 2
-			path: admin/admin-notices.php
+			path: src/admin/admin-notices.php
 
 		-
 			message: '#^Parameter \#2 \.\.\.\$arrays of function array_diff expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-notices.php
+			path: src/admin/admin-notices.php
 
 		-
 			message: '#^Cannot call method get_new_post_translation_link\(\) on PLL_Admin_Links\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: admin/admin-static-pages.php
+			path: src/admin/admin-static-pages.php
 
 		-
 			message: '#^Parameter \#1 \$polylang of method PLL_Static_Pages\:\:__construct\(\) expects PLL_Base, object given\.$#'
 			identifier: argument.type
 			count: 1
-			path: admin/admin-static-pages.php
+			path: src/admin/admin-static-pages.php
 
 		-
 			message: '#^Offset ''widget_text'' might not exist on array\<string\>\|null\.$#'
 			identifier: offsetAccess.notFound
 			count: 2
-			path: admin/admin-strings.php
+			path: src/admin/admin-strings.php
 
 		-
 			message: '#^Offset ''widget_title'' might not exist on array\<string\>\|null\.$#'
 			identifier: offsetAccess.notFound
 			count: 2
-			path: admin/admin-strings.php
+			path: src/admin/admin-strings.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$block_editor \(PLL_Admin_Block_Editor\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$classic_editor \(PLL_Admin_Classic_Editor\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$filters \(PLL_Admin_Filters\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$filters_columns \(PLL_Admin_Filters_Columns\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$filters_media \(PLL_Admin_Filters_Media\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$filters_post \(PLL_Admin_Filters_Post\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$filters_term \(PLL_Admin_Filters_Term\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Property PLL_Admin\:\:\$nav_menu \(PLL_Admin_Nav_Menu\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: admin/admin.php
+			path: src/admin/admin.php
 
 		-
 			message: '#^Method PLL_Canonical\:\:get_queried_term_id\(\) should return int but returns mixed\.$#'
 			identifier: return.type
 			count: 1
-			path: frontend/canonical.php
+			path: src/frontend/canonical.php
 
 		-
 			message: '#^Parameter \#1 \$args of function get_terms expects array\{taxonomy\?\: array\<string\>\|string, object_ids\?\: array\<int\>\|int, orderby\?\: string, order\?\: string, hide_empty\?\: bool\|int, include\?\: array\<int\>\|string, exclude\?\: array\<int\>\|string, exclude_tree\?\: array\<int\>\|string, \.\.\.\}, non\-empty\-array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/canonical.php
+			path: src/frontend/canonical.php
 
 		-
 			message: '#^Method PLL_Choose_Lang_Domain\:\:get_preferred_language\(\) should return PLL_Language but returns PLL_Language\|false\.$#'
 			identifier: return.type
 			count: 1
-			path: frontend/choose-lang-domain.php
+			path: src/frontend/choose-lang-domain.php
 
 		-
 			message: '#^Parameter \#1 \$query of method PLL_Choose_Lang\:\:set_curlang_in_query\(\) expects WP_Query, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/choose-lang-domain.php
+			path: src/frontend/choose-lang-domain.php
 
 		-
 			message: '#^Parameter \#1 \$query of method PLL_Choose_Lang\:\:set_curlang_in_query\(\) expects WP_Query, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/choose-lang.php
+			path: src/frontend/choose-lang.php
 
 		-
 			message: '#^Parameter \#1 \$term_id of method PLL_Frontend_Auto_Translate\:\:get_term\(\) expects int, int\|string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-auto-translate.php
+			path: src/frontend/frontend-auto-translate.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Translated_Object\:\:get\(\) expects int\|PLL_Language\|string, PLL_Language\|null given\.$#'
 			identifier: argument.type
 			count: 2
-			path: frontend/frontend-auto-translate.php
+			path: src/frontend/frontend-auto-translate.php
 
 		-
 			message: '#^Parameter \#2 \$term of method PLL_Frontend_Auto_Translate\:\:get_translated_term_by\(\) expects int\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-auto-translate.php
+			path: src/frontend/frontend-auto-translate.php
 
 		-
 			message: '#^Cannot call method get_home_url\(\) on PLL_Frontend_Links\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: frontend/frontend-filters-links.php
+			path: src/frontend/frontend-filters-links.php
 
 		-
 			message: '#^Cannot call method get_translation_url\(\) on PLL_Frontend_Links\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: frontend/frontend-filters-links.php
+			path: src/frontend/frontend-filters-links.php
 
 		-
 			message: '#^Parameter \#1 \$post_type of method PLL_Model\:\:is_translated_post_type\(\) expects array\<string\>\|string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-filters-links.php
+			path: src/frontend/frontend-filters-links.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Links_Model\:\:switch_language_in_link\(\) expects PLL_Language, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-filters-links.php
+			path: src/frontend/frontend-filters-links.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Links_Model\:\:switch_language_in_link\(\) expects PLL_Language, PLL_Language\|null given\.$#'
 			identifier: argument.type
 			count: 3
-			path: frontend/frontend-filters-links.php
+			path: src/frontend/frontend-filters-links.php
 
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: frontend/frontend-filters-search.php
+			path: src/frontend/frontend-filters-search.php
 
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: frontend/frontend-filters-widgets.php
+			path: src/frontend/frontend-filters-widgets.php
 
 		-
 			message: '#^Cannot access property \$locale on PLL_Language\|null\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: frontend/frontend-filters.php
+			path: src/frontend/frontend-filters.php
 
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: frontend/frontend-filters.php
+			path: src/frontend/frontend-filters.php
 
 		-
 			message: '#^Method PLL_Frontend_Filters\:\:get_user_metadata\(\) should return string\|null but returns mixed\.$#'
 			identifier: return.type
 			count: 1
-			path: frontend/frontend-filters.php
+			path: src/frontend/frontend-filters.php
 
 		-
 			message: '#^Method PLL_Frontend_Filters\:\:option_sticky_posts\(\) should return array\<int\> but returns array\<mixed, mixed\>\.$#'
 			identifier: return.type
 			count: 1
-			path: frontend/frontend-filters.php
+			path: src/frontend/frontend-filters.php
 
 		-
 			message: '#^Access to an undefined property WP_Post\|WP_Post_Type\|WP_Term\|WP_User\:\:\$taxonomy\.$#'
 			identifier: property.notFound
 			count: 7
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Access to an undefined property WP_Post\|WP_Post_Type\|WP_Term\|WP_User\:\:\$term_id\.$#'
 			identifier: property.notFound
 			count: 2
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Cannot access property \$name on WP_Taxonomy\|false\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Parameter \#1 \$input_list of function wp_list_pluck expects array, array\<int, WP_Term\>\|WP_Error given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Parameter \#1 \$language of method PLL_Links\:\:get_home_url\(\) expects PLL_Language\|string, PLL_Language\|string\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Parameter \#1 \$term of function get_term_link expects int\|string\|WP_Term, WP_Post\|WP_Post_Type\|WP_Term\|WP_User given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Parameter \#2 \$haystack of function array_search expects array, array\<int, string\>\|WP_Error given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-links.php
+			path: src/frontend/frontend-links.php
 
 		-
 			message: '#^Method PLL_Frontend_Nav_Menu\:\:get_ancestors\(\) should return array\<int\> but returns list\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
-			path: frontend/frontend-nav-menu.php
+			path: src/frontend/frontend-nav-menu.php
 
 		-
 			message: '#^Parameter \#1 \$links of method PLL_Switcher\:\:the_languages\(\) expects PLL_Links, PLL_Admin_Links\|PLL_Frontend_Links\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-nav-menu.php
+			path: src/frontend/frontend-nav-menu.php
 
 		-
 			message: '#^Parameter \#1 \$post_id of function get_post_meta expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-nav-menu.php
+			path: src/frontend/frontend-nav-menu.php
 
 		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
 			count: 5
-			path: frontend/frontend-nav-menu.php
+			path: src/frontend/frontend-nav-menu.php
 
 		-
 			message: '#^Cannot access property \$is_posts_page on mixed\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Cannot access property \$page_on_front on PLL_Language\|null\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Cannot call method get_home_url\(\) on PLL_Frontend_Links\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
 			identifier: unset.possiblyHookedProperty
 			count: 2
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Parameter \#2 \$page of method PLL_Links_Model\:\:add_paged_to_link\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Parameter &\$polylang by\-ref type of method PLL_Frontend_Static_Pages\:\:__construct\(\) expects PLL_Frontend, PLL_Base given\.$#'
 			identifier: parameterByRef.type
 			count: 1
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Property WP_Query\:\:\$queried_object_id \(int\) in isset\(\) is not nullable\.$#'
 			identifier: isset.property
 			count: 1
-			path: frontend/frontend-static-pages.php
+			path: src/frontend/frontend-static-pages.php
 
 		-
 			message: '#^Cannot access property \$queried_terms on WP_Tax_Query\|null\.$#'
 			identifier: property.nonObject
 			count: 3
-			path: frontend/frontend.php
+			path: src/frontend/frontend.php
 
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: frontend/frontend.php
+			path: src/frontend/frontend.php
 
 		-
 			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
 			identifier: unset.possiblyHookedProperty
 			count: 1
-			path: frontend/frontend.php
+			path: src/frontend/frontend.php
 
 		-
 			message: '#^Property PLL_Frontend\:\:\$curlang \(PLL_Language\|null\) does not accept PLL_Language\|false\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: frontend/frontend.php
+			path: src/frontend/frontend.php
 
 		-
 			message: '#^@param array\<array\<string\>\|int\> \$tr does not accept actual type of parameter\: array\<mixed\>\.$#'
 			identifier: parameter.phpDocType
 			count: 1
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 2
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot access offset ''callback'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot access offset ''number'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot access offset ''params'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot access offset ''term_props'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot access offset 0 on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot access property \$is_default on mixed\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Cannot call method get_tax_prop\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, array\{PLL_Language_Factory, ''get''\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Parameter \#1 \$languages of method WP_Syntex\\Polylang\\Model\\Languages\:\:maybe_convert_list\(\) expects array\<PLL_Language\>, list\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/Model/Languages.php
+			path: src/Model/Languages.php
 
 		-
 			message: '#^Method WP_Syntex\\Polylang\\Options\\Abstract_Option\:\:get_language_terms\(\) should return list\<WP_Term\> but returns array\<int, WP_Term\>\.$#'
 			identifier: return.type
 			count: 1
-			path: include/Options/Abstract_Option.php
+			path: src/Options/Abstract_Option.php
 
 		-
 			message: '#^Cannot access offset ''polylang'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/Options/Business/Sync.php
+			path: src/Options/Business/Sync.php
 
 		-
 			message: '#^Function PLL\(\) should return PLL_Admin\|PLL_Frontend\|PLL_REST_Request\|PLL_Settings but returns mixed\.$#'
 			identifier: return.type
 			count: 1
-			path: include/api.php
+			path: src/api.php
 
 		-
 			message: '#^Cannot access offset ''pll_string'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 3
-			path: include/base.php
+			path: src/base.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between ''pll_language'' and false will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
-			path: include/cookie.php
+			path: src/cookie.php
 
 		-
 			message: '#^Cannot access offset ''term_id'' on array\{term_id\: int, term_taxonomy_id\: int\|string\}\|WP_Error\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|false\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 2
-			path: include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translated_Object\:\:get_translations\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Translated_Term\:\:set_language\(\) expects int\|PLL_Language\|string, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 2
-			path: include/default-term.php
+			path: src/default-term.php
 
 		-
 			message: '#^@param PLL_Language \$lang does not accept actual type of parameter\: PLL_Language\|false\.$#'
 			identifier: parameter.phpDocType
 			count: 2
-			path: include/filters-links.php
+			path: src/filters-links.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Links_Model\:\:switch_language_in_link\(\) expects PLL_Language, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 4
-			path: include/filters-links.php
+			path: src/filters-links.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Links_Model\:\:switch_language_in_link\(\) expects PLL_Language, PLL_Language\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/filters-links.php
+			path: src/filters-links.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translated_Object\:\:get_translations\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/filters.php
+			path: src/filters.php
 
 		-
 			message: '#^Parameter \#1 \$string of function pll__ expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/filters.php
+			path: src/filters.php
 
 		-
 			message: '#^Binary operation "\." between ''http\://'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
-			path: include/functions.php
+			path: src/functions.php
 
 		-
 			message: '#^Found usage of constant DOING_CRON\. Use wp_doing_cron\(\) instead\.$#'
 			identifier: phpstanWP.wpConstant.fetch
 			count: 1
-			path: include/functions.php
+			path: src/functions.php
 
 		-
 			message: '#^Parameter \#1 \$flag_code of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/language-factory.php
+			path: src/language-factory.php
 
 		-
 			message: '#^Parameter \#2 \$name of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/language-factory.php
+			path: src/language-factory.php
 
 		-
 			message: '#^Parameter \#3 \$slug of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/language-factory.php
+			path: src/language-factory.php
 
 		-
 			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/language-factory.php
+			path: src/language-factory.php
 
 		-
 			message: '#^Parameter \#4 \$locale of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/language-factory.php
+			path: src/language-factory.php
 
 		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
 			count: 4
-			path: include/language-factory.php
+			path: src/language-factory.php
 
 		-
 			message: '#^@readonly property cannot have a default value\.$#'
 			identifier: property.readOnlyByPhpDocDefaultValue
 			count: 7
-			path: include/language.php
+			path: src/language.php
 
 		-
 			message: '#^PHPDoc tag @var with type array\{tax\: non\-empty\-string, field\: ''count''\|''term_id''\|''term_taxonomy_id''\} is not subtype of native type array\{0\: non\-falsy\-string, tax\: non\-empty\-string, 1\: non\-empty\-string, field\: ''count''\|''term_id''\|''term_taxonomy_id'', 2\: ''count''\|''term_id''\|''term_taxonomy_id''\}\.$#'
 			identifier: varTag.nativeType
 			count: 1
-			path: include/language.php
+			path: src/language.php
 
 		-
 			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/language.php
+			path: src/language.php
 
 		-
 			message: '#^Property PLL_Language\:\:\$fallbacks \(list\<non\-empty\-string\>\) does not accept array\<non\-empty\-string\>\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: include/language.php
+			path: src/language.php
 
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
 			count: 1
-			path: include/license.php
+			path: src/license.php
 
 		-
 			message: '#^Cannot unset property PLL_License\:\:\$license_data because it might have hooks in a subclass\.$#'
 			identifier: unset.possiblyHookedProperty
 			count: 1
-			path: include/license.php
+			path: src/license.php
 
 		-
 			message: '#^Parameter \#1 \$format of function date_i18n expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 3
-			path: include/license.php
+			path: src/license.php
 
 		-
 			message: '#^Method PLL_Links_Directory\:\:add_language_to_link\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: include/links-directory.php
+			path: src/links-directory.php
 
 		-
 			message: '#^Method PLL_Links_Directory\:\:remove_language_from_link\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: include/links-directory.php
+			path: src/links-directory.php
 
 		-
 			message: '#^Parameter \#1 \$str of function preg_quote expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 2
-			path: include/links-directory.php
+			path: src/links-directory.php
 
 		-
 			message: '#^Method PLL_Links_Domain\:\:add_language_to_link\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: include/links-domain.php
+			path: src/links-domain.php
 
 		-
 			message: '#^Method PLL_Links_Domain\:\:remove_language_from_link\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: include/links-domain.php
+			path: src/links-domain.php
 
 		-
 			message: '#^Parameter \#1 \$model of method PLL_Links_Abstract_Domain\:\:__construct\(\) expects PLL_Model, object given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/links-domain.php
+			path: src/links-domain.php
 
 		-
 			message: '#^Method PLL_Links_Model\:\:get_hosts\(\) should return array\<string\> but returns array\<int, string\|false\|null\>\.$#'
 			identifier: return.type
 			count: 1
-			path: include/links-model.php
+			path: src/links-model.php
 
 		-
 			message: '#^@param string \$modified_url does not accept actual type of parameter\: string\|null\.$#'
 			identifier: parameter.phpDocType
 			count: 1
-			path: include/links-permalinks.php
+			path: src/links-permalinks.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/links-permalinks.php
+			path: src/links-permalinks.php
 
 		-
 			message: '#^Parameter \#2 \$subject of function preg_match expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/links-permalinks.php
+			path: src/links-permalinks.php
 
 		-
 			message: '#^Method PLL_Links_Subdomain\:\:remove_language_from_link\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: include/links-subdomain.php
+			path: src/links-subdomain.php
 
 		-
 			message: '#^Cannot access offset 0 on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/mo.php
+			path: src/mo.php
 
 		-
 			message: '#^Cannot access offset 1 on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/mo.php
+			path: src/mo.php
 
 		-
 			message: '#^Parameter \#1 \$original of method MO\:\:make_entry\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/mo.php
+			path: src/mo.php
 
 		-
 			message: '#^Parameter \#2 \$translation of method MO\:\:make_entry\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/mo.php
+			path: src/mo.php
 
 		-
 			message: '#^Method PLL_Model\:\:count_posts\(\) should return int\<0, max\> but returns mixed\.$#'
 			identifier: return.type
 			count: 1
-			path: include/model.php
+			path: src/model.php
 
 		-
 			message: '#^Method PLL_Model\:\:get_links_model\(\) should return PLL_Links_Model but returns object\.$#'
 			identifier: return.type
 			count: 1
-			path: include/model.php
+			path: src/model.php
 
 		-
 			message: '#^Property PLL_Nav_Menu\:\:\$theme \(string\) does not accept mixed\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: include/nav-menu.php
+			path: src/nav-menu.php
 
 		-
 			message: '#^Cannot access offset ''operator'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/query.php
+			path: src/query.php
 
 		-
 			message: '#^Cannot access offset ''taxonomy'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: include/query.php
+			path: src/query.php
 
 		-
 			message: '#^Parameter \#1 \$tax of method PLL_Model\:\:is_translated_taxonomy\(\) expects array\<string\>\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/query.php
+			path: src/query.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translatable_Object\:\:get_language\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/rest-request.php
+			path: src/rest-request.php
 
 		-
 			message: '#^Cannot access property \$model on PLL_Links\|null\.$#'
 			identifier: property.nonObject
 			count: 5
-			path: include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: '#^Cannot access property \$options on PLL_Links\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: '#^Cannot call method get_home_url\(\) on PLL_Links\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: '#^Method PLL_Switcher\:\:get_link\(\) should return string\|null but returns string\|false\.$#'
 			identifier: return.type
 			count: 2
-			path: include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: '#^Parameter \#1 \$language of method PLL_Switcher\:\:get_link\(\) expects PLL_Language, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/switcher.php
+			path: src/switcher.php
 
 		-
 			message: '#^Method PLL_Translatable_Object\:\:query_objects_with_no_lang\(\) should return array\<string\> but returns array\<mixed, mixed\>\.$#'
 			identifier: return.type
 			count: 1
-			path: include/translatable-object.php
+			path: src/translatable-object.php
 
 		-
 			message: '#^Cannot access offset ''pll_string'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: '#^Method PLL_Translate_Option\:\:translate_string_recursive\(\) should return array\|string but returns array\|string\|Traversable\.$#'
 			identifier: return.type
 			count: 1
-			path: include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: '#^Parameter \#1 \$singular of method Translations\:\:translate\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: '#^Parameter \#1 \$string of function pll__ expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
 			count: 1
-			path: include/translate-option.php
+			path: src/translate-option.php
 
 		-
 			message: '#^Method PLL_Translated_Object\:\:get_raw_objects_translations\(\) should return array\<int, array\<non\-empty\-string, int\<1, max\>\>\> but returns array\<int, array\<mixed\>\>\.$#'
 			identifier: return.type
 			count: 1
-			path: include/translated-object.php
+			path: src/translated-object.php
 
 		-
 			message: '#^Parameter \#1 \$translations of method PLL_Translated_Object\:\:validate_translations\(\) expects array\<int\>, array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/translated-object.php
+			path: src/translated-object.php
 
 		-
 			message: '#^Parameter \#3 \$args of function wp_insert_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/translated-object.php
+			path: src/translated-object.php
 
 		-
 			message: '#^Parameter \#3 \$args of function wp_update_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
 			identifier: argument.type
 			count: 2
-			path: include/translated-object.php
+			path: src/translated-object.php
 
 		-
 			message: '#^Cannot access property \$posts on mixed\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: include/translated-post.php
+			path: src/translated-post.php
 
 		-
 			message: '#^Cannot call method add_query_var\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: include/translated-post.php
+			path: src/translated-post.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translated_Object\:\:get_translation\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/translated-post.php
+			path: src/translated-post.php
 
 		-
 			message: '#^Cannot access property \$term_taxonomy on mixed\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: include/translated-term.php
+			path: src/translated-term.php
 
 		-
 			message: '#^Parameter \#3 \$args of function wp_insert_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/translated-term.php
+			path: src/translated-term.php
 
 		-
 			message: '#^Parameter \#2 \$max_depth of method Walker\:\:walk\(\) expects int, array\|int given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/walker-dropdown.php
+			path: src/walker-dropdown.php
 
 		-
 			message: '#^Parameter \#2 \$max_depth of method Walker\:\:walk\(\) expects int, array\|int given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/walker-list.php
+			path: src/walker-list.php
 
 		-
 			message: '#^Parameter \#1 \$text of function esc_attr expects string, bool\|string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: include/widget-languages.php
+			path: src/widget-languages.php
 
 		-
 			message: '#^Access to an undefined property object\:\:\$_last_checked\.$#'
 			identifier: property.notFound
 			count: 1
-			path: install/t15s.php
+			path: src/install/t15s.php
 
 		-
 			message: '#^Cannot access offset ''slug'' on object\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: install/t15s.php
+			path: src/install/t15s.php
 
 		-
 			message: '#^Cannot access property \$translations on array\|stdClass\|true\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: install/t15s.php
+			path: src/install/t15s.php
 
 		-
 			message: '#^Method PLL_T15S\:\:site_transient_update_plugins\(\) should return array\|bool but returns array\|stdClass\|true\.$#'
 			identifier: return.type
 			count: 2
-			path: install/t15s.php
+			path: src/install/t15s.php
 
 		-
 			message: '#^Cannot access offset ''context'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: install/upgrade.php
+			path: src/install/upgrade.php
 
 		-
 			message: '#^Cannot access offset ''name'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: install/upgrade.php
+			path: src/install/upgrade.php
 
 		-
 			message: '#^Cannot access offset 0 on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: install/upgrade.php
+			path: src/install/upgrade.php
 
 		-
 			message: '#^Cannot access offset 1 on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: install/upgrade.php
+			path: src/install/upgrade.php
 
 		-
 			message: '#^Part \$context \(mixed\) of encapsed string cannot be cast to string\.$#'
 			identifier: encapsedStringPart.nonString
 			count: 1
-			path: install/upgrade.php
+			path: src/install/upgrade.php
 
 		-
 			message: '#^Part \$name \(mixed\) of encapsed string cannot be cast to string\.$#'
 			identifier: encapsedStringPart.nonString
 			count: 1
-			path: install/upgrade.php
+			path: src/install/upgrade.php
 
 		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: modules/site-health/admin-site-health.php
+			path: src/modules/site-health/admin-site-health.php
 
 		-
 			message: '#^Cannot call method get_must_translate_message\(\) on PLL_Admin_Static_Pages\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: modules/site-health/admin-site-health.php
+			path: src/modules/site-health/admin-site-health.php
 
 		-
 			message: '#^Parameter \#1 \$name of method WP_Sitemaps_Provider\:\:get_sitemap_url\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sitemaps/multilingual-sitemaps-provider.php
+			path: src/modules/sitemaps/multilingual-sitemaps-provider.php
 
 		-
 			message: '#^Offset ''file'' might not exist on array\{function\: string, line\?\: int, file\?\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: list\<mixed\>, object\?\: object\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 2
-			path: modules/sync/admin-sync.php
+			path: src/modules/sync/admin-sync.php
 
 		-
 			message: '#^Offset ''line'' might not exist on array\{function\: string, line\?\: int, file\?\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: list\<mixed\>, object\?\: object\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 2
-			path: modules/sync/admin-sync.php
+			path: src/modules/sync/admin-sync.php
 
 		-
 			message: '#^Parameter \#1 \$array of function array_diff expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/admin-sync.php
+			path: src/modules/sync/admin-sync.php
 
 		-
 			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/admin-sync.php
+			path: src/modules/sync/admin-sync.php
 
 		-
 			message: '#^Parameter \#1 \$data of function maybe_serialize expects array\<mixed\>\|object\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 2
-			path: modules/sync/sync-metas.php
+			path: src/modules/sync/sync-metas.php
 
 		-
 			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/sync-metas.php
+			path: src/modules/sync/sync-metas.php
 
 		-
 			message: '#^@param int \$from does not accept actual type of parameter\: int\|null\.$#'
 			identifier: parameter.phpDocType
 			count: 1
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^@param int \$to does not accept actual type of parameter\: int\|null\.$#'
 			identifier: parameter.phpDocType
 			count: 1
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^@param string \$lang does not accept actual type of parameter\: string\|null\.$#'
 			identifier: parameter.phpDocType
 			count: 1
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^Parameter \#1 \$input_list of function wp_list_pluck expects array, array\<WP_Term\>\|WP_Error given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^Parameter \#1 \$input_list of function wp_list_pluck expects array, array\<WP_Term\>\|WP_Error\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^Parameter \#2 \$lang of method PLL_Translated_Object\:\:get_translation\(\) expects PLL_Language\|string, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 2
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^Parameter \#2 \$object_type of function update_object_term_cache expects array\<string\>\|string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/sync-tax.php
+			path: src/modules/sync/sync-tax.php
 
 		-
 			message: '#^Parameter \#2 \$post of method PLL_Sync\:\:pll_save_post\(\) expects WP_Post, WP_Post\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/sync/sync.php
+			path: src/modules/sync/sync.php
 
 		-
 			message: '#^Cannot access offset mixed on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Cannot access property \$name on PLL_Language\|false\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Method PLL_Wizard\:\:wizard_notice\(\) should return string but returns string\|false\.$#'
 			identifier: return.type
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''sanitize_locale_name'' given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translated_Object\:\:get_translations\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Property PLL_Wizard\:\:\$current_step \(string\|null\) does not accept int\|string\|false\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: modules/wizard/wizard.php
+			path: src/modules/wizard/wizard.php
 
 		-
 			message: '#^Method PLL_WPML_API\:\:wpml_is_rtl\(\) should return bool but returns string\|false\.$#'
 			identifier: return.type
 			count: 1
-			path: modules/wpml/wpml-api.php
+			path: src/modules/wpml/wpml-api.php
 
 		-
 			message: '#^Static property PLL_WPML_API\:\:\$original_language \(PLL_Language\|null\) does not accept PLL_Language\|false\|null\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: modules/wpml/wpml-api.php
+			path: src/modules/wpml/wpml-api.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
-			path: modules/wpml/wpml-legacy-api.php
+			path: src/modules/wpml/wpml-legacy-api.php
 
 		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
 			count: 2
-			path: modules/wpml/wpml-legacy-api.php
+			path: src/modules/wpml/wpml-legacy-api.php
 
 		-
 			message: '#^Parameter \#1 \$args of method WP_Ajax_Response\:\:add\(\) expects array\{what\?\: string, action\?\: string\|false, id\?\: int\|WP_Error, old_id\?\: int\|false, position\?\: string, data\?\: string\|WP_Error, supplemental\?\: array\}, array\{what\: ''success'', data\: string\|false\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/settings-licenses.php
+			path: src/settings/settings-licenses.php
 
 		-
 			message: '#^Method PLL_Settings_Module\:\:get_form\(\) should return string but returns string\|false\.$#'
 			identifier: return.type
 			count: 1
-			path: settings/settings-module.php
+			path: src/settings/settings-module.php
 
 		-
 			message: '#^Parameter \#1 \$id of method PLL_Translatable_Object\:\:get_language\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/settings-url.php
+			path: src/settings/settings-url.php
 
 		-
 			message: '#^Parameter \#1 \$post of function _get_page_link expects int\|WP_Post, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/settings-url.php
+			path: src/settings/settings-url.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 3
-			path: settings/settings.php
+			path: src/settings/settings.php
 
 		-
 			message: '#^Property PLL_Settings\:\:\$modules \(array\<PLL_Settings_Module\>\|null\) does not accept array\<object\>\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: settings/settings.php
+			path: src/settings/settings.php
 
 		-
 			message: '#^Parameter \#2 \$column_name of method PLL_Table_Settings\:\:column_default\(\) expects string, int\|string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/table-settings.php
+			path: src/settings/table-settings.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
-			path: settings/table-string.php
+			path: src/settings/table-string.php
 
 		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''trim'' given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/table-string.php
+			path: src/settings/table-string.php
 
 		-
 			message: '#^Parameter \#1 \$string of function urlencode expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/table-string.php
+			path: src/settings/table-string.php
 
 		-
 			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/table-string.php
+			path: src/settings/table-string.php
 
 		-
 			message: '#^Parameter \#2 \$needle of function stripos expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 2
-			path: settings/table-string.php
+			path: src/settings/table-string.php
 
 		-
 			message: '#^Parameter \#2 \$s of method PLL_Table_String\:\:search_in_translations\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/table-string.php
+			path: src/settings/table-string.php
 
 		-
 			message: '#^Parameter \#1 \$text of function esc_html expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: settings/view-languages.php
+			path: src/settings/view-languages.php
 

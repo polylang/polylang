@@ -389,7 +389,7 @@ if ( ! function_exists( 'wpml_get_copied_fields_for_post_edit' ) ) {
 		}
 
 		// Apply our filter and fill the expected output ( see /types/embedded/includes/fields-post.php )
-		/** This filter is documented in modules/sync/admin-sync.php */
+		/** This filter is documented in src/modules/sync/admin-sync.php */
 		$arr['fields'] = array_unique( apply_filters( 'pll_copy_post_metas', empty( $keys ) ? array() : $keys, false ) );
 		return $arr;
 	}
