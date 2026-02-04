@@ -37,6 +37,6 @@
 			"default": ""
 		}
 	},
-    "textdomain": "polylang-pro",
+    "textdomain": "polylang",
     "editorScript": "pll_blocks"
 }

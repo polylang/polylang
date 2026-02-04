@@ -3,19 +3,25 @@
  * @package Polylang-Pro
  */
 
+namespace WP_Syntex\Polylang\Blocks\Language_Switcher;
+
+use PLL_Switcher;
+use WP_Block_Type_Registry;
+
 /**
  * Abstract class for language switcher block.
  *
  * @since 3.2
+ * @since 3.8 Moved to Polylang Core and renamed to Language_Switcher\Abstract_Block.
  */
-abstract class PLL_Abstract_Language_Switcher_Block {
+abstract class Abstract_Block {
 	/**
-	 * @var PLL_Links
+	 * @var \PLL_Links
 	 */
 	protected $links;
 
 	/**
-	 * @var PLL_Model
+	 * @var \PLL_Model
 	 */
 	protected $model;
 
@@ -40,7 +46,7 @@ abstract class PLL_Abstract_Language_Switcher_Block {
 	 *
 	 * @since 2.8
 	 *
-	 * @param PLL_Base $polylang Polylang object.
+	 * @param \PLL_Base $polylang Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
@@ -79,9 +85,9 @@ abstract class PLL_Abstract_Language_Switcher_Block {
 	 * @since 3.2
 	 * @since 3.3 Accepts two new parameters, $content and $block.
 	 *
-	 * @param array    $attributes The block attributes.
-	 * @param string   $content    The saved content.
-	 * @param WP_Block $block      The parsed block.
+	 * @param array     $attributes The block attributes.
+	 * @param string    $content    The saved content.
+	 * @param \WP_Block $block      The parsed block.
 	 * @return string The HTML string output to serve.
 	 */
 	abstract public function render( $attributes, $content, $block );
@@ -142,12 +148,12 @@ abstract class PLL_Abstract_Language_Switcher_Block {
 	 *
 	 * @since 2.8
 	 *
-	 * @param mixed           $result  Response to replace the requested version with. Can be anything
-	 *                                 a normal endpoint can return, or null to not hijack the request.
-	 * @param WP_REST_Server  $server  Server instance.
-	 * @param WP_REST_Request $request Request used to generate the response.
+	 * @param mixed            $result  Response to replace the requested version with. Can be anything
+	 *                                  a normal endpoint can return, or null to not hijack the request.
+	 * @param \WP_REST_Server  $server  Server instance.
+	 * @param \WP_REST_Request $request Request used to generate the response.
 	 * @return mixed
-	 * @template T of WP_REST_Request
+	 * @template T of \WP_REST_Request
 	 * @phpstan-param T $request
 	 */
 	public function get_rest_query_params( $result, $server, $request ) {

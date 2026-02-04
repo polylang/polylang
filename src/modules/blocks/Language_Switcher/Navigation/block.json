@@ -58,7 +58,7 @@
 	"supports": {
 		"contentRole": true
 	},
-    "textdomain": "polylang-pro",
+    "textdomain": "polylang",
     "editorScript": "pll_blocks",
     "editorStyle": "pll-navigation-language-switcher-editor-style"
 }

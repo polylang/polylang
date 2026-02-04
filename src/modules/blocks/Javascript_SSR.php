@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Blocks;
+
+use PLL_Language;
+
 /**
  * Manages the JavaScript variable SSR for the blocks.
  *

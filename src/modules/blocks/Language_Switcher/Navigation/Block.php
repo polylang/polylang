@@ -3,12 +3,20 @@
  * @package Polylang-Pro
  */
 
+namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation;
+
+use WP_Block;
+use PLL_Switcher;
+use WP_HTML_Tag_Processor;
+use WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block;
+
 /**
  * Language switcher block for navigation.
  *
  * @since 3.2
+ * @since 3.8 Moved to Polylang Core and renamed to Language_Switcher\Navigation\Block.
  */
-class PLL_Navigation_Language_Switcher_Block extends PLL_Abstract_Language_Switcher_Block {
+class Block extends Abstract_Block {
 	/**
 	 * Placeholder used to add language name or flag after WordPress renders the link labels.
 	 *

@@ -3,13 +3,19 @@
  * @package Polylang-Pro
  */
 
+namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Standard;
+
+use PLL_Switcher;
+use WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block;
+
 /**
  * Language switcher block.
  *
  * @since 2.8
  * @since 3.2 Extends now the PLL_Abstract_Language_Switcher_Block abstract class.
+ * @since 3.8 Moved to Polylang Core and renamed to Language_Switcher\Standard\Block.
  */
-class PLL_Language_Switcher_Block extends PLL_Abstract_Language_Switcher_Block {
+class Block extends Abstract_Block {
 
 	/**
 	 * Returns the language switcher block name with the Polylang's namespace.
@@ -29,9 +35,9 @@ class PLL_Language_Switcher_Block extends PLL_Abstract_Language_Switcher_Block {
 	 * @since 3.2 Renamed according to its parent abstract class.
 	 * @since 3.3 Accepts two new parameters, $content and $block.
 	 *
-	 * @param array    $attributes The block attributes.
-	 * @param string   $content The saved content. Unused.
-	 * @param WP_Block $block The parsed block. Unused.
+	 * @param array     $attributes The block attributes.
+	 * @param string    $content The saved content. Unused.
+	 * @param \WP_Block $block The parsed block. Unused.
 	 * @return string Returns the language switcher.
 	 */
 	public function render( $attributes, $content, $block ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
