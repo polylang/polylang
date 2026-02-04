@@ -263,7 +263,7 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 
 		$post = get_post( $post_id );
 		if ( empty( $post ) ) {
-			// translators: Post id.
+			/* translators: %d is a Post ID. */
 			return new WP_Error( 'missing_post', sprintf( __( 'No such post for ID = %d', 'polylang' ), $post_id ) );
 		}
 
