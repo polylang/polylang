@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action(
 	'pll_init',
 	function ( $polylang ) {
-		if ( $polylang->model->has_languages() && pll_use_block_editor_plugin() ) {
+		if ( $polylang->model->has_languages() ) {
 			$polylang->switcher_block   = ( new Standard_Block( $polylang ) )->init();
 			$polylang->navigation_block = ( new Navigation_Block( $polylang ) )->init();
 			$polylang->javascript_ssr   = $polylang instanceof PLL_Admin
