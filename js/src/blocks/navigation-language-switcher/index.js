@@ -14,7 +14,7 @@ import { addFilter } from '@wordpress/hooks';
 import { translation as translationIcon } from '@wpsyntex/polylang-react-library';
 import { Edit } from './edit';
 import { menuItemsToBlocksFilter } from './menu-items-converter';
-import metadata from '../../../../src/modules/blocks/language-switcher/navigation/block.json';
+import metadata from '../../../../src/modules/blocks/Language_Switcher/Navigation/block.json';
 
 registerBlockType( metadata.name, {
 	icon: translationIcon,
