@@ -39,7 +39,7 @@ export const Edit = ( props ) => {
 		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody
-					title={ __( 'Language switcher settings', 'polylang-pro' ) }
+					title={ __( 'Language switcher settings', 'polylang' ) }
 				>
 					<ToggleControlDropdown />
 					<ToggleControlShowNames />

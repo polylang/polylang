@@ -136,7 +136,7 @@ abstract class Abstract_Block {
 		);
 
 		// Translated strings used in JS code
-		wp_set_script_translations( $script_handle, 'polylang-pro' );
+		wp_set_script_translations( $script_handle, 'polylang' );
 	}
 
 	/**

@@ -69,7 +69,7 @@ function configureWebpack( options ) {
 	const reactifiedConfig = getReactifiedConfig( {
 		entryPoints: { blocks: './js/src/blocks/index.js' },
 		outputPath: workingDirectory,
-		libraryName: 'polylang-pro',
+		libraryName: 'polylang',
 		isProduction,
 		wpDependencies,
 		additionalExternals: { lodash: 'lodash' },
