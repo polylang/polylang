@@ -268,6 +268,18 @@ class Block extends Abstract_Block {
 	}
 
 	/**
+	 * Returns the path to the block JSON file directory.
+	 * The directory name being used to register a block.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string The path to the block.
+	 */
+	protected function get_path(): string {
+		return __DIR__;
+	}
+
+	/**
 	 * Returns attributes that fit for core/navigation-link or core/navigation-submenu and specific to polylang/navigation-language-switcher.
 	 *
 	 * @since 3.6

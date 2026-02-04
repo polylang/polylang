@@ -70,4 +70,16 @@ class Block extends Abstract_Block {
 
 		return sprintf( $wrap_tag, $wrap_attributes, $switcher_output );
 	}
+
+	/**
+	 * Returns the path to the block JSON file directory.
+	 * The directory name being used to register a block.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string The path to the block.
+	 */
+	protected function get_path(): string {
+		return __DIR__;
+	}
 }

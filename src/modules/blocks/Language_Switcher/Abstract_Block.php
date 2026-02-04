@@ -92,6 +92,18 @@ abstract class Abstract_Block {
 	 */
 	abstract public function render( $attributes, $content, $block );
 
+
+
+	/**
+	 * Returns the path to the block JSON file directory.
+	 * The directory name being used to register a block.
+	 *
+	 * @since 3.8
+	 *
+	 * @return string The path to the block.
+	 */
+	abstract protected function get_path(): string;
+
 	/**
 	 * Registers the Polylang's block.
 	 *
@@ -186,18 +198,5 @@ abstract class Abstract_Block {
 			$attributes['hide_if_no_translation'] = 0; // Force not to hide the language for the block preview even if the option is checked.
 		}
 		return $attributes;
-	}
-
-	/**
-	 * Returns the path to the block JSON file directory.
-	 * The directory name being used to register a block.
-	 *
-	 * @since 3.8
-	 *
-	 * @return string The path to the block.
-	 */
-	protected function get_path(): string {
-		$autoloader = include POLYLANG_DIR . '/vendor/autoload.php';
-		return dirname( $autoloader->findFile( get_class( $this ) ) );
 	}
 }
