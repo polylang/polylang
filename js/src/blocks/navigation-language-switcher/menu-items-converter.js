@@ -10,7 +10,7 @@ import { createBlock } from '@wordpress/blocks';
 /**
  * Internal dependencies
  */
-import metadata from '../../../../modules/blocks/language-switcher/navigation/block.json';
+import metadata from '../../../../src/modules/blocks/language-switcher/navigation/block.json';
 
 /**
  * Apply a callback function on each block of the blocks list.

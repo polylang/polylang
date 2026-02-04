@@ -12,7 +12,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 import { translation as translationIcon } from '@wpsyntex/polylang-react-library';
 import { Edit } from './edit';
-import metadata from '../../../../modules/blocks/language-switcher/standard/block.json';
+import metadata from '../../../../src/modules/blocks/language-switcher/standard/block.json';
 
 registerBlockType( metadata.name, {
 	icon: translationIcon,
