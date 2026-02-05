@@ -169,7 +169,9 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		// Reset the `Option`'s filter (removed by `clean_up_filters()`).
 		$this->blog_with_pll_options = null;
 
-		require_once POLYLANG_DIR . '/src/api.php';
+		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
+		$api_file = file_exists( POLYLANG_DIR . '/src/api.php' ) ? POLYLANG_DIR . '/src/api.php' : POLYLANG_DIR . '/include/api.php';
+		require_once $api_file;
 	}
 
 	public function tear_down() {

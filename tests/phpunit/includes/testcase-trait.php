@@ -161,7 +161,9 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	public static function create_language( $locale, $args = array() ) {
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
+		$languages_file = file_exists( POLYLANG_DIR . '/src/settings/languages.php' ) ? POLYLANG_DIR . '/src/settings/languages.php' : POLYLANG_DIR . '/settings/languages.php';
+		$languages = include $languages_file;
 		$values    = $languages[ $locale ];
 
 		$values['slug']       = $values['code'];
@@ -244,7 +246,9 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function require_api(): void {
-		require_once POLYLANG_DIR . '/src/api.php';
+		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
+		$api_file = file_exists( POLYLANG_DIR . '/src/api.php' ) ? POLYLANG_DIR . '/src/api.php' : POLYLANG_DIR . '/include/api.php';
+		require_once $api_file;
 	}
 
 	/**

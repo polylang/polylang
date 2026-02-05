@@ -36,7 +36,9 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 			throw new InvalidArgumentException( 'A locale is required to create a language.' );
 		}
 
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
+		$languages_file = file_exists( POLYLANG_DIR . '/src/settings/languages.php' ) ? POLYLANG_DIR . '/src/settings/languages.php' : POLYLANG_DIR . '/settings/languages.php';
+		$languages = include $languages_file;
 		$values    = $languages[ $args['locale'] ];
 
 		$values['slug']       = $values['code'];
