@@ -48,7 +48,7 @@
     "@wordpress/env": "^10",
     "@wordpress/scripts": "^31",
     "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
-    "@wpsyntex/polylang-build-scripts": "github:polylang/polylang-build-scripts#feat/create-config-builders",
+    "@wpsyntex/polylang-build-scripts": "^2.1",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
