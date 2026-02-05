@@ -66,26 +66,16 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'post.php';
 		set_current_screen();
 
-		global $current_screen;
-		$current_screen->is_block_editor( true );
-
-		// Legacy block editor script is only enqueued when not using the block editor plugin.
-		add_filter( 'pll_use_block_editor_plugin', '__return_false' );
-
-		try {
-			$scripts = array(
-				'footer' => array(
-					'pll_ajax_backend',
-					'pll_block-editor-js',
-				),
-				'header' => array(
-					'polylang_admin-css',
-				),
-			);
-			$this->_test_scripts( $scripts );
-		} finally {
-			remove_filter( 'pll_use_block_editor_plugin', '__return_false' );
-		}
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'pll_block-editor-js',
+			),
+			'header' => array(
+				'polylang_admin-css',
+			),
+		);
+		$this->_test_scripts( $scripts );
 	}
 
 	public function test_scripts_in_edit_untranslated_cpt() {
