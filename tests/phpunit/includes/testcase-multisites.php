@@ -8,6 +8,8 @@ use WP_Syntex\Polylang\Options\Registry as Options_Registry;
  * Test case offering a standardized way to test blogs in multisite.
  */
 abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
+	use PLL_File_Path_Helper_Trait;
+
 	/**
 	 * Blog in plain permalinks without Polylang.
 	 *
@@ -169,9 +171,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		// Reset the `Option`'s filter (removed by `clean_up_filters()`).
 		$this->blog_with_pll_options = null;
 
-		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
-		$api_file = file_exists( POLYLANG_DIR . '/src/api.php' ) ? POLYLANG_DIR . '/src/api.php' : POLYLANG_DIR . '/include/api.php';
-		require_once $api_file;
+		require_once self::get_pll_file_path( 'api.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 	}
 
 	public function tear_down() {

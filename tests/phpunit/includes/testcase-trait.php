@@ -12,6 +12,7 @@ use WP_Syntex\Polylang\Options\Options;
  * class properties here.
  */
 trait PLL_UnitTestCase_Trait {
+	use PLL_File_Path_Helper_Trait;
 	use PLL_Doing_It_Wrong_Trait;
 	use PLL_Options_Trait;
 
@@ -161,9 +162,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	public static function create_language( $locale, $args = array() ) {
-		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
-		$languages_file = file_exists( POLYLANG_DIR . '/src/settings/languages.php' ) ? POLYLANG_DIR . '/src/settings/languages.php' : POLYLANG_DIR . '/settings/languages.php';
-		$languages = include $languages_file;
+		$languages = include self::get_pll_file_path( 'settings/languages.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 		$values    = $languages[ $locale ];
 
 		$values['slug']       = $values['code'];
@@ -246,9 +245,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function require_api(): void {
-		// Backward compatibility with Polylang < 3.8 (/src/ directory restructuring). Required for PLLWC.
-		$api_file = file_exists( POLYLANG_DIR . '/src/api.php' ) ? POLYLANG_DIR . '/src/api.php' : POLYLANG_DIR . '/include/api.php';
-		require_once $api_file;
+		require_once self::get_pll_file_path( 'api.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 	}
 
 	/**
