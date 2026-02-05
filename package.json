@@ -18,7 +18,9 @@
     "wp-env": "wp-env",
     "test:e2e": "playwright test --config tests/e2e/playwright.config.mjs",
     "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang vendor/bin/phpunit",
-    "test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 vendor/bin/phpunit'"
+    "test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 vendor/bin/phpunit'",
+    "test:php:coverage": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang vendor/bin/phpunit --coverage-html coverage",
+    "test:php:coverage:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 vendor/bin/phpunit --coverage-html coverage'"
   },
   "repository": {
     "type": "git",
