@@ -5,7 +5,7 @@
     "version": "3.8",
     "title": "Language Switcher",
     "category": "widgets",
-    "description": "Language switcher to insert in content or as widget.",
+    "description": "Language switcher to insert in content or as a widget.",
     "example": {},
 	"attributes": {
 		"dropdown": {
