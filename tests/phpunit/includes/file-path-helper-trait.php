@@ -20,7 +20,7 @@ trait PLL_File_Path_Helper_Trait {
 		}
 
 		// Backward compatibility with Polylang < 3.8: files in root or /include/ directory.
-		if ( false === strpos( $path, '/' ) ) {
+		if ( file_exists( POLYLANG_DIR . "/include/{$path}" ) ) {
 			return POLYLANG_DIR . "/include/{$path}";
 		}
 
