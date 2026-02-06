@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Polylang-Pro
+ * @package Polylang
  */
 
 namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation;
