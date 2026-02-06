@@ -6,7 +6,7 @@
 trait PLL_File_Path_Helper_Trait {
 
 	/**
-	 * Gets the path to a Polylang file, with backward compatibility for the /src/ restructuring.
+	 * Returns the path to a Polylang file, with backward compatibility for the /src/ restructuring.
 	 *
 	 * @param string $path Relative path to the file (e.g., 'api.php' or 'settings/languages.php').
 	 * @return string Full path to the file.
