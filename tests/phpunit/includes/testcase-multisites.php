@@ -171,7 +171,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		// Reset the `Option`'s filter (removed by `clean_up_filters()`).
 		$this->blog_with_pll_options = null;
 
-		require_once self::get_pll_file_path( 'api.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
+		self::require_api();
 	}
 
 	public function tear_down() {

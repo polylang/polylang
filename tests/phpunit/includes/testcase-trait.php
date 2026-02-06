@@ -240,15 +240,6 @@ trait PLL_UnitTestCase_Trait {
 	}
 
 	/**
-	 * Requires the API functions.
-	 *
-	 * @return void
-	 */
-	protected static function require_api(): void {
-		require_once self::get_pll_file_path( 'api.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
-	}
-
-	/**
 	 * Creates the static model used to add languages before tests.
 	 *
 	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
