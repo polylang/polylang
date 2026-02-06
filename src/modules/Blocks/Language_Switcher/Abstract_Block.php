@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Blocks\Language_Switcher;
 
+use PLL_Language;
 use PLL_Switcher;
 use WP_Block_Type_Registry;
 
@@ -42,6 +43,13 @@ abstract class Abstract_Block {
 	protected $is_edit_context = false;
 
 	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language|false|null
+	 */
+	private $current_language;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.8
@@ -49,8 +57,9 @@ abstract class Abstract_Block {
 	 * @param \PLL_Base $polylang Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
-		$this->links = &$polylang->links;
+		$this->model            = &$polylang->model;
+		$this->links            = &$polylang->links;
+		$this->current_language = &$polylang->curlang;
 	}
 
 	/**
@@ -66,6 +75,8 @@ abstract class Abstract_Block {
 
 		// Register language switcher block.
 		add_action( 'init', array( $this, 'register' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'render_js_variable' ) );
 
 		return $this;
 	}
@@ -178,6 +189,37 @@ abstract class Abstract_Block {
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Adds current language slug JavaScript variable to the editors.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public function render_js_variable() {
+		// Fallback to default language if current language is not set, usually happens in Site Editor.
+		$current_language = $this->current_language;
+
+		if ( ! $current_language ) {
+			$current_language = $this->model->get_default_language();
+		}
+
+		if ( ! $current_language ) {
+			// Should not happen since the module is loaded only if there are languages.
+			return;
+		}
+
+		$script_handle = 'pll_blocks'; // Script handles matches the one for Polylang blocks.
+
+		$pll_settings_script = 'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language->slug ) . ';';
+
+		if ( str_contains( wp_scripts()->get_inline_script_data( $script_handle ), 'pllEditorCurrentLanguageSlug' ) ) {
+			return;
+		}
+
+		wp_add_inline_script( $script_handle, $pll_settings_script, 'after' );
 	}
 
 	/**
