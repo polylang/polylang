@@ -33,6 +33,6 @@ trait PLL_File_Path_Helper_Trait {
 	 * @return void
 	 */
 	protected static function require_api(): void {
-		require_once self::get_pll_file_path( '/api.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
+		require_once self::get_pll_file_path( 'api.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 	}
 }
