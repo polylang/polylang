@@ -46,6 +46,7 @@
 			"@install-plugins"
 		],
 		"test":"vendor/bin/phpunit",
+		"coverage": "vendor/bin/phpunit --configuration phpunit.xml --coverage-html coverage",
 		"cs56": "vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist",
 		"cs": [
 			"vendor/bin/phpcs",
@@ -75,6 +76,7 @@
 		"install-tests": "Installs both the WordPress tests suite (without installing the database) and the dependencies needed for integration tests.",
 		"install-tests-with-db": "Installs both the WordPress tests suite (with database creation) and the dependencies needed for integration tests, without creating the database.",
 		"test":"Runs PHPUnit tests.",
+		"coverage": "Generates code coverage report of the integration tests in HTML format.",
 		"cs":"Runs PHPCS linter.",
 		"cs56":"Runs PHPCompatibility linter on files that require php 5.6.",
 		"stan": "Runs PHPStan analysis.",
