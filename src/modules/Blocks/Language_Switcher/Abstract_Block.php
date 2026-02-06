@@ -213,13 +213,15 @@ abstract class Abstract_Block {
 
 		$script_handle = 'pll_blocks'; // Script handles matches the one for Polylang blocks.
 
-		$pll_settings_script = 'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language->slug ) . ';';
-
-		if ( str_contains( wp_scripts()->get_inline_script_data( $script_handle ), 'pllEditorCurrentLanguageSlug' ) ) {
+		if ( str_contains( wp_scripts()->get_inline_script_data( $script_handle, 'after' ), 'pllEditorCurrentLanguageSlug' ) ) {
 			return;
 		}
 
-		wp_add_inline_script( $script_handle, $pll_settings_script, 'after' );
+		wp_add_inline_script(
+			$script_handle,
+			'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language->slug ) . ';',
+			'after'
+		);
 	}
 
 	/**
