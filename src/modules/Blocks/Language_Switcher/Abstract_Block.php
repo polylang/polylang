@@ -127,10 +127,19 @@ abstract class Abstract_Block {
 			return;
 		}
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		if ( ! register_block_type(
+			$this->get_path(),
+			array(
+				'render_callback' => array( $this, 'render' ),
+			)
+		) ) {
+			return;
+		}
 
+		$script_handle   = 'pll_blocks';
+		$suffix          = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$script_filename = 'js/build/blocks' . $suffix . '.js';
-		$script_handle = 'pll_blocks';
+
 		wp_register_script(
 			$script_handle,
 			plugins_url( $script_filename, POLYLANG_ROOT_FILE ),
@@ -148,15 +157,6 @@ abstract class Abstract_Block {
 		);
 
 		wp_localize_script( $script_handle, 'pll_block_editor_blocks_settings', PLL_Switcher::get_switcher_options( 'block', 'string' ) );
-
-		if ( ! register_block_type(
-			$this->get_path(),
-			array(
-				'render_callback' => array( $this, 'render' ),
-			)
-		) ) {
-			return;
-		}
 
 		// Translated strings used in JS code
 		wp_set_script_translations( $script_handle, 'polylang' );
@@ -177,8 +177,6 @@ abstract class Abstract_Block {
 			// Should not happen since the module is loaded only if there are languages.
 			return;
 		}
-
-		$script_handle = 'pll_blocks'; // Script handles matches the one for Polylang blocks.
 
 		if ( str_contains( wp_scripts()->get_inline_script_data( $script_handle, 'after' ), 'pllEditorCurrentLanguageSlug' ) ) {
 			return;
