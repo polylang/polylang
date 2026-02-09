@@ -598,7 +598,7 @@ class Languages {
 				__METHOD__,
 				'3.8',
 				sprintf(
-					/* translators: 1: argument name, 2: proxy name. */
+					/* translators: 1: argument name, 2: PHP code snippet. */
 					esc_html__( 'The argument %1$s has been replaced by %2$s.', 'polylang' ),
 					'<code>hide_empty</code>',
 					'<code>PLL()->model->languages->filter( \'hide_empty\' )->get_list()</code>'
@@ -611,7 +611,7 @@ class Languages {
 				__METHOD__,
 				'3.8',
 				sprintf(
-					/* translators: 1: argument name, 2: proxy name. */
+					/* translators: 1: argument name, 2: PHP code snippet. */
 					esc_html__( 'The argument %1$s has been replaced by %2$s.', 'polylang' ),
 					'<code>hide_default</code>',
 					'<code>PLL()->model->languages->filter( \'hide_default\' )->get_list()</code>'

@@ -100,7 +100,7 @@ class PLL_Admin_Site_Health {
 			$fields['cpt']['value'] = implode( ', ', $this->model->get_translated_post_types() );
 		}
 		if ( ! empty( $this->model->get_translated_taxonomies() ) ) {
-			$fields['taxonomies']['label'] = __( 'Translated custom taxonomies', 'polylang' );
+			$fields['taxonomies']['label'] = __( 'Translated taxonomies', 'polylang' );
 			$fields['taxonomies']['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
 		}
 

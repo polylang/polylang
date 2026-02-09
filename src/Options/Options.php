@@ -305,7 +305,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 
 		// Merge all "unknown option" errors into a single error message.
 		if ( 1 === count( $values ) ) {
-			/* translators: %s is an option name. */
+			/* translators: %s is the name of an option. */
 			$message = __( 'Unknown option key %s.', 'polylang' );
 		} else {
 			/* translators: %s is a list of option names. */
