@@ -1,6 +1,8 @@
 <?php
 
 class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
+	use PLL_File_Path_Helper_Trait;
+
 	/**
 	 * @var PLL_Admin_Model
 	 */
@@ -36,7 +38,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 			throw new InvalidArgumentException( 'A locale is required to create a language.' );
 		}
 
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		$languages = include self::get_pll_file_path( 'settings/languages.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 		$values    = $languages[ $args['locale'] ];
 
 		$values['slug']       = $values['code'];

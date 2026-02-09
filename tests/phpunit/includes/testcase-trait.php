@@ -12,6 +12,7 @@ use WP_Syntex\Polylang\Options\Options;
  * class properties here.
  */
 trait PLL_UnitTestCase_Trait {
+	use PLL_File_Path_Helper_Trait;
 	use PLL_Doing_It_Wrong_Trait;
 	use PLL_Options_Trait;
 
@@ -161,7 +162,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	public static function create_language( $locale, $args = array() ) {
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
+		$languages = include self::get_pll_file_path( 'settings/languages.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 		$values    = $languages[ $locale ];
 
 		$values['slug']       = $values['code'];
@@ -236,15 +237,6 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		return static::$submenu;
-	}
-
-	/**
-	 * Requires the API functions.
-	 *
-	 * @return void
-	 */
-	protected static function require_api(): void {
-		require_once POLYLANG_DIR . '/src/api.php';
 	}
 
 	/**
