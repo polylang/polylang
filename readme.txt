@@ -120,7 +120,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix page template not copied when creating a new page translation in the block editor #2581
 * Pro: Fix SVG icons lost when using machine translation
 * Pro: Fix a performance issue with the translation of ACF labels #2670
-* Pro: Fix product statis wrongly modified when updating a product with the REST API #2540
+* Pro: Fix product status wrongly modified when updating a product with the REST API #2540
 * Pro: Fix inactive languages not displayed when they should in REST API #2791
 * Pro: Fix translation of ACF repeaters with pagination #2674
 * Pro: Fix ACF's layout fields instructions #2889
