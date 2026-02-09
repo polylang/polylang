@@ -335,11 +335,27 @@ td.column-default_lang .icon-default-lang:before,
 }
 
 #wp-admin-bar-languages.pll-filtered-languages {
-	background: #a03f3f;
+	background-color:var(--wp-admin-theme-color);
 }
 
-#wpadminbar #wp-admin-bar-languages.pll-filtered-languages span.ab-label{ /* Enforce white color for WordPress admin light theme. */
-		color: #fff;
+.admin-color-coffee #wp-admin-bar-languages.pll-filtered-languages {
+	background-color: #c7a589;
+}
+
+.admin-color-ectoplasm #wp-admin-bar-languages.pll-filtered-languages {
+	background-color: #a3b745;
+}
+
+.admin-color-light #wp-admin-bar-languages.pll-filtered-languages {
+	background-color: #888;
+}
+
+.admin-color-light #wpadminbar #wp-admin-bar-languages.pll-filtered-languages span.ab-label {
+	color: #fff;
+}
+
+.admin-color-ocean #wp-admin-bar-languages.pll-filtered-languages {
+	background-color: #9ebaa0;
 }
 
 /* Notices */
