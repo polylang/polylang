@@ -43,21 +43,30 @@
   },
   "homepage": "https://github.com/polylang/polylang#readme",
   "devDependencies": {
-    "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
     "@playwright/test": "^1",
+    "@wordpress/babel-preset-default": "^8.10",
+    "@wordpress/base-styles": "^5.10",
     "@wordpress/e2e-test-utils-playwright": "^1",
     "@wordpress/env": "^10",
     "@wordpress/scripts": "^31",
-    "@wpsyntex/polylang-build-scripts": "^2.0.3",
+    "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
+    "@wpsyntex/polylang-build-scripts": "^2.1",
+    "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "css-minimizer-webpack-plugin": "^3.0.2",
+    "glob": "^11",
     "mini-css-extract-plugin": "^2.3.0",
     "postcss": "^8.3.6",
     "rimraf": "^3.0.2",
+    "sass": "1.54.0",
+    "sass-loader": "16.0.3",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "@wpsyntex/polylang-react-library": "github:polylang/polylang-react-library"
   }
 }

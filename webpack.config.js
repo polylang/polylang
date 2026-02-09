@@ -1,22 +1,26 @@
+/* eslint-disable no-console */
 /**
- * @package Polylang
- */
-
- /**
  * External dependencies
  */
-
 const path = require( 'path' );
-const glob = require( 'glob' ).sync;
-const { transformJsEntry, transformCssEntry } = require( '@wpsyntex/polylang-build-scripts' );
+const {
+	getVanillaConfig,
+	getReactifiedConfig,
+} = require( '@wpsyntex/polylang-build-scripts' );
 
-function configureWebpack( options ){
+function configureWebpack( options ) {
 	const mode = options.mode;
 	const isProduction = mode === 'production' || false;
-	console.log('Webpack mode:', mode);
-	console.log('isProduction:', isProduction);
-	console.log('dirname:', __dirname);
+	const workingDirectory = path.resolve( __dirname );
+	const jsBuildDirectory = path.join( workingDirectory, 'js/build' );
+	const cssBuildDirectory = path.join( workingDirectory, 'css/build' );
 
+	console.log( 'Webpack mode:', mode );
+	console.log( 'Working directory:', workingDirectory );
+
+	/*
+	 * Prepare vanilla config for Polylang Core.
+	 */
 	const commonFoldersToIgnore = [
 		'node_modules/**',
 		'coverage/**',
@@ -29,34 +33,61 @@ function configureWebpack( options ){
 
 	const jsFileNamesToIgnore = [
 		'js/src/lib/**',
+		'js/src/packages/**',
+		'js/src/blocks/**',
 		'**/*.config.js',
 		'**/*.min.js',
 	];
 
-	const jsFileNames = glob( '**/*.js', { 'ignore': [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ] } ).map( filename => `./${ filename }`);
-	console.log( 'js files to minify:', jsFileNames );
+	const vanillaConfig = getVanillaConfig( {
+		workingDirectory,
+		jsPatterns: [ '**/*.js' ],
+		jsIgnorePatterns: [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ],
+		cssPatterns: [ '**/*.css' ],
+		cssIgnorePatterns: [ ...commonFoldersToIgnore, '**/*.min.css' ],
+		jsBuildDirectory,
+		cssBuildDirectory,
+		isProduction,
+	} );
 
-	const jsFileNamesEntries = [
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', true ) ),
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', false ) )
-	]
-
-	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
-	console.log( 'css files to minify:', cssFileNames );
-
-	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
-	const cssFileNamesEntries = cssFileNames.map( transformCssEntry( path.resolve( __dirname ) + '/css/build', isProduction ) );
-
-	// Make webpack configuration.
-	const config = [
-		...jsFileNamesEntries, // Add config for js files.
-		...cssFileNamesEntries, // Add config for css files.
+	/*
+	 * Prepare Reactified config for Blocks bundle.
+	 */
+	const wpDependencies = [
+		'api-fetch',
+		'block-editor',
+		'blocks',
+		'components',
+		'data',
+		'editor',
+		'element',
+		'hooks',
+		'i18n',
+		'primitives',
 	];
 
-	return config;
+	const reactifiedConfig = getReactifiedConfig( {
+		entryPoints: { blocks: './js/src/blocks/index.js' },
+		outputPath: workingDirectory,
+		libraryName: 'polylang',
+		isProduction,
+		wpDependencies,
+		additionalExternals: { lodash: 'lodash' },
+		sassLoadPaths: [
+			path.resolve(
+				workingDirectory,
+				'./css/src/blocks/navigation-language-switcher-editor-style.css'
+			),
+		],
+	} );
+
+	return [
+		...vanillaConfig,
+		...reactifiedConfig,
+	];
 }
 
 module.exports = ( env, options ) => {
 	return configureWebpack( options );
-}
+};
 
