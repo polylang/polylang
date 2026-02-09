@@ -76,8 +76,6 @@ abstract class Abstract_Block {
 		// Register language switcher block.
 		add_action( 'init', array( $this, 'register' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'render_js_variable' ) );
-
 		return $this;
 	}
 
@@ -151,15 +149,46 @@ abstract class Abstract_Block {
 
 		wp_localize_script( $script_handle, 'pll_block_editor_blocks_settings', PLL_Switcher::get_switcher_options( 'block', 'string' ) );
 
-		register_block_type(
+		if ( ! register_block_type(
 			$this->get_path(),
 			array(
 				'render_callback' => array( $this, 'render' ),
 			)
-		);
+		) ) {
+			return;
+		}
 
 		// Translated strings used in JS code
 		wp_set_script_translations( $script_handle, 'polylang' );
+
+		// No need to render the JS variable if Polylang Pro is installed, the editor will use `lang` REST field instead.
+		if ( class_exists( 'WP_Syntex\Polylang_Pro\REST\Translated\Post' ) ) {
+			return;
+		}
+
+		// Fallback to default language if current language is not set, usually happens in Site Editor.
+		$current_language = $this->current_language;
+
+		if ( ! $current_language ) {
+			$current_language = $this->model->get_default_language();
+		}
+
+		if ( ! $current_language ) {
+			// Should not happen since the module is loaded only if there are languages.
+			return;
+		}
+
+		$script_handle = 'pll_blocks'; // Script handles matches the one for Polylang blocks.
+
+		if ( str_contains( wp_scripts()->get_inline_script_data( $script_handle, 'after' ), 'pllEditorCurrentLanguageSlug' ) ) {
+			return;
+		}
+
+		wp_add_inline_script(
+			$script_handle,
+			'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language->slug ) . ';',
+			'after'
+		);
 	}
 
 	/**
@@ -189,39 +218,6 @@ abstract class Abstract_Block {
 			}
 		}
 		return $result;
-	}
-
-	/**
-	 * Adds current language slug JavaScript variable to the editors.
-	 *
-	 * @since 3.8
-	 *
-	 * @return void
-	 */
-	public function render_js_variable() {
-		// Fallback to default language if current language is not set, usually happens in Site Editor.
-		$current_language = $this->current_language;
-
-		if ( ! $current_language ) {
-			$current_language = $this->model->get_default_language();
-		}
-
-		if ( ! $current_language ) {
-			// Should not happen since the module is loaded only if there are languages.
-			return;
-		}
-
-		$script_handle = 'pll_blocks'; // Script handles matches the one for Polylang blocks.
-
-		if ( str_contains( wp_scripts()->get_inline_script_data( $script_handle, 'after' ), 'pllEditorCurrentLanguageSlug' ) ) {
-			return;
-		}
-
-		wp_add_inline_script(
-			$script_handle,
-			'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language->slug ) . ';',
-			'after'
-		);
 	}
 
 	/**
