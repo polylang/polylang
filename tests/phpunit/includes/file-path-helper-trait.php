@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Helper trait for backward compatibility with Polylang /src/ restructuring.
+ * Helper trait for backward compatibility with Polylang < 3.8.
+ * Required as Polylang for WooCommerce always uses the latest test library,
+ * even when testing with older versions of Polylang. 
  */
 trait PLL_File_Path_Helper_Trait {
 
