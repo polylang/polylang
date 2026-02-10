@@ -171,7 +171,7 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @param string[] $expected_langs Expected language locales.
 	 * @param string   $html           The HTML string.
 	 */
-	private function assert_languages_in_dropdown( array $expected_langs, string $html ): void {
+	protected function assert_languages_in_dropdown( array $expected_langs, string $html ): void {
 		// Backward compatibility with WP 6.6 and below.
 		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
 			$dom = new \DOMDocument();
@@ -211,7 +211,7 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @param string $expected_slug The expected selected language slug.
 	 * @param string $html          The HTML string.
 	 */
-	private function assert_selected_language( string $expected_slug, string $html ): void {
+	protected function assert_selected_language( string $expected_slug, string $html ): void {
 		// Backward compatibility with WP 6.6 and below.
 		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
 			$dom = new \DOMDocument();
@@ -254,7 +254,7 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @param string $html The HTML string.
 	 * @return bool
 	 */
-	private function is_dropdown_disabled( string $html ): bool {
+	protected function is_dropdown_disabled( string $html ): bool {
 		// Backward compatibility with WP 6.6 and below.
 		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
 			$dom = new \DOMDocument();
@@ -283,7 +283,7 @@ class Test_Media extends PLL_UnitTestCase {
 	 *
 	 * @param string $html The HTML string.
 	 */
-	private function assert_first_option_is_empty( string $html ): void {
+	protected function assert_first_option_is_empty( string $html ): void {
 		// Backward compatibility with WP 6.6 and below.
 		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
 			$dom = new \DOMDocument();
