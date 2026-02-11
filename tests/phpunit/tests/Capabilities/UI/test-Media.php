@@ -10,8 +10,13 @@ use PLL_Admin_Links;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
 use PLL_Admin_Filters_Media;
+use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
 use WP_Syntex\Polylang\Capabilities\User\Creator;
+
+use function Patchwork\redefine;
+use function Brain\Monkey\setUp;
+use function Brain\Monkey\tearDown;
 
 /**
  * Tests for PLL_Admin_Filters_Media::attachment_fields_to_edit().
@@ -47,6 +52,8 @@ class Test_Media extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
+		setUp();
+
 		$options                        = $this->create_options( $this->options );
 		$this->pll_model                = new PLL_Model( $options );
 		$links_model                    = $this->pll_model->get_links_model();
@@ -61,6 +68,12 @@ class Test_Media extends PLL_UnitTestCase {
 
 		$GLOBALS['polylang'] = $this->pll_env;
 		self::require_api();
+	}
+
+	public function tear_down() {
+		tearDown();
+
+		parent::tear_down();
 	}
 
 	/**
@@ -127,6 +140,36 @@ class Test_Media extends PLL_UnitTestCase {
 		// The first option should be empty.
 		$this->assert_first_option_is_empty( $html );
 		$this->assertFalse( $this->is_dropdown_disabled( $html ) );
+	}
+
+	public function test_media_with_language_but_translator_cannot_translate_it(): void {
+		$GLOBALS['pagenow'] = 'upload.php';
+
+		$attachment = self::factory()->attachment->create();
+		$this->pll_model->post->set_language( $attachment, 'en' );
+
+		$translator_mock = $this->getMockBuilder( NOOP::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$translator_mock
+			->method( 'is_translator' )
+			->willReturn( true );
+		$translator_mock
+			->method( 'can_translate' )
+			->willReturnCallback( fn( $language ) => 'fr' === $language->slug );
+		$translator_mock
+			->method( 'get_preferred_language_slug' )
+			->willReturn( 'fr' );
+
+		// Brain\Monkey API doesn't support static methods mocking, so we need to use Patchwork.
+		redefine( Capabilities::class . '::get_user', fn() => $translator_mock );
+
+		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
+		$html   = $fields['language']['html'];
+
+		$this->assert_languages_in_dropdown( array( 'en-US', 'en-US', 'fr-FR', 'de-DE' ), $html ); // Two times "en-US" because the empty option is prepend to a fuul list (no Pro feature acitve).
+		$this->assert_selected_language( 'en', $html );
+		$this->assertTrue( $this->is_dropdown_disabled( $html ) );
 	}
 
 	/**
