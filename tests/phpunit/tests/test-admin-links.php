@@ -403,7 +403,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	public function test_translator_cannot_translate_term_to_unauthorized_language() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		$this->mock_links_user_as_translator( array( 'can_translate' => true ) );
+		$this->mock_links_user_as_translator( array( 'can_translate' => false ) );
 
 		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
 		$this->pll_admin->model->term->set_language( $term->term_id, 'fr' );
