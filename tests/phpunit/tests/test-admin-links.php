@@ -544,7 +544,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 		$this->links   = new PLL_Admin_Links( $this->pll_admin );
 		$links         = new ReflectionObject( $this->links );
 		$user_property = $links->getProperty( 'user' );
-		$user_property->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $user_property->setAccessible( true );
 		$user_property->setValue( $this->links, $translator_mock );
 	}
 }
