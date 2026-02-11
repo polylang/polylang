@@ -2,78 +2,19 @@
 
 namespace WP_Syntex\Polylang\Tests\Integration\modules\Capabilities\Create;
 
-use WP_User;
-use PLL_Model;
 use PLL_Language;
-use PLL_UnitTestCase;
-use PLL_UnitTest_Factory;
 use WP_Syntex\Polylang\REST\Request;
+use PHPUnit\Framework\MockObject\MockObject;
+use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Create\Post;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Capabilities\User\Creator;
-use WP_Syntex\Polylang\Tests\Includes\Mockery\Mock_Translator;
+
+use function Patchwork\redefine;
 
 /**
  * @group capabilities
  */
-class Test_Post extends PLL_UnitTestCase {
-	/**
-	 * @var \WP_User
-	 */
-	private static $translator_fr;
-
-	/**
-	 * @var \WP_User
-	 */
-	private static $translator_en;
-
-	/**
-	 * @var \WP_User
-	 */
-	private static $editor;
-
-	/**
-	 * @var Mock_Translator
-	 */
-	private static $mock_translator;
-
-	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
-		parent::pllSetUpBeforeClass( $factory );
-
-		$factory->language->create_many( 3 );
-
-		self::$translator_fr = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr->add_cap( 'translate_fr' );
-
-		self::$translator_en = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_en->add_cap( 'translate_en' );
-
-		self::$editor = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-
-		self::$mock_translator = new Mock_Translator( new WP_User() );
-	}
-
-	public function set_up() {
-		parent::set_up();
-
-		$options         = $this->create_options( array( 'default_lang' => 'en' ) );
-		$this->pll_model = new PLL_Model( $options );
-	}
-
-	public function tear_down() {
-		// Reset user creator after each tests to avoid state bleeding.
-		Capabilities::set_user_creator( new Creator() );
-
-		parent::tear_down();
-	}
-
-	public static function wpTearDownAfterClass() {
-		wp_delete_user( self::$translator_fr->ID );
-		wp_delete_user( self::$translator_en->ID );
-		wp_delete_user( self::$editor->ID );
-
-		parent::wpTearDownAfterClass();
-	}
+class Test_Post extends TestCase {
 
 	/**
 	 * @testWith ["en"]
@@ -183,7 +124,7 @@ class Test_Post extends PLL_UnitTestCase {
 	public function test_returns_default_language_for_translator_allowed_to_translate_default() {
 		wp_set_current_user( self::$translator_en->ID );
 
-		Capabilities::set_user_creator( self::$mock_translator );
+		$this->mock_translator( 'en' );
 
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language( 0 );
@@ -194,7 +135,7 @@ class Test_Post extends PLL_UnitTestCase {
 	public function test_returns_preferred_language_for_translator_not_allowed_to_translate_default() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		Capabilities::set_user_creator( self::$mock_translator );
+		$this->mock_translator( 'fr' );
 
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language( 0 );
@@ -214,7 +155,7 @@ class Test_Post extends PLL_UnitTestCase {
 	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		Capabilities::set_user_creator( self::$mock_translator );
+		$this->mock_translator( 'fr' );
 
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
 		$result = $post->get_language( 0 );
