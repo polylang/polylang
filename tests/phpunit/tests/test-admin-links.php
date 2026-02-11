@@ -8,10 +8,11 @@ use PLL_Admin;
 use PLL_Language;
 use PLL_Admin_Links;
 use PLL_UnitTestCase;
+use ReflectionObject;
 use PLL_UnitTest_Factory;
+use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
 use WP_Syntex\Polylang\Capabilities\User\Creator;
-use WP_Syntex\Polylang\Tests\Includes\Mockery\Mock_Translator;
 
 class Test_Admin_Links extends PLL_UnitTestCase {
 	/**
@@ -67,11 +68,11 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 				'media_support' => true,
 			)
 		);
-		$model                                  = new PLL_Model( $options );
-		$links_model                            = $model->get_links_model();
-		$this->pll_admin                        = new PLL_Admin( $links_model );
-		$this->pll_admin->links                 = new PLL_Admin_Links( $this->pll_admin );
-		$GLOBALS['polylang']                    = $this->pll_admin;
+		$model                  = new PLL_Model( $options );
+		$links_model            = $model->get_links_model();
+		$this->pll_admin        = new PLL_Admin( $links_model );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+		$GLOBALS['polylang']    = $this->pll_admin;
 
 		self::require_api();
 	}
@@ -89,10 +90,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	public function test_translator_cannot_translate_to_unauthorized_language() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		Capabilities::set_user_creator( new Mock_Translator( new WP_User() ) );
-
-		// Reinitialize the links object to use the new current user.
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->mock_links_user_as_translator( array( 'can_translate' => true ) );
 
 		$post     = self::factory()->post->create_and_get( array( 'lang' => 'fr' ) );
 		$language = $this->pll_admin->model->get_language( 'en' );
@@ -108,10 +106,12 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	public function test_translator_can_translate_to_authorized_language() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		Capabilities::set_user_creator( new Mock_Translator( new WP_User() ) );
-
-		// Reinitialize the links object to use the new current user.
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->mock_links_user_as_translator(
+			array(
+				'can_translate' => true,
+				'has_cap'       => true,
+			)
+		);
 
 		$post     = self::factory()->post->create_and_get( array( 'lang' => 'en' ) );
 		$language = $this->pll_admin->model->get_language( 'fr' );
@@ -403,9 +403,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	public function test_translator_cannot_translate_term_to_unauthorized_language() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		Capabilities::set_user_creator( new Mock_Translator( new WP_User() ) );
-
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->mock_links_user_as_translator( array( 'can_translate' => true ) );
 
 		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
 		$this->pll_admin->model->term->set_language( $term->term_id, 'fr' );
@@ -525,5 +523,28 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 		$link = $this->links->get_new_term_translation_link( $term, 'post', $language );
 
 		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/edit-tags.php?taxonomy=category&post_type=post&from_tag=%d&new_lang=fr&custom_term_param=1', $link, 'The link should be correct and the filter should be applied.' );
+	}
+
+	/**
+	 * Replace `PLL_Admin_Links::$user` with a user mock that can translate.
+	 *
+	 * @param array $methods An array of methods to mock and their return values.
+	 * @return void
+	 */
+	private function mock_links_user_as_translator( array $methods = array() ) {
+		$translator_mock = $this->getMockBuilder( NOOP::class )
+			->disableOriginalConstructor()
+			->getMock();
+
+		foreach ( $methods as $method => $return_value ) {
+			$translator_mock->method( $method )
+				->willReturn( $return_value );
+		}
+
+		$this->links   = new PLL_Admin_Links( $this->pll_admin );
+		$links         = new ReflectionObject( $this->links );
+		$user_property = $links->getProperty( 'user' );
+		$user_property->setAccessible( true );
+		$user_property->setValue( $this->links, $translator_mock );
 	}
 }
