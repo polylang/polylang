@@ -90,7 +90,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	public function test_translator_cannot_translate_to_unauthorized_language() {
 		wp_set_current_user( self::$translator_fr->ID );
 
-		$this->mock_links_user_as_translator( array( 'can_translate' => true ) );
+		$this->mock_links_user_as_translator( array( 'can_translate' => false ) );
 
 		$post     = self::factory()->post->create_and_get( array( 'lang' => 'fr' ) );
 		$language = $this->pll_admin->model->get_language( 'en' );
