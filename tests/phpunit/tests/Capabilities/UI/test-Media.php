@@ -1,7 +1,4 @@
 <?php
-/**
- * @package Polylang-Pro
- */
 
 namespace WP_Syntex\Polylang\Tests\Integration\modules\Capabilities\UI;
 
@@ -28,16 +25,6 @@ class Test_Media extends PLL_UnitTestCase {
 	protected $capabilities;
 
 	/**
-	 * Shared test users.
-	 *
-	 * @var WP_User
-	 */
-	protected static $translator_en;
-	protected static $translator_fr;
-	protected static $translator_de;
-	protected static $translator_fr_de;
-
-	/**
 	 * Array of default options used in test. Override at will.
 	 *
 	 * @var array
@@ -55,20 +42,6 @@ class Test_Media extends PLL_UnitTestCase {
 		parent::pllSetUpBeforeClass( $factory );
 
 		$factory->language->create_many( 3 );
-
-		// Create shared test users with specific language capabilities.
-		self::$translator_en = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_en->add_cap( 'translate_en' );
-
-		self::$translator_fr = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr->add_cap( 'translate_fr' );
-
-		self::$translator_de = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_de->add_cap( 'translate_de' );
-
-		self::$translator_fr_de = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr_de->add_cap( 'translate_fr' );
-		self::$translator_fr_de->add_cap( 'translate_de' );
 	}
 
 	public function set_up() {
@@ -88,15 +61,6 @@ class Test_Media extends PLL_UnitTestCase {
 
 		$GLOBALS['polylang'] = $this->pll_env;
 		self::require_api();
-	}
-
-	public static function wpTearDownAfterClass() {
-		wp_delete_user( self::$translator_en->ID );
-		wp_delete_user( self::$translator_fr->ID );
-		wp_delete_user( self::$translator_de->ID );
-		wp_delete_user( self::$translator_fr_de->ID );
-
-		parent::wpTearDownAfterClass();
 	}
 
 	/**
