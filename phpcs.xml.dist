@@ -186,6 +186,7 @@
 	<exclude-pattern>tmp/*</exclude-pattern>
 	<exclude-pattern>webpack.config.js</exclude-pattern>
 	<exclude-pattern>rector.php</exclude-pattern>
+	<exclude-pattern>coverage/*</exclude-pattern>
 
 	<!-- Specific to Polylang -->
 	<exclude-pattern>bin/*.php</exclude-pattern>
