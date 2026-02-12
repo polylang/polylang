@@ -54,15 +54,6 @@ abstract class TestCase extends PLL_UnitTestCase {
 		$this->pll_model = new PLL_Model( $options );
 	}
 
-	public function tear_down() {
-		// Reset user creator after each tests to avoid state bleeding.
-		Capabilities::set_user_creator( new Creator() );
-
-		tearDown();
-
-		parent::tear_down();
-	}
-
 	public static function wpTearDownAfterClass() {
 		wp_delete_user( self::$translator_fr->ID );
 		wp_delete_user( self::$translator_en->ID );
