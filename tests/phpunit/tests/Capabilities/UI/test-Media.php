@@ -148,7 +148,21 @@ class Test_Media extends PLL_UnitTestCase {
 		$attachment = self::factory()->attachment->create();
 		$this->pll_model->post->set_language( $attachment, 'en' );
 
-		$this->mock_user_for_media();
+		$translator_mock = $this->getMockBuilder( NOOP::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$translator_mock
+			->method( 'is_translator' )
+			->willReturn( true );
+		$translator_mock
+			->method( 'can_translate' )
+			->willReturnCallback( fn( $language ) => 'fr' === $language->slug );
+		$translator_mock
+			->method( 'get_preferred_language_slug' )
+			->willReturn( 'fr' );
+
+		// Brain\Monkey API doesn't support static methods mocking, so we need to use Patchwork.
+		redefine( Capabilities::class . '::get_user', fn() => $translator_mock );
 
 		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
 		$html   = $fields['language']['html'];
@@ -294,28 +308,5 @@ class Test_Media extends PLL_UnitTestCase {
 
 		$this->assertTrue( $processor->next_tag( 'OPTION' ), 'The dropdown should have options.' );
 		$this->assertEmpty( $processor->get_attribute( 'value' ), 'The first option should have an empty value.' );
-	}
-
-	/**
-	 * Mock the user for media.
-	 *
-	 * @return void
-	 */
-	protected function mock_user_for_media(): void {
-		$translator_mock = $this->getMockBuilder( NOOP::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$translator_mock
-			->method( 'is_translator' )
-			->willReturn( true );
-		$translator_mock
-			->method( 'can_translate' )
-			->willReturnCallback( fn( $language ) => 'fr' === $language->slug );
-		$translator_mock
-			->method( 'get_preferred_language_slug' )
-			->willReturn( 'fr' );
-
-		// Brain\Monkey API doesn't support static methods mocking, so we need to use Patchwork.
-		redefine( Capabilities::class . '::get_user', fn() => $translator_mock );
 	}
 }
