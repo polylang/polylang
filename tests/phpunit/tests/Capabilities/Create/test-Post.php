@@ -60,7 +60,7 @@ class Test_Post extends TestCase {
 		$_REQUEST['lang'] = 'de';
 
 		// pref_lang is set to simulate admin context.
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$post   = $this->create_post_capa_object( null, self::$french, null );
 		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
@@ -69,7 +69,7 @@ class Test_Post extends TestCase {
 	public function test_returns_language_from_rest_request() {
 		$request = $this->createMock( Request::class );
 		$request->method( 'get_language' )
-			->willReturn( $this->pll_model->languages->get( 'de' ) );
+			->willReturn( self::$german );
 
 		$post   = $this->create_post_capa_object( $request, null, null );
 		$result = $post->get_language();
@@ -90,7 +90,7 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_curlang_on_frontend() {
-		$post   = $this->create_post_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
+		$post   = $this->create_post_capa_object( null, null, self::$german );
 		$result = $post->get_language();
 
 		$this->assertSame( 'de', $result->slug );
@@ -129,7 +129,7 @@ class Test_Post extends TestCase {
 
 		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
 
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'en' ), null );
+		$post   = $this->create_post_capa_object( null, self::$english, null );
 		$result = $post->get_language( $child_id );
 
 		$this->assertSame( 'fr', $result->slug );
@@ -138,7 +138,7 @@ class Test_Post extends TestCase {
 	public function test_rest_request_takes_priority_over_parent_language() {
 		$request = $this->createMock( Request::class );
 		$request->method( 'get_language' )
-			->willReturn( $this->pll_model->languages->get( 'fr' ) );
+			->willReturn( self::$french );
 
 		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		$this->pll_model->post->set_language( $parent_id, 'de' );
@@ -154,7 +154,7 @@ class Test_Post extends TestCase {
 	public function test_returns_pref_lang_when_user_can_translate() {
 		$this->mock_translator( 'fr' );
 
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$post   = $this->create_post_capa_object( null, self::$french, null );
 		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
@@ -163,7 +163,7 @@ class Test_Post extends TestCase {
 	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
 		$this->mock_translator( 'fr' );
 
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
+		$post   = $this->create_post_capa_object( null, self::$german, null );
 		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
@@ -175,7 +175,7 @@ class Test_Post extends TestCase {
 
 		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
 
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$post   = $this->create_post_capa_object( null, self::$french, null );
 		$result = $post->get_language( $child_id );
 
 		$this->assertSame( 'de', $result->slug );

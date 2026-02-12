@@ -14,10 +14,17 @@ use function Brain\Monkey\setUp;
 use function Brain\Monkey\tearDown;
 
 abstract class TestCase extends PLL_UnitTestCase {
+	/**
+	 * @var \PLL_Language
+	 */
+	protected static $english, $french, $german; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Multiple
+
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
-		$factory->language->create_many( 3 );
+		self::$english = $factory->language->create_and_get( array( 'locale' => 'en_US' ) );
+		self::$french = $factory->language->create_and_get( array( 'locale' => 'fr_FR' ) );
+		self::$german = $factory->language->create_and_get( array( 'locale' => 'de_DE' ) );
 	}
 
 	public function set_up() {
@@ -29,7 +36,7 @@ abstract class TestCase extends PLL_UnitTestCase {
 		$this->pll_model = new PLL_Model( $options );
 	}
 
-	public function test_tear_down() {
+	public function tear_down() {
 		tearDown();
 
 		parent::tear_down();

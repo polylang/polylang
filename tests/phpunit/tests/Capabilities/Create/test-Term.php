@@ -101,7 +101,7 @@ class Test_Term extends TestCase {
 	public function test_returns_language_from_rest_request() {
 		$request = $this->createMock( Request::class );
 		$request->method( 'get_language' )
-			->willReturn( $this->pll_model->languages->get( 'de' ) );
+			->willReturn( self::$german );
 
 		$term   = $this->create_term_capa_object( $request, null, null );
 		$result = $term->get_language();
@@ -122,7 +122,7 @@ class Test_Term extends TestCase {
 	}
 
 	public function test_returns_curlang_on_frontend() {
-		$term   = $this->create_term_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
+		$term   = $this->create_term_capa_object( null, null, self::$german );
 		$result = $term->get_language();
 
 		$this->assertSame( 'de', $result->slug );
@@ -161,7 +161,7 @@ class Test_Term extends TestCase {
 
 		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
 
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'en' ), null );
+		$term   = $this->create_term_capa_object( null, self::$english, null );
 		$result = $term->get_language( $child_id, 'category' );
 
 		$this->assertSame( 'fr', $result->slug );
@@ -170,7 +170,7 @@ class Test_Term extends TestCase {
 	public function test_rest_request_takes_priority_over_parent_language() {
 		$request = $this->createMock( Request::class );
 		$request->method( 'get_language' )
-			->willReturn( $this->pll_model->languages->get( 'fr' ) );
+			->willReturn( self::$french );
 
 		$parent_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		$this->pll_model->term->set_language( $parent_id, 'de' );
@@ -206,7 +206,7 @@ class Test_Term extends TestCase {
 	public function test_returns_pref_lang_when_user_can_translate() {
 		$this->mock_translator( 'fr' );
 
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$term   = $this->create_term_capa_object( null, self::$french, null );
 		$result = $term->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
@@ -215,7 +215,7 @@ class Test_Term extends TestCase {
 	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
 		$this->mock_translator( 'fr' );
 
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
+		$term   = $this->create_term_capa_object( null, self::$german, null );
 		$result = $term->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
@@ -227,7 +227,7 @@ class Test_Term extends TestCase {
 
 		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
 
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$term   = $this->create_term_capa_object( null, self::$french, null );
 		$result = $term->get_language( $child_id, 'category' );
 
 		$this->assertSame( 'de', $result->slug );
