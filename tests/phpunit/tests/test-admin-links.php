@@ -1,7 +1,5 @@
 <?php
 
-namespace WP_Syntex\Polylang_Pro\Tests\Integration;
-
 use WP_User;
 use PLL_Model;
 use PLL_Admin;
