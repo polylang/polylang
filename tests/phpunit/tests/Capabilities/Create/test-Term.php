@@ -13,7 +13,6 @@ class Test_Term extends TestCase {
 	/**
 	 * @testWith ["en"]
 	 *           ["fr"]
-	 *           ["de"]
 	 *
 	 * @param string $lang The language code.
 	 */

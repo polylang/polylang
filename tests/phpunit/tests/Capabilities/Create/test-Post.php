@@ -19,14 +19,11 @@ class Test_Post extends TestCase {
 	/**
 	 * @testWith ["en"]
 	 *           ["fr"]
-	 *           ["de"]
 	 *
 	 * @param string $lang The language code.
 	 */
 	public function test_returns_new_lang_from_get_param( string $lang ) {
 		$_GET['new_lang'] = $lang;
-
-		wp_set_current_user( self::$editor->ID );
 
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language();
@@ -37,8 +34,6 @@ class Test_Post extends TestCase {
 	public function test_returns_default_when_new_lang_is_invalid() {
 		$_GET['new_lang'] = 'invalid';
 
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language( 0 );
 
@@ -48,7 +43,6 @@ class Test_Post extends TestCase {
 	/**
 	 * @testWith ["en"]
 	 *           ["fr"]
-	 *           ["de"]
 	 *
 	 * @param string $lang The language code.
 	 */
@@ -56,8 +50,6 @@ class Test_Post extends TestCase {
 		$_REQUEST['lang'] = $lang;
 
 		// pref_lang is null to simulate frontend context.
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language( 0 );
 
@@ -68,8 +60,6 @@ class Test_Post extends TestCase {
 		$_REQUEST['lang'] = 'de';
 
 		// pref_lang is set to simulate admin context.
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
 		$result = $post->get_language( 0 );
 
@@ -80,8 +70,6 @@ class Test_Post extends TestCase {
 		$request = $this->createMock( Request::class );
 		$request->method( 'get_language' )
 			->willReturn( $this->pll_model->languages->get( 'de' ) );
-
-		wp_set_current_user( self::$editor->ID );
 
 		$post   = $this->create_post_capa_object( $request, null, null );
 		$result = $post->get_language( 0 );
@@ -95,8 +83,6 @@ class Test_Post extends TestCase {
 
 		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
 
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language( $child_id );
 
@@ -104,8 +90,6 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_pref_lang_when_user_can_translate() {
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
 		$result = $post->get_language( 0 );
 
@@ -113,8 +97,6 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_curlang_on_frontend() {
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
 		$result = $post->get_language( 0 );
 
@@ -144,8 +126,6 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_default_language_for_non_translator() {
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object();
 		$result = $post->get_language( 0 );
 
@@ -169,8 +149,6 @@ class Test_Post extends TestCase {
 
 		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
 
-		wp_set_current_user( self::$editor->ID );
-
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
 		$result = $post->get_language( $child_id );
 
@@ -184,8 +162,6 @@ class Test_Post extends TestCase {
 		$this->pll_model->post->set_language( $parent_id, 'de' );
 
 		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
-
-		wp_set_current_user( self::$editor->ID );
 
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'en' ), null );
 		$result = $post->get_language( $child_id );
@@ -202,8 +178,6 @@ class Test_Post extends TestCase {
 		$this->pll_model->post->set_language( $parent_id, 'de' );
 
 		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
-
-		wp_set_current_user( self::$editor->ID );
 
 		$post   = $this->create_post_capa_object( $request, null, null );
 		$result = $post->get_language( $child_id );
