@@ -97,8 +97,6 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_default_language_for_translator_allowed_to_translate_default() {
-		wp_set_current_user( self::$translator_en->ID );
-
 		$this->mock_translator( 'en' );
 
 		$post   = $this->create_post_capa_object();
@@ -108,8 +106,6 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_preferred_language_for_translator_not_allowed_to_translate_default() {
-		wp_set_current_user( self::$translator_fr->ID );
-
 		$this->mock_translator( 'fr' );
 
 		$post   = $this->create_post_capa_object();
@@ -156,6 +152,8 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_returns_pref_lang_when_user_can_translate() {
+		$this->mock_translator( 'fr' );
+
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
 		$result = $post->get_language();
 
@@ -163,8 +161,6 @@ class Test_Post extends TestCase {
 	}
 
 	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
-		wp_set_current_user( self::$translator_fr->ID );
-
 		$this->mock_translator( 'fr' );
 
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'de' ), null );

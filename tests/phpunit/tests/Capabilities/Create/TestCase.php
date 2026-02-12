@@ -2,47 +2,22 @@
 
 namespace WP_Syntex\Polylang\Tests\Integration\modules\Capabilities\Create;
 
-use WP_User;
 use PLL_Model;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
 use PHPUnit\Framework\MockObject\MockObject;
 use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Capabilities\User\Creator;
 
 use function Patchwork\redefine;
 use function Brain\Monkey\setUp;
 use function Brain\Monkey\tearDown;
 
 abstract class TestCase extends PLL_UnitTestCase {
-	/**
-	 * @var WP_User
-	 */
-	protected static $translator_fr;
-
-	/**
-	 * @var WP_User
-	 */
-	protected static $translator_en;
-
-	/**
-	 * @var WP_User
-	 */
-	protected static $editor;
-
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
 		$factory->language->create_many( 3 );
-
-		self::$translator_fr = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr->add_cap( 'translate_fr' );
-
-		self::$translator_en = $factory->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_en->add_cap( 'translate_en' );
-
-		self::$editor = $factory->user->create_and_get( array( 'role' => 'editor' ) );
 	}
 
 	public function set_up() {
@@ -54,12 +29,10 @@ abstract class TestCase extends PLL_UnitTestCase {
 		$this->pll_model = new PLL_Model( $options );
 	}
 
-	public static function wpTearDownAfterClass() {
-		wp_delete_user( self::$translator_fr->ID );
-		wp_delete_user( self::$translator_en->ID );
-		wp_delete_user( self::$editor->ID );
+	public function test_tear_down() {
+		tearDown();
 
-		parent::wpTearDownAfterClass();
+		parent::tear_down();
 	}
 
 	/**

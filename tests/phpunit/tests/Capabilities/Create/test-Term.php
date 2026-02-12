@@ -19,8 +19,6 @@ class Test_Term extends TestCase {
 	public function test_returns_new_lang_from_get_param( string $lang ) {
 		$_GET['new_lang'] = $lang;
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
 		$result = $term->get_language();
 
@@ -29,8 +27,6 @@ class Test_Term extends TestCase {
 
 	public function test_returns_default_when_new_lang_is_invalid() {
 		$_GET['new_lang'] = 'invalid';
-
-		wp_set_current_user( self::$editor->ID );
 
 		$term   = $this->create_term_capa_object();
 		$result = $term->get_language();
@@ -133,8 +129,6 @@ class Test_Term extends TestCase {
 	}
 
 	public function test_returns_default_language_for_translator_allowed_to_translate_default() {
-		wp_set_current_user( self::$translator_en->ID );
-
 		$this->mock_translator( 'en' );
 
 		$term   = $this->create_term_capa_object();
@@ -144,8 +138,6 @@ class Test_Term extends TestCase {
 	}
 
 	public function test_returns_preferred_language_for_translator_not_allowed_to_translate_default() {
-		wp_set_current_user( self::$translator_fr->ID );
-
 		$this->mock_translator( 'fr' );
 
 		$term   = $this->create_term_capa_object();
@@ -212,6 +204,8 @@ class Test_Term extends TestCase {
 	}
 
 	public function test_returns_pref_lang_when_user_can_translate() {
+		$this->mock_translator( 'fr' );
+
 		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
 		$result = $term->get_language();
 
@@ -219,8 +213,6 @@ class Test_Term extends TestCase {
 	}
 
 	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
-		wp_set_current_user( self::$translator_fr->ID );
-
 		$this->mock_translator( 'fr' );
 
 		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
