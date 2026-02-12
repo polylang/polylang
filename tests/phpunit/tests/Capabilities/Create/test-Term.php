@@ -125,13 +125,6 @@ class Test_Term extends TestCase {
 		$this->assertSame( 'fr', $result->slug );
 	}
 
-	public function test_returns_pref_lang_when_user_can_translate() {
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $term->get_language();
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
 	public function test_returns_curlang_on_frontend() {
 		$term   = $this->create_term_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
 		$result = $term->get_language();
@@ -166,29 +159,6 @@ class Test_Term extends TestCase {
 		$result = $term->get_language();
 
 		$this->assertSame( 'en', $result->slug );
-	}
-
-	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
-		wp_set_current_user( self::$translator_fr->ID );
-
-		$this->mock_translator( 'fr' );
-
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
-		$result = $term->get_language();
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
-	public function test_parent_language_takes_priority_over_pref_lang() {
-		$parent_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
-		$this->pll_model->term->set_language( $parent_id, 'de' );
-
-		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
-
-		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $term->get_language( $child_id, 'category' );
-
-		$this->assertSame( 'de', $result->slug );
 	}
 
 	public function test_new_lang_takes_priority_over_parent_language() {
@@ -237,6 +207,36 @@ class Test_Term extends TestCase {
 
 		$term   = $this->create_term_capa_object();
 		$result = $term->get_language();
+
+		$this->assertSame( 'de', $result->slug );
+	}
+
+	public function test_returns_pref_lang_when_user_can_translate() {
+		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$result = $term->get_language();
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
+		wp_set_current_user( self::$translator_fr->ID );
+
+		$this->mock_translator( 'fr' );
+
+		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
+		$result = $term->get_language();
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_parent_language_takes_priority_over_pref_lang() {
+		$parent_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		$this->pll_model->term->set_language( $parent_id, 'de' );
+
+		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
+
+		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$result = $term->get_language( $child_id, 'category' );
 
 		$this->assertSame( 'de', $result->slug );
 	}
