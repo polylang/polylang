@@ -4,15 +4,12 @@ namespace WP_Syntex\Polylang\Tests\Integration\modules\Capabilities\UI;
 
 use PLL_Model;
 use PLL_Admin;
-use PLL_CRUD_Terms;
-use PLL_CRUD_Posts;
 use PLL_Admin_Links;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
 use PLL_Admin_Filters_Media;
 use WP_Syntex\Polylang\Capabilities\User\NOOP;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Capabilities\User\Creator;
 
 use function Patchwork\redefine;
 use function Brain\Monkey\setUp;
@@ -54,17 +51,13 @@ class Test_Media extends PLL_UnitTestCase {
 
 		setUp();
 
-		$options                        = $this->create_options( $this->options );
-		$this->pll_model                = new PLL_Model( $options );
-		$links_model                    = $this->pll_model->get_links_model();
-		$this->capabilities             = new Capabilities();
-		Capabilities::set_user_creator( new Creator() );
-		$this->pll_env                  = new PLL_Admin( $links_model );
-		$this->pll_env->posts           = new PLL_CRUD_Posts( $this->pll_env );
-		$this->pll_env->terms           = new PLL_CRUD_Terms( $this->pll_env );
-		$this->pll_env->links           = new PLL_Admin_Links( $this->pll_env );
-		$this->pll_env->posts           = new PLL_CRUD_Posts( $this->pll_env );
-		$this->pll_env->filters_media   = new PLL_Admin_Filters_Media( $this->pll_env );
+		$options                      = $this->create_options( $this->options );
+		$this->pll_model              = new PLL_Model( $options );
+		$links_model                  = $this->pll_model->get_links_model();
+		$this->capabilities           = new Capabilities();
+		$this->pll_env                = new PLL_Admin( $links_model );
+		$this->pll_env->links         = new PLL_Admin_Links( $this->pll_env );
+		$this->pll_env->filters_media = new PLL_Admin_Filters_Media( $this->pll_env );
 
 		$GLOBALS['polylang'] = $this->pll_env;
 		self::require_api();
@@ -88,7 +81,7 @@ class Test_Media extends PLL_UnitTestCase {
 		$attachment = self::factory()->attachment->create();
 		$this->pll_model->post->set_language( $attachment, 'en' );
 
-		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
+		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 
 		$this->assertArrayHasKey( 'language', $fields );
 		$this->assertSame( 'Language', $fields['language']['label'] );
@@ -100,7 +93,7 @@ class Test_Media extends PLL_UnitTestCase {
 		$attachment = self::factory()->attachment->create();
 		$this->pll_model->post->set_language( $attachment, 'en' );
 
-		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
+		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 
 		$this->assertArrayNotHasKey( 'language', $fields );
 	}
@@ -114,13 +107,13 @@ class Test_Media extends PLL_UnitTestCase {
 	 *
 	 * @param string $lang_slug The language of the attachment.
 	 */
-	public function test_non_translator_sees_all_languages( string $lang_slug ): void {
+	public function test_user_without_language_capability_sees_all_languages( string $lang_slug ): void {
 		$GLOBALS['pagenow'] = 'upload.php';
 
 		$attachment = self::factory()->attachment->create();
 		$this->pll_model->post->set_language( $attachment, $lang_slug );
 
-		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
+		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 		$html   = $fields['language']['html'];
 
 		$this->assert_languages_in_dropdown( array( 'en-US', 'fr-FR', 'de-DE' ), $html );
@@ -134,7 +127,7 @@ class Test_Media extends PLL_UnitTestCase {
 		$attachment = self::factory()->attachment->create();
 		// Do not set a language for the attachment.
 
-		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
+		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 		$html   = $fields['language']['html'];
 
 		// The first option should be empty.
@@ -164,7 +157,7 @@ class Test_Media extends PLL_UnitTestCase {
 		// Brain\Monkey API doesn't support static methods mocking, so we need to use Patchwork.
 		redefine( Capabilities::class . '::get_user', fn() => $translator_mock );
 
-		$fields = $this->pll_env->filters_media->attachment_fields_to_edit( array(), get_post( $attachment ) );
+		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 		$html   = $fields['language']['html'];
 
 		$this->assert_languages_in_dropdown( array( 'en-US', 'en-US', 'fr-FR', 'de-DE' ), $html ); // Two times "en-US" because the empty option is prepend to a fuul list (no Pro feature active).
