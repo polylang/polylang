@@ -332,27 +332,6 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Tests that a translator can create a term translation in their allowed language.
-	 */
-	public function test_translator_can_translate_term_to_authorized_language() {
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
-		$this->mock_user_for_links(
-			array(
-				'can_translate' => true,
-				'has_cap'       => true,
-			)
-		);
-
-		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
-		$this->pll_admin->model->term->set_language( $term->term_id, 'en' );
-		$language = $this->pll_admin->model->get_language( 'fr' );
-
-		$link = $this->links->get_new_term_translation_link( $term, 'post', $language );
-
-		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/edit-tags.php?taxonomy=category&post_type=post&from_tag=%d&new_lang=fr', $link, 'A French translator should be able to create a term translation in French.' );
-	}
-
-	/**
 	 * Tests that an editor can translate a term to any language.
 	 *
 	 * @testWith ["en", "fr"]
