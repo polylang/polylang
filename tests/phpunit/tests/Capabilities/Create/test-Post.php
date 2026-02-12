@@ -89,13 +89,6 @@ class Test_Post extends TestCase {
 		$this->assertSame( 'fr', $result->slug );
 	}
 
-	public function test_returns_pref_lang_when_user_can_translate() {
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $post->get_language( 0 );
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
 	public function test_returns_curlang_on_frontend() {
 		$post   = $this->create_post_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
 		$result = $post->get_language( 0 );
@@ -132,29 +125,6 @@ class Test_Post extends TestCase {
 		$this->assertSame( 'en', $result->slug );
 	}
 
-	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
-		wp_set_current_user( self::$translator_fr->ID );
-
-		$this->mock_translator( 'fr' );
-
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
-		$result = $post->get_language( 0 );
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
-	public function test_parent_language_takes_priority_over_pref_lang() {
-		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		$this->pll_model->post->set_language( $parent_id, 'de' );
-
-		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
-
-		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $post->get_language( $child_id );
-
-		$this->assertSame( 'de', $result->slug );
-	}
-
 	public function test_new_lang_takes_priority_over_parent_language() {
 		$_GET['new_lang'] = 'fr';
 
@@ -183,6 +153,36 @@ class Test_Post extends TestCase {
 		$result = $post->get_language( $child_id );
 
 		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_returns_pref_lang_when_user_can_translate() {
+		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$result = $post->get_language( 0 );
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
+		wp_set_current_user( self::$translator_fr->ID );
+
+		$this->mock_translator( 'fr' );
+
+		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
+		$result = $post->get_language( 0 );
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_parent_language_takes_priority_over_pref_lang() {
+		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$this->pll_model->post->set_language( $parent_id, 'de' );
+
+		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
+
+		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
+		$result = $post->get_language( $child_id );
+
+		$this->assertSame( 'de', $result->slug );
 	}
 
 	/**
