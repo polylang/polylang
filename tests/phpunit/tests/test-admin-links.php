@@ -1,13 +1,5 @@
 <?php
 
-use WP_User;
-use PLL_Model;
-use PLL_Admin;
-use PLL_Language;
-use PLL_Admin_Links;
-use PLL_UnitTestCase;
-use ReflectionObject;
-use PLL_UnitTest_Factory;
 use WP_Syntex\Polylang\Capabilities\User\NOOP;
 
 class Test_Admin_Links extends PLL_UnitTestCase {
@@ -22,12 +14,12 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	protected $links;
 
 	/**
-	 * @var \WP_User
+	 * @var WP_User
 	 */
 	protected static $editor;
 
 	/**
-	 * @var \WP_User
+	 * @var WP_User
 	 */
 	protected static $contributor;
 
