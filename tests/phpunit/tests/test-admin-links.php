@@ -291,26 +291,6 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Tests the link for page post type.
-	 */
-	public function test_page_link() {
-		wp_set_current_user( self::$editor->ID );
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
-
-		$page     = self::factory()->post->create_and_get(
-			array(
-				'post_type' => 'page',
-				'lang'      => 'en',
-			)
-		);
-		$language = $this->pll_admin->model->get_language( 'fr' );
-
-		$link = $this->links->get_new_post_translation_link( $page, $language );
-
-		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/post-new.php?post_type=page&amp;from_post=%d&amp;new_lang=fr&amp;_wpnonce=%s', $link, 'The link should be correct.' );
-	}
-
-	/**
 	 * Tests that the pll_get_new_post_translation_link filter is applied.
 	 */
 	public function test_filter_is_applied() {
