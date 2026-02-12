@@ -23,7 +23,7 @@ class Test_Term extends TestCase {
 		wp_set_current_user( self::$editor->ID );
 
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( $lang, $result->slug );
 	}

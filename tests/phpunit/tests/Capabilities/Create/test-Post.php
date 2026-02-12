@@ -29,7 +29,7 @@ class Test_Post extends TestCase {
 		wp_set_current_user( self::$editor->ID );
 
 		$post   = $this->create_post_capa_object();
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( $lang, $result->slug );
 	}
