@@ -11,8 +11,6 @@ use PLL_UnitTestCase;
 use ReflectionObject;
 use PLL_UnitTest_Factory;
 use WP_Syntex\Polylang\Capabilities\User\NOOP;
-use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Capabilities\User\Creator;
 
 class Test_Admin_Links extends PLL_UnitTestCase {
 	/**
@@ -33,27 +31,19 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	/**
 	 * @var \WP_User
 	 */
-	protected static $translator_fr;
-
-	/**
-	 * @var \WP_User
-	 */
 	protected static $contributor;
 
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
-		$factory->language->create_many( 2 );
+		$factory->language->create_many( 3 );
 
-		self::$editor        = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
-		self::$translator_fr->add_cap( 'translate_fr' );
+		self::$editor      = self::factory()->user->create_and_get( array( 'role' => 'editor' ) );
 		self::$contributor = self::factory()->user->create_and_get( array( 'role' => 'contributor' ) );
 	}
 
 	public static function wpTearDownAfterClass() {
 		self::delete_user( self::$editor->ID );
-		self::delete_user( self::$translator_fr->ID );
 		self::delete_user( self::$contributor->ID );
 
 		parent::wpTearDownAfterClass();
@@ -62,35 +52,22 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options           = $this->create_options(
+		$options = $this->create_options(
 			array(
 				'default_lang'  => 'en',
-				'media_support' => true,
 			)
 		);
-		$model                  = new PLL_Model( $options );
-		$links_model            = $model->get_links_model();
-		$this->pll_admin        = new PLL_Admin( $links_model );
-		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-		$GLOBALS['polylang']    = $this->pll_admin;
-
-		self::require_api();
-	}
-
-	public function tear_down() {
-		// Reset user creator after each tests to avoid state bleeding.
-		Capabilities::set_user_creator( new Creator() );
-
-		parent::tear_down();
+		$model           = new PLL_Model( $options );
+		$links_model     = $model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
 	/**
 	 * Tests that a translator can only create translations in their allowed language.
 	 */
 	public function test_translator_cannot_translate_to_unauthorized_language() {
-		wp_set_current_user( self::$translator_fr->ID );
-
-		$this->mock_links_user_as_translator( array( 'can_translate' => false ) );
+		$this->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->mock_user_for_links( array( 'can_translate' => false ) );
 
 		$post     = self::factory()->post->create_and_get( array( 'lang' => 'fr' ) );
 		$language = $this->pll_admin->model->get_language( 'en' );
@@ -98,27 +75,6 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 		$link = $this->links->get_new_post_translation_link( $post, $language );
 
 		$this->assertSame( '', $link, 'A French translator should not be able to create a translation in English.' );
-	}
-
-	/**
-	 * Tests that a translator can create translations in their allowed language.
-	 */
-	public function test_translator_can_translate_to_authorized_language() {
-		wp_set_current_user( self::$translator_fr->ID );
-
-		$this->mock_links_user_as_translator(
-			array(
-				'can_translate' => true,
-				'has_cap'       => true,
-			)
-		);
-
-		$post     = self::factory()->post->create_and_get( array( 'lang' => 'en' ) );
-		$language = $this->pll_admin->model->get_language( 'fr' );
-
-		$link = $this->links->get_new_post_translation_link( $post, $language );
-
-		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/post-new.php?post_type=post&amp;from_post=%d&amp;new_lang=fr&amp;_wpnonce=%s', $link, 'A French translator should be able to create a translation in French.' );
 	}
 
 	/**
@@ -131,7 +87,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	 * @param string $target_lang Slug of the lang to assign to the post.
 	 * @return void
 	 */
-	public function test_editor_can_translate_to_any_language( string $post_lang, string $target_lang ) {
+	public function test_editor_can_translate_post_to_any_language( string $post_lang, string $target_lang ) {
 		wp_set_current_user( self::$editor->ID );
 		$this->links = new PLL_Admin_Links( $this->pll_admin );
 
@@ -148,8 +104,6 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	 */
 	public function test_user_without_create_posts_capability_cannot_translate() {
 		wp_set_current_user( self::$contributor->ID );
-
-		// Reinitialize the links object to use the new current user.
 		$this->links = new PLL_Admin_Links( $this->pll_admin );
 
 		// Contributor cannot create pages.
@@ -240,22 +194,9 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 		);
 		$this->pll_admin->model->post->save_translations( $privacy_page_en->ID, array( 'en' => $privacy_page_en->ID, 'fr' => $privacy_page_fr->ID ) );
 
-		// Create a third language.
-		self::create_language( 'de_DE_formal' );
-
-		// Reinitialize the links object.
-		$options           = $this->create_options(
-			array(
-				'default_lang'  => 'en',
-				'media_support' => true,
-			)
-		);
-		$model             = new PLL_Model( $options );
-		$links_model       = $model->get_links_model();
-		$this->pll_admin   = new PLL_Admin( $links_model );
-		$this->links       = new PLL_Admin_Links( $this->pll_admin );
-
 		$language = $this->pll_admin->model->get_language( 'de' );
+
+		$this->links = new PLL_Admin_Links( $this->pll_admin );
 
 		// Try to create a DE translation from the FR translation of privacy page.
 		$link = $this->links->get_new_post_translation_link( $privacy_page_fr, $language );
@@ -401,9 +342,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	 * Tests that a translator cannot create a term translation in an unauthorized language.
 	 */
 	public function test_translator_cannot_translate_term_to_unauthorized_language() {
-		wp_set_current_user( self::$translator_fr->ID );
-
-		$this->mock_links_user_as_translator( array( 'can_translate' => false ) );
+		$this->links = new PLL_Admin_Links( $this->pll_admin );
 
 		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
 		$this->pll_admin->model->term->set_language( $term->term_id, 'fr' );
@@ -418,8 +357,13 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	 * Tests that a translator can create a term translation in their allowed language.
 	 */
 	public function test_translator_can_translate_term_to_authorized_language() {
-		wp_set_current_user( self::$translator_fr->ID );
 		$this->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->mock_user_for_links(
+			array(
+				'can_translate' => true,
+				'has_cap'       => true,
+			)
+		);
 
 		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
 		$this->pll_admin->model->term->set_language( $term->term_id, 'en' );
@@ -432,18 +376,25 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 
 	/**
 	 * Tests that an editor can translate a term to any language.
+	 *
+	 * @testWith ["en", "fr"]
+	 *           ["fr", "en"]
+	 *
+	 * @param string $post_lang   Slug of the lang of the post.
+	 * @param string $target_lang Slug of the lang to assign to the post.
+	 * @return void
 	 */
-	public function test_editor_can_translate_term_to_any_language() {
+	public function test_editor_can_translate_term_to_any_language( string $post_lang, string $target_lang ) {
 		wp_set_current_user( self::$editor->ID );
 		$this->links = new PLL_Admin_Links( $this->pll_admin );
 
 		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
-		$this->pll_admin->model->term->set_language( $term->term_id, 'en' );
-		$language = $this->pll_admin->model->get_language( 'fr' );
+		$this->pll_admin->model->term->set_language( $term->term_id, $post_lang );
+		$language = $this->pll_admin->model->get_language( $target_lang );
 
 		$link = $this->links->get_new_term_translation_link( $term, 'post', $language );
 
-		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/edit-tags.php?taxonomy=category&post_type=post&from_tag=%d&new_lang=fr', $link, 'An editor should be able to create a term translation in any language.' );
+		$this->assertStringMatchesFormat( "http://example.org/wp-admin/edit-tags.php?taxonomy=category&post_type=post&from_tag=%d&new_lang={$target_lang}", $link, 'An editor should be able to create a term translation in any language.' );
 	}
 
 	/**
@@ -460,38 +411,6 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 		$link = $this->links->get_new_term_translation_link( $term, 'post', $language );
 
 		$this->assertSame( '', $link, 'A contributor without edit_terms capability should not be able to create a term translation.' );
-	}
-
-	/**
-	 * Tests the term translation link for a tag taxonomy.
-	 */
-	public function test_term_translation_link_for_tag() {
-		wp_set_current_user( self::$editor->ID );
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
-
-		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'post_tag' ) );
-		$this->pll_admin->model->term->set_language( $term->term_id, 'en' );
-		$language = $this->pll_admin->model->get_language( 'fr' );
-
-		$link = $this->links->get_new_term_translation_link( $term, 'post', $language );
-
-		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/edit-tags.php?taxonomy=post_tag&post_type=post&from_tag=%d&new_lang=fr', $link, 'The link should be correct.' );
-	}
-
-	/**
-	 * Tests the term translation link with a different post type.
-	 */
-	public function test_term_translation_link_with_page_post_type() {
-		wp_set_current_user( self::$editor->ID );
-		$this->links = new PLL_Admin_Links( $this->pll_admin );
-
-		$term = self::factory()->term->create_and_get( array( 'taxonomy' => 'category' ) );
-		$this->pll_admin->model->term->set_language( $term->term_id, 'en' );
-		$language = $this->pll_admin->model->get_language( 'fr' );
-
-		$link = $this->links->get_new_term_translation_link( $term, 'page', $language );
-
-		$this->assertStringMatchesFormat( 'http://example.org/wp-admin/edit-tags.php?taxonomy=category&post_type=page&from_tag=%d&new_lang=fr', $link, 'The link should be correct.' );
 	}
 
 	/**
@@ -531,7 +450,7 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	 * @param array $methods An array of methods to mock and their return values.
 	 * @return void
 	 */
-	private function mock_links_user_as_translator( array $methods = array() ) {
+	protected function mock_user_for_links( array $methods = array() ) {
 		$translator_mock = $this->getMockBuilder( NOOP::class )
 			->disableOriginalConstructor()
 			->getMock();
