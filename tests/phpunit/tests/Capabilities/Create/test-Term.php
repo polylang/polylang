@@ -33,7 +33,7 @@ class Test_Term extends TestCase {
 		wp_set_current_user( self::$editor->ID );
 
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -41,17 +41,14 @@ class Test_Term extends TestCase {
 	/**
 	 * @testWith ["en"]
 	 *           ["fr"]
-	 *           ["de"]
 	 *
 	 * @param string $lang The language code.
 	 */
 	public function test_returns_lang_from_term_lang_choice_post_param( string $lang ) {
 		$_POST['term_lang_choice'] = $lang;
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( $lang, $result->slug );
 	}
@@ -59,10 +56,8 @@ class Test_Term extends TestCase {
 	public function test_returns_default_when_term_lang_choice_is_invalid() {
 		$_POST['term_lang_choice'] = 'invalid';
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -70,17 +65,14 @@ class Test_Term extends TestCase {
 	/**
 	 * @testWith ["en"]
 	 *           ["fr"]
-	 *           ["de"]
 	 *
 	 * @param string $lang The language code.
 	 */
 	public function test_returns_lang_from_inline_lang_choice_post_param( string $lang ) {
 		$_POST['inline_lang_choice'] = $lang;
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( $lang, $result->slug );
 	}
@@ -88,10 +80,8 @@ class Test_Term extends TestCase {
 	public function test_returns_default_when_inline_lang_choice_is_invalid() {
 		$_POST['inline_lang_choice'] = 'invalid';
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -99,7 +89,6 @@ class Test_Term extends TestCase {
 	/**
 	 * @testWith ["en"]
 	 *           ["fr"]
-	 *           ["de"]
 	 *
 	 * @param string $lang The language code.
 	 */
@@ -107,10 +96,8 @@ class Test_Term extends TestCase {
 		$_REQUEST['lang'] = $lang;
 
 		// pref_lang is null to simulate frontend context.
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( $lang, $result->slug );
 	}
@@ -120,10 +107,8 @@ class Test_Term extends TestCase {
 		$request->method( 'get_language' )
 			->willReturn( $this->pll_model->languages->get( 'de' ) );
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object( $request, null, null );
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'de', $result->slug );
 	}
@@ -134,8 +119,6 @@ class Test_Term extends TestCase {
 
 		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
 		$result = $term->get_language( $child_id, 'category' );
 
@@ -143,19 +126,15 @@ class Test_Term extends TestCase {
 	}
 
 	public function test_returns_pref_lang_when_user_can_translate() {
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
 
 	public function test_returns_curlang_on_frontend() {
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'de', $result->slug );
 	}
@@ -166,7 +145,7 @@ class Test_Term extends TestCase {
 		$this->mock_translator( 'en' );
 
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -177,16 +156,14 @@ class Test_Term extends TestCase {
 		$this->mock_translator( 'fr' );
 
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
 
 	public function test_returns_default_language_for_non_translator() {
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -197,7 +174,7 @@ class Test_Term extends TestCase {
 		$this->mock_translator( 'fr' );
 
 		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
@@ -207,8 +184,6 @@ class Test_Term extends TestCase {
 		$this->pll_model->term->set_language( $parent_id, 'de' );
 
 		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
-
-		wp_set_current_user( self::$editor->ID );
 
 		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
 		$result = $term->get_language( $child_id, 'category' );
@@ -223,8 +198,6 @@ class Test_Term extends TestCase {
 		$this->pll_model->term->set_language( $parent_id, 'de' );
 
 		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
-
-		wp_set_current_user( self::$editor->ID );
 
 		$term   = $this->create_term_capa_object( null, $this->pll_model->languages->get( 'en' ), null );
 		$result = $term->get_language( $child_id, 'category' );
@@ -242,8 +215,6 @@ class Test_Term extends TestCase {
 
 		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object( $request, null, null );
 		$result = $term->get_language( $child_id, 'category' );
 
@@ -254,10 +225,8 @@ class Test_Term extends TestCase {
 		$_POST['term_lang_choice']   = 'fr';
 		$_POST['inline_lang_choice'] = 'de';
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
@@ -266,10 +235,8 @@ class Test_Term extends TestCase {
 		$_GET['new_lang']          = 'de';
 		$_POST['term_lang_choice'] = 'fr';
 
-		wp_set_current_user( self::$editor->ID );
-
 		$term   = $this->create_term_capa_object();
-		$result = $term->get_language( 0, '' );
+		$result = $term->get_language();
 
 		$this->assertSame( 'de', $result->slug );
 	}

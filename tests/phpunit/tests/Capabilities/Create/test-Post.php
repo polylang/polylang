@@ -35,7 +35,7 @@ class Test_Post extends TestCase {
 		$_GET['new_lang'] = 'invalid';
 
 		$post   = $this->create_post_capa_object();
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -51,7 +51,7 @@ class Test_Post extends TestCase {
 
 		// pref_lang is null to simulate frontend context.
 		$post   = $this->create_post_capa_object();
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( $lang, $result->slug );
 	}
@@ -61,7 +61,7 @@ class Test_Post extends TestCase {
 
 		// pref_lang is set to simulate admin context.
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
@@ -72,7 +72,7 @@ class Test_Post extends TestCase {
 			->willReturn( $this->pll_model->languages->get( 'de' ) );
 
 		$post   = $this->create_post_capa_object( $request, null, null );
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'de', $result->slug );
 	}
@@ -91,7 +91,7 @@ class Test_Post extends TestCase {
 
 	public function test_returns_curlang_on_frontend() {
 		$post   = $this->create_post_capa_object( null, null, $this->pll_model->languages->get( 'de' ) );
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'de', $result->slug );
 	}
@@ -102,7 +102,7 @@ class Test_Post extends TestCase {
 		$this->mock_translator( 'en' );
 
 		$post   = $this->create_post_capa_object();
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -113,14 +113,14 @@ class Test_Post extends TestCase {
 		$this->mock_translator( 'fr' );
 
 		$post   = $this->create_post_capa_object();
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
 
 	public function test_returns_default_language_for_non_translator() {
 		$post   = $this->create_post_capa_object();
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'en', $result->slug );
 	}
@@ -157,7 +157,7 @@ class Test_Post extends TestCase {
 
 	public function test_returns_pref_lang_when_user_can_translate() {
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'fr' ), null );
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
@@ -168,7 +168,7 @@ class Test_Post extends TestCase {
 		$this->mock_translator( 'fr' );
 
 		$post   = $this->create_post_capa_object( null, $this->pll_model->languages->get( 'de' ), null );
-		$result = $post->get_language( 0 );
+		$result = $post->get_language();
 
 		$this->assertSame( 'fr', $result->slug );
 	}
