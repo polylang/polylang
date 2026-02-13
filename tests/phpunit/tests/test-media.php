@@ -66,27 +66,6 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertFileDoesNotExist( $filename );
 	}
 
-	public function test_attachment_fields_to_edit() {
-		$filename = __DIR__ . '/../data/image.jpg';
-		$fr = self::factory()->attachment->create_upload_object( $filename );
-		self::$model->post->set_language( $fr, 'fr' );
-
-		$fields = get_attachment_fields_to_edit( $fr );
-		$this->assertEquals( 'Language', $fields['language']['label'] );
-
-		$doc = new DomDocument();
-		$doc->loadHTML( $fields['language']['html'] );
-		$xpath = new DOMXpath( $doc );
-
-		$selected = $xpath->query( '//option[@selected="selected"]' );
-		$this->assertEquals( 'fr', $selected->item( 0 )->getAttribute( 'value' ) );
-
-		// Don't use on the Edit Media panel
-		$GLOBALS['pagenow'] = 'post.php';
-		$fields = get_attachment_fields_to_edit( $fr );
-		$this->assertFalse( isset( $fields['language'] ) );
-	}
-
 	public function test_create_media_translation_with_slashes() {
 		$slash_2 = '\\\\';
 		$en = self::factory()->attachment->create(

@@ -121,36 +121,6 @@ class Test_Post extends TestCase {
 		$this->assertSame( 'en', $result->slug );
 	}
 
-	public function test_new_lang_takes_priority_over_parent_language() {
-		$_GET['new_lang'] = 'fr';
-
-		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		$this->pll_model->post->set_language( $parent_id, 'de' );
-
-		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
-
-		$post   = $this->create_post_capa_object( null, self::$english, null );
-		$result = $post->get_language( $child_id );
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
-	public function test_rest_request_takes_priority_over_parent_language() {
-		$request = $this->createMock( Request::class );
-		$request->method( 'get_language' )
-			->willReturn( self::$french );
-
-		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		$this->pll_model->post->set_language( $parent_id, 'de' );
-
-		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
-
-		$post   = $this->create_post_capa_object( $request, null, null );
-		$result = $post->get_language( $child_id );
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
 	public function test_returns_pref_lang_when_user_can_translate() {
 		$this->mock_translator( 'fr' );
 

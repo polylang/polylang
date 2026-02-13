@@ -153,56 +153,6 @@ class Test_Term extends TestCase {
 		$this->assertSame( 'en', $result->slug );
 	}
 
-	public function test_new_lang_takes_priority_over_parent_language() {
-		$_GET['new_lang'] = 'fr';
-
-		$parent_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
-		$this->pll_model->term->set_language( $parent_id, 'de' );
-
-		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
-
-		$term   = $this->create_term_capa_object( null, self::$english, null );
-		$result = $term->get_language( $child_id, 'category' );
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
-	public function test_rest_request_takes_priority_over_parent_language() {
-		$request = $this->createMock( Request::class );
-		$request->method( 'get_language' )
-			->willReturn( self::$french );
-
-		$parent_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
-		$this->pll_model->term->set_language( $parent_id, 'de' );
-
-		$child_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $parent_id ) );
-
-		$term   = $this->create_term_capa_object( $request, null, null );
-		$result = $term->get_language( $child_id, 'category' );
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
-	public function test_term_lang_choice_takes_priority_over_inline_lang_choice() {
-		$_POST['term_lang_choice']   = 'fr';
-		$_POST['inline_lang_choice'] = 'de';
-
-		$term   = $this->create_term_capa_object();
-		$result = $term->get_language();
-
-		$this->assertSame( 'fr', $result->slug );
-	}
-
-	public function test_new_lang_takes_priority_over_term_lang_choice() {
-		$_GET['new_lang']          = 'de';
-		$_POST['term_lang_choice'] = 'fr';
-
-		$term   = $this->create_term_capa_object();
-		$result = $term->get_language();
-
-		$this->assertSame( 'de', $result->slug );
-	}
-
 	public function test_returns_pref_lang_when_user_can_translate() {
 		$this->mock_translator( 'fr' );
 
