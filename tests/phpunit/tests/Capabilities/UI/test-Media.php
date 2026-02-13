@@ -146,7 +146,7 @@ class Test_Media extends PLL_UnitTestCase {
 		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 		$html   = $fields['language']['html'];
 
-		$this->assert_languages_in_dropdown( array( 'en-US', 'en-US', 'fr-FR', 'de-DE' ), $html ); // Two times "en-US" because the empty option is prepend to a fuul list (no Pro feature active).
+		$this->assert_languages_in_dropdown( array( 'en-US', 'fr-FR', 'de-DE' ), $html ); // Two times "en-US" because the empty option is prepend to a fuul list (no Pro feature active).
 		$this->assert_selected_language( 'en', $html );
 		$this->assertTrue( $this->is_dropdown_disabled( $html ) );
 	}
