@@ -67,6 +67,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			array_unshift( $languages, $lang );
 		}
 
+		$languages = array_unique( $languages );
+
 		// Disable the dropdown if:
 		// - the media has no language and the user is a translator,
 		// - or the media has a language but the user is not allowed to translate it.
