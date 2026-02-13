@@ -141,21 +141,7 @@ class Test_Media extends PLL_UnitTestCase {
 		$attachment = self::factory()->attachment->create();
 		$this->pll_model->post->set_language( $attachment, 'en' );
 
-		$translator_mock = $this->getMockBuilder( NOOP::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$translator_mock
-			->method( 'is_translator' )
-			->willReturn( true );
-		$translator_mock
-			->method( 'can_translate' )
-			->willReturnCallback( fn( $language ) => 'fr' === $language->slug );
-		$translator_mock
-			->method( 'get_preferred_language_slug' )
-			->willReturn( 'fr' );
-
-		// Brain\Monkey API doesn't support static methods mocking, so we need to use Patchwork.
-		redefine( Capabilities::class . '::get_user', fn() => $translator_mock );
+		$this->mock_translator( 'fr' );
 
 		$fields = get_attachment_fields_to_edit( get_post( $attachment ) );
 		$html   = $fields['language']['html'];
@@ -301,5 +287,30 @@ class Test_Media extends PLL_UnitTestCase {
 
 		$this->assertTrue( $processor->next_tag( 'OPTION' ), 'The dropdown should have options.' );
 		$this->assertEmpty( $processor->get_attribute( 'value' ), 'The first option should have an empty value.' );
+	}
+
+	/**
+	 * Mock a translator user with the given language slug and
+	 * monkey patches the `Capabilities::get_user` method to return it.
+	 *
+	 * @param string $lang_slug The language slug.
+	 * @return void
+	 */
+	protected function mock_translator( string $lang_slug ): void {
+		$translator_mock = $this->getMockBuilder( NOOP::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$translator_mock
+			->method( 'is_translator' )
+			->willReturn( true );
+		$translator_mock
+			->method( 'can_translate' )
+			->willReturnCallback( fn( $language ) => $lang_slug === $language->slug );
+		$translator_mock
+			->method( 'get_preferred_language_slug' )
+			->willReturn( $lang_slug );
+
+		// Brain\Monkey API doesn't support static methods mocking, so we need to use Patchwork.
+		redefine( Capabilities::class . '::get_user', fn() => $translator_mock );
 	}
 }
