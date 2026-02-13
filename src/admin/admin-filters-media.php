@@ -64,7 +64,9 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			array_unshift( $languages, (object) array( 'slug' => '', 'name' => '' ) );
 		} elseif ( ! $user->can_translate( $lang ) ) {
 			// The user cannot translate this language, so it isn't in `$languages` (the dropdown will be disabled).
-			array_unshift( $languages, $lang );
+			if ( ! in_array( $lang, $languages, true ) ) {
+				array_unshift( $languages, $lang );
+			}
 		}
 
 		// Disable the dropdown if:
