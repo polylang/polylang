@@ -44,20 +44,7 @@ class Admin_Menu_Test extends PLL_UnitTestCase {
 		$body_classes = apply_filters( 'admin_body_class', 'existing-class' );
 
 		$this->assertStringContainsString( 'existing-class', $body_classes );
-		$this->assertStringContainsString( PLL_Admin_Base::get_screen_id( 'lang' ), $body_classes );
-	}
-
-	public function test_admin_body_class_filter_callback_appends_screen_id() {
-		$this->pll_admin->add_menus();
-
-		set_current_screen( 'toplevel_page_mlang' );
-
-		do_action( 'admin_head-toplevel_page_mlang' );
-
-		$input = 'some-existing-class';
-		$value = apply_filters( 'admin_body_class', $input );
-
-		$this->assertSame( $input . ' ' . PLL_Admin_Base::get_screen_id( 'lang' ), $value );
+		$this->assertStringContainsString( ' ' . PLL_Admin_Base::get_screen_id( 'lang' ) . ' ', " {$body_classes} " ); // Purposely using a space to avoid false positives.
 	}
 
 	public function test_current_screen_callback_sets_id_and_base_to_languages_screen() {
