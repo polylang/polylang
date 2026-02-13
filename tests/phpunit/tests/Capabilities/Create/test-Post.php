@@ -1,0 +1,175 @@
+<?php
+
+namespace WP_Syntex\Polylang\Tests\Integration\modules\Capabilities\Create;
+
+use PLL_Language;
+use WP_Syntex\Polylang\REST\Request;
+use PHPUnit\Framework\MockObject\MockObject;
+use WP_Syntex\Polylang\Capabilities\User\NOOP;
+use WP_Syntex\Polylang\Capabilities\Create\Post;
+use WP_Syntex\Polylang\Capabilities\Capabilities;
+
+use function Patchwork\redefine;
+
+/**
+ * @group capabilities
+ */
+class Test_Post extends TestCase {
+
+	/**
+	 * @testWith ["en"]
+	 *           ["fr"]
+	 *
+	 * @param string $lang The language code.
+	 */
+	public function test_returns_new_lang_from_get_param( string $lang ) {
+		$_GET['new_lang'] = $lang;
+
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language();
+
+		$this->assertSame( $lang, $result->slug );
+	}
+
+	public function test_returns_default_when_new_lang_is_invalid() {
+		$_GET['new_lang'] = 'invalid';
+
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language();
+
+		$this->assertSame( 'en', $result->slug );
+	}
+
+	/**
+	 * @testWith ["en"]
+	 *           ["fr"]
+	 *
+	 * @param string $lang The language code.
+	 */
+	public function test_returns_lang_from_request_param_on_frontend( string $lang ) {
+		$_REQUEST['lang'] = $lang;
+
+		// pref_lang is null to simulate frontend context.
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language();
+
+		$this->assertSame( $lang, $result->slug );
+	}
+
+	public function test_ignores_request_lang_when_pref_lang_is_set() {
+		$_REQUEST['lang'] = 'de';
+
+		// pref_lang is set to simulate admin context.
+		$post   = $this->create_post_capa_object( null, self::$french, null );
+		$result = $post->get_language();
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_returns_language_from_rest_request() {
+		$request = $this->createMock( Request::class );
+		$request->method( 'get_language' )
+			->willReturn( self::$german );
+
+		$post   = $this->create_post_capa_object( $request, null, null );
+		$result = $post->get_language();
+
+		$this->assertSame( 'de', $result->slug );
+	}
+
+	public function test_returns_parent_language() {
+		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$this->pll_model->post->set_language( $parent_id, 'fr' );
+
+		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
+
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language( $child_id );
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_returns_curlang_on_frontend() {
+		$post   = $this->create_post_capa_object( null, null, self::$german );
+		$result = $post->get_language();
+
+		$this->assertSame( 'de', $result->slug );
+	}
+
+	public function test_returns_default_language_for_translator_allowed_to_translate_default() {
+		$this->mock_translator( 'en' );
+
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language();
+
+		$this->assertSame( 'en', $result->slug );
+	}
+
+	public function test_returns_preferred_language_for_translator_not_allowed_to_translate_default() {
+		$this->mock_translator( 'fr' );
+
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language();
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_returns_default_language_for_non_translator() {
+		$post   = $this->create_post_capa_object();
+		$result = $post->get_language();
+
+		$this->assertSame( 'en', $result->slug );
+	}
+
+	public function test_returns_pref_lang_when_user_can_translate() {
+		$this->mock_translator( 'fr' );
+
+		$post   = $this->create_post_capa_object( null, self::$french, null );
+		$result = $post->get_language();
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_pref_lang_is_ignored_when_translator_cannot_translate_it() {
+		$this->mock_translator( 'fr' );
+
+		$post   = $this->create_post_capa_object( null, self::$german, null );
+		$result = $post->get_language();
+
+		$this->assertSame( 'fr', $result->slug );
+	}
+
+	public function test_parent_language_takes_priority_over_pref_lang() {
+		$parent_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$this->pll_model->post->set_language( $parent_id, 'de' );
+
+		$child_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent_id ) );
+
+		$post   = $this->create_post_capa_object( null, self::$french, null );
+		$result = $post->get_language( $child_id );
+
+		$this->assertSame( 'de', $result->slug );
+	}
+
+	/**
+	 * Creates a Post object for testing.
+	 *
+	 * @param Request|null       $request   The request mock or null. Default will create a mock with `Request::get_language` method returning null.
+	 * @param \PLL_Language|null $pref_lang The preferred language. Default null.
+	 * @param \PLL_Language|null $curlang   The current language. Default null.
+	 * @return Post
+	 */
+	private function create_post_capa_object(
+		?Request $request = null,
+		?PLL_Language $pref_lang = null,
+		?PLL_Language $curlang = null
+	): Post {
+		if ( null === $request ) {
+			$request = $this->createMock( Request::class );
+			$request->method( 'get_language' )
+				->willReturn( null );
+		}
+
+		return new Post( $this->pll_model, $request, $pref_lang, $curlang );
+	}
+}
