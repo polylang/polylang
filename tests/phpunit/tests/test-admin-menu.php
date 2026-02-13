@@ -9,6 +9,7 @@ class Admin_Menu_Test extends PLL_UnitTestCase {
 		$links_model     = $model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
+		$GLOBALS['pagenow'] = 'admin.php';
 		wp_set_current_user( 1 );
 		self::require_wp_menus( false );
 	}
