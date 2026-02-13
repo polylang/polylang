@@ -46,6 +46,7 @@ $flags = array(
 	'bn'        => __( 'Brunei', 'polylang' ),
 	'bo'        => __( 'Bolivia', 'polylang' ),
 	'br'        => __( 'Brazil', 'polylang' ),
+	'brittany'  => __( 'Brittany', 'polylang' ),
 	'bs'        => __( 'Bahamas', 'polylang' ),
 	'bt'        => __( 'Bhutan', 'polylang' ),
 	'bw'        => __( 'Botswana', 'polylang' ),
