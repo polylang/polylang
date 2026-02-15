@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 3.7.7
+Stable tag: 3.7.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -105,6 +105,11 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.7.8 (2026-02-23) =
+
+* Pro: Add 'pll_create_post_translation' filter #2890
+* Pro: Fix ACF's layout fields instructions #2889
 
 = 3.7.7 (2026-01-26) =
 
