@@ -54,7 +54,7 @@ if ( is_rtl() ) {
 	<body class="<?php echo join( ' ', array_map( 'sanitize_key', $admin_body_class ) ); ?>">
 		<h1 id="pll-logo">
 			<a href="https://polylang.pro/" class="title">
-				<span><img src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo.png', POLYLANG_FILE ) ); ?>" /></span>
+				<span><img src="<?php echo esc_url( plugins_url( '/src/modules/wizard/images/polylang-logo.png', POLYLANG_FILE ) ); ?>" /></span>
 				<?php echo esc_html( POLYLANG ); ?>
 			</a>
 		</h1>
