@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
+$help_screenshot = '/src/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
 
 ?>
 <h2><?php esc_html_e( 'Media', 'polylang' ); ?></h2>
