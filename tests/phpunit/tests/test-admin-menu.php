@@ -20,7 +20,7 @@ class Admin_Menu_Test extends PLL_UnitTestCase {
 		$this->pll_admin->add_menus();
 
 		$this->assertArrayHasKey( 'mlang', $admin_page_hooks );
-		$this->assertSame( PLL_Admin_Base::SCREEN_PREFIX, $admin_page_hooks['mlang'] );
+		$this->assertSame( 'languages', $admin_page_hooks['mlang'] );
 
 		$this->assertIsArray( $submenu );
 		$this->assertArrayHasKey( 'mlang', $submenu );
@@ -45,7 +45,7 @@ class Admin_Menu_Test extends PLL_UnitTestCase {
 		$body_classes = apply_filters( 'admin_body_class', 'existing-class' );
 
 		$this->assertStringContainsString( 'existing-class', $body_classes );
-		$this->assertStringContainsString( ' ' . PLL_Admin_Base::get_screen_id( 'lang' ) . ' ', " {$body_classes} " ); // Purposely using a space to avoid false positives.
+		$this->assertStringContainsString( ' languages_page_mlang ', " {$body_classes} " ); // Purposely using a space to avoid false positives.
 	}
 
 	public function test_current_screen_callback_sets_id_and_base_to_languages_screen() {
@@ -58,8 +58,8 @@ class Admin_Menu_Test extends PLL_UnitTestCase {
 
 		do_action( 'current_screen', $screen );
 
-		$this->assertSame( PLL_Admin_Base::get_screen_id( 'lang' ), $screen->id );
-		$this->assertSame( PLL_Admin_Base::get_screen_id( 'lang' ), $screen->base );
+		$this->assertSame( 'languages_page_mlang', $screen->id );
+		$this->assertSame( 'languages_page_mlang', $screen->base );
 	}
 
 	public function test_add_menus_current_screen_callback_returns_early_when_screen_id_is_not_first_tab() {
