@@ -96,7 +96,7 @@ class PLL_Filter_REST_Routes {
 	 * @return void
 	 */
 	public function add_inline_script( string $script_handle ) {
-		$script_var = 'let pllFilteredRoutes = ' . (string) wp_json_encode( $this->get() );
+		$script_var = 'window.pllFilteredRoutes = ' . (string) wp_json_encode( $this->get() );
 
 		wp_add_inline_script( $script_handle, $script_var, 'before' );
 	}
