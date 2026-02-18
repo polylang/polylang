@@ -35,6 +35,7 @@ function configureWebpack( options ) {
 		'js/src/lib/**',
 		'js/src/packages/**',
 		'js/src/blocks/**',
+		'js/src/block-editor.js',
 		'**/*.config.js',
 		'**/*.min.js',
 	];
@@ -67,7 +68,10 @@ function configureWebpack( options ) {
 	];
 
 	const reactifiedConfig = getReactifiedConfig( {
-		entryPoints: { blocks: './js/src/blocks/index.js' },
+		entryPoints: {
+			blocks: './js/src/blocks/index.js',
+			'block-editor': './js/src/block-editor.js',
+		},
 		outputPath: workingDirectory,
 		libraryName: 'polylang',
 		isProduction,
