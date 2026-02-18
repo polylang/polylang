@@ -11,26 +11,7 @@ import {
 	initMetaboxAutoComplete,
 } from './lib/metabox-autocomplete';
 
-import filterPathMiddleware from './lib/filter-path-middleware';
-
-/**
- * Filter REST API requests to add the language in the request
- *
- * @since 2.5
- */
-wp.apiFetch.use(
-	function ( options, next ) {
-		/*
-		 * If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
-		 * If `filteredRoutes` is not defined, return early.
-		 */
-		if ( 'undefined' !== typeof options.url || 'undefined' === typeof pllFilteredRoutes ) {
-			return next( options );
-		}
-
-		return next( filterPathMiddleware( options, pllFilteredRoutes, addLanguageParameter ) );
-	}
-);
+import { editorsRequestsFilter } from '@wpsyntex/polylang-react-library';
 
 /**
  * Gets the language of the currently edited post, fallback to default language if none is found.
@@ -68,6 +49,13 @@ function addLanguageParameter( options ) {
 
 	return options;
 }
+
+/**
+ * Filter REST API requests to add the language in the request
+ *
+ * @since 2.5
+ */
+editorsRequestsFilter( addLanguageParameter );
 
 /**
  * Handles internals of the metabox:
