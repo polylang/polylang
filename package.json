@@ -42,6 +42,9 @@
     "url": "https://github.com/polylang/polylang/issues"
   },
   "homepage": "https://github.com/polylang/polylang#readme",
+  "overrides": {
+    "@wordpress/upload-media": "0.24.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1",
     "@wordpress/babel-preset-default": "^8.10",
