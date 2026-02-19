@@ -25,7 +25,7 @@ test.describe.serial(
 		 *     - Create the main Navigation menu in English.
 		 */
 		test.beforeAll( async ( { requestUtils } ) => {
-			// Site Editor utilies doesn't like pretty permalinks.
+			// Site Editor utilities doesn't like pretty permalinks.
 			execSync(
 				'npx wp-env run tests-cli wp rewrite structure "" --allow-root',
 				{
