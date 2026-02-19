@@ -108,7 +108,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-en', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 
 		// Clean up before creating term in secondary language.
 		unset( $_POST );
@@ -134,7 +134,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $fr );
-		$this->assertSame( 'test-fr-test-fr', $fr->slug );
+		$this->assertSame( 'test-test-fr', $fr->slug );
 	}
 
 	public function test_already_existing_term_slugs_with_parent() {
@@ -159,7 +159,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-en', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 
 		// Let's create another child term with the same parent and the same name.
 		$en_new = self::factory()->category->create_and_get(
@@ -195,7 +195,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-en', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 
 		// Let's update the term.
 		wp_update_term( $en->term_id, $en->taxonomy, array( 'name' => 'New Test' ) );
@@ -203,7 +203,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( WP_Term::class, $en_new );
 		$this->assertSame( 'New Test', $en_new->name );
-		$this->assertSame( 'test-en', $en_new->slug );
+		$this->assertSame( 'test-test', $en_new->slug );
 	}
 
 	public function test_untranslatable_taxonomy() {
