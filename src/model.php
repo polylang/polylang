@@ -620,7 +620,7 @@ class PLL_Model {
 	 * @since 3.9
 	 *
 	 * @param string $cache_key The cache key.
-	 * @return mixed The counts grouped per language, false if the cache is empty.
+	 * @return array|false The counts grouped per language, false if the cache is empty.
 	 */
 	private function get_counts_cache( string $cache_key ) {
 		$last_changed = wp_cache_get_last_changed( 'posts' );
@@ -628,10 +628,12 @@ class PLL_Model {
 		if ( ! function_exists( 'wp_cache_get_salted' ) ) {
 			// Backward compatibility with WordPress < 6.9.
 			$cache_key = "{$cache_key}:{$last_changed}";
-			return wp_cache_get( $cache_key, 'posts' );
+			$counts    = wp_cache_get( $cache_key, 'posts' );
+		} else {
+			$counts = wp_cache_get_salted( $cache_key, 'posts', $last_changed );
 		}
 
-		return wp_cache_get_salted( $cache_key, 'posts', $last_changed );
+		return is_array( $counts ) ? $counts : false;
 	}
 
 	/**
@@ -643,7 +645,7 @@ class PLL_Model {
 	 * @param int[]  $counts    The number of posts grouped per language.
 	 * @return bool True if the value has been stored, false otherwise.
 	 */
-	private function set_counts_cache( $cache_key, array $counts ) {
+	private function set_counts_cache( $cache_key, array $counts ): bool {
 		$last_changed = wp_cache_get_last_changed( 'posts' );
 
 		if ( ! function_exists( 'wp_cache_set_salted' ) ) {
