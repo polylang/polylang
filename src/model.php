@@ -365,8 +365,8 @@ class PLL_Model {
 			$q['post_type'] = array( 'post' ); // We *need* a post type.
 		}
 
-		$cache_key = $this->cache->get_unique_key( 'pll_count_posts_', $q );
-		$counts    = wp_cache_get( $cache_key, 'counts' );
+		$cache_key = $this->get_count_posts_cache_key( $q );
+		$counts    = wp_cache_get( $cache_key, 'posts' );
 
 		if ( ! is_array( $counts ) ) {
 			$counts  = array();
@@ -428,7 +428,7 @@ class PLL_Model {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
 			}
 
-			wp_cache_set( $cache_key, $counts, 'counts' );
+			wp_cache_set( $cache_key, $counts, 'posts' );
 		}
 
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
@@ -612,5 +612,27 @@ class PLL_Model {
 		}
 
 		$this->set_language_in_mass( $lang, $types_with_objects );
+	}
+
+	/**
+	 * Returns a cache key for posts counting.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array $q Query arguments {@see PLL_Model::count_posts()}.
+	 * @return string
+	 */
+	private function get_count_posts_cache_key( array $q ): string {
+		$cache_key = $this->cache->get_unique_key( 'pll_count_posts_', $q );
+
+		$last_changed = wp_cache_get_last_changed( 'posts' );
+
+		if ( ! function_exists( 'wp_cache_get_salted' ) ) {
+			// Backward compatibility with WordPress < 6.9.
+			$cache_key = "{$cache_key}:{$last_changed}";
+			return wp_cache_get( $cache_key, 'posts' );
+		}
+
+		return wp_cache_get_salted( $cache_key, 'posts', $last_changed );
 	}
 }
