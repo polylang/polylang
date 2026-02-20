@@ -859,12 +859,6 @@ parameters:
 			path: src/mo.php
 
 		-
-			message: '#^Method PLL_Model\:\:count_posts\(\) should return int\<0, max\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/model.php
-
-		-
 			message: '#^Method PLL_Model\:\:get_links_model\(\) should return PLL_Links_Model but returns object\.$#'
 			identifier: return.type
 			count: 1
