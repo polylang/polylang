@@ -4,6 +4,8 @@
  */
 
 use WP_Syntex\Polylang\Model\Languages;
+use WP_Syntex\Polylang\Strings\Query;
+use WP_Syntex\Polylang\Strings\Database_Repository;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // since WP 3.1
@@ -24,25 +26,18 @@ class PLL_Table_String extends WP_List_Table {
 	protected $languages;
 
 	/**
-	 * Registered strings.
-	 *
-	 * @var array
-	 */
-	protected $strings;
-
-	/**
-	 * The string groups.
-	 *
-	 * @var string[]
-	 */
-	protected $groups;
-
-	/**
 	 * The selected string group or -1 if none is selected.
 	 *
 	 * @var string|int
 	 */
 	protected $selected_group;
+
+	/**
+	 * The database access layer for strings.
+	 *
+	 * @var Database_Repository
+	 */
+	private Database_Repository $repository;
 
 	/**
 	 * Constructor.
@@ -60,15 +55,15 @@ class PLL_Table_String extends WP_List_Table {
 			)
 		);
 
-		$this->languages = $languages;
-		$this->strings   = PLL_Admin_Strings::get_strings();
-		$this->groups    = array_unique( wp_list_pluck( $this->strings, 'context' ) );
+		$this->items      = array(); // `WP_List_Table::$items` doesn't have a default value, let's be explicit.
+		$this->languages  = $languages;
+		$this->repository = new Database_Repository( $languages );
 
 		$this->selected_group = -1;
 
 		if ( ! empty( $_GET['group'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			if ( in_array( $group, $this->groups ) ) {
+			if ( in_array( $group, $this->repository->get_groups() ) ) {
 				$this->selected_group = $group;
 			}
 		}
@@ -258,42 +253,25 @@ class PLL_Table_String extends WP_List_Table {
 			$languages = wp_list_filter( $languages, array( 'slug' => $filter ) );
 		}
 
-		$data = $this->strings;
-
-		// Filter by selected group.
-		if ( -1 !== $this->selected_group ) {
-			$data = wp_list_filter( $data, array( 'context' => $this->selected_group ) );
-		}
-
-		// Filter by searched string.
-		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
-
-		if ( ! empty( $s ) ) {
-			// Search in translations.
-			$in_translations = $this->search_in_translations( $languages, $s );
-
-			foreach ( $data as $key => $row ) {
-				if ( stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false && ! in_array( $row['string'], $in_translations ) ) {
-					unset( $data[ $key ] );
-				}
-			}
-		}
-
-		// Sorting.
-		uasort( $data, array( $this, 'usort_reorder' ) );
-
-		// Paging.
-		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
+		$per_page              = $this->get_items_per_page( 'pll_strings_per_page' );
+		$paged                 = ! empty( $_GET['paged'] ) && is_numeric( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
-		$total_items = count( $data );
-		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page, true );
+		$items = $this->repository->query()
+			->by_context( -1 !== $this->selected_group && is_string( $this->selected_group ) ? $this->selected_group : null )
+			->by_fragment( ! empty( $_GET['s'] ) && is_string( $_GET['s'] ) ? wp_unslash( $_GET['s'] ) : null ) // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
+			->order_by(
+				! empty( $_GET['orderby'] ) ? sanitize_key( $_GET['orderby'] ) : 'name', // phpcs:ignore WordPress.Security.NonceVerification
+				! empty( $_GET['order'] ) ? sanitize_key( $_GET['order'] ) : 'asc' // phpcs:ignore WordPress.Security.NonceVerification
+			)
+			->paginate( $per_page, $paged )
+			->get();
 
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
+				'total_items' => $items->get_total(),
 				'per_page'    => $per_page,
-				'total_pages' => (int) ceil( $total_items / $per_page ),
+				'total_pages' => (int) ceil( $items->get_total() / $per_page ),
 			)
 		);
 
@@ -304,14 +282,16 @@ class PLL_Table_String extends WP_List_Table {
 		 * Kept for the end as it is a slow process.
 		 */
 		foreach ( $languages as $language ) {
-			$disabled = disabled( in_array( $language->slug, $allowed_language_slugs, true ), false, false );
-
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
-			foreach ( $this->items as $key => $row ) {
-				$this->items[ $key ]['translations'][ $language->slug ] = $mo->translate_if_any( $row['string'] );
-				$this->items[ $key ]['row']                             = $key; // Store the row number for convenience.
-				$this->items[ $key ]['disabled'][ $language->slug ]     = $disabled;
+			foreach ( $items as $translatable ) {
+				$this->items[ $translatable->get_id() ]['string']                          = $translatable->get_source();
+				$this->items[ $translatable->get_id() ]['name']                            = $translatable->get_name();
+				$this->items[ $translatable->get_id() ]['context']                         = $translatable->get_context();
+				$this->items[ $translatable->get_id() ]['translations'][ $language->slug ] = $mo->translate_if_any( $translatable->get_source(), $translatable->get_context() );
+				$this->items[ $translatable->get_id() ]['row']                             = $translatable->get_id();                                                          // Store the row number for convenience.
+				$this->items[ $translatable->get_id() ]['multiline']                       = $translatable->is_multiline();
+				$this->items[ $translatable->get_id() ]['disabled'][ $language->slug ]     = disabled( in_array( $language->slug, $allowed_language_slugs, true ), false, false );
 			}
 		}
 	}
@@ -368,7 +348,7 @@ class PLL_Table_String extends WP_List_Table {
 			esc_html__( 'View all groups', 'polylang' )
 		);
 
-		foreach ( $this->groups as $group ) {
+		foreach ( $this->repository->get_groups() as $group ) {
 			printf(
 				'<option value="%s"%s>%s</option>' . "\n",
 				esc_attr( urlencode( $group ) ),
@@ -396,51 +376,38 @@ class PLL_Table_String extends WP_List_Table {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
 		if ( ! empty( $_POST['submit'] ) ) {
+			$collection = $this->repository->find_all();
+
 			foreach ( $this->languages->filter( 'translator' )->get_list() as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) || ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
 				}
 
-				$translations = array_map( 'trim', (array) wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$translations = (array) wp_unslash( $_POST['translation'][ $language->slug ] );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-				$mo = new PLL_MO();
-				$mo->import_from_db( $language );
+				array_map(
+					function ( $key, $translation ) use ( $collection, $language ) {
+						if ( ! is_string( $translation ) ) {
+							return;
+						}
 
-				foreach ( $translations as $key => $translation ) {
-					/**
-					 * Filters the string translation before it is saved in DB.
-					 * Allows to sanitize strings registered with pll_register_string().
-					 *
-					 * @since 1.6
-					 * @since 2.7 The translation passed to the filter is unslashed.
-					 * @since 3.7 Add original string as 4th parameter.
-					 * @since 3.8 Add previous string translation as 5th parameter.
-					 *
-					 * @param string $translation The string translation.
-					 * @param string $name        The name as defined in pll_register_string.
-					 * @param string $context     The context as defined in pll_register_string.
-					 * @param string $original    The original string to translate.
-					 * @param string $previous    The previous string translation.
-					 */
-					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'], $this->strings[ $key ]['string'], $mo->translate_if_any( $this->strings[ $key ]['string'] ) );
-					$mo->add_entry(
-						$mo->make_entry(
-							$this->strings[ $key ]['string'],
-							$translation
-						)
-					);
-				}
+						$translatable = $collection->get( $key );
+						if ( $translatable ) {
+							$translatable->set_translation( $language, trim( $translation ) );
+							return;
+						}
+					},
+					array_keys( $translations ),
+					array_values( $translations )
+				);
+			}
 
-				// Clean database (removes all strings which were registered some day but are no more).
-				if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
-					$new_mo = new PLL_MO();
+			// Save all languages at once
+			$this->repository->save( $collection );
 
-					foreach ( $this->strings as $string ) {
-						$new_mo->add_entry( $mo->make_entry( $string['string'], $mo->translate( $string['string'] ) ) );
-					}
-				}
-
-				isset( $new_mo ) ? $new_mo->export_to_db( $language ) : $mo->export_to_db( $language );
+			// Clean database (removes all strings which were registered some day but are no more).
+			if ( ! empty( $_POST['clean'] ) && current_user_can( 'manage_options' ) ) {
+				$this->repository->clean();
 			}
 
 			pll_add_notice( new WP_Error( 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'success' ) );
@@ -455,9 +422,12 @@ class PLL_Table_String extends WP_List_Table {
 
 		// Unregisters strings registered through WPML API
 		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) && current_user_can( 'manage_options' ) ) {
-			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $key ) {
-				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
-			}
+			array_map(
+				function ( $key ) {
+					$this->repository->remove_wpml_string( sanitize_key( $key ) );
+				},
+				$_POST['strings'] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			);
 		}
 
 		// To refresh the page ( possible thanks to the $_GET['noheader']=true )

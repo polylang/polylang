@@ -1,0 +1,142 @@
+<?php
+/**
+ * @package Polylang
+ */
+
+namespace WP_Syntex\Polylang\Strings;
+
+use Countable;
+use ArrayIterator;
+use IteratorAggregate;
+
+/**
+ * Collection aggregate root that stores multiple Translatable entities.
+ *
+ * @since 3.8
+ *
+ * @implements IteratorAggregate<string, Translatable>
+ */
+class Collection implements IteratorAggregate, Countable {
+	/**
+	 * The translatables stored in this collection.
+	 *
+	 * @var Translatable[]
+	 */
+	private array $translatables = array();
+
+	/**
+	 * The total count before pagination (if applicable).
+	 *
+	 * @var int|null
+	 */
+	private ?int $total_count = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Translatable[] $translatables Initial translatables to add to the collection.
+	 */
+	public function __construct( array $translatables = array() ) {
+		array_map(
+			function ( Translatable $translatable ) {
+				$this->add( $translatable );
+			},
+			$translatables
+		);
+	}
+
+	/**
+	 * Adds a translatable to the collection.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Translatable $translatable The translatable to add.
+	 * @return void
+	 */
+	public function add( Translatable $translatable ): void {
+		$this->translatables[ $translatable->get_id() ] = $translatable;
+	}
+
+	/**
+	 * Removes a translatable from the collection by ID.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $id The identifier.
+	 * @return void
+	 */
+	public function remove( string $id ): void {
+		unset( $this->translatables[ $id ] );
+	}
+
+	/**
+	 * Gets a translatable by ID.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $id The identifier.
+	 * @return Translatable|null The translatable if found, null otherwise.
+	 */
+	public function get( string $id ): ?Translatable {
+		return $this->translatables[ $id ] ?? null;
+	}
+
+	/**
+	 * Checks if a translatable exists in the collection.
+	 *
+	 * @since 3.8
+	 *
+	 * @param string $id The identifier.
+	 * @return bool
+	 */
+	public function has( string $id ): bool {
+		return isset( $this->translatables[ $id ] );
+	}
+
+	/**
+	 * Gets the count of translatables in the collection.
+	 *
+	 * @since 3.8
+	 *
+	 * @return int
+	 */
+	public function count(): int {
+		return count( $this->translatables );
+	}
+
+	/**
+	 * Gets an iterator for the translatables.
+	 *
+	 * @since 3.8
+	 *
+	 * @return \ArrayIterator<string, Translatable>
+	 */
+	public function getIterator(): \ArrayIterator {
+		return new ArrayIterator( $this->translatables );
+	}
+
+	/**
+	 * Sets the total count (before pagination).
+	 *
+	 * @since 3.8
+	 *
+	 * @param int $total The total count.
+	 * @return void
+	 */
+	public function set_total( int $total ): void {
+		$this->total_count = $total;
+	}
+
+	/**
+	 * Gets the total count (before pagination).
+	 *
+	 * @since 3.8
+	 *
+	 * @return int The total count, or the current count if total was not set.
+	 */
+	public function get_total(): int {
+		return $this->total_count ?? $this->count();
+	}
+}

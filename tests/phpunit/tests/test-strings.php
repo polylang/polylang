@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class Strings_Test extends PLL_UnitTestCase {
 
 	/**
@@ -64,13 +66,26 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->init();
-		$strings = PLL_Admin_Strings::get_strings();
-		$names = wp_list_pluck( $strings, 'name' );
-		$this->assertCount( 4, array_intersect( array( 'blogname', 'blogdescription', 'date_format', 'time_format' ), $names ) );
+		$translatables = ( new Database_Repository( self::$model->languages ) )->find_all();
+
+		$expected = array( 'blogname', 'blogdescription', 'date_format', 'time_format' );
+		$count    = count( $expected );
+		while ( $count > 0 ) {
+			foreach ( $translatables as $translatable ) {
+				if ( in_array( $translatable->get_name(), $expected, true ) ) {
+					$this->assertContains( $translatable->get_name(), $expected );
+					$expected = array_diff( $expected, array( $translatable->get_name() ) );
+					break;
+				}
+			}
+			--$count;
+		}
+
+		$this->assertCount( 0, $expected );
 	}
 
 	/**
-	 * /!\ The order of nest two tests matters due to static protected strings in PLL_Admin_Strings.
+	 * /!\ The order of nest two tests matters due to static protected strings in Database_Repository.
 	 */
 	public function test_widget_title_filtered_by_language() {
 		global $wp_registered_widgets;
@@ -97,8 +112,11 @@ class Strings_Test extends PLL_UnitTestCase {
 		);
 
 		$wp_widget_search->update_callback();
-		$strings = PLL_Admin_Strings::get_strings();
+		$method = new ReflectionMethod( Database_Repository::class, 'get_strings' );
+		version_compare( PHP_VERSION, '8.1', '<' ) ? $method->setAccessible( true ) : null;
+		$strings = $method->invoke( new Database_Repository( self::$model->languages ) );
 		$strings = wp_list_pluck( $strings, 'string' );
+
 		$this->assertNotContains( 'My Title', $strings );
 	}
 
@@ -128,8 +146,11 @@ class Strings_Test extends PLL_UnitTestCase {
 		$_POST['search-2_lang_choice'] = 0;
 
 		$wp_widget_search->update_callback();
-		$strings = PLL_Admin_Strings::get_strings();
+		$method = new ReflectionMethod( Database_Repository::class, 'get_strings' );
+		version_compare( PHP_VERSION, '8.1', '<' ) ? $method->setAccessible( true ) : null;
+		$strings = $method->invoke( new Database_Repository( self::$model->languages ) );
 		$strings = wp_list_pluck( $strings, 'string' );
+
 		$this->assertContains( 'My Title', $strings );
 	}
 
