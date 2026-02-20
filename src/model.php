@@ -365,8 +365,8 @@ class PLL_Model {
 			$q['post_type'] = array( 'post' ); // We *need* a post type.
 		}
 
-		$cache_key = $this->get_count_posts_cache_key( $q );
-		$counts    = wp_cache_get( $cache_key, 'posts' );
+		$cache_key = $this->cache->get_unique_key( 'pll_count_posts_', $q );
+		$counts    = $this->get_counts_cache( $cache_key );
 
 		if ( ! is_array( $counts ) ) {
 			$counts  = array();
@@ -428,7 +428,7 @@ class PLL_Model {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
 			}
 
-			wp_cache_set( $cache_key, $counts, 'posts' );
+			$this->set_counts_cache( $cache_key, $counts );
 		}
 
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
@@ -615,16 +615,14 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns a cache key for posts counting.
+	 * Returns the number of posts grouped per language from the cache.
 	 *
 	 * @since 3.9
 	 *
-	 * @param array $q Query arguments {@see PLL_Model::count_posts()}.
-	 * @return string
+	 * @param string $cache_key The cache key.
+	 * @return mixed The counts grouped per language, false if the cache is empty.
 	 */
-	private function get_count_posts_cache_key( array $q ): string {
-		$cache_key = $this->cache->get_unique_key( 'pll_count_posts_', $q );
-
+	private function get_counts_cache( string $cache_key ) {
 		$last_changed = wp_cache_get_last_changed( 'posts' );
 
 		if ( ! function_exists( 'wp_cache_get_salted' ) ) {
@@ -634,5 +632,26 @@ class PLL_Model {
 		}
 
 		return wp_cache_get_salted( $cache_key, 'posts', $last_changed );
+	}
+
+	/**
+	 * Stores the number of posts grouped per language in the cache.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $cache_key The cache key.
+	 * @param int[]  $counts    The number of posts grouped per language.
+	 * @return bool True if the value has been stored, false otherwise.
+	 */
+	private function set_counts_cache( $cache_key, array $counts ) {
+		$last_changed = wp_cache_get_last_changed( 'posts' );
+
+		if ( ! function_exists( 'wp_cache_set_salted' ) ) {
+			// Backward compatibility with WordPress < 6.9.
+			$cache_key = "{$cache_key}:{$last_changed}";
+			return wp_cache_set( $cache_key, $counts, 'posts' );
+		}
+
+		return wp_cache_set_salted( $cache_key, $counts, 'posts', $last_changed );
 	}
 }
