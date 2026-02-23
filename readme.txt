@@ -124,6 +124,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix inactive languages not displayed when they should in REST API #2791
 * Pro: Fix translation of ACF repeaters with pagination #2674
 * Pro: Fix ACF's layout fields instructions #2889
+* Pro: Fix event dates of The Events Calendar not duplicated #2894
 * Add language switcher block and navigation language switcher block #1811
 * Add support for multiple encodings in wpml-config.xml #1679, #2655
 * Enforce transients in DB and in object cache are synchronized #1653, #2598
