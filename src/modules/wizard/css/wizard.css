@@ -510,6 +510,7 @@ body {
 
 .pll-wizard .button .dashicons{
 	vertical-align: middle;
+	line-height: 1;
 }
 .rtl .dashicons-arrow-right-alt2:before {
 	content: "\f341";
