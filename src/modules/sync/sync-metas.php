@@ -279,7 +279,6 @@ abstract class PLL_Sync_Metas {
 				$this->restore_add_meta_action();
 			}
 
-			unset( $this->prev_value[ $hash ] );
 			$avoid_recursion = false;
 		}
 	}
