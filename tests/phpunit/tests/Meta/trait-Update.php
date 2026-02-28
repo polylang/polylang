@@ -27,6 +27,24 @@ trait Update {
 	 * @param mixed $value The value to add to the meta.
 	 * @return void
 	 */
+	public function test_update_meta_with_several_values( $value ) {
+		add_metadata( self::$type, self::$objects['en'], 'the_key', 'another_value' );
+		add_metadata( self::$type, self::$objects['en'], 'the_key', 'yet_another_value' );
+
+		$this->assertTrue( update_metadata( self::$type, self::$objects['en'], 'the_key', $value, 'another_value' ) );
+
+		$this->assertEqualSets(
+			array( $value, 'yet_another_value' ),
+			get_metadata( self::$type, self::$objects['fr'], 'the_key', false )
+		);
+	}
+
+	/**
+	 * @dataProvider data_provider
+	 *
+	 * @param mixed $value The value to add to the meta.
+	 * @return void
+	 */
 	public function test_update_meta_by_mid( $value ) {
 		$mid = add_metadata( self::$type, self::$objects['en'], 'the_key', 'to_be_updated' );
 

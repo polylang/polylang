@@ -55,17 +55,6 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Removes "added_{$this->meta_type}_meta" action
-	 *
-	 * @since 2.3
-	 *
-	 * @return void
-	 */
-	protected function remove_add_meta_action() {
-		remove_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ) );
-	}
-
-	/**
 	 * Removes all meta synchronization actions and filters
 	 *
 	 * @since 2.3
@@ -73,24 +62,13 @@ abstract class PLL_Sync_Metas {
 	 * @return void
 	 */
 	public function remove_all_meta_actions() {
-		$this->remove_add_meta_action();
+		remove_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ) );
 
 		remove_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999 );
 		remove_action( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ) );
 
 		remove_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ) );
 		remove_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ) );
-	}
-
-	/**
-	 * Adds "added_{$this->meta_type}_meta" action
-	 *
-	 * @since 2.3
-	 *
-	 * @return void
-	 */
-	protected function restore_add_meta_action() {
-		add_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 	}
 
 	/**
@@ -101,7 +79,7 @@ abstract class PLL_Sync_Metas {
 	 * @return void
 	 */
 	public function add_all_meta_actions() {
-		$this->restore_add_meta_action();
+		add_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 
 		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
 		add_action( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
@@ -264,7 +242,7 @@ abstract class PLL_Sync_Metas {
 			$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
 
 			if ( $prev_meta ) {
-				$this->remove_add_meta_action(); // We don't want to sync back the new metas
+				$this->remove_all_meta_actions(); // We don't want to sync back the new metas
 				$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
 
 				foreach ( $tr_ids as $lang => $tr_id ) {
@@ -276,10 +254,9 @@ abstract class PLL_Sync_Metas {
 						}
 					}
 				}
-				$this->restore_add_meta_action();
+				$this->add_all_meta_actions();
 			}
 
-			unset( $this->prev_value[ $hash ] );
 			$avoid_recursion = false;
 		}
 	}
