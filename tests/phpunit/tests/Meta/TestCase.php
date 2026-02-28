@@ -26,7 +26,7 @@ abstract class TestCase extends PLL_UnitTestCase {
 		$this->pll_env->sync = new PLL_Sync( $this->pll_env );
 	}
 
-	public function meta_values_provider() {
+	public function data_provider() {
 		return array(
 			'string'  => array( 'the_value' ),
 			'list'    => array( array( 'the_value', 'the_value_2' ) ),
