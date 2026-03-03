@@ -366,7 +366,7 @@ class PLL_Model {
 		}
 
 		$cache_key = $this->cache->get_unique_key( 'pll_count_posts_', $q );
-		$counts    = wp_cache_get( $cache_key, 'counts' );
+		$counts    = $this->get_counts_cache( $cache_key );
 
 		if ( ! is_array( $counts ) ) {
 			$counts  = array();
@@ -428,7 +428,7 @@ class PLL_Model {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
 			}
 
-			wp_cache_set( $cache_key, $counts, 'counts' );
+			$this->set_counts_cache( $cache_key, $counts );
 		}
 
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
@@ -612,5 +612,48 @@ class PLL_Model {
 		}
 
 		$this->set_language_in_mass( $lang, $types_with_objects );
+	}
+
+	/**
+	 * Returns the number of posts grouped per language from the cache.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $cache_key The cache key.
+	 * @return array|false The counts grouped per language, false if the cache is empty.
+	 */
+	private function get_counts_cache( string $cache_key ) {
+		$last_changed = wp_cache_get_last_changed( 'posts' );
+
+		if ( ! function_exists( 'wp_cache_get_salted' ) ) {
+			// Backward compatibility with WordPress < 6.9.
+			$cache_key = "{$cache_key}:{$last_changed}";
+			$counts    = wp_cache_get( $cache_key, 'posts' );
+		} else {
+			$counts = wp_cache_get_salted( $cache_key, 'posts', $last_changed );
+		}
+
+		return is_array( $counts ) ? $counts : false;
+	}
+
+	/**
+	 * Stores the number of posts grouped per language in the cache.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $cache_key The cache key.
+	 * @param int[]  $counts    The number of posts grouped per language.
+	 * @return bool True if the value has been stored, false otherwise.
+	 */
+	private function set_counts_cache( $cache_key, array $counts ): bool {
+		$last_changed = wp_cache_get_last_changed( 'posts' );
+
+		if ( ! function_exists( 'wp_cache_set_salted' ) ) {
+			// Backward compatibility with WordPress < 6.9.
+			$cache_key = "{$cache_key}:{$last_changed}";
+			return wp_cache_set( $cache_key, $counts, 'posts' );
+		}
+
+		return wp_cache_set_salted( $cache_key, $counts, 'posts', $last_changed );
 	}
 }
