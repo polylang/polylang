@@ -117,6 +117,8 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Add locale fallback support to machine translation #2685
 * Pro: Add Support encoding for block attributes in wpml-config.xml #1683, #2660
 * Pro: Improve extensibility of the block editor languages panel #2553
+* Pro: Add support for new blocks introduced in WP 7.0 #2933 #2941
+* Pro: Hide language selector on inner blocks in Widget Block Editor #2900
 * Pro: Fix page template not copied when creating a new page translation in the block editor #2581
 * Pro: Fix SVG icons lost when using machine translation
 * Pro: Fix a performance issue with the translation of ACF labels #2670
