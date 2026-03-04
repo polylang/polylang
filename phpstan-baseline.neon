@@ -217,18 +217,6 @@ parameters:
 			path: src/admin/admin-static-pages.php
 
 		-
-			message: '#^Offset ''widget_text'' might not exist on array\<string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 2
-			path: src/admin/admin-strings.php
-
-		-
-			message: '#^Offset ''widget_title'' might not exist on array\<string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 2
-			path: src/admin/admin-strings.php
-
-		-
 			message: '#^Property PLL_Admin\:\:\$block_editor \(PLL_Admin_Block_Editor\|null\) does not accept object\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -835,30 +823,6 @@ parameters:
 			path: src/links-subdomain.php
 
 		-
-			message: '#^Cannot access offset 0 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/mo.php
-
-		-
-			message: '#^Cannot access offset 1 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/mo.php
-
-		-
-			message: '#^Parameter \#1 \$original of method MO\:\:make_entry\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/mo.php
-
-		-
-			message: '#^Parameter \#2 \$translation of method MO\:\:make_entry\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/mo.php
-
-		-
 			message: '#^Method PLL_Model\:\:count_posts\(\) should return int\<0, max\> but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -1315,12 +1279,6 @@ parameters:
 			path: src/settings/table-string.php
 
 		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''trim'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/settings/table-string.php
-
-		-
 			message: '#^Parameter \#1 \$string of function urlencode expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1328,18 +1286,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/settings/table-string.php
-
-		-
-			message: '#^Parameter \#2 \$needle of function stripos expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/settings/table-string.php
-
-		-
-			message: '#^Parameter \#2 \$s of method PLL_Table_String\:\:search_in_translations\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/settings/table-string.php

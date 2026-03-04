@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class WP_Importer_Test extends PLL_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory

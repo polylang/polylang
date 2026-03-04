@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class Settings_List_Tables_Test extends PLL_UnitTestCase {
 
 	/**
@@ -69,7 +71,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 	public function test_display_strings_table() {
 		$this->init( 'mlang_strings' );
 
-		PLL_Admin_Strings::register_string( 'Test', 'Some string' );
+		Database_Repository::register( 'Test', 'Some string' );
 
 		$xpath = $this->get_page_content( 'languages_page_mlang_strings' );
 
@@ -92,7 +94,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'Translations', $th->item( 0 )->nodeValue );
 
 		// The rows.
-		$this->assertSame( count( PLL_Admin_Strings::get_strings() ), $xpath->query( '//tbody/tr' )->length ); // 1 per string.
+		$this->assertSame( count( ( new Database_Repository( self::$model->languages ) )->find_all() ), $xpath->query( '//tbody/tr' )->length ); // 1 per string.
 	}
 
 	public function test_display_settings_table() {
