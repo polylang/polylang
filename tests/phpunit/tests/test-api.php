@@ -118,7 +118,8 @@ class API_Test extends PLL_UnitTestCase {
 			$translations[ $language ] = $result['term_id'];
 			$term                      = get_term( $result['term_id'], $taxonomy );
 
-			$suffix        = $with_parent || ! $is_default_lang ? "-{$language}" : '';
+			$suffix        = ( $with_parent && $is_default_lang ) ? '-foo' : '';
+			$suffix        = ! $is_default_lang ? "$suffix-{$language}" : $suffix;
 			$expected_slug = "foo{$suffix}";
 
 			$this->assertSame( $expected_slug, $term->slug );

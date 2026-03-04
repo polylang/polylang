@@ -24,6 +24,6 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_wp_unique_term_slug() {
 		$this->check_method( 'c926e40169b2e1b430eb21039ae8d9d7', '6.4', 'wp_unique_term_slug' );
-		$this->check_internal_method( 'b84b8505f2708c20ef72d9f01568e305', PLL_Term_Slug::class, 'maybe_get_parent_suffix' );
+		$this->check_internal_method( '5adc0a5f2c65f70770edd6af6d93f80b', PLL_Term_Slug::class, 'maybe_get_parent_suffix' );
 	}
 }

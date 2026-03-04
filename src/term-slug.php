@@ -87,6 +87,18 @@ class PLL_Term_Slug {
 		}
 		$this->lang = $lang;
 
+		if ( ! $this->slug ) {
+			if ( $this->model->term_exists( $this->name, $this->taxonomy, $this->parent, $this->lang ) ) {
+				/*
+				 * Returns the current empty slug if a term exists with the same name.
+				 * Same as WP does when providing a term with a name that already exists and no slug.
+				 */
+				return false;
+			} else {
+				$this->slug = sanitize_title( $this->name );
+			}
+		}
+
 		$this->parent = 0;
 		if ( is_taxonomy_hierarchical( $this->taxonomy ) ) {
 			/**
@@ -101,16 +113,6 @@ class PLL_Term_Slug {
 			$this->parent = apply_filters( 'pll_inserted_term_parent', 0, $this->taxonomy, $this->slug );
 
 			$this->slug .= $this->maybe_get_parent_suffix();
-		}
-
-		if ( ! $this->slug ) {
-			if ( $this->model->term_exists( $this->name, $this->taxonomy, $this->parent, $this->lang ) ) {
-				// Returns the current empty slug if the term exists with the same name and an empty slug.
-				// Same as WP does when providing a term with a name that already exists and no slug.
-				return false;
-			} else {
-				$this->slug = sanitize_title( $this->name );
-			}
 		}
 
 		// Check if the slug exists globally, excluding the current term if we're editing.
@@ -146,9 +148,7 @@ class PLL_Term_Slug {
 			return $parent_suffix;
 		}
 
-		/**
-		 * Mostly copied from {@see wp_unique_term_slug()}.
-		 */
+		// Mostly copied from {@see wp_unique_term_slug()}.
 		while ( ! empty( $the_parent ) ) {
 			$parent_term = get_term( $the_parent, $this->taxonomy );
 			if ( ! $parent_term instanceof WP_Term ) {
