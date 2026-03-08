@@ -281,17 +281,6 @@ class PLL_Language_Factory {
 			unset( $flags['custom_flag'] );
 		}
 
-		/**
-		 * Filters the flag title attribute.
-		 * Defaults to the language name.
-		 *
-		 * @since 0.7
-		 *
-		 * @param string $title  The flag title attribute.
-		 * @param string $slug   The language code.
-		 * @param string $locale The language locale.
-		 */
-		$title  = apply_filters( 'pll_flag_title', $name, $slug, $locale );
 		$return = array();
 
 		/**
@@ -323,7 +312,7 @@ class PLL_Language_Factory {
 			 */
 			$return[ $key ] = apply_filters(
 				'pll_get_flag',
-				PLL_Language::get_flag_html( $flag, $title, $name ),
+				PLL_Language::get_flag_html( $flag, $name ),
 				$slug
 			);
 		}
