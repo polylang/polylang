@@ -442,7 +442,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 		// Backward compatibility.
 		if ( func_num_args() > 2 ) {
-			_deprecated_argument( __METHOD__ . '()', '3.9', 'The parameter `$title` has been removed and replaced by `$alt` in second postion' );
+			_deprecated_argument( __METHOD__ . '()', '3.9', 'The parameter `$title` has been removed and replaced by `$alt` in second position' );
 			/** @var string */
 			$alt = func_get_arg( 2 );
 		}
