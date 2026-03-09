@@ -440,6 +440,12 @@ class PLL_Language extends PLL_Language_Deprecated {
 			return '';
 		}
 
+		if ( func_num_args() > 2 ) {
+			// Backward compatibility.
+			_deprecated_argument( __METHOD__ . '()', '3.9', 'The parameter `$title` has been removed and replaced by `$alt` in second postion' );
+			$alt = func_get_arg( 2 );
+		}
+
 		$alt_attr    = empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) );
 		$width_attr  = empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] );
 		$height_attr = empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] );
