@@ -214,9 +214,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return array
 	 */
 	protected function require_wp_menus( $trigger_hooks = true ) {
-		global $submenu, $wp_filter;
-		global $_wp_submenu_nopriv;
-		global $menu;
+		global $menu, $submenu, $wp_filter, $_wp_submenu_nopriv;
 
 		if ( isset( static::$submenu ) ) {
 			$submenu = static::$submenu;
