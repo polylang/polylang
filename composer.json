@@ -12,7 +12,7 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "^3",
 		"automattic/vipwpcs": "*",
-		"phpcompatibility/phpcompatibility-wp": "*",
+		"phpcompatibility/phpcompatibility-wp": "^3",
 		"yoast/wp-test-utils": "^1.0.0",
 		"rector/rector": "^2",
 		"wpsyntex/wp-phpunit": "dev-master",
