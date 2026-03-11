@@ -199,7 +199,7 @@ return array(
 		'locale'   => 'bre',
 		'name'     => 'Brezhoneg',
 		'dir'      => 'ltr',
-		'flag'     => 'fr',
+		'flag'     => 'brittany',
 		'w3c'      => 'br',
 		'facebook' => 'br_FR',
 		'deepl'    => 'BR',
