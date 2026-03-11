@@ -423,9 +423,9 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * Returns HTML code for flag.
 	 *
 	 * @since 2.7
+	 * @since 3.9 Removed param `$title` and pass `$alt` as second param.
 	 *
 	 * @param array  $flag  Flag properties: src, width and height.
-	 * @param string $title Optional title attribute.
 	 * @param string $alt   Optional alt attribute.
 	 * @return string
 	 *
@@ -435,9 +435,16 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *     height?: int|numeric-string
 	 * } $flag
 	 */
-	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
+	public static function get_flag_html( $flag, $alt = '' ) {
 		if ( empty( $flag['src'] ) ) {
 			return '';
+		}
+
+		// Backward compatibility.
+		if ( func_num_args() > 2 ) {
+			_deprecated_argument( __METHOD__ . '()', '3.9', 'The parameter `$title` has been removed and replaced by `$alt` in second position' );
+			/** @var string */
+			$alt = func_get_arg( 2 );
 		}
 
 		$alt_attr    = empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) );
