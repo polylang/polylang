@@ -23,8 +23,6 @@
     "url": "https://github.com/polylang/polylang/issues"
   },
   "overrides": {
-    "@wordpress/upload-media": "0.24.0",
-    "glob": "^13.0.6",
     "minimatch": "^9.0.9",
     "serialize-javascript": "^7.0.4"
   },
