@@ -5,6 +5,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 /**
  * Template tag: displays the language switcher.
  * The function does nothing if used outside the frontend.
@@ -179,16 +181,17 @@ function pll_home_url( $lang = '' ) {
  * @api
  * @since 0.6
  *
- * @param string $name      A unique name for the string.
- * @param string $string    The string to register.
- * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'.
- * @param bool   $multiline Optional, true if the string table should display a multiline textarea,
- *                          false if should display a single line input, defaults to false.
+ * @param string        $name              A unique name for the string.
+ * @param string        $string            The string to register.
+ * @param string        $context           Optional, the group in which the string is registered, defaults to 'polylang'.
+ * @param bool          $multiline         Optional, true if the string table should display a multiline textarea,
+ *                                         false if should display a single line input, defaults to false.
+ * @param callable|null $sanitize_callback Optional, the sanitization callback for the string, defaults to null.
  * @return void
  */
-function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
+function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false, ?callable $sanitize_callback = null ) {
 	if ( PLL() instanceof PLL_Admin_Base ) {
-		PLL_Admin_Strings::register_string( $name, $string, $context, $multiline );
+		Database_Repository::register( $name, $string, $context, $sanitize_callback, $multiline );
 	}
 }
 

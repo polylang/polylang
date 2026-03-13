@@ -49,9 +49,20 @@ class PLL_MO extends MO {
 		 */
 		$strings = array();
 		foreach ( $this->entries as $entry ) {
-			if ( '' !== $entry->singular ) {
-				$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
+			if ( '' === $entry->singular ) {
+				continue;
 			}
+
+			$string_tuple = array(
+				$entry->singular,
+				$this->translate( $entry->singular, $entry->context ),
+			);
+
+			if ( $entry->context ) {
+				$string_tuple[] = $entry->context;
+			}
+
+			$strings[] = wp_slash( $string_tuple );
 		}
 
 		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
@@ -83,15 +94,28 @@ class PLL_MO extends MO {
 		}
 
 		foreach ( $strings as $msg ) {
+			if ( ! is_array( $msg ) ) {
+				continue;
+			}
+
+			if ( ! is_string( $msg[0] ) || ! is_string( $msg[1] ) ) {
+				continue;
+			}
+
 			if ( '' === $msg[0] || '' === $msg[1] ) {
 				continue;
 			}
 
-			$entry = $this->make_entry( $msg[0], $msg[1] );
+			$entry_args = array(
+				'singular'     => $msg[0],
+				'translations' => array( $msg[1] ),
+			);
 
-			if ( '' !== $entry->singular ) {
-				$this->add_entry( $entry );
+			if ( ! empty( $msg[2] ) && is_string( $msg[2] ) ) {
+				$entry_args['context'] = $msg[2];
 			}
+
+			$this->add_entry( new Translation_Entry( $entry_args ) );
 		}
 
 		self::$cache->set( $lang->slug, $this->entries );
@@ -115,11 +139,17 @@ class PLL_MO extends MO {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $source The source string to translate.
+	 * @param string      $source  The source string to translate.
+	 * @param string|null $context Optional. The context to translate.
 	 * @return string The translated string or empty string if not found.
 	 */
-	public function translate_if_any( string $source ) {
-		$entry = new Translation_Entry( array( 'singular' => $source ) );
+	public function translate_if_any( string $source, ?string $context = null ) {
+		$entry_args = array( 'singular' => $source );
+		if ( $context ) {
+			$entry_args['context'] = $context;
+		}
+
+		$entry = new Translation_Entry( $entry_args );
 		$entry = $this->translate_entry( $entry );
 
 		if ( ! $entry instanceof Translation_Entry || empty( $entry->translations ) ) {

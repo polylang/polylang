@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class WPML_Config_Test extends PLL_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -371,7 +373,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$strings = wp_list_pluck( PLL_Admin_Strings::get_strings(), 'string' );
+		$reflection_property = new ReflectionProperty( Database_Repository::class, 'registered_strings' );
+		version_compare( PHP_VERSION, '8.1', '<' ) ? $reflection_property->setAccessible( true ) : null;
+		$registered_stings = $reflection_property->getValue( new Database_Repository( self::$model->languages ) );
+		$strings = wp_list_pluck( $registered_stings, 'string' );
 		$this->assertContains( 'val2', $strings );
 		$this->assertContains( 'val12', $strings );
 		$this->assertContains( 'val21', $strings );
