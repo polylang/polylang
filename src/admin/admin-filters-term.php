@@ -74,8 +74,8 @@ class PLL_Admin_Filters_Term {
 			add_action( $tax . '_edit_form_fields', array( $this, 'edit_term_form' ) );
 		}
 
-		// Adds actions related to languages when creating or saving categories and post tags
-		add_filter( 'wp_dropdown_cats', array( $this, 'wp_dropdown_cats' ) );
+		// Adds actions related to languages when creating or saving categories and post tags.
+		add_filter( 'taxonomy_parent_dropdown_args', array( $this, 'taxonomy_parent_dropdown_args' ), 10, 3 );
 		add_action( 'create_term', array( $this, 'save_term' ), 900, 3 );
 		add_action( 'edit_term', array( $this, 'save_term' ), 900, 3 ); // Late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
 		add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
@@ -222,29 +222,31 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Translates term parent if exists when using "Add new" ( translation )
+	 * Translates the term parent if it exists when using "Add new".
 	 *
-	 * @since 0.7
+	 * @since 3.9
 	 *
-	 * @param string $output html markup for dropdown list of categories
-	 * @return string modified html
+	 * @param array  $args     The taxonomy parent dropdown arguments.
+	 * @param string $taxonomy The taxonomy name.
+	 * @param string $context  The filter context, 'new' or 'edit'.
+	 * @return array
 	 */
-	public function wp_dropdown_cats( $output ) {
-		if ( isset( $_GET['taxonomy'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$taxonomy = sanitize_key( $_GET['taxonomy'] ); // phpcs:ignore WordPress.Security.NonceVerification
+	public function taxonomy_parent_dropdown_args( $args, $taxonomy, $context ) {
+		if ( ! isset( $_GET['from_tag'], $_GET['new_lang'] ) || 'new' !== $context ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return $args;
 		}
 
-		if ( isset( $taxonomy, $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $taxonomy ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$term = get_term( (int) $_GET['from_tag'], $taxonomy ); // phpcs:ignore WordPress.Security.NonceVerification
+		$term = get_term( (int) $_GET['from_tag'], $taxonomy ); // phpcs:ignore WordPress.Security.NonceVerification
 
-			if ( $term instanceof WP_Term && $id = $term->parent ) {
-				$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
-					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
-				}
-			}
+		if ( ! $term instanceof WP_Term || ! $term->parent ) {
+			return $args;
 		}
-		return $output;
+
+		$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+
+		$args['selected'] = $this->model->term->get_translation( $term->parent, $lang );
+
+		return $args;
 	}
 
 	/**
