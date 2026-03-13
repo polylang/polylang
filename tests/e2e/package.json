@@ -1,11 +1,27 @@
 {
 	"name": "@wpsyntex/polylang-e2e",
+	"version": "1.0.0",
 	"description": "E2E tests for Polylang",
+	"author": "WP Syntex",
+	"license": "GPL-3.0-or-later",
+	"keywords": [
+		"e2e",
+		"polylang",
+		"testing"
+	],
+	"homepage": "https://github.com/polylang/polylang#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/polylang/polylang.git"
+	},
+	"bugs": {
+		"url": "https://github.com/polylang/polylang/issues"
+	},
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
-		"@wordpress/e2e-test-utils-playwright": "^1",
-		"@playwright/test": "^1"
+		"@playwright/test": "^1.58.2",
+		"@wordpress/e2e-test-utils-playwright": "^1.41.0",
+		"@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils"
 	}
 }

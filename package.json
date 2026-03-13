@@ -1,10 +1,56 @@
 {
   "name": "@wpsyntex/polylang",
-  "version": "3.1.0",
+  "version": "3.8.0",
   "description": "Adds multilingual capability to WordPress",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
+  "author": "WP Syntex",
+  "license": "GPL-3.0-or-later",
+  "keywords": [
+    "multilingual",
+    "bilingual",
+    "translate",
+    "translation",
+    "language",
+    "multilanguage",
+    "international",
+    "localization"
+  ],
+  "homepage": "https://github.com/polylang/polylang#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polylang/polylang.git"
+  },
+  "bugs": {
+    "url": "https://github.com/polylang/polylang/issues"
+  },
+  "overrides": {
+    "minimatch": "^9.0.9",
+    "serialize-javascript": "^7.0.4"
+  },
+  "dependencies": {
+    "@wpsyntex/polylang-react-library": "github:polylang/polylang-react-library"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@wordpress/babel-preset-default": "^8.41.0",
+    "@wordpress/base-styles": "^6.17.0",
+    "@wordpress/e2e-test-utils-playwright": "^1.41.0",
+    "@wordpress/env": "^10.39.0",
+    "@wordpress/scripts": "^31.6.0",
+    "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
+    "@wpsyntex/polylang-build-scripts": "^2.1.0",
+    "babel-loader": "^8.4.1",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^14.0.0",
+    "css-loader": "^7.1.4",
+    "css-minimizer-webpack-plugin": "^6.0.0",
+    "mini-css-extract-plugin": "^2.10.1",
+    "postcss": "^8.5.8",
+    "rimraf": "^6.1.3",
+    "sass": "^1.98.0",
+    "sass-loader": "^16.0.7",
+    "terser-webpack-plugin": "^5.4.0",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^6.0.1"
   },
   "scripts": {
     "build": "npm run clean && webpack --mode production",
@@ -21,55 +67,5 @@
     "test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 vendor/bin/phpunit'",
     "test:php:coverage": "npm run env:composer coverage",
     "test:php:coverage:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 composer coverage'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/polylang/polylang.git"
-  },
-  "keywords": [
-    "multilingual",
-    "bilingual",
-    "translate",
-    "translation",
-    "language",
-    "multilanguage",
-    "international",
-    "localization"
-  ],
-  "author": "WP Syntex",
-  "license": "GPL-3.0+",
-  "bugs": {
-    "url": "https://github.com/polylang/polylang/issues"
-  },
-  "homepage": "https://github.com/polylang/polylang#readme",
-  "overrides": {
-    "@wordpress/upload-media": "0.24.0"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1",
-    "@wordpress/babel-preset-default": "^8.10",
-    "@wordpress/base-styles": "^5.10",
-    "@wordpress/e2e-test-utils-playwright": "^1",
-    "@wordpress/env": "^10",
-    "@wordpress/scripts": "^31",
-    "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
-    "@wpsyntex/polylang-build-scripts": "^2.1",
-    "babel-loader": "^8.2.2",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^9.0.1",
-    "css-loader": "^6.2.0",
-    "css-minimizer-webpack-plugin": "^3.0.2",
-    "glob": "^11",
-    "mini-css-extract-plugin": "^2.3.0",
-    "postcss": "^8.3.6",
-    "rimraf": "^3.0.2",
-    "sass": "1.54.0",
-    "sass-loader": "16.0.3",
-    "terser-webpack-plugin": "^5.2.4",
-    "webpack": "^5.52.1",
-    "webpack-cli": "^4.8.0"
-  },
-  "dependencies": {
-    "@wpsyntex/polylang-react-library": "github:polylang/polylang-react-library"
   }
 }

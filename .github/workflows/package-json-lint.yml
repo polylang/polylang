@@ -1,0 +1,33 @@
+name: Package JSON Lint
+
+on:
+  push:
+    branches: master
+    paths:
+      - 'package.json'
+  pull_request:
+    branches: master
+    paths:
+      - 'package.json'
+  workflow_dispatch:
+
+jobs:
+  testing:
+    name: Package JSON Lint
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the source code
+      uses: actions/checkout@v4
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Package JSON Lint
+      run: npx wp-scripts lint-pkg-json
