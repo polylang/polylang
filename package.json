@@ -2,8 +2,8 @@
   "name": "@wpsyntex/polylang",
   "version": "3.8.0",
   "description": "Adds multilingual capability to WordPress",
-	"author": "WP Syntex",
-	"license": "GPL-3.0-or-later",
+  "author": "WP Syntex",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "multilingual",
     "bilingual",
@@ -15,11 +15,11 @@
     "localization"
   ],
   "homepage": "https://github.com/polylang/polylang#readme",
-	"repository": {
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/polylang/polylang.git"
   },
-	"bugs": {
+  "bugs": {
     "url": "https://github.com/polylang/polylang/issues"
   },
   "overrides": {
@@ -52,7 +52,7 @@
     "webpack": "^5.105.4",
     "webpack-cli": "^6.0.1"
   },
-	"scripts": {
+  "scripts": {
     "build": "npm run clean && webpack --mode production",
     "build:dev": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development --watch",
