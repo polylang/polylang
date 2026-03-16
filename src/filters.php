@@ -289,11 +289,26 @@ class PLL_Filters {
 	 * @return array
 	 */
 	public function fix_privacy_policy_page_editing( $caps, $cap, $user_id, $args ) {
-		if ( in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ) ) ) {
-			$privacy_page = get_option( 'wp_page_for_privacy_policy' );
-			if ( $privacy_page && array_intersect( $args, $this->model->post->get_translations( $privacy_page ) ) ) {
-				$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );
-			}
+		if ( ! in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ), true ) ) {
+			return $caps;
+		}
+
+		if ( empty( $args[0] ) ) {
+			return $caps;
+		}
+
+		/*
+		 * We expect a post ID, but nothing prevents to receive a `WP_Post`,
+		 * so let make sure we manipulate a post ID in any case.
+		 */
+		$post = get_post( $args[0] );
+		if ( ! $post ) {
+			return $caps;
+		}
+
+		$privacy_page = get_option( 'wp_page_for_privacy_policy' );
+		if ( $privacy_page && in_array( $post->ID, $this->model->post->get_translations( $privacy_page ), true ) ) {
+			$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );
 		}
 
 		return $caps;
