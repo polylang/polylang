@@ -261,22 +261,35 @@ abstract class PLL_Translatable_Object {
 
 		$cached_values = $this->get_from_object_term_cache( $object_ids, $taxonomy );
 
+		if ( ! is_array( $cached_values ) ) {
+			return array();
+		}
+
 		// Flatten the array to prime the terms cache.
 		$all_term_ids = array();
 		foreach ( $cached_values as $term_ids ) {
+			if ( ! is_array( $term_ids ) ) {
+				continue;
+			}
 			$all_term_ids = array_merge( $all_term_ids, $term_ids );
 		}
 		_prime_term_caches( $all_term_ids, false );
 
 		$terms = array();
 		foreach ( $cached_values as $object_id => $term_ids ) {
-			if ( ! empty( $term_ids ) ) {
-				$term_id = reset( $term_ids ); // There is only one term for language or translation groups.
-
-				/** @var WP_Term $term */
-				$term                = get_term( $term_id );
-				$terms[ $object_id ] = $term;
+			if ( ! is_array( $term_ids ) || empty( $term_ids ) ) {
+				continue;
 			}
+
+			$term_id = reset( $term_ids ); // There is only one term for language or translation groups.
+
+			if ( ! is_numeric( $term_id ) ) {
+				continue;
+			}
+
+			/** @var WP_Term $term */
+			$term                = get_term( (int) $term_id );
+			$terms[ $object_id ] = $term;
 		}
 
 		return $terms;
@@ -340,10 +353,11 @@ abstract class PLL_Translatable_Object {
 	 * @param int[]  $object_ids Array of object IDs to retrieve terms for.
 	 * @param string $taxonomy   Taxonomy name.
 	 *
-	 * @return int[][]
+	 * @return mixed Ideally an array of int[], but can be anything else.
 	 */
 	protected function get_from_object_term_cache( array $object_ids, string $taxonomy ) {
 		$this->prime_object_term_cache( $object_ids );
+
 		return wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
 	}
 
