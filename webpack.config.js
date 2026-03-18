@@ -76,7 +76,6 @@ function configureWebpack( options ) {
 		libraryName: 'polylang',
 		isProduction,
 		wpDependencies,
-		additionalExternals: { lodash: 'lodash' },
 		sassLoadPaths: [
 			path.resolve(
 				workingDirectory,

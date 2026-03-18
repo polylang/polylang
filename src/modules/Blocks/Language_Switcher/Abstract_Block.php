@@ -150,7 +150,6 @@ abstract class Abstract_Block {
 				'wp-element',
 				'wp-i18n',
 				'wp-server-side-render',
-				'lodash',
 			),
 			POLYLANG_VERSION,
 			true

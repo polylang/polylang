@@ -3,11 +3,6 @@
  */
 
 /**
- * External dependencies
- */
-import { assign } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { ToggleControl } from '@wordpress/components';
@@ -39,9 +34,10 @@ export function createLanguageSwitcherEdit( props ) {
 
 			if ( 'show_names' === propName || 'show_flags' === propName ) {
 				if ( value && forcedAttributeUnchecked ) {
-					updatedAttributes = assign( updatedAttributes, {
+					updatedAttributes = {
+						...updatedAttributes,
 						[ forcedAttributeName ]: forcedAttributeUnchecked,
-					} );
+					};
 				}
 			}
 			setAttributes( updatedAttributes );
