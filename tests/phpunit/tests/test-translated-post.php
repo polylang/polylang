@@ -367,15 +367,15 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_get_object_term_for_translation_should_not_fail_when_cache_corrupted() {
-		$posts = self::factory()->post->create_translated(
+		$post_id = self::factory()->post->create(
 			array(
 				'lang' => 'en',
 			),
 		);
 
-		wp_cache_set( $posts['en'], 'invalid', 'post_translations_relationships' );
+		wp_cache_set( $post_id, 'invalid', 'post_translations_relationships' );
 
-		$term = self::factory()->pll_model->post->get_object_term( $posts['en'], 'post_translations' );
+		$term = self::factory()->pll_model->post->get_object_term( $post_id, 'post_translations' );
 
 		$this->assertNull( $term );
 	}
@@ -391,6 +391,6 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$term = self::factory()->pll_model->post->get_object_term( $post_id, 'language' );
 
-		$this->assertNull( $term );
+		$this->assertSame( 'en', $term->slug );
 	}
 }
