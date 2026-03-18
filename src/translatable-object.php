@@ -251,7 +251,7 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @param int[]  $object_ids Array of object IDs.
 	 * @param string $taxonomy   Taxonomy name.
-	 * @return array<int,WP_Term|null> Array of terms with object ID as key.
+	 * @return array<int,WP_Term> Array of terms with object ID as key.
 	 */
 	protected function get_object_terms( array $object_ids, string $taxonomy ) {
 		$object_ids = $this->sanitize_int_ids_list( $object_ids );
