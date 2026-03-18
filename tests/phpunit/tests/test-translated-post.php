@@ -16,6 +16,8 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
+		wp_suspend_cache_addition( false );
+
 		if ( is_multisite() ) {
 			restore_current_blog();
 		}
@@ -364,7 +366,30 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( 0, self::$model->post->get_translation( $posts['fr'], 'en' ) );
 	}
 
-	public function test_get_object_term_should_not_fail_when_cache_corrupted() {
+	public function test_get_object_term_for_language_should_not_fail_when_cache_corrupted() {
+		$posts = self::factory()->post->create_translated(
+			array(
+				'lang' => 'en',
+			),
+			array(
+				'lang' => 'fr',
+			)
+		);
+
+		$terms = wp_get_object_terms( $posts['en'], 'language' );
+
+		$this->assertCount( 1, $terms );
+
+		$this->setExpectedIncorrectUsage( '_get_non_cached_ids' );
+
+		wp_cache_set( $posts['en'], array( 2 => false ), 'language_relationships' );
+
+		$term = self::factory()->pll_model->post->get_object_term( $posts['en'], 'language' );
+
+		$this->assertNull( $term );
+	}
+
+	public function test_get_object_term_for_translation_should_not_fail_when_cache_corrupted() {
 		$posts = self::factory()->post->create_translated(
 			array(
 				'lang' => 'en',
@@ -380,7 +405,25 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		wp_cache_set( $posts['en'], 'invalid', 'post_translations_relationships' );
 
-		$term = self::$model->post->get_object_term( $posts['en'], 'post_translations' );
+		$term = self::factory()->pll_model->post->get_object_term( $posts['en'], 'post_translations' );
+
+		$this->assertNull( $term );
+	}
+
+	public function test_get_object_term_should_not_fail_when_cache_not_primed() {
+		wp_suspend_cache_addition( true );
+
+		$post_id = self::factory()->post->create(
+			array(
+				'lang' => 'en',
+			),
+		);
+
+		$terms = wp_get_object_terms( $post_id, 'language' );
+
+		$this->assertCount( 1, $terms );
+
+		$term = self::factory()->pll_model->post->get_object_term( $post_id, 'language' );
 
 		$this->assertNull( $term );
 	}
