@@ -261,7 +261,6 @@ abstract class PLL_Translatable_Object {
 
 		$cached_values = $this->get_from_object_term_cache( $object_ids, $taxonomy );
 
-		// Flatten the array to prime the terms cache.
 		$all_term_ids = array_values( $cached_values );
 		_prime_term_caches( $all_term_ids, false );
 
