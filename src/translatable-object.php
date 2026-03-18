@@ -349,7 +349,7 @@ abstract class PLL_Translatable_Object {
 			}
 
 			$id = reset( $term_ids );
-			if ( ! is_numeric( $id ) ) {
+			if ( ! is_numeric( $id ) || empty( $id ) ) {
 				continue;
 			}
 
