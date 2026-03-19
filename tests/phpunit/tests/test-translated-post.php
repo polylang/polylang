@@ -366,7 +366,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( 0, self::$model->post->get_translation( $posts['fr'], 'en' ) );
 	}
 
-	public function test_get_object_term_for_translation_should_not_fail_when_cache_corrupted() {
+	public function test_get_object_term_for_translation_should_fail_gracefully_when_cache_corrupted() {
 		$post_id = self::factory()->post->create(
 			array(
 				'lang' => 'en',

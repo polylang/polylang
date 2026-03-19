@@ -290,7 +290,7 @@ abstract class PLL_Translatable_Object {
 		}
 
 		if ( empty( $non_cached_ids ) ) {
-			return array_fill_keys( $this->tax_to_cache, array() );
+			return array();
 		}
 
 		$terms = wp_get_object_terms(
@@ -303,7 +303,7 @@ abstract class PLL_Translatable_Object {
 		);
 
 		if ( ! is_array( $terms ) ) {
-			return array_fill_keys( $this->tax_to_cache, array() );
+			return array();
 		}
 
 		$object_terms = array();
@@ -338,7 +338,12 @@ abstract class PLL_Translatable_Object {
 	 */
 	protected function get_from_object_term_cache( array $object_ids, string $taxonomy ): array {
 		$values = wp_cache_get_multiple( $object_ids, "{$taxonomy}_relationships" );
-		$values = array_replace( $values, $this->update_object_term_cache( $object_ids )[ $taxonomy ] );
+
+		// If values are missing, then update the cache and replace missed values by freshly cached ones.
+		$object_terms = $this->update_object_term_cache( $object_ids );
+		if ( isset( $object_terms[ $taxonomy ] ) ) {
+			$values = array_replace( $values, $object_terms[ $taxonomy ] );
+		}
 
 		$sanitized_values = array();
 		foreach ( $values as $object_id => $term_ids ) {
