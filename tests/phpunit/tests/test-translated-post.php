@@ -393,4 +393,14 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->assertSame( 'en', $term->slug );
 	}
+
+	public function test_get_object_term_should_prime_cache_when_no_language_assigned() {
+		$post_id = self::factory()->post->create();
+
+		$this->assertFalse( self::factory()->pll_model->post->get_language( $post_id ) );
+
+		$cache = wp_cache_get( $post_id, 'language_relationships' );
+
+		$this->assertSame( array(), $cache, "The cache should be primed with empty array when no language is assigned for {$post_id}." );
+	}
 }
