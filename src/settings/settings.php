@@ -355,8 +355,9 @@ class PLL_Settings extends PLL_Admin_Base {
 			set_transient( 'settings_errors', $errors, 30 );
 			$args['settings-updated'] = 1;
 		}
-		// Remove possible 'pll_action' and 'lang' query args from the referer before redirecting
-		wp_safe_redirect( add_query_arg( $args, remove_query_arg( array( 'pll_action', 'lang' ), wp_get_referer() ) ) );
+		// Remove all known query args from the referer before redirecting.
+		$to_remove = array( 'lang', 'module', 'pll_action', 'noheader', '_wpnonce' );
+		wp_safe_redirect( add_query_arg( $args, remove_query_arg( $to_remove, wp_get_referer() ) ) );
 		exit;
 	}
 
