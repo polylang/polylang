@@ -1,4 +1,4 @@
-# ![Polylang](https://avatars.githubusercontent.com/u/18660148) [POLYLANG](https://wordpress.org/plugins/polylang/)
+# <img src="https://avatars.githubusercontent.com/u/18660148?s=27" alt=""> [POLYLANG](https://wordpress.org/plugins/polylang/)
 
 Welcome to the Polylang repository on GitHub. Here you can browse the source, discuss open issues and keep track of the development.
 
