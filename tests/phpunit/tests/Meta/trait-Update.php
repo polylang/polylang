@@ -33,7 +33,7 @@ trait Update {
 
 		$this->assertTrue( update_metadata( self::$type, self::$objects['en'], 'the_key', $value, 'another_value' ) );
 
-		$this->assertSameSetsWithIndex(
+		$this->assertEqualSets(
 			array( $value, 'yet_another_value' ),
 			get_metadata( self::$type, self::$objects['fr'], 'the_key', false )
 		);
