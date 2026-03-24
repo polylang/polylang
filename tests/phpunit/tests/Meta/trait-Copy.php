@@ -4,7 +4,7 @@ namespace WP_Syntex\Polylang_Pro\Tests\Integration\modules\Meta;
 
 trait Copy {
 	/**
-	 * @dataProvider data_provider
+	 * @dataProvider meta_values_provider
 	 *
 	 * @param mixed $value The value to add to the meta.
 	 * @return void
@@ -18,7 +18,7 @@ trait Copy {
 	}
 
 	/**
-	 * @dataProvider data_provider
+	 * @dataProvider meta_values_provider
 	 *
 	 * @param mixed $value The value to add to the meta.
 	 * @return void

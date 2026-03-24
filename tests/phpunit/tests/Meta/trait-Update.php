@@ -4,7 +4,7 @@ namespace WP_Syntex\Polylang_Pro\Tests\Integration\modules\Meta;
 
 trait Update {
 	/**
-	 * @dataProvider data_provider
+	 * @dataProvider meta_values_provider
 	 *
 	 * @param mixed $value The value to add to the meta.
 	 * @return void
@@ -22,7 +22,7 @@ trait Update {
 	}
 
 	/**
-	 * @dataProvider data_provider
+	 * @dataProvider meta_values_provider
 	 *
 	 * @param mixed $value The value to add to the meta.
 	 * @return void
