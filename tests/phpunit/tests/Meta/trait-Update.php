@@ -40,7 +40,7 @@ trait Update {
 	}
 
 	/**
-	 * @dataProvider data_provider
+	 * @dataProvider meta_values_provider
 	 *
 	 * @param mixed $value The value to add to the meta.
 	 * @return void
