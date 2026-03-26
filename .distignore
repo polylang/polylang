@@ -19,6 +19,7 @@ webpack.config.js
 # Folders
 
 bin/
+changelog/
 coverage/
 css/src/
 js/src/
