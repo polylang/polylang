@@ -12,13 +12,14 @@ use WP_Error;
 class Test_CRUD extends PLL_UnitTestCase {
 
 	private $languages;
+	protected $options;
 
 	public function set_up() {
 		parent::set_up();
 
-		$options         = self::create_options();
+		$this->options         = self::create_options();
 		$this->languages = new Languages(
-			$options,
+			$this->options,
 			new PLL_Translatable_Objects(),
 			new PLL_Cache()
 		);
@@ -398,6 +399,33 @@ class Test_CRUD extends PLL_UnitTestCase {
 		$default = $this->languages->get_default();
 		$this->assertInstanceOf( PLL_Language::class, $default );
 		$this->assertSame( 'en', $default->slug );
+	}
+
+	public function test_get_default_language_with_no_languages() {
+		$default = $this->languages->get_default();
+		$this->assertFalse( $default );
+	}
+
+	/**
+	 * Ensures that if the default language is not set, it is recreated from the languages list.
+	 *
+	 * @ticket #2962
+	 * @see https://github.com/polylang/polylang-pro/issues/2962
+	 */
+	public function test_get_default_language_with_no_languages_and_default_lang_set_recreates_it() {
+		// Purposely create languages in a different order than we usually do with `create_many()`.
+		$this->factory()->language->create( array( 'locale' => 'fr_FR' ) );
+		$this->factory()->language->create( array( 'locale' => 'de_DE' ) );
+		$this->factory()->language->create( array( 'locale' => 'en_US' ) );
+
+		$this->options->set( 'default_lang', null );
+
+		$this->assertEmpty( $this->options->get( 'default_lang' ) );
+
+		$default = $this->languages->get_default();
+
+		$this->assertInstanceOf( PLL_Language::class, $default );
+		$this->assertSame( 'fr', $default->slug );
 	}
 
 	public function test_update_default_language() {
