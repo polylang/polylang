@@ -17,7 +17,7 @@ class Test_CRUD extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$this->options         = self::create_options();
+		$this->options   = self::create_options();
 		$this->languages = new Languages(
 			$this->options,
 			new PLL_Translatable_Objects(),
