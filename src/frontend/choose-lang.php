@@ -62,7 +62,7 @@ abstract class PLL_Choose_Lang {
 	public function init() {
 		if ( Polylang::is_ajax_on_front() || ! wp_using_themes() ) {
 			if ( $this->model->has_languages() && ! $this->options->get( 'default_language' ) ) {
-				wp_trigger_error( __METHOD__, __( 'The default language is not set. Please set it in the Polylang settings.', 'polylang' ), E_USER_WARNING );
+				wp_trigger_error( __METHOD__, 'The default language is not set. Please set it in the Polylang settings.', E_USER_WARNING );
 				return;
 			}
 			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
