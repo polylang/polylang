@@ -734,10 +734,6 @@ class Languages {
 		}
 
 		$default_term = reset( $terms );
-		if ( empty( $default_term ) ) {
-			return false;
-		}
-
 		$this->update_default( $default_term->slug );
 
 		return $this->get( $this->options['default_lang'] );
