@@ -370,12 +370,11 @@ class PLL_Model {
 
 		if ( ! is_array( $counts ) ) {
 			$counts  = array();
-			$select  = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
+			$select  = "SELECT pll_tr.term_taxonomy_id, post_status, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join    = $this->post->join_clause();
-			$where   = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
-			$where  .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
+			$where   = sprintf( " WHERE {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
 			$where  .= $this->post->where_clause( $this->languages->get_list() );
-			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
+			$groupby = ' GROUP BY pll_tr.term_taxonomy_id, post_status';
 
 			if ( ! empty( $q['m'] ) ) {
 				$q['m'] = '' . preg_replace( '|[^0-9]|', '', $q['m'] );
@@ -424,15 +423,16 @@ class PLL_Model {
 
 			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$res = $wpdb->get_results( $select . $join . $where . $groupby, ARRAY_A );
+
 			foreach ( (array) $res as $row ) {
-				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
+				$counts[ $row['term_taxonomy_id'] ][ $row['post_status'] ] = $row['num_posts'];
 			}
 
 			$this->set_counts_cache( $cache_key, $counts );
 		}
 
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
-		return empty( $counts[ $term_taxonomy_id ] ) ? 0 : $counts[ $term_taxonomy_id ];
+		return $counts[ $term_taxonomy_id ][ $q['post_status'] ] ?? 0;
 	}
 
 	/**
