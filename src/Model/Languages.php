@@ -727,6 +727,7 @@ class Languages {
 			return $this->get( $this->options['default_lang'] );
 		}
 
+		// It happens that there the default language is lost. We require one, so let's select one arbitrarily.
 		$terms = $this->get_terms();
 		if ( empty( $terms ) ) {
 			return false;
