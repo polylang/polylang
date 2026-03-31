@@ -163,7 +163,8 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'openSubmenusOnClick' => false,
 					'submenuVisibility'   => 'hover',
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-icon.html',
+				'expected'         => 'navigation-language-switcher-dropdown-with-icon.html',
+				'core_min_version' => '7.0-alpha',
 			),
 			'Display as dropdown with open on click'                 => array(
 				'options'  => array( 'dropdown' => 1 ),
@@ -227,12 +228,15 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 		return array_filter(
 			$data,
 			function ( $item ) use ( $wp_version ) {
-				if ( empty( $item['core_max_version'] ) ) {
-					return true;
+				if ( ! empty( $item['core_max_version'] ) ) {
+					return version_compare( $wp_version, $item['core_max_version'], '<' );
 				}
 
-				// Backward compatibility with WordPress < `$item['core_max_version']`.
-				return version_compare( $wp_version, $item['core_max_version'], '<' );
+				if ( ! empty( $item['core_min_version'] ) ) {
+					return version_compare( $wp_version, $item['core_min_version'], '>=' );
+				}
+
+				return true;
 			}
 		);
 	}
