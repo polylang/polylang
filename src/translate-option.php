@@ -256,13 +256,13 @@ class PLL_Translate_Option {
 	 * @return void
 	 */
 	protected function maybe_load_string_translations() {
-		if ( ! function_exists( 'PLL' ) ) {
+		if ( empty( $GLOBALS['polylang'] ) ) {
 			return;
 		}
 
-		$pll = PLL();
+		$pll = $GLOBALS['polylang'];
 
-		if ( ! isset( $pll->curlang ) || ! $pll->curlang instanceof PLL_Language ) {
+		if ( ! $pll instanceof PLL_Base || ! isset( $pll->curlang ) || ! $pll->curlang instanceof PLL_Language ) {
 			return;
 		}
 
