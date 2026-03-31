@@ -53,7 +53,8 @@
 		"maxNestingLevel",
 		"openSubmenusOnClick",
 		"style",
-		"isResponsive"
+		"isResponsive",
+		"submenuVisibility"
 	],
 	"supports": {
 		"contentRole": true

@@ -66,6 +66,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	public function test_render_polylang_navigation_switcher_block( $options, $context, $expected ) {
 		global $wp_version;
 
+		// Backward compatibility with WordPress < 6.8.
 		if ( version_compare( $wp_version, '6.8-alpha', '<' ) ) {
 			$this->markTestSkipped( 'Test on navigation language switcher block HTML rendering requires WP 6.8.' );
 		}
@@ -85,12 +86,6 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 
 		$switcher = new WP_Block( $switcher_args, $context );
 
-		// Backward compatibility with WordPress < 7.0.
-		if ( version_compare( $wp_version, '7.0-alpha', '<' ) && str_contains( $expected, 'dropdown-with-icon' ) ) {
-			$expected = str_replace( '.html', '-wp69.html', $expected );
-			$this->assertFileExists( self::PLL_SWITCHER_BLOCKS_DIR . $expected );
-		}
-
 		$this->assertStringMatchesFormatFile(
 			self::PLL_SWITCHER_BLOCKS_DIR . $expected,
 			$switcher->render(),
@@ -99,7 +94,9 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	}
 
 	public function switcher_options_provider() {
-		return array(
+		global $wp_version;
+
+		$data = array(
 			'Display as list'                                        => array(
 				'options'  => array(),
 				'context'  => array(),
@@ -149,10 +146,20 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 				'context'  => array(),
 				'expected' => 'navigation-language-switcher-dropdown-with-flags.html',
 			),
-			'Display as dropdown with submenu icon'                  => array(
+			'Display as dropdown with submenu icon before WP 7.0' => array(
+				'options'      => array( 'dropdown' => 1 ),
+				'context'      => array(
+					'showSubmenuIcon' => true,
+				),
+				'expected'     => 'navigation-language-switcher-dropdown-with-icon-wp69.html',
+				'core_max_version' => '6.9',
+			),
+			'Display as dropdown with submenu icon after WP 7.0' => array(
 				'options'  => array( 'dropdown' => 1 ),
 				'context'  => array(
-					'showSubmenuIcon' => true,
+					'showSubmenuIcon'     => true,
+					'openSubmenusOnClick' => false,
+					'submenuVisibility'   => 'hover',
 				),
 				'expected' => 'navigation-language-switcher-dropdown-with-icon.html',
 			),
@@ -213,6 +220,18 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 				),
 				'expected' => 'navigation-language-switcher-dropdown-bad-css.html',
 			),
+		);
+
+		return array_filter(
+			$data,
+			function ( $item ) use ( $wp_version ) {
+				if ( empty( $item['core_max_version'] ) ) {
+					return true;
+				}
+
+				// Backward compatibility with WordPress < `$item['core_max_version']`.
+				return version_compare( $wp_version, $item['core_max_version'], '<' );
+			} 
 		);
 	}
 }
