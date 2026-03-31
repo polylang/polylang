@@ -96,11 +96,13 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	public function switcher_options_provider() {
 		global $wp_version;
 
+		$suffix = version_compare( $wp_version, '7.0-alpha', '<' ) ? '-wp69' : '';
+
 		$data = array(
 			'Display as list'                                        => array(
 				'options'  => array(),
 				'context'  => array(),
-				'expected' => 'navigation-language-switcher-list.html',
+				'expected' => 'navigation-language-switcher-list' . $suffix . '.html',
 			),
 			'Display as list with font and colors'                   => array(
 				'options'  => array( 'dropdown' => 0 ),
@@ -111,7 +113,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-list-with-font-and-color.html',
+				'expected' => 'navigation-language-switcher-list-with-font-and-color' . $suffix . '.html',
 			),
 			'Display as list with custom font and custom colors' => array(
 				'options'  => array(
@@ -131,12 +133,12 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-list-with-custom-font-and-color.html',
+				'expected' => 'navigation-language-switcher-list-with-custom-font-and-color' . $suffix . '.html',
 			),
 			'Display as dropdown'                                    => array(
 				'options'  => array( 'dropdown' => 1 ),
 				'context'  => array(),
-				'expected' => 'navigation-language-switcher-dropdown.html',
+				'expected' => 'navigation-language-switcher-dropdown' . $suffix . '.html',
 			),
 			'Display as dropdown with flags'                         => array(
 				'options'  => array(
@@ -144,14 +146,14 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'show_flags' => 1,
 				),
 				'context'  => array(),
-				'expected' => 'navigation-language-switcher-dropdown-with-flags.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-flags' . $suffix . '.html',
 			),
 			'Display as dropdown with submenu icon before WP 7.0' => array(
-				'options'      => array( 'dropdown' => 1 ),
-				'context'      => array(
+				'options'          => array( 'dropdown' => 1 ),
+				'context'          => array(
 					'showSubmenuIcon' => true,
 				),
-				'expected'     => 'navigation-language-switcher-dropdown-with-icon-wp69.html',
+				'expected'         => 'navigation-language-switcher-dropdown-with-icon-wp69.html',
 				'core_max_version' => '6.9',
 			),
 			'Display as dropdown with submenu icon after WP 7.0' => array(
@@ -168,7 +170,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 				'context'  => array(
 					'openSubmenusOnClick' => true,
 				),
-				'expected' => 'navigation-language-switcher-dropdown-on-click.html',
+				'expected' => 'navigation-language-switcher-dropdown-on-click' . $suffix . '.html',
 			),
 			'Display as dropdown with font and colors'               => array(
 				'options'  => array( 'dropdown' => 1 ),
@@ -179,7 +181,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color' . $suffix . '.html',
 			),
 			'Display as dropdown with custom font and custom colors' => array(
 				'options'  => array(
@@ -199,7 +201,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-custom-font-and-color.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-custom-font-and-color' . $suffix . '.html',
 			),
 			'Displayed as dropdown with unauthorized CSS'            => array(
 				'options'  => array(
@@ -218,7 +220,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-dropdown-bad-css.html',
+				'expected' => 'navigation-language-switcher-dropdown-bad-css' . $suffix . '.html',
 			),
 		);
 
@@ -231,7 +233,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 
 				// Backward compatibility with WordPress < `$item['core_max_version']`.
 				return version_compare( $wp_version, $item['core_max_version'], '<' );
-			} 
+			}
 		);
 	}
 }
