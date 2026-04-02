@@ -113,7 +113,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-list-with-font-and-color' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-list-with-font-and-color.html',
 			),
 			'Display as list with custom font and custom colors' => array(
 				'options'  => array(
@@ -182,7 +182,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color.html',
 			),
 			'Display as dropdown with custom font and custom colors' => array(
 				'options'  => array(
