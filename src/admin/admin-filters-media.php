@@ -11,11 +11,16 @@ use WP_Syntex\Polylang\Capabilities\Capabilities;
  *
  * @since 1.2
  */
-class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
+class PLL_Admin_Filters_Media {
 	/**
-	 * @var PLL_CRUD_Posts|null
+	 * @var PLL_Model
 	 */
-	public $posts;
+	public $model;
+
+	/**
+	 * @var PLL_Admin_Links
+	 */
+	public $links;
 
 	/**
 	 * Constructor: setups filters and actions
@@ -25,9 +30,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang );
-
-		$this->posts = &$polylang->posts;
+		$this->model = &$polylang->model;
+		$this->links = &$polylang->links;
 
 		// Adds the language field and translations tables in the 'Edit Media' panel.
 		add_filter( 'attachment_fields_to_edit', array( $this, 'attachment_fields_to_edit' ), 10, 2 );

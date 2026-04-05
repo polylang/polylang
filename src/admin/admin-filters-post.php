@@ -10,7 +10,12 @@ use WP_Syntex\Polylang\Capabilities\Capabilities;
  *
  * @since 1.2
  */
-class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
+class PLL_Admin_Filters_Post {
+	/**
+	 * @var PLL_Model
+	 */
+	public $model;
+
 	/**
 	 * Current language (used to filter the content).
 	 *
@@ -26,7 +31,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang );
+		$this->model   = &$polylang->model;
 		$this->curlang = &$polylang->curlang;
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
@@ -169,7 +174,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		$this->save_translations( $post_id, array_map( 'absint', $_POST['post_tr_lang'] ) );
+		$this->model->post->save_translations( $post_id, array_map( 'absint', $_POST['post_tr_lang'] ) );
 	}
 
 	/**
