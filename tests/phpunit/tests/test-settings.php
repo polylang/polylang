@@ -18,11 +18,17 @@ class Settings_Test extends PLL_UnitTestCase {
 	}
 
 	public function set_up() {
-		global $pagenow;
-
 		parent::set_up();
 
-		$pagenow = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
+		global $pagenow, $hook_suffix, $plugin_page;
+
+		// Setup globals.
+		$_GET['page'] = 'mlang';
+		$pagenow      = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
+		$hook_suffix  = 'settings_page_mlang';
+		$plugin_page  = 'mlang';
+		get_admin_page_title();
+		set_current_screen();
 
 		// Avoid an API request triggered by wp_get_available_translations() called in languages_page().
 		add_filter( 'pre_site_transient_available_translations', '__return_empty_array' );
@@ -36,13 +42,8 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		// Setup globals.
 		$_GET['lang']           = $lang->term_id;
-		$_GET['page']           = 'mlang';
 		$_GET['pll_action']     = 'edit';
 		$_REQUEST['pll_action'] = 'edit'; // languages_page() tests $_REQUEST.
-		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
-		$GLOBALS['plugin_page'] = 'mlang';
-		get_admin_page_title();
-		set_current_screen();
 
 		ob_start();
 		$links_model = self::$model->get_links_model();
@@ -70,10 +71,6 @@ class Settings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_notice_for_objects_with_no_lang() {
-		$_GET['page'] = 'mlang';
-		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
-		set_current_screen();
-
 		$links_model = self::$model->get_links_model();
 		new PLL_Settings( $links_model );
 		do_action( 'admin_menu' );

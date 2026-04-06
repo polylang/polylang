@@ -12,13 +12,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class PLL_Settings extends PLL_Admin_Base {
 	/**
-	 * Name of the active module.
-	 *
-	 * @var string|null
-	 */
-	protected $active_tab;
-
-	/**
 	 * Array of modules classes.
 	 *
 	 * @var PLL_Settings_Module[]|null
@@ -34,10 +27,6 @@ class PLL_Settings extends PLL_Admin_Base {
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
-
-		if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // phpcs:ignore WordPress.Security.NonceVerification
-		}
 
 		PLL_Admin_Strings::init();
 
@@ -276,7 +265,18 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function languages_page() {
-		switch ( $this->active_tab ) {
+		// Handle user input.
+		$action = isset( $_REQUEST['pll_action'] ) && is_string( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
+		} elseif ( ! empty( $action ) ) {
+			$this->handle_actions( $action );
+		}
+
+		$active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // phpcs:ignore WordPress.Security.NonceVerification
+
+		switch ( $active_tab ) {
 			case 'lang':
 				// Prepare the list table of languages
 				$list_table = new PLL_Table_Languages();
@@ -289,18 +289,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				break;
 		}
 
-		// Handle user input.
-		$action = isset( $_REQUEST['pll_action'] ) && is_string( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
-		} elseif ( ! empty( $action ) ) {
-			$this->handle_actions( $action );
-		}
-
-		// Displays the page
-		$modules    = $this->modules;
-		$active_tab = $this->active_tab;
+		// Displays the page.
+		$modules = $this->modules;
 		include __DIR__ . '/view-languages.php';
 	}
 
