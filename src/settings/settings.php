@@ -274,6 +274,10 @@ class PLL_Settings extends PLL_Admin_Base {
 			$this->handle_actions( $action );
 		}
 
+		if ( ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return;
+		}
+
 		$active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // phpcs:ignore WordPress.Security.NonceVerification
 
 		switch ( $active_tab ) {
