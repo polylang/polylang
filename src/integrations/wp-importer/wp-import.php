@@ -83,7 +83,7 @@ class PLL_WP_Import extends WP_Import {
 		}
 
 		// Clean languages cache in case some of them were created during import.
-		PLL()->model->clean_languages_cache();
+		PLL()->model->languages->clean_cache();
 
 		$this->remap_terms_relations( $term_translations );
 		$this->remap_translations( $term_translations, $this->processed_terms );
@@ -107,7 +107,7 @@ class PLL_WP_Import extends WP_Import {
 
 		parent::process_posts();
 
-		PLL()->model->clean_languages_cache(); // To update the posts count in ( cached ) languages list
+		PLL()->model->languages->clean_cache(); // To update the posts count in (cached) languages list.
 
 		$this->remap_translations( $this->post_translations, $this->processed_posts );
 		unset( $this->post_translations );
@@ -123,11 +123,11 @@ class PLL_WP_Import extends WP_Import {
 	}
 
 	/**
-	 * Remaps terms languages
+	 * Remaps terms languages.
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $terms array of terms in 'term_translations' taxonomy
+	 * @param array $terms array of terms in 'term_translations' taxonomy.
 	 */
 	protected function remap_terms_relations( &$terms ) {
 		global $wpdb;
@@ -160,7 +160,13 @@ class PLL_WP_Import extends WP_Import {
 				$existing_trs[ $key ] = array( $tr->object_id, $tr->term_taxonomy_id );
 			}
 
-			$trs = array_diff( $trs, $existing_trs );
+			$trs = array_udiff(
+				$trs,
+				$existing_trs,
+				function ( $a, $b ) {
+					return strcmp( implode( ',', $a ), implode( ',', $b ) ); // An easy way to compare arrays (ok if values are int or numeric strings).
+				}
+			);
 
 			if ( ! empty( $trs ) ) {
 				$wpdb->query(
@@ -177,31 +183,33 @@ class PLL_WP_Import extends WP_Import {
 	}
 
 	/**
-	 * Remaps translations for both posts and terms
+	 * Remaps translations for both posts and terms.
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $terms array of terms in 'post_translations' or 'term_translations' taxonomies
-	 * @param array $processed_objects array of posts or terms processed by WordPress Importer
+	 * @param array $terms             Array of terms in 'post_translations' or 'term_translations' taxonomies?
+	 * @param array $processed_objects Array of posts or terms processed by WordPress Importer.
 	 */
 	protected function remap_translations( &$terms, &$processed_objects ) {
 		global $wpdb;
 
-		$u = array();
+		$languages = pll_languages_list();
+		$u         = array();
 
 		foreach ( $terms as $term ) {
-			$translations = maybe_unserialize( $term['term_description'] );
+			$translations     = maybe_unserialize( $term['term_description'] );
 			$new_translations = array();
-
 			foreach ( $translations as $slug => $old_id ) {
-				if ( $old_id && ! empty( $processed_objects[ $old_id ] ) ) {
+				if ( in_array( $slug, $languages, true ) && $old_id && ! empty( $processed_objects[ $old_id ] ) ) {
 					$new_translations[ $slug ] = $processed_objects[ $old_id ];
+				} else {
+					$new_translations[ $slug ] = $old_id; // Preserve values for all keys which are not our language slugs.
 				}
 			}
 
 			if ( ! empty( $new_translations ) ) {
 				$u['case'][] = array( $this->processed_terms[ $term['term_id'] ], maybe_serialize( $new_translations ) );
-				$u['in'][] = (int) $this->processed_terms[ $term['term_id'] ];
+				$u['in'][]   = (int) $this->processed_terms[ $term['term_id'] ];
 			}
 		}
 
