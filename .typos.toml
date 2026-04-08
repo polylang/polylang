@@ -21,7 +21,7 @@ extend-ignore-re = [
     # En français dans le texte.
     "Tableau de bord",
     "Etiquette exemple",
-    "<!\\[CDATA\\[non-classe\\]\\]>",
+    "non-classe",
     "\\bicl_lso_",
 ]
 
