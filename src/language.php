@@ -351,6 +351,18 @@ class PLL_Language extends PLL_Language_Deprecated {
 	}
 
 	/**
+	 * Returns a predefined HTML flag.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $flag_code Flag code to render.
+	 * @return string HTML code for the flag.
+	 */
+	public static function get_predefined_flag( $flag_code ) {
+		return self::get_flag_html( self::get_flag_information( $flag_code ) );
+	}
+
+	/**
 	 * Returns the flag information.
 	 *
 	 * @since 2.6
@@ -588,20 +600,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function to_std_class() {
 		return (object) $this->to_array();
-	}
-
-	/**
-	 * Returns a predefined HTML flag.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $flag_code Flag code to render.
-	 * @return string HTML code for the flag.
-	 */
-	public static function get_predefined_flag( $flag_code ) {
-		$flag = self::get_flag_information( $flag_code );
-
-		return self::get_flag_html( $flag );
 	}
 
 	/**
