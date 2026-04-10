@@ -5,7 +5,6 @@ import {
 	deleteAllLanguages,
 	resetAllSettings,
 } from '@wpsyntex/e2e-test-utils';
-import { execSync } from 'child_process';
 
 /**
  * Covers language switcher block in the widget editor.
@@ -20,11 +19,6 @@ test.describe(
 		 *     - Create en_US and fr_FR languages.
 		 */
 		test.beforeAll( async ( { requestUtils } ) => {
-			execSync(
-				'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --allow-root',
-				{ cwd: process.cwd(), stdio: 'inherit' }
-			);
-
 			// Activate a theme with widget areas.
 			await requestUtils.activateTheme( 'twentytwentyone' );
 
