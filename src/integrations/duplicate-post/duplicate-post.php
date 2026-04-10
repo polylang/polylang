@@ -17,6 +17,8 @@ class PLL_Duplicate_Post {
 	public function init() {
 		add_filter( 'option_duplicate_post_taxonomies_blacklist', array( $this, 'taxonomies_blacklist' ) );
 		add_filter( 'pll_copy_post_metas', array( $this, 'exclude_post_metas' ) );
+
+		add_action( 'duplicate_post_after_rewriting', array( $this, 'after_rewriting' ), 20, 2 );
 	}
 
 	/**
@@ -55,5 +57,22 @@ class PLL_Duplicate_Post {
 		);
 
 		return array_diff( $keys, $to_remove );
+	}
+
+	/**
+	 * Fixes the translations group just after a post is republished.
+	 *
+	 * @since 3.9
+	 *
+	 * @param int $copy_id The copy's ID.
+	 * @param int $post_id The original post's ID.
+	 * @return void
+	 */
+	public function after_rewriting( $copy_id, $post_id ) {
+		$language     = pll_get_post_language( $post_id );
+		$translations = pll_get_post_translations( $post_id );
+
+		$translations[ $language ] = $post_id;
+		pll_save_post_translations( $translations );
 	}
 }
