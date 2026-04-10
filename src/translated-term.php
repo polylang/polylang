@@ -279,7 +279,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-param array<non-empty-string, positive-int> $translations
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
-		return true;
+		if ( count( $translations ) > 1 ) {
+			return true;
+		}
+
+		$old_translations = $this->get_translations( $id );
+		$term             = $this->get_object_term( $id, $this->tax_translations );
+		return empty( $term ) || ! empty( array_diff_assoc( $translations, $old_translations ) );
 	}
 
 	/**
