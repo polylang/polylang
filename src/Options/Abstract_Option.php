@@ -331,12 +331,12 @@ abstract class Abstract_Option {
 			function ( &$value, $key ) {
 				if ( is_array( $value ) ) {
 					$ids = implode( ' , ', $value );
-					$value = "$key => $ids";
+					$value = "$key => [$ids]";
 				} else {
-					$value = "$key => $value";
+					$value = "$key => [$value]";
 				}
 			}
 		);
-		return implode( ' | ', $array );
+		return implode( ', ', $array );
 	}
 }
