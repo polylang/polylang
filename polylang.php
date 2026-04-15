@@ -47,7 +47,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 
 		add_action(
 			'load-plugins.php',
-			function () {
+			static function () {
 				unset( $_GET['activate'] ); // Prevent WP to display its 'Plugin activated.' message.
 				$updated_notice_args = array(
 					'id'                 => 'message',
