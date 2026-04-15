@@ -41,33 +41,25 @@ defined( 'ABSPATH' ) || exit;
 if ( defined( 'POLYLANG_VERSION' ) ) {
 	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro.
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
-	require_once ABSPATH . 'wp-includes/pluggable.php';
 
 	if ( is_plugin_active( plugin_basename( __FILE__ ) ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin.
-		wp_safe_redirect( add_query_arg( 'pll_two_activations', 'true', remove_query_arg( 'activate' ) ) );
-		exit;
+
+		add_action(
+			'load-plugins.php',
+			function () {
+				unset( $_GET['activate'] ); // Prevent WP to display its 'Plugin activated.' message.
+				$updated_notice_args = array(
+					'id'                 => 'message',
+					'additional_classes' => array( 'error' ),
+					'dismissible'        => true,
+				);
+				wp_admin_notice( __( 'Polylang and Polylang Pro cannot be activated at the same time.', 'polylang' ), $updated_notice_args );
+			}
+		);
 	}
 	return;
 }
-
-add_action(
-	'admin_head',
-	function () {
-		if ( 'plugins.php' !== $GLOBALS['pagenow'] || ! isset( $_GET['pll_two_activations'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
-
-		$_SERVER['REQUEST_URI'] = remove_query_arg( 'pll_two_activations', $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-		$updated_notice_args = array(
-			'id'                 => 'message',
-			'additional_classes' => array( 'error' ),
-			'dismissible'        => true,
-		);
-		wp_admin_notice( __( 'You can\'t activate Polylang and Polylang Pro at the same time.', 'polylang' ), $updated_notice_args );
-	}
-);
-
 
 // Go on loading the plugin.
 define( 'POLYLANG_VERSION', '3.8-dev' );
