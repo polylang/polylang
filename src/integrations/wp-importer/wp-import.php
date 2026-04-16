@@ -132,50 +132,50 @@ class PLL_WP_Import extends WP_Import {
 	protected function remap_terms_relations( &$terms ) {
 		global $wpdb;
 
-		$trs = array();
+		$term_relationships = array();
 
 		foreach ( $terms as $term ) {
 			$translations = maybe_unserialize( $term['term_description'] );
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
 					// Language relationship.
-					$trs[] = array( $this->processed_terms[ $old_id ], $lang->get_tax_prop( 'term_language', 'term_taxonomy_id' ) );
+					$term_relationships[] = array( $this->processed_terms[ $old_id ], $lang->get_tax_prop( 'term_language', 'term_taxonomy_id' ) );
 
 					// Translation relationship.
-					$trs[] = array( $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
+					$term_relationships[] = array( $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
 				}
 			}
 		}
 
 		// Insert term_relationships.
-		if ( ! empty( $trs ) ) {
+		if ( ! empty( $term_relationships ) ) {
 			// Make sure we don't attempt to insert already existing term relationships.
-			$existing_trs = $wpdb->get_results(
+			$existing_term_relationships = $wpdb->get_results(
 				"SELECT tr.object_id, tr.term_taxonomy_id FROM {$wpdb->term_relationships} AS tr
 				INNER JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
 				WHERE tt.taxonomy IN ( 'term_language', 'term_translations' )"
 			);
 
-			foreach ( $existing_trs as $key => $tr ) {
-				$existing_trs[ $key ] = array( $tr->object_id, $tr->term_taxonomy_id );
+			foreach ( $existing_term_relationships as $key => $tr ) {
+				$existing_term_relationships[ $key ] = array( $tr->object_id, $tr->term_taxonomy_id );
 			}
 
-			$trs = array_udiff(
-				$trs,
-				$existing_trs,
+			$term_relationships = array_udiff(
+				$term_relationships,
+				$existing_term_relationships,
 				function ( $a, $b ) {
 					return strcmp( implode( ',', $a ), implode( ',', $b ) ); // An easy way to compare arrays (ok if values are int or numeric strings).
 				}
 			);
 
-			if ( ! empty( $trs ) ) {
+			if ( ! empty( $term_relationships ) ) {
 				$wpdb->query(
 					$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
 						sprintf(
 							"INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES %s",
-							implode( ',', array_fill( 0, count( $trs ), '( %d, %d )' ) )
+							implode( ',', array_fill( 0, count( $term_relationships ), '( %d, %d )' ) )
 						),
-						array_merge( ...$trs )
+						array_merge( ...$term_relationships )
 					)
 				);
 			}
@@ -194,7 +194,7 @@ class PLL_WP_Import extends WP_Import {
 		global $wpdb;
 
 		$languages = pll_languages_list();
-		$u         = array();
+		$to_update = array();
 
 		foreach ( $terms as $term ) {
 			$translations     = maybe_unserialize( $term['term_description'] );
@@ -208,22 +208,22 @@ class PLL_WP_Import extends WP_Import {
 			}
 
 			if ( ! empty( $new_translations ) ) {
-				$u['case'][] = array( $this->processed_terms[ $term['term_id'] ], maybe_serialize( $new_translations ) );
-				$u['in'][]   = (int) $this->processed_terms[ $term['term_id'] ];
+				$to_update['case'][] = array( $this->processed_terms[ $term['term_id'] ], maybe_serialize( $new_translations ) );
+				$to_update['in'][]   = (int) $this->processed_terms[ $term['term_id'] ];
 			}
 		}
 
-		if ( ! empty( $u ) ) {
+		if ( ! empty( $to_update ) ) {
 			$wpdb->query(
 				$wpdb->prepare(
 					sprintf(
 						"UPDATE {$wpdb->term_taxonomy}
 						SET description = ( CASE term_id %s END )
 						WHERE term_id IN (%s)",
-						implode( ' ', array_fill( 0, count( $u['case'] ), 'WHEN %d THEN %s' ) ),
-						implode( ',', array_fill( 0, count( $u['in'] ), '%d' ) )
+						implode( ' ', array_fill( 0, count( $to_update['case'] ), 'WHEN %d THEN %s' ) ),
+						implode( ',', array_fill( 0, count( $to_update['in'] ), '%d' ) )
 					),
-					array_merge( array_merge( ...$u['case'] ), $u['in'] )
+					array_merge( array_merge( ...$to_update['case'] ), $to_update['in'] )
 				)
 			);
 		}
