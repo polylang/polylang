@@ -3,9 +3,12 @@ import { expect, test } from '@wordpress/e2e-test-utils-playwright';
 import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
 
 /**
- * Covers strings translations in admin and on the frontend (admin tests run before frontend tests in this file).
+ * Covers strings translations in admin and on the frontend.
+ *
+ * Serial execution is required: frontend assertions depend on translations saved in admin tests
+ * and on a shared WordPress database state.
  */
-test.describe( 'Strings translations', () => {
+test.describe.serial( 'Strings translations', () => {
 	/** @type {string} */
 	let frenchPageUrl;
 

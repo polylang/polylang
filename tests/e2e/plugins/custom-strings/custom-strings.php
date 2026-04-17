@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 add_action(
-	'admin_init',
+	'init',
 	function () {
 		if ( ! function_exists( 'pll_register_string' ) ) {
 
@@ -33,7 +33,8 @@ add_action(
 			'Polylang E2E',
 			true
 		);
-	}
+	},
+	20
 );
 
 add_filter(
