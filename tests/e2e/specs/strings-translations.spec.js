@@ -1,0 +1,280 @@
+// @ts-check
+import { expect, test } from '@wordpress/e2e-test-utils-playwright';
+import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
+
+/**
+ * Covers strings translations in admin and on the frontend (admin tests run before frontend tests in this file).
+ */
+test.describe( 'Strings translations', () => {
+	/** @type {string} */
+	let frenchPageUrl;
+
+	test.beforeAll( async ( { requestUtils } ) => {
+		await createLanguage( requestUtils, 'en_US' );
+		await createLanguage( requestUtils, 'fr_FR' );
+	} );
+
+	test.afterAll( async ( { requestUtils } ) => {
+		await deleteAllLanguages( requestUtils );
+		await requestUtils.deleteAllPages();
+	} );
+
+	test.describe( 'Admin', () => {
+		test.describe( 'Core strings', () => {
+			/**
+			 * Ensures the blogname string is translatable in "Translations" screen.
+			 *
+			 * Prerequisites:
+			 *     - English (en_US) and French (fr_FR) languages exist.
+			 *
+			 * Steps:
+			 *     - Go to the "Translations" screen filtered to the WooCommerce group.
+			 *     - Check that the blogname string is visible.
+			 *     - Focus the French translation field for that row.
+			 *     - Fill in the input with the "polylang FR" value.
+			 *     - Click the "Save Changes" button.
+			 *     - Check that the "polylang FR" string is visible in the "Translations" screen.
+			 */
+			test( 'Blogname core string should be translatable', async ( {
+				page,
+			} ) => {
+				await page.goto(
+					'wp-admin/admin.php?page=mlang_strings&s&group=WooCommerce&paged=1'
+				);
+				await expect(
+					page.getByRole( 'cell', { name: 'blogname' } )
+				).toBeVisible();
+
+				await page
+					.getByRole( 'row', { name: 'Select polylang polylang' } )
+					.getByLabel( 'Français' )
+					.click();
+				await page
+					.getByRole( 'row', { name: 'Select polylang polylang' } )
+					.getByLabel( 'Français' )
+					.fill( 'polylang FR' );
+
+				await page
+					.getByRole( 'button', { name: 'Save Changes' } )
+					.click();
+				await expect(
+					page.getByRole( 'cell', {
+						name: 'polylang FR',
+					} )
+				).toBeVisible();
+			} );
+		} );
+
+		test.describe( 'Custom strings plugin', () => {
+			test.beforeAll( async ( { requestUtils } ) => {
+				await requestUtils.activatePlugin( 'custom-strings-e2e' );
+			} );
+
+			test.afterAll( async ( { requestUtils } ) => {
+				await requestUtils.deactivatePlugin( 'custom-strings-e2e' );
+			} );
+
+			/**
+			 * Ensures the registered string appears on the Translations screen (filtered by group).
+			 *
+			 * Prerequisites:
+			 *     - English (en_US) and French (fr_FR) languages exist.
+			 *     - The Custom Strings E2E test plugin is active (registers `Hello Polylang E2E` on admin load).
+			 *
+			 * Steps:
+			 *     - Go to the "Translations" screen filtered to the "Polylang E2E" group.
+			 *     - Check that the string and name cells show the expected values.
+			 *     - Fill the French translation and save (read on the frontend below).
+			 */
+			test( 'Custom string is listed in admin and can be translated', async ( {
+				admin,
+			} ) => {
+				await admin.visitAdminPage(
+					'admin.php',
+					`page=mlang_strings&group=${ encodeURIComponent(
+						'Polylang E2E'
+					) }`
+				);
+
+				await expect(
+					admin.page.getByRole( 'cell', {
+						name: 'Hello Polylang E2E',
+						exact: true,
+					} )
+				).toBeVisible();
+				await expect(
+					admin.page.getByRole( 'cell', {
+						name: 'e2e_custom_greeting',
+						exact: true,
+					} )
+				).toBeVisible();
+
+				const stringRow = admin.page
+					.getByRole( 'row' )
+					.filter( { hasText: 'Hello Polylang E2E' } );
+
+				await stringRow
+					.getByLabel( 'Français' )
+					.fill( 'Bonjour Polylang E2E FR' );
+				await admin.page
+					.getByRole( 'button', { name: 'Save Changes' } )
+					.click();
+
+				await expect( stringRow.getByLabel( 'Français' ) ).toHaveValue(
+					'Bonjour Polylang E2E FR'
+				);
+			} );
+
+			/**
+			 * Ensures the multiline string uses a textarea in admin and can be translated.
+			 *
+			 * Prerequisites:
+			 *     - English (en_US) and French (fr_FR) languages exist.
+			 *     - The Custom Strings E2E test plugin is active (registers a multiline string).
+			 *
+			 * Steps:
+			 *     - Go to the "Translations" screen filtered to the "Polylang E2E" group.
+			 *     - Find the multiline row and check the French field is a textarea.
+			 *     - Fill the French translation and save (read on the frontend below).
+			 */
+			test( 'Multiline custom string is listed in admin and can be translated', async ( {
+				admin,
+			} ) => {
+				await admin.visitAdminPage(
+					'admin.php',
+					`page=mlang_strings&group=${ encodeURIComponent(
+						'Polylang E2E'
+					) }`
+				);
+
+				const multilineRow = admin.page
+					.getByRole( 'row' )
+					.filter( { hasText: 'Line one' } )
+					.filter( { hasText: 'Line two' } );
+
+				await expect(
+					multilineRow.getByRole( 'cell', {
+						name: 'e2e_custom_multiline',
+					} )
+				).toBeVisible();
+
+				const frenchField = multilineRow.getByLabel( 'Français' );
+
+				await expect( frenchField ).toHaveAttribute(
+					'name',
+					/translation\[fr\]/
+				);
+
+				await frenchField.fill( 'Ligne un\nLigne deux' );
+				await admin.page
+					.getByRole( 'button', { name: 'Save Changes' } )
+					.click();
+
+				const frenchFieldAfterSave = admin.page
+					.getByRole( 'row' )
+					.filter( { hasText: 'Line one' } )
+					.filter( { hasText: 'Line two' } )
+					.getByLabel( 'Français' );
+
+				await expect( frenchFieldAfterSave ).toHaveValue(
+					'Ligne un\nLigne deux'
+				);
+			} );
+		} );
+	} );
+
+	test.describe( 'Frontend', () => {
+		test.beforeAll( async ( { requestUtils } ) => {
+			await requestUtils.activatePlugin( 'custom-strings-e2e' );
+
+			const publishedFrenchPage = await requestUtils.rest( {
+				method: 'POST',
+				path: '/wp/v2/pages',
+				data: {
+					title: 'PLL E2E strings page',
+					content: '<p>PLL E2E page body</p>',
+					status: 'publish',
+					lang: 'fr',
+				},
+			} );
+
+			frenchPageUrl = publishedFrenchPage.link;
+		} );
+
+		test.afterAll( async ( { requestUtils } ) => {
+			await requestUtils.deactivatePlugin( 'custom-strings-e2e' );
+		} );
+
+		test.describe( 'Core strings', () => {
+			/**
+			 * Ensures the French translation for `blogname` is used on the French front (document title).
+			 *
+			 * Prerequisites:
+			 *     - The admin test above saved the French blogname as "polylang FR".
+			 *     - English and French languages exist.
+			 *
+			 * Steps:
+			 *     - Open the French home URL (`/fr/`).
+			 *     - Check that the document title contains the French site title.
+			 */
+			test( 'Blogname French translation appears on the frontend', async ( {
+				page,
+			} ) => {
+				await page.goto( frenchPageUrl );
+
+				await expect(
+					page
+						.getByRole( 'banner' )
+						.getByRole( 'link', { name: 'polylang FR' } )
+				).toBeVisible();
+			} );
+		} );
+
+		test.describe( 'Custom strings plugin', () => {
+			/**
+			 * Ensures the custom string French translation appears on the frontend via the_content output.
+			 *
+			 * Prerequisites:
+			 *     - The admin test above saved the French translation "Bonjour Polylang E2E FR".
+			 *     - This section's `beforeAll` activated the plugin and created a published French page.
+			 *
+			 * Steps:
+			 *     - Open the French page on the frontend.
+			 *     - Check that the appended paragraph shows the French translation.
+			 */
+			test( 'French translation of custom string appears on the frontend', async ( {
+				page,
+			} ) => {
+				await page.goto( frenchPageUrl );
+
+				await expect(
+					page.locator( '.pll-e2e-custom-string' )
+				).toHaveText( 'Bonjour Polylang E2E FR' );
+			} );
+
+			/**
+			 * Ensures the multiline custom string French translation appears on the frontend.
+			 *
+			 * Prerequisites:
+			 *     - The admin test above saved the French multiline translation.
+			 *     - This section's `beforeAll` activated the plugin and created a published French page.
+			 *
+			 * Steps:
+			 *     - Open the French page on the frontend.
+			 *     - Check that the multiline block shows the French lines.
+			 */
+			test( 'French translation of multiline custom string appears on the frontend', async ( {
+				page,
+			} ) => {
+				await page.goto( frenchPageUrl );
+
+				await expect(
+					page.locator( '.pll-e2e-custom-string-multiline' )
+				).toContainText( 'Ligne un' );
+				await expect(
+					page.locator( '.pll-e2e-custom-string-multiline' )
+				).toContainText( 'Ligne deux' );
+			} );
+		} );
+	} );
+} );
