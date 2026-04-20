@@ -48,7 +48,7 @@ class PLL_Duplicate_Post {
 	 * @param string[] $keys List of meta keys.
 	 * @return string[]
 	 */
-	public function exclude_post_metas( $keys ) {
+	public function exclude_post_metas( $keys ): array {
 		$to_remove = array(
 			'_dp_original',
 			'_dp_is_rewrite_republish_copy',
@@ -68,7 +68,7 @@ class PLL_Duplicate_Post {
 	 * @param int $post_id The original post's ID.
 	 * @return void
 	 */
-	public function after_rewriting( $copy_id, $post_id ) {
+	public function after_rewriting( $copy_id, $post_id ): void {
 		$language     = pll_get_post_language( $post_id );
 		$translations = pll_get_post_translations( $post_id );
 
