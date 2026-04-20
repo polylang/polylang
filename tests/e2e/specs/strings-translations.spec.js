@@ -201,7 +201,13 @@ test.describe.serial( 'Strings translations', () => {
 				lang: 'fr',
 			} );
 
+			frenchPageId = publishedFrenchPage.id;
 			frenchPageUrl = publishedFrenchPage.link;
+
+			execSync( 'npx wp-env run tests-cli wp option delete rewrite_rules --allow-root', {
+				cwd: process.cwd(),
+				stdio: 'inherit',
+			} );
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
@@ -209,15 +215,24 @@ test.describe.serial( 'Strings translations', () => {
 		} );
 
 		test.describe( 'Core strings', () => {
-			test( 'Test home pages', async ( {
+			test( 'Test page language choice', async ( {
+				admin,
 				page,
 			} ) => {
-				const response = await page.goto( '/' );
-				expect( response.status() ).toBe( 200 );
+				await admin.visitAdminPage(
+					'post.php',
+					`post=${ frenchPageId }&action=edit`
+				);
 
-				const frResponse = await page.goto( 'fr/' );
-				expect( frResponse.status() ).toBe( 200 );
+				const postLangChoice = page.locator( 'select[name="post_lang_choice"]' );
+
+				await expect( postLangChoice ).toBeVisible();
+
+				await expect( postLangChoice.locator( 'option:checked' ) ).toHaveText(
+					'Français'
+				);
 			} );
+
 			/**
 			 * Ensures the French translation for `blogname` is used on the French front (document title).
 			 *
@@ -232,7 +247,6 @@ test.describe.serial( 'Strings translations', () => {
 			 */
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
-				requestUtils,
 			} ) => {
 				const response = await page.goto( frenchPageUrl );
 
