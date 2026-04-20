@@ -226,6 +226,7 @@ test.describe.serial( 'Strings translations', () => {
 			 */
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
+				requestUtils,
 			} ) => {
 				const frenchPage = await requestUtils.rest( {
 					method: 'GET',
