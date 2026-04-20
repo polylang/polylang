@@ -147,7 +147,7 @@ abstract class PLL_Choose_Lang {
 	 */
 	public function maybe_setcookie() {
 		// Don't set cookie in javascript when a cache plugin is active.
-		if ( ! pll_is_cache_active() && ! empty( $this->curlang ) && ! is_404() ) {
+		if ( ! pll_is_cache_active() && ! empty( $this->curlang ) && ! is_404() && ! is_favicon() ) {
 			$args = array(
 				'domain'   => 2 === $this->options['force_lang'] ? wp_parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
 				'samesite' => 3 === $this->options['force_lang'] ? 'None' : 'Lax',
