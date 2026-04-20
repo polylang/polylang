@@ -224,6 +224,9 @@ test.describe.serial( 'Strings translations', () => {
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
 			} ) => {
+				console.log( frenchPageUrl );
+				console.log( await page.url() );
+
 				await page.goto( frenchPageUrl );
 
 				await expect( page ).toHaveTitle( /polylang FR/ );
