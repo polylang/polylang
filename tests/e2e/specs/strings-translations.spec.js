@@ -202,7 +202,6 @@ test.describe.serial( 'Strings translations', () => {
 			} );
 
 			frenchPageUrl = publishedFrenchPage.link;
-			frenchPageId = publishedFrenchPage.id;
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
@@ -210,6 +209,15 @@ test.describe.serial( 'Strings translations', () => {
 		} );
 
 		test.describe( 'Core strings', () => {
+			test( 'Test home pages', async ( {
+				page,
+			} ) => {
+				const response = await page.goto( '/' );
+				expect( response.status() ).toBe( 200 );
+
+				const frResponse = await page.goto( '/fr/' );
+				expect( frResponse.status() ).toBe( 200 );
+			} );
 			/**
 			 * Ensures the French translation for `blogname` is used on the French front (document title).
 			 *
@@ -226,7 +234,7 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 				requestUtils,
 			} ) => {
-				const response = await page.goto( '/?p=' + frenchPageId );
+				const response = await page.goto( frenchPageUrl );
 
 				expect( response.status() ).toBe( 200 );
 
