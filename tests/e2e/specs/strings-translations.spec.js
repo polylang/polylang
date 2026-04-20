@@ -1,6 +1,7 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
 import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
+import { execSync } from 'child_process';
 
 /**
  * Covers strings translations in admin and on the frontend.
@@ -225,6 +226,10 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 				requestUtils,
 			} ) => {
+				const rewriteRules = execSync('npx wp-env run tests-cli wp rewrite list --allow-root');
+
+				console.log( rewriteRules );
+
 				const response = await page.goto( frenchPageUrl );
 
 				expect( response.status() ).toBe( 200 );
