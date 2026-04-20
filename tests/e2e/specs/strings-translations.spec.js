@@ -202,6 +202,11 @@ test.describe.serial( 'Strings translations', () => {
 			} );
 
 			frenchPageUrl = publishedFrenchPage.link;
+
+			execSync('npx wp-env run tests-cli wp rewrite flush --allow-root', {
+				cwd: process.cwd(),
+				stdio: 'inherit',
+			});
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
@@ -225,13 +230,6 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 				requestUtils,
 			} ) => {
-				const rewriteRules = execSync('npx wp-env run tests-cli wp rewrite list --allow-root --match=http://localhost:8889/fr/pll-e2e-strings-page/', {
-					cwd: process.cwd(),
-					stdio: 'inherit',
-				});
-
-				console.log( 'REWRITE RULES STRUCTURE', rewriteRules );
-
 				const response = await page.goto( frenchPageUrl );
 
 				expect( response.status() ).toBe( 200 );
