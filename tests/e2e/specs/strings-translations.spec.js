@@ -215,7 +215,7 @@ test.describe.serial( 'Strings translations', () => {
 				const response = await page.goto( '/' );
 				expect( response.status() ).toBe( 200 );
 
-				const frResponse = await page.goto( '/fr/' );
+				const frResponse = await page.goto( 'fr/' );
 				expect( frResponse.status() ).toBe( 200 );
 			} );
 			/**
