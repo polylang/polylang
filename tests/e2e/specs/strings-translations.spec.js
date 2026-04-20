@@ -231,6 +231,7 @@ test.describe.serial( 'Strings translations', () => {
 					method: 'GET',
 					path: `/wp/v2/pages/${ frenchPageId }`,
 				} );
+				console.log( frenchPage );
 				const response = await page.goto( frenchPage.link );
 
 				expect( response.status() ).toBe( 200 );
