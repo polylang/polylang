@@ -201,11 +201,12 @@ test.describe.serial( 'Strings translations', () => {
 				},
 			} );
 
-			frenchPageUrl = publishedFrenchPage.link;
+			frenchPageUrl = `/?page_id=${ publishedFrenchPage.id }`;
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
 			await requestUtils.deactivatePlugin( 'custom-strings-e2e' );
+			await requestUtils.deleteAllPages();
 		} );
 
 		test.describe( 'Core strings', () => {
