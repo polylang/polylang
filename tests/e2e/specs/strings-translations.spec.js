@@ -202,11 +202,7 @@ test.describe.serial( 'Strings translations', () => {
 			} );
 
 			frenchPageUrl = publishedFrenchPage.link;
-
-			execSync('npx wp-env run tests-cli wp rewrite flush --allow-root', {
-				cwd: process.cwd(),
-				stdio: 'inherit',
-			});
+			frenchPageId = publishedFrenchPage.id;
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
@@ -230,7 +226,7 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 				requestUtils,
 			} ) => {
-				const response = await page.goto( frenchPageUrl );
+				const response = await page.goto( '/?p=' + frenchPageId );
 
 				expect( response.status() ).toBe( 200 );
 
