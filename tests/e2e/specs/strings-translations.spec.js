@@ -217,18 +217,22 @@ test.describe.serial( 'Strings translations', () => {
 			 *     - English and French languages exist.
 			 *
 			 * Steps:
-			 *     - Open the French home URL (`/fr/`).
-			 *     - Check that the document title contains the French site title.
+			 *     - Open the French page URL created in `beforeAll`.
+			 *     - Check that the document title includes the French site title (WordPress appends site name on singular views).
+			 *     - Check that the header site title block shows "polylang FR" (block themes: `header` + `.wp-block-site-title`).
 			 */
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
 			} ) => {
 				await page.goto( frenchPageUrl );
 
+				await expect( page ).toHaveTitle( /polylang FR/ );
+
 				await expect(
 					page
-						.getByRole( 'banner' )
-						.getByRole( 'link', { name: 'polylang FR' } )
+						.locator( 'header' )
+						.locator( '.wp-block-site-title' )
+						.getByText( 'polylang FR', { exact: true } )
 				).toBeVisible();
 			} );
 		} );
