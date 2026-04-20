@@ -201,7 +201,6 @@ test.describe.serial( 'Strings translations', () => {
 				lang: 'fr',
 			} );
 
-			console.log( publishedFrenchPage );
 			frenchPageUrl = publishedFrenchPage.link;
 		} );
 
@@ -228,7 +227,7 @@ test.describe.serial( 'Strings translations', () => {
 			} ) => {
 				const rewriteRules = execSync('npx wp-env run tests-cli wp rewrite list --allow-root');
 
-				console.log( rewriteRules );
+				console.log( 'REWRITE RULES', rewriteRules );
 
 				const response = await page.goto( frenchPageUrl );
 
