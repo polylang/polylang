@@ -224,10 +224,9 @@ test.describe.serial( 'Strings translations', () => {
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
 			} ) => {
-				console.log( frenchPageUrl );
-				console.log( await page.url() );
+				const response = await page.goto( '/fr/pll-e2e-strings-page/' );
 
-				await page.goto( frenchPageUrl );
+				expect( response.status() ).toBe( 200 );
 
 				await expect( page ).toHaveTitle( /polylang FR/ );
 
