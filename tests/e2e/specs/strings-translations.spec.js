@@ -193,15 +193,11 @@ test.describe.serial( 'Strings translations', () => {
 		test.beforeAll( async ( { requestUtils } ) => {
 			await requestUtils.activatePlugin( 'custom-strings-e2e' );
 
-			const publishedFrenchPage = await requestUtils.rest( {
-				method: 'POST',
-				path: '/wp/v2/pages',
-				data: {
-					title: 'PLL E2E strings page',
-					content: '<p>PLL E2E page body</p>',
-					status: 'publish',
-					lang: 'fr',
-				},
+			const publishedFrenchPage = await requestUtils.createPage( {
+				title: 'PLL E2E strings page',
+				content: '<p>PLL E2E page body</p>',
+				status: 'publish',
+				lang: 'fr',
 			} );
 
 			frenchPageId = publishedFrenchPage.id;
