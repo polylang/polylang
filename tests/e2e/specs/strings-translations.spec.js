@@ -200,7 +200,8 @@ test.describe.serial( 'Strings translations', () => {
 				lang: 'fr',
 			} );
 
-			frenchPageId = publishedFrenchPage.id;
+			console.log( publishedFrenchPage );
+			frenchPageUrl = publishedFrenchPage.link;
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
@@ -224,12 +225,7 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 				requestUtils,
 			} ) => {
-				const frenchPage = await requestUtils.rest( {
-					method: 'GET',
-					path: `/wp/v2/pages/${ frenchPageId }`,
-				} );
-				console.log( frenchPage );
-				const response = await page.goto( frenchPage.link );
+				const response = await page.goto( frenchPageUrl );
 
 				expect( response.status() ).toBe( 200 );
 
@@ -259,7 +255,6 @@ test.describe.serial( 'Strings translations', () => {
 			test( 'French translation of custom string appears on the frontend', async ( {
 				page,
 			} ) => {
-				frenchPageUrl = frenchPageUrl.replace( '/', '/fr/' );
 				await page.goto( frenchPageUrl );
 
 				await expect(
