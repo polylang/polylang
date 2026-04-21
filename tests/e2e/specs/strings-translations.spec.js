@@ -19,14 +19,6 @@ test.describe.serial( 'Strings translations', () => {
 	let frenchPostUrl;
 
 	test.beforeAll( async ( { requestUtils } ) => {
-		execSync(
-			'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --hard --allow-root',
-			{
-				cwd: process.cwd(),
-				stdio: 'inherit',
-			}
-		);
-
 		await setSetting( requestUtils, 'force_lang', 1 );
 		await createLanguage( requestUtils, 'en_US' );
 		await createLanguage( requestUtils, 'fr_FR' );

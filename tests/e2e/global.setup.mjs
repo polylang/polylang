@@ -9,7 +9,7 @@ async function globalSetup( config ) {
 
 	// Set pretty permalink structure.
 	execSync(
-		'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --allow-root',
+		'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --hard --allow-root',
 		{
 			cwd: process.cwd(),
 			stdio: 'inherit',
