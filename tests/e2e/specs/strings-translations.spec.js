@@ -6,7 +6,6 @@ import {
 	setSetting,
 	resetAllSettings,
 } from '@wpsyntex/e2e-test-utils';
-import { execSync } from 'child_process';
 
 /**
  * Covers strings translations in admin and on the frontend.
