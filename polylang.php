@@ -50,9 +50,8 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 			static function () {
 				unset( $_GET['activate'] ); // Prevent WP to display its 'Plugin activated.' message.
 				$updated_notice_args = array(
-					'id'                 => 'message',
-					'additional_classes' => array( 'error' ),
-					'dismissible'        => true,
+					'type'        => 'error',
+					'dismissible' => true,
 				);
 				wp_admin_notice( __( 'Polylang hasn\'t been activated: Polylang and Polylang Pro cannot be activated at the same time.', 'polylang' ), $updated_notice_args );
 			}
