@@ -27,7 +27,7 @@ test.describe.serial(
 		test.beforeAll( async ( { requestUtils } ) => {
 			// Site Editor utilities doesn't like pretty permalinks.
 			execSync(
-				'npx wp-env run tests-cli wp rewrite structure "" --allow-root',
+				'npx wp-env run tests-cli wp rewrite structure "" --hard --allow-root',
 				{
 					cwd: process.cwd(),
 					stdio: 'inherit',
@@ -52,7 +52,7 @@ test.describe.serial(
 			await deleteAllLanguages( requestUtils );
 			// Set pretty permalink structure.
 			execSync(
-				'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --allow-root',
+				'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --hard --allow-root',
 				{
 					cwd: process.cwd(),
 					stdio: 'inherit',
