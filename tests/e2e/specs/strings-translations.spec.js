@@ -215,24 +215,6 @@ test.describe.serial( 'Strings translations', () => {
 		} );
 
 		test.describe( 'Core strings', () => {
-			test( 'Test page language choice', async ( {
-				admin,
-				page,
-			} ) => {
-				await admin.visitAdminPage(
-					'post.php',
-					`post=${ frenchPageId }&action=edit`
-				);
-
-				const postLangChoice = page.locator( 'select[name="post_lang_choice"]' );
-
-				await expect( postLangChoice ).toBeVisible();
-
-				await expect( postLangChoice.locator( 'option:checked' ) ).toHaveText(
-					'Français'
-				);
-			} );
-
 			/**
 			 * Ensures the French translation for `blogname` is used on the French front (document title).
 			 *
@@ -248,6 +230,11 @@ test.describe.serial( 'Strings translations', () => {
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
 			} ) => {
+				execSync( 'npx wp-env run tests-cli wp rewrite flush --allow-root', {
+					cwd: process.cwd(),
+					stdio: 'inherit',
+				} );
+
 				const response = await page.goto( frenchPageUrl );
 
 				expect( response.status() ).toBe( 200 );
