@@ -55,14 +55,14 @@ test.describe.serial( 'Strings translations', () => {
 					page.getByRole( 'cell', { name: 'blogname' } )
 				).toBeVisible();
 
-				await page
+				const blognameRow = page
 					.getByRole( 'row', { name: 'Select polylang polylang' } )
-					.getByLabel( 'Français' )
-					.click();
-				await page
-					.getByRole( 'row', { name: 'Select polylang polylang' } )
-					.getByLabel( 'Français' )
-					.fill( 'polylang FR' );
+					.getByLabel( 'Français' );
+
+				await blognameRow.click();
+				await blognameRow.fill( 'polylang FR' );
+
+				await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 
 				await page
 					.getByRole( 'button', { name: 'Save Changes' } )
