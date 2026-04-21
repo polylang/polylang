@@ -54,7 +54,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 					'additional_classes' => array( 'error' ),
 					'dismissible'        => true,
 				);
-				wp_admin_notice( __( 'Polylang and Polylang Pro cannot be activated at the same time.', 'polylang' ), $updated_notice_args );
+				wp_admin_notice( __( 'Polylang hasn\'t been activated: Polylang and Polylang Pro cannot be activated at the same time.', 'polylang' ), $updated_notice_args );
 			}
 		);
 	}
