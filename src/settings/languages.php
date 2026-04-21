@@ -41,7 +41,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 'qc_GT' (Quiché)
  * 'qu_PE' (Quechua)
  * 'se_NO' (Northern Sami)
- * 'ss_SZ' (Swazi)
  * 'st_ZA' (Southern Sotho)
  * 'tl_ST' (Klingon)
  * 'tn_BW' (Tswana)
@@ -100,7 +99,7 @@ return array(
 		'locale'   => 'arg',
 		'name'     => 'Aragonés',
 		'dir'      => 'ltr',
-		'flag'     => 'es',
+		'flag'     => 'es-ar',
 		'deepl'    => 'AN',
 	),
 	'arq' => array(
@@ -124,6 +123,13 @@ return array(
 		'facebook' => 'as_IN',
 		'deepl'    => 'AS',
 	),
+	'ast' => array(
+		'code'     => 'as',
+		'locale'   => 'ast',
+		'name'     => 'Asturianu',
+		'dir'      => 'ltr',
+		'flag'     => 'es-as',
+	),
 	'az' => array(
 		'code'     => 'az',
 		'locale'   => 'az',
@@ -145,7 +151,7 @@ return array(
 		'locale'   => 'ba',
 		'name'     => 'башҡорт теле',
 		'dir'      => 'ltr',
-		'flag'     => 'ru',
+		'flag'     => 'ru-ba',
 		'w3c'      => 'ba',
 		'deepl'    => 'BA',
 	),
@@ -199,7 +205,7 @@ return array(
 		'locale'   => 'bre',
 		'name'     => 'Brezhoneg',
 		'dir'      => 'ltr',
-		'flag'     => 'fr',
+		'flag'     => 'fr-bre',
 		'w3c'      => 'br',
 		'facebook' => 'br_FR',
 		'deepl'    => 'BR',
@@ -219,6 +225,15 @@ return array(
 		'name'     => 'Català',
 		'dir'      => 'ltr',
 		'flag'     => 'es-ct',
+		'facebook' => 'ca_ES',
+		'deepl'    => 'CA',
+	),
+	'ca_valencia' => array(
+		'code'     => 'ca',
+		'locale'   => 'ca',
+		'name'     => 'Valencià',
+		'dir'      => 'ltr',
+		'flag'     => 'es-vc',
 		'facebook' => 'ca_ES',
 		'deepl'    => 'CA',
 	),
@@ -609,7 +624,7 @@ return array(
 		'locale'   => 'fur',
 		'name'     => 'Furlan',
 		'dir'      => 'ltr',
-		'flag'     => 'it',
+		'flag'     => 'it-36',
 	),
 	'fy' => array(
 		'code'     => 'fy',
@@ -668,6 +683,11 @@ return array(
 		'deepl'    => 'GU',
 	),
 	'hat' => array(
+		'code'     => 'ht',
+		'locale'   => 'hat',
+		'name'     => 'Haitian Creole',
+		'dir'      => 'ltr',
+		'flag'     => 'ht',
 		'w3c'      => 'ht',
 		'facebook' => 'ht_HT',
 		'deepl'    => 'HT',
@@ -687,7 +707,7 @@ return array(
 		'locale'   => 'haz',
 		'name'     => 'هزاره گی',
 		'dir'      => 'rtl',
-		'flag'     => 'af',
+		'flag'     => 'haz.lang',
 	),
 	'he_IL' => array(
 		'code'     => 'he',
@@ -906,7 +926,7 @@ return array(
 		'locale'   => 'lmo',
 		'name'     => 'Lombardo',
 		'dir'      => 'ltr',
-		'flag'     => 'it',
+		'flag'     => 'it-25',
 		'w3c'      => 'lmo',
 		'deepl'    => 'LMO',
 	),
@@ -1208,7 +1228,7 @@ return array(
 		'locale'   => 'sah',
 		'name'     => 'Сахалыы',
 		'dir'      => 'ltr',
-		'flag'     => 'ru',
+		'flag'     => 'ru-sa',
 	),
 	'scn' => array(
 		'code'     => 'scn',
@@ -1293,6 +1313,14 @@ return array(
 		'flag'     => 'rs',
 		'facebook' => 'sr_RS',
 		'deepl'    => 'SR',
+	),
+	'ssw' => array(
+		'code'     => 'ss',
+		'locale'   => 'ssw',
+		'name'     => 'SiSwati',
+		'dir'      => 'ltr',
+		'flag'     => 'sz',
+		'facebook' => 'ss_SZ',
 	),
 	'srd' => array(
 		'w3c'      => 'sc',
@@ -1419,7 +1447,7 @@ return array(
 		'locale'   => 'tt_RU',
 		'name'     => 'Татар теле',
 		'dir'      => 'ltr',
-		'flag'     => 'ru',
+		'flag'     => 'ru-ta',
 		'facebook' => 'tt_RU',
 		'deepl'    => 'TT',
 	),
@@ -1464,13 +1492,6 @@ return array(
 		'flag'     => 'uz',
 		'facebook' => 'uz_UZ',
 		'deepl'    => 'UZ',
-	),
-	'vec' => array(
-		'code'     => 'vec',
-		'locale'   => 'vec',
-		'name'     => 'Vèneto',
-		'dir'      => 'ltr',
-		'flag'     => 'it-34',
 	),
 	'vi' => array(
 		'code'     => 'vi',
