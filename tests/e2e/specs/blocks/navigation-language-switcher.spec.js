@@ -1,6 +1,5 @@
 import { test, expect } from '@wordpress/e2e-test-utils-playwright';
 import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
-import { execSync } from 'child_process';
 
 /**
  * @typedef {import('@playwright/test').Page} Page

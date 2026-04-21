@@ -62,7 +62,9 @@ test.describe.serial( 'Strings translations', () => {
 				await blognameRow.click();
 				await blognameRow.fill( 'polylang FR' );
 
-				await page.getByRole( 'button', { name: 'Save Changes' } ).click();
+				await page
+					.getByRole( 'button', { name: 'Save Changes' } )
+					.click();
 
 				await page
 					.getByRole( 'button', { name: 'Save Changes' } )
