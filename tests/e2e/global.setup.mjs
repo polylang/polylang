@@ -9,7 +9,10 @@ async function globalSetup( config ) {
 
 	// Set pretty permalink structure.
 	execSync(
-		'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --allow-root',
+		/*
+		 * Use hard flush to update .htaccess rules as well as rewrite rules in database.
+		 */
+		'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --hard --allow-root',
 		{
 			cwd: process.cwd(),
 			stdio: 'inherit',

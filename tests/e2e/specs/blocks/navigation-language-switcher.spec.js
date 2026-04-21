@@ -1,6 +1,5 @@
 import { test, expect } from '@wordpress/e2e-test-utils-playwright';
 import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
-import { execSync } from 'child_process';
 
 /**
  * @typedef {import('@playwright/test').Page} Page
@@ -25,15 +24,6 @@ test.describe.serial(
 		 *     - Create the main Navigation menu in English.
 		 */
 		test.beforeAll( async ( { requestUtils } ) => {
-			// Site Editor utilities doesn't like pretty permalinks.
-			execSync(
-				'npx wp-env run tests-cli wp rewrite structure "" --hard --allow-root',
-				{
-					cwd: process.cwd(),
-					stdio: 'inherit',
-				}
-			);
-
 			await createLanguage( requestUtils, 'en_US' );
 			await createLanguage( requestUtils, 'fr_FR' );
 			await createLanguage( requestUtils, 'de_DE' );
@@ -50,14 +40,6 @@ test.describe.serial(
 		test.afterAll( async ( { requestUtils } ) => {
 			await requestUtils.deleteAllMenus();
 			await deleteAllLanguages( requestUtils );
-			// Set pretty permalink structure.
-			execSync(
-				'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --hard --allow-root',
-				{
-					cwd: process.cwd(),
-					stdio: 'inherit',
-				}
-			);
 		} );
 
 		/**
