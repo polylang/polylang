@@ -62,14 +62,13 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * Displays a notice when upgrading from a too old version
+	 * Displays a notice when upgrading from a too old version.
 	 *
 	 * @since 1.0
 	 *
 	 * @return void
 	 */
 	public function admin_notices() {
-		load_plugin_textdomain( 'polylang' );
 		printf(
 			'<div class="error"><p>%s</p><p>%s</p></div>',
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
@@ -77,7 +76,7 @@ class PLL_Upgrade {
 				/* translators: %1$s and %2$s are Polylang version numbers */
 				esc_html__( 'Before upgrading to %2$s, please upgrade to %1$s.', 'polylang' ),
 				'<strong>2.9</strong>',
-				POLYLANG_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
+				esc_html( POLYLANG_VERSION )
 			)
 		);
 	}

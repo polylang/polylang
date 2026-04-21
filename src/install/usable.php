@@ -48,8 +48,6 @@ class PLL_Usable {
 	 * @return void
 	 */
 	public static function php_version_notice() {
-		load_plugin_textdomain( 'polylang' ); // Plugin i18n.
-
 		printf(
 			'<div class="error"><p>%s</p></div>',
 			sprintf(
@@ -73,8 +71,6 @@ class PLL_Usable {
 	 */
 	public static function wp_version_notice() {
 		global $wp_version;
-
-		load_plugin_textdomain( 'polylang' ); // Plugin i18n.
 
 		printf(
 			'<div class="error"><p>%s</p></div>',
