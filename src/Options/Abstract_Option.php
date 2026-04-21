@@ -322,19 +322,14 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.8
 	 *
-	 * @param array $array An array of formatted data.
+	 * @param array<scalar> $array An array of formatted data.
 	 * @return string
 	 */
 	protected function format_array_for_site_health_info( array $array ): string {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
-				if ( is_array( $value ) ) {
-					$ids = implode( ' , ', $value );
-					$value = "$key => [$ids]";
-				} else {
-					$value = "$key => [$value]";
-				}
+				$value = "$key => [$value]";
 			}
 		);
 		return implode( ', ', $array );

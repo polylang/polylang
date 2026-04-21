@@ -60,7 +60,6 @@ class Nav_Menus extends Abstract_Option {
 		$parts = array();
 		foreach ( $nav_menus[ $current_theme ] as $location => $lang ) {
 			if ( empty( $lang ) ) {
-				/* translators: 1: menu location slug, 2: status when no menu is assigned */
 				$parts[] = sprintf( '%1$s: %2$s', $location, __( 'Not used', 'polylang' ) );
 			} else {
 				$parts[] = sprintf(

@@ -115,12 +115,6 @@ parameters:
 			path: src/Options/Abstract_Option.php
 
 		-
-			message: '#^Parameter \#2 \$array of function implode expects array\<string\>, array\<mixed, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Options/Abstract_Option.php
-
-		-
 			message: '#^Cannot access offset ''polylang'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
