@@ -1,7 +1,6 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
 import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
-import { execSync } from 'child_process';
 
 /**
  * Covers strings translations in admin and on the frontend.
@@ -11,10 +10,7 @@ import { execSync } from 'child_process';
  */
 test.describe.serial( 'Strings translations', () => {
 	/** @type {string} */
-	let frenchPageUrl;
-
-	/** @type {number} */
-	let frenchPageId;
+	let frenchPostUrl;
 
 	test.beforeAll( async ( { requestUtils } ) => {
 		await createLanguage( requestUtils, 'en_US' );
@@ -23,7 +19,7 @@ test.describe.serial( 'Strings translations', () => {
 
 	test.afterAll( async ( { requestUtils } ) => {
 		await deleteAllLanguages( requestUtils );
-		await requestUtils.deleteAllPages();
+		await requestUtils.deleteAllPosts();
 	} );
 
 	test.describe( 'Admin', () => {
@@ -194,20 +190,14 @@ test.describe.serial( 'Strings translations', () => {
 		test.beforeAll( async ( { requestUtils } ) => {
 			await requestUtils.activatePlugin( 'custom-strings-e2e' );
 
-			const publishedFrenchPage = await requestUtils.createPage( {
-				title: 'PLL E2E strings page',
-				content: '<p>PLL E2E page body</p>',
+			const publishedFrenchPost = await requestUtils.createPost( {
+				title: 'PLL E2E strings post',
+				content: '<p>PLL E2E post body</p>',
 				status: 'publish',
 				lang: 'fr',
 			} );
 
-			frenchPageId = publishedFrenchPage.id;
-			frenchPageUrl = publishedFrenchPage.link;
-
-			execSync( 'npx wp-env run tests-cli wp option delete rewrite_rules --allow-root', {
-				cwd: process.cwd(),
-				stdio: 'inherit',
-			} );
+			frenchPostUrl = publishedFrenchPost.link;
 		} );
 
 		test.afterAll( async ( { requestUtils } ) => {
@@ -223,19 +213,14 @@ test.describe.serial( 'Strings translations', () => {
 			 *     - English and French languages exist.
 			 *
 			 * Steps:
-			 *     - Open the French page URL created in `beforeAll`.
+			 *     - Open the French post URL created in `beforeAll`.
 			 *     - Check that the document title includes the French site title (WordPress appends site name on singular views).
 			 *     - Check that the header site title block shows "polylang FR" (block themes: `header` + `.wp-block-site-title`).
 			 */
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
 			} ) => {
-				execSync( 'npx wp-env run tests-cli wp rewrite flush --allow-root', {
-					cwd: process.cwd(),
-					stdio: 'inherit',
-				} );
-
-				const response = await page.goto( frenchPageUrl );
+				const response = await page.goto( frenchPostUrl );
 
 				expect( response.status() ).toBe( 200 );
 
@@ -256,16 +241,16 @@ test.describe.serial( 'Strings translations', () => {
 			 *
 			 * Prerequisites:
 			 *     - The admin test above saved the French translation "Bonjour Polylang E2E FR".
-			 *     - This section's `beforeAll` activated the plugin and created a published French page.
+			 *     - This section's `beforeAll` activated the plugin and created a published French post.
 			 *
 			 * Steps:
-			 *     - Open the French page on the frontend.
+			 *     - Open the French post on the frontend.
 			 *     - Check that the appended paragraph shows the French translation.
 			 */
 			test( 'French translation of custom string appears on the frontend', async ( {
 				page,
 			} ) => {
-				await page.goto( frenchPageUrl );
+				await page.goto( frenchPostUrl );
 
 				await expect(
 					page.locator( '.pll-e2e-custom-string' )
@@ -277,16 +262,16 @@ test.describe.serial( 'Strings translations', () => {
 			 *
 			 * Prerequisites:
 			 *     - The admin test above saved the French multiline translation.
-			 *     - This section's `beforeAll` activated the plugin and created a published French page.
+			 *     - This section's `beforeAll` activated the plugin and created a published French post.
 			 *
 			 * Steps:
-			 *     - Open the French page on the frontend.
+			 *     - Open the French post on the frontend.
 			 *     - Check that the multiline block shows the French lines.
 			 */
 			test( 'French translation of multiline custom string appears on the frontend', async ( {
 				page,
 			} ) => {
-				await page.goto( frenchPageUrl );
+				await page.goto( frenchPostUrl );
 
 				await expect(
 					page.locator( '.pll-e2e-custom-string-multiline' )

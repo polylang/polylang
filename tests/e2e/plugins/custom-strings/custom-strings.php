@@ -15,11 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action(
 	'init',
 	function () {
-		if ( ! function_exists( 'pll_register_string' ) ) {
-
-			return;
-		}
-
 		pll_register_string(
 			'e2e_custom_greeting',
 			'Hello Polylang E2E',
