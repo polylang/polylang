@@ -49,7 +49,7 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 			} ) => {
 				await page.goto(
-					'wp-admin/admin.php?page=mlang_strings&s&group=WooCommerce&paged=1'
+					'wp-admin/admin.php?page=mlang_strings&paged=1'
 				);
 				await expect(
 					page.getByRole( 'cell', { name: 'blogname' } )
