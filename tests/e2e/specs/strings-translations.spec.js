@@ -1,6 +1,7 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
-import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
+import { createLanguage, deleteAllLanguages, setSetting, resetAllSettings, getAllLanguages } from '@wpsyntex/e2e-test-utils';
+import { execSync } from 'child_process';
 
 /**
  * Covers strings translations in admin and on the frontend.
@@ -13,6 +14,7 @@ test.describe.serial( 'Strings translations', () => {
 	let frenchPostUrl;
 
 	test.beforeAll( async ( { requestUtils } ) => {
+		await setSetting( requestUtils, 'force_lang', 1 );
 		await createLanguage( requestUtils, 'en_US' );
 		await createLanguage( requestUtils, 'fr_FR' );
 	} );
@@ -20,6 +22,7 @@ test.describe.serial( 'Strings translations', () => {
 	test.afterAll( async ( { requestUtils } ) => {
 		await deleteAllLanguages( requestUtils );
 		await requestUtils.deleteAllPosts();
+		await resetAllSettings( requestUtils );
 	} );
 
 	test.describe( 'Admin', () => {
@@ -219,7 +222,16 @@ test.describe.serial( 'Strings translations', () => {
 			 */
 			test( 'Blogname French translation appears on the frontend', async ( {
 				page,
+				requestUtils,
 			} ) => {
+				const rewriteStructure = execSync( 'npx wp-env run tests-cli wp rewrite structure "/%postname%/" --hard --allow-root', {
+					cwd: process.cwd(),
+					stdio: 'inherit',
+				} );
+
+				await page.goto( 'fr/' );
+
+				console.log( frenchPostUrl );
 				const response = await page.goto( frenchPostUrl );
 
 				expect( response.status() ).toBe( 200 );
