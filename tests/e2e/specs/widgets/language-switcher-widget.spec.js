@@ -49,15 +49,9 @@ test.describe(
 		 *     - Verify the block preview lists English and French.
 		 */
 		test( 'Block can be added in a widget area and displays languages', async ( {
-			admin,
-			page,
-		} ) => {
-			page.on( 'response', ( response ) => {
-				if ( response.status() === 404 ) {
-					console.log( '404:', response.url() );
-				}
-			} );
-
+																						admin,
+																						page,
+																					} ) => {
 			// Navigate to widget editor.
 			await admin.visitAdminPage( 'widgets.php' );
 
