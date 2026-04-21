@@ -30,21 +30,6 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * Check if upgrade is possible otherwise die to avoid activation
-	 *
-	 * @since 1.2
-	 *
-	 * @return void
-	 */
-	public function can_activate() {
-		if ( ! $this->can_upgrade() ) {
-			ob_start();
-			$this->admin_notices(); // FIXME the error message is displayed two times
-			die( ob_get_contents() ); // phpcs:ignore WordPress.Security.EscapeOutput
-		}
-	}
-
-	/**
 	 * Upgrades if possible otherwise returns false to stop Polylang loading
 	 *
 	 * @since 1.2
