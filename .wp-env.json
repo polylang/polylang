@@ -1,7 +1,7 @@
 {
-	"phpVersion": "8.3",
-	"core": null,
-	"plugins": [ "." ],
+  "phpVersion": "8.3",
+  "core": null,
+  "plugins": [ "." ],
   "mappings": {
     "wp-content/plugins/custom-strings": "./tests/e2e/plugins/custom-strings"
   }
