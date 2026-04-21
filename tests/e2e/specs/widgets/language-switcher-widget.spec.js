@@ -5,6 +5,7 @@ import {
 	deleteAllLanguages,
 	resetAllSettings,
 } from '@wpsyntex/e2e-test-utils';
+import { execSync } from 'child_process';
 
 /**
  * Covers language switcher block in the widget editor.
@@ -52,6 +53,12 @@ test.describe(
 			admin,
 			page,
 		} ) => {
+			const result = execSync(
+				'npx wp-env run tests-cli wp option get permalink_structure --allow-root',
+				{ cwd: process.cwd(), encoding: 'utf8' }
+			);
+			console.log( 'Permalink structure:', result.trim() );
+
 			page.on( 'response', ( response ) => {
 				if ( response.status() === 404 ) {
 					console.log( '404:', response.url() );
