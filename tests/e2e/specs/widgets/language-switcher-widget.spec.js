@@ -13,12 +13,20 @@ test.describe(
 	'Language Switcher block in Widget Editor',
 	{ tag: [ '@widget-editor' ] },
 	() => {
+		let initialTheme;
+
 		/**
 		 * Before all tests:
 		 *     - Activate a theme with widget areas.
 		 *     - Create en_US and fr_FR languages.
 		 */
 		test.beforeAll( async ( { requestUtils } ) => {
+			const [ activeTheme ] = await requestUtils.rest( {
+				path: '/wp/v2/themes',
+				params: { status: 'active' },
+			} );
+			initialTheme = activeTheme.stylesheet;
+
 			// Activate a theme with widget areas.
 			await requestUtils.activateTheme( 'twentytwentyone' );
 
@@ -30,6 +38,7 @@ test.describe(
 		 * Reset after all tests.
 		 */
 		test.afterAll( async ( { requestUtils } ) => {
+			await requestUtils.activateTheme( initialTheme );
 			await deleteAllLanguages( requestUtils );
 			await resetAllSettings( requestUtils );
 		} );
