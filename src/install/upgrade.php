@@ -69,8 +69,8 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	public function admin_notices() {
-		printf(
-			'<div class="error"><p>%s</p><p>%s</p></div>',
+		$message = sprintf(
+			'<p>%s</p><p>%s</p>',
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
 			sprintf(
 				/* translators: %1$s and %2$s are Polylang version numbers */
@@ -79,6 +79,8 @@ class PLL_Upgrade {
 				esc_html( POLYLANG_VERSION )
 			)
 		);
+
+		wp_admin_notice( $message, array( 'type' => 'error' ) );
 	}
 
 	/**

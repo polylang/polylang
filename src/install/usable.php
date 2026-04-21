@@ -48,8 +48,8 @@ class PLL_Usable {
 	 * @return void
 	 */
 	public static function php_version_notice() {
-		printf(
-			'<div class="error"><p>%s</p></div>',
+		$message = sprintf(
+			'<p>%s</p>',
 			sprintf(
 				/* translators: 1: Plugin name 2: Current PHP version 3: Required PHP version */
 				esc_html__( '%1$s has deactivated itself because you are using an old version of PHP. You are using using PHP %2$s. %1$s requires PHP %3$s.', 'polylang' ),
@@ -58,6 +58,8 @@ class PLL_Usable {
 				esc_html( static::get_min_php_version() )
 			)
 		);
+
+		wp_admin_notice( $message, array( 'type' => 'error' ) );
 	}
 
 	/**
@@ -72,8 +74,8 @@ class PLL_Usable {
 	public static function wp_version_notice() {
 		global $wp_version;
 
-		printf(
-			'<div class="error"><p>%s</p></div>',
+		$message = sprintf(
+			'<p>%s</p>',
 			sprintf(
 				/* translators: 1: Plugin name 2: Current WordPress version 3: Required WordPress version */
 				esc_html__( '%1$s has deactivated itself because you are using an old version of WordPress. You are using using WordPress %2$s. %1$s requires at least WordPress %3$s.', 'polylang' ),
@@ -82,6 +84,8 @@ class PLL_Usable {
 				esc_html( static::get_min_wp_version() )
 			)
 		);
+
+		wp_admin_notice( $message, array( 'type' => 'error' ) );
 	}
 
 	/**
