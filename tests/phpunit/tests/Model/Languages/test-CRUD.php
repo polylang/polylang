@@ -71,7 +71,7 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'slug'       => 'ar',
 			'locale'     => 'ar',
 			'rtl'        => true,
-			'flag'       => 'arab',
+			'flag'       => 'ar.lang',
 			'term_group' => 2,
 		);
 
@@ -307,7 +307,7 @@ class Test_CRUD extends PLL_UnitTestCase {
 			'slug'       => 'a', // Intentional mistake.
 			'locale'     => 'ar',
 			'rtl'        => 1,
-			'flag'       => 'arab',
+			'flag'       => 'ar.lang',
 			'term_group' => 1,
 		);
 

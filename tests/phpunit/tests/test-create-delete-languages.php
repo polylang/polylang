@@ -37,7 +37,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'slug'       => 'ar',
 			'locale'     => 'ar',
 			'rtl'        => 1,
-			'flag'       => 'arab',
+			'flag'       => 'ar.lang',
 			'term_group' => 1,
 		);
 
