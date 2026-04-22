@@ -46,6 +46,9 @@ class PLL_Admin_Filters_Post {
 
 		// Sets the language in Tiny MCE
 		add_filter( 'tiny_mce_before_init', array( $this, 'tiny_mce_before_init' ) );
+
+		// Filter untranslated items in the posts list table.
+		add_action( 'restrict_manage_posts', array( $this, 'untranslated_dropdown' ) );
 	}
 
 	/**
@@ -262,5 +265,50 @@ class PLL_Admin_Filters_Post {
 			$mce_init['directionality'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
 		}
 		return $mce_init;
+	}
+
+	/**
+	 * Displays a dropdown for filtering unstranslated items in the posts list table.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $post_type The post type.
+	 * @return void
+	 */
+	public function untranslated_dropdown( $post_type ) {
+		if ( ! $this->model->is_translated_post_type( $post_type ) ) {
+			return;
+		}
+
+		$languages = $this->model->get_languages_list();
+
+		foreach ( $languages as $k => $language ) {
+			$languages[ $k ] = $language->to_std_class(); // Important not to modify the language name everywhere.
+			/* translators: %s is a native language name */
+			$languages[ $k ]->name = sprintf( __( 'Untranslated in %s', 'polylang' ), $language->name );
+		}
+
+		$dropdown = new PLL_Walker_Dropdown();
+
+		$dropdown_html = $dropdown->walk(
+			array_merge(
+				array( (object) array( 'slug' => 0, 'name' => __( 'All translations statuses', 'polylang' ) ) ),
+				$languages
+			),
+			-1,
+			array(
+				'id'       => 'pll_untranslated_in',
+				'name'     => 'untranslated_in',
+				'class'    => 'postform',
+				'selected' => isset( $_GET['untranslated_in'] ) ? sanitize_key( $_GET['untranslated_in'] ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			)
+		);
+
+		printf(
+			'<label class="screen-reader-text" for="pll_untranslated_in">%s</label>',
+			esc_html__( 'Filter untranslated items', 'polylang' )
+		);
+
+		echo $dropdown_html; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
