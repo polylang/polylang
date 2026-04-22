@@ -290,7 +290,7 @@ class PLL_Upgrade {
 			$description = maybe_unserialize( $term->description );
 			$description = is_array( $description ) ? $description : array();
 
-			if ( isset( $description['flag_code'] ) && isset( $to_migrate[ $description['flag_code'] ] ) ) {
+			if ( isset( $description['flag_code'] ) && is_string( $description['flag_code'] ) && isset( $to_migrate[ $description['flag_code'] ] ) ) {
 				$description['flag_code'] = $to_migrate[ $description['flag_code'] ];
 				/** @var string */
 				$description = maybe_serialize( $description );
