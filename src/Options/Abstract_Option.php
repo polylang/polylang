@@ -329,9 +329,10 @@ abstract class Abstract_Option {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
-				$value = "$key => [$value]";
+				$value = "$key => $value";
 			}
 		);
-		return implode( ', ', $array );
+
+		return '[' . implode( ', ', $array ) . ']';
 	}
 }
