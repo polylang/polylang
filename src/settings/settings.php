@@ -356,7 +356,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Get the list of predefined languages
+	 * Get the list of predefined languages.
 	 *
 	 * @since 2.3
 	 *
@@ -380,10 +380,12 @@ class PLL_Settings extends PLL_Admin_Base {
 		$languages    = include __DIR__ . '/languages.php';
 		$translations = wp_get_available_translations();
 
-		// Keep only languages with existing WP language pack
-		// Unless the transient has expired and we don't have an internet connection to refresh it
+		/*
+		 * Keep only languages with existing WP language pack
+		 * unless the transient has expired and we don't have an internet connection to refresh it.
+		 */
 		if ( ! empty( $translations ) ) {
-			$translations['en_US'] = ''; // Languages packs don't include en_US
+			$translations['en_US'] = ''; // Languages packs don't include en_US.
 			$languages = array_intersect_key( $languages, $translations );
 		}
 
@@ -399,7 +401,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		 */
 		$languages = apply_filters( 'pll_predefined_languages', $languages );
 
-		// Keep only languages with all necessary information
+		// Keep only languages with all necessary information.
 		foreach ( $languages as $k => $lang ) {
 			if ( ! isset( $lang['code'], $lang['locale'], $lang['name'], $lang['dir'], $lang['flag'] ) ) {
 				unset( $languages[ $k ] );
@@ -407,5 +409,27 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		return $languages;
+	}
+
+	/**
+	 * Get the list of the default flags, sorted by alphabetical order.
+	 *
+	 * @since 3.9
+	 *
+	 * @return string[]
+	 */
+	public static function get_default_flags() {
+		$flags = include __DIR__ . '/flags.php';
+
+		if ( class_exists( 'Collator' ) ) {
+			$co = Collator::create( get_user_locale() );
+			if ( $co ) {
+				$co->asort( $flags );
+				return $flags;
+			}
+		}
+
+		asort( $flags );
+		return $flags;
 	}
 }
