@@ -80,7 +80,12 @@ class PLL_Upgrade {
 			)
 		);
 
-		wp_admin_notice( $message, array( 'type' => 'error' ) );
+		$args = array(
+			'type'           => 'error',
+			'paragraph_wrap' => 'false',
+		);
+
+		wp_admin_notice( $message, $args );
 	}
 
 	/**
