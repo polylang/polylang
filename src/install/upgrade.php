@@ -82,7 +82,7 @@ class PLL_Upgrade {
 
 		$args = array(
 			'type'           => 'error',
-			'paragraph_wrap' => 'false',
+			'paragraph_wrap' => false,
 		);
 
 		wp_admin_notice( $message, $args );
