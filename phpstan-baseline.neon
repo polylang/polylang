@@ -937,12 +937,6 @@ parameters:
 			path: src/language.php
 
 		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/language.php
-
-		-
 			message: '#^Property PLL_Language\:\:\$fallbacks \(list\<non\-empty\-string\>\) does not accept array\<non\-empty\-string\>\.$#'
 			identifier: assign.propertyType
 			count: 1

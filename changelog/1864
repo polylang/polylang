@@ -1,0 +1,3 @@
+* Replace PNG 16x11 images by SVG 18x12 images for default flags #1864
+* Change the code of some flags to use iso 3166 for countries or regions, iso 639 for languages #1865
+

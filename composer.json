@@ -5,7 +5,8 @@
 	"homepage": "https://polylang.pro",
 	"type": "wordpress-plugin",
 	"require": {
-		"php": ">=7.4"
+		"php": ">=7.4",
+		"wpsyntex/flags": "dev-main"
 	},
 	"require-dev": {
 		"wpsyntex/polylang-phpstan": "^2.0",

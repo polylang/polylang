@@ -62,7 +62,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'English', $arr['en']['name'] );
 		$this->assertEquals( 'en-US', $arr['en']['locale'] );
 		$this->assertEquals( 'en', $arr['en']['slug'] );
-		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $arr['en']['flag'] );
+		$this->assertEquals( plugins_url( '/vendor/wpsyntex/flags/us.svg', POLYLANG_FILE ), $arr['en']['flag'] );
 
 		// Other arguments
 		$args = array_merge(

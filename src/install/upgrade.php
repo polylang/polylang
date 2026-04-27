@@ -103,7 +103,7 @@ class PLL_Upgrade {
 		 */
 		delete_transient( 'pll_languages_list' );
 
-		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7', '3.8' ) as $version ) {
+		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7', '3.8', '3.9' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
 				if ( is_callable( $method_to_call ) ) {
@@ -239,6 +239,56 @@ class PLL_Upgrade {
 		}
 
 		update_option( 'pll_language_taxonomies', $language_taxonomies );
+	}
+
+	/**
+	 * Upgrades if the previous version is < 3.9.
+	 * Migrates flag codes in language terms.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	protected function upgrade_3_9() {
+		$to_migrate = array(
+			'arab'      => 'ar.lang',
+			'basque'    => 'es-pv',
+			'catalonia' => 'es-ct',
+			'england'   => 'gb-eng',
+			'esperanto' => 'eo.lang',
+			'galicia'   => 'es-ga',
+			'kurdistan' => 'iq-kr',
+			'occitania' => 'oci.lang',
+			'quebec'    => 'ca-qc',
+			'scotland'  => 'gb-sct',
+			'tibet'     => 'bo.lang',
+			'veneto'    => 'it-34',
+			'wales'     => 'gb-wls',
+		);
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
+
+		if ( ! is_array( $terms ) ) {
+			return;
+		}
+
+		foreach ( $terms as $term ) {
+			$description = maybe_unserialize( $term->description );
+			$description = is_array( $description ) ? $description : array();
+
+			if ( isset( $description['flag_code'] ) && is_string( $description['flag_code'] ) && isset( $to_migrate[ $description['flag_code'] ] ) ) {
+				$description['flag_code'] = $to_migrate[ $description['flag_code'] ];
+				/** @var string */
+				$description = maybe_serialize( $description );
+
+				wp_update_term( $term->term_id, 'language', array( 'description' => $description ) );
+			}
+		}
 	}
 
 	/**

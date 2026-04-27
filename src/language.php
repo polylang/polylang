@@ -378,18 +378,27 @@ class PLL_Language extends PLL_Language_Deprecated {
 			'src' => '',
 		);
 
+		if ( empty( $code ) ) {
+			return $default_flag;
+		}
+
 		// Polylang builtin flags.
-		if ( ! empty( $code ) && is_readable( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
-			$default_flag['url'] = plugins_url( $file, POLYLANG_FILE );
+		$file = "/vendor/wpsyntex/flags/{$code}.svg";
+		if ( is_readable( POLYLANG_DIR . $file ) ) {
+			$default_flag = array(
+				'url'    => plugins_url( $file, POLYLANG_FILE ),
+				'src'    => '',
+				'width'  => 18,
+				'height' => 12,
+			);
 
 			// If base64 encoded flags are preferred.
 			if ( pll_get_constant( 'PLL_ENCODED_FLAGS', true ) ) {
-				$imagesize = getimagesize( POLYLANG_DIR . $file );
-				if ( is_array( $imagesize ) ) {
-					list( $default_flag['width'], $default_flag['height'] ) = $imagesize;
+				$content = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+
+				if ( ! empty( $content ) ) {
+					$default_flag['src'] = 'data:image/svg+xml,' . self::encode_svg( $content );
 				}
-				$file_contents       = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-				$default_flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			}
 		}
 
@@ -673,5 +682,26 @@ class PLL_Language extends PLL_Language_Deprecated {
 		}
 
 		return $this->$property ?? false;
+	}
+
+	/**
+	 * Prepares a SVG image for use in data uri.
+	 *
+	 * @see https://codepen.io/tigt/post/optimizing-svgs-in-data-uris.
+	 * @since 3.8
+	 *
+	 * @param string $svg A string representing an SVG image.
+	 * @return string Encode SVG.
+	 */
+	protected static function encode_svg( string $svg ): string {
+		$to_replace = array(
+			'"'  => "'",
+			'<'  => '%3C',
+			'>'  => '%3E',
+			'#'  => '%23',
+			"\n" => '',
+			"\r" => '',
+		);
+		return str_replace( array_keys( $to_replace ), array_values( $to_replace ), $svg );
 	}
 }
