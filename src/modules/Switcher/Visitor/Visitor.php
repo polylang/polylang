@@ -11,6 +11,8 @@ interface Visitor {
 	 */
 	public function walk( array $elements ): string;
 
+	public function visit( Element $element ): string;
+
 	public function visit_current_language( Current_Language_Element $element ): string;
 
 	public function visit_without_translations( No_Translations_Element $element ): string;

@@ -1,6 +1,6 @@
 # Language switcher rendering architecture
 
-UML below models a **Visitor-based** rendering pipeline: `Switcher` is the facade that owns configuration (`Settings`), **materializes** a list of typed `Element` instances internally (from `Settings` and runtime context), then fetches a concrete `Visitor` via `Settings::get_visitor()` for the desired presentation (horizontal list, vertical list, dropdown, `<select>`, ...). Presentation lives in visitor implementations; the concrete `Element` class captures row semantics (`Current_Language_Element`, `No_Translations_Element`, `No_Content_Element`) and exposes the row URL via `get_url()`. The facade has two output entry points: `print()` returns a **string** (HTML/markup) through `Visitor::walk( Element[] )`, while `to_array()` returns the raw data structure matching the internal `Element[]`.
+UML below models a **Visitor-based** rendering pipeline: `Switcher` is the facade that owns configuration (`Settings`), **materializes** a list of `Element` instances internally (from `Settings` and runtime context), then fetches a concrete `Visitor` via `Settings::get_visitor()` for the desired presentation (horizontal list, vertical list, dropdown, `<select>`, ...). Presentation lives in visitor implementations. Rows are modeled as `Element` implementations: typed variants (`Current_Language_Element`, `No_Translations_Element`, `No_Content_Element`) dispatch to `visit_current_language`, `visit_without_translations`, or `visit_without_content`; a plain row uses the base `visit( Element )` contract. Each row exposes the URL via `get_url()`. The facade has two output entry points: `print()` returns a **string** (HTML/markup) through `Visitor::walk( Element[] )`, while `to_array()` returns the raw data structure matching the internal `Element[]`.
 
 ## Class diagram
 
@@ -52,6 +52,7 @@ classDiagram
     class Visitor {
         <<interface>>
         +walk(Element[] elements) string
+        +visit(Element element) string
         +visit_current_language(Current_Language_Element element) string
         +visit_without_translations(No_Translations_Element element) string
         +visit_without_content(No_Content_Element element) string
@@ -60,6 +61,7 @@ classDiagram
     class Horizontal_List_Visitor {
         <<implements Visitor>>
         +walk(Element[] elements) string
+        +visit(Element element) string
         +visit_current_language(Current_Language_Element element) string
         +visit_without_translations(No_Translations_Element element) string
         +visit_without_content(No_Content_Element element) string
@@ -68,6 +70,7 @@ classDiagram
     class Vertical_List_Visitor {
         <<implements Visitor>>
         +walk(Element[] elements) string
+        +visit(Element element) string
         +visit_current_language(Current_Language_Element element) string
         +visit_without_translations(No_Translations_Element element) string
         +visit_without_content(No_Content_Element element) string
@@ -76,6 +79,7 @@ classDiagram
     class Dropdown_List_Visitor {
         <<implements Visitor>>
         +walk(Element[] elements) string
+        +visit(Element element) string
         +visit_current_language(Current_Language_Element element) string
         +visit_without_translations(No_Translations_Element element) string
         +visit_without_content(No_Content_Element element) string
@@ -84,6 +88,7 @@ classDiagram
     class Select_List_Visitor {
         <<implements Visitor>>
         +walk(Element[] elements) string
+        +visit(Element element) string
         +visit_current_language(Current_Language_Element element) string
         +visit_without_translations(No_Translations_Element element) string
         +visit_without_content(No_Content_Element element) string
@@ -111,12 +116,12 @@ Design notes:
 
 - `Switcher` builds `Element[]` internally from `Settings` + runtime context, then calls `visitor.walk( elements )` in `print()` or `element->to_array()` in `to_array()`.
 - `Settings` contains options / backward-compatibility adaptors and provides the concrete visitor through `get_visitor()`.
-- `Element` is a typed row contract (`Current_Language_Element`, `No_Translations_Element`, `No_Content_Element`) with `accept(Visitor)`, `get_url()`, and `to_array()`.
-- `Visitor::walk( Element[] elements )` loops rows and dispatches per element type to `visit_current_language`, `visit_without_translations`, or `visit_without_content`.
+- `Element` is the row contract (`accept(Visitor)`, `get_url()`, `to_array()`). Typed implementations call `visit_current_language`, `visit_without_translations`, or `visit_without_content`; a plain `Element` calls `visit( Element )`.
+- `Visitor::walk( Element[] elements )` loops rows; each `accept()` forwards to `visit( Element )` and/or the matching typed `visit_*` method.
 
 ## `walk()` on `Visitor`
 
-`walk( elements )` receives the complete `Element[]` that `Switcher` built internally. The visitor owns the iteration: for each `Element`, it drives rendering (typically `element->accept( $this )`, which forwards to the matching typed method: `visit_current_language`, `visit_without_translations`, or `visit_without_content`), accumulates each row's `string`, and returns one combined `string` for the whole switcher (opening/closing tags, separators, etc.). Different concrete visitors implement different `walk()` strategies (horizontal list shell vs `<select>` vs dropdown markup, etc.) while sharing the same typed per-row contracts.
+`walk( elements )` receives the complete `Element[]` that `Switcher` built internally. The visitor owns the iteration: for each `Element`, it drives rendering via `element->accept( $this )`, which forwards either to the base `visit( Element )` (simple / non-discriminated row) or to a typed hook (`visit_current_language`, `visit_without_translations`, `visit_without_content`). It accumulates each row's `string` and returns one combined `string` for the whole switcher (opening/closing tags, separators, etc.). Different concrete visitors implement different `walk()` strategies (horizontal list shell vs `<select>` vs dropdown markup, etc.) while sharing the same per-row contracts.
 
 ## Element sub-types
 
@@ -127,6 +132,8 @@ All concrete element classes implement the `Element` interface.
 | **Current_Language_Element** | Represents the row for the currently active language. |
 | **No_Translations_Element** | Represents a language row where translated content is unavailable. |
 | **No_Content_Element** | Represents a row where the language link/content is empty or unavailable. |
+
+Any other concrete `Element` (not one of the three above) is rendered through `Visitor::visit( Element )` from `accept(Visitor)`.
 
 ## Visitor sub-types
 
@@ -157,12 +164,14 @@ sequenceDiagram
     Switcher->>Visitor: walk(elements)
     loop inside walk for each Element
         Visitor->>Element: accept(visitor)
-        Element->>Visitor: visit_current_language(this) / visit_without_translations(this) / visit_without_content(this)
+        Element->>Visitor: visit(this) or visit_* (typed)
         Visitor-->>Visitor: append fragment
     end
     Visitor-->>Switcher: string (full HTML block)
     Switcher-->>Client: string (full HTML)
 ```
+
+Plain `Element` implementations call `visit( Element )`; typed classes call the corresponding `visit_*` method.
 
 ## `to_array()` flow
 
@@ -211,4 +220,4 @@ return $rows; // Raw switcher data.
 | `Switcher` | Entry point: builds `Element[]` internally; in `print()`, fetches Visitor via `Settings::get_visitor()`, returns HTML through `Visitor::walk( elements )`; `to_array()` returns raw rows. |
 | `Settings` | Options, backward compatibility, adaptors; exposes `get_visitor()` and global rendering rules. |
 | `Element` | One row/language node with `accept(Visitor)`, `get_url()`, and `to_array()`. Concrete classes are `Current_Language_Element`, `No_Translations_Element`, `No_Content_Element`. |
-| `Visitor` | Strategy per presentation; `walk( Element[] )` loops rows and assembles final output via typed methods `visit_current_language`, `visit_without_translations`, `visit_without_content`. |
+| `Visitor` | Strategy per presentation; `walk( Element[] )` loops rows and assembles output via `visit( Element )` for plain rows and typed methods `visit_current_language`, `visit_without_translations`, `visit_without_content` where applicable. |
