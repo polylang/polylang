@@ -105,45 +105,14 @@ classDiagram
 
     Element ..> Visitor : accept()
 
-    note for Switcher
-        Builds Element rows internally
-        from Settings and context.
-        Gets Visitor from
-        settings.get_visitor().
-        print() delegates to
-        visitor.walk( elements ).
-        to_array() maps elements to
-        raw row arrays.
-    end note
-
-    note for Settings
-        Switcher options, backward
-        compatibility, adaptor wiring.
-        Exposes get_visitor() to
-        build the right Visitor.
-    end note
-
-    note for Element
-        Base interface for typed rows.
-        Concrete classes encode row
-        semantics (current language,
-        no translations, no content)
-        plus URL for href/value and
-        raw serialization via to_array().
-    end note
-
-    note for Visitor
-        walk(elements) takes Element[]
-        (language rows). It loops each
-        Element, calls accept() which
-        dispatches to matching
-        visit_*() method for the row
-        string, then merges fragments
-        with presentation wrapper (e.g.
-        ul/select shell). Parameter
-        elements is the full list.
-    end note
 ```
+
+Design notes:
+
+- `Switcher` builds `Element[]` internally from `Settings` + runtime context, then calls `visitor.walk( elements )` in `print()` or `element->to_array()` in `to_array()`.
+- `Settings` contains options / backward-compatibility adaptors and provides the concrete visitor through `get_visitor()`.
+- `Element` is a typed row contract (`Current_Language_Element`, `No_Translations_Element`, `No_Content_Element`) with `accept(Visitor)`, `get_url()`, and `to_array()`.
+- `Visitor::walk( Element[] elements )` loops rows and dispatches per element type to `visit_current_language`, `visit_without_translations`, or `visit_without_content`.
 
 ## `walk()` on `Visitor`
 
