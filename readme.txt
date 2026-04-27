@@ -112,7 +112,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix HTML entities displayed in translation inputs in the block editor sidebar #2984
 * Pro: Fix error when editing a pattern from the post editor #2990
 * Pro: Fix sync icon incorrectly shown as active on new posts #2995
-* Pro: Fix `pll_sync_post` REST API field returning an empty array instead of an ampty object #2995
+* Pro: Fix `pll_sync_post` REST API field returning an empty array instead of an empty object #2995
 * Pro: Fix ACF fields in a repeater nested in a flexible content overwritten with wrong values #2975
 * Fix language switcher block error in Widget screen #1856
 * Fix PHP warning in site health #1862
