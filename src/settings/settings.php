@@ -421,15 +421,16 @@ class PLL_Settings extends PLL_Admin_Base {
 	public static function get_default_flags() {
 		$flags = include __DIR__ . '/flags.php';
 
-		if ( class_exists( 'Collator' ) ) {
-			$co = Collator::create( get_user_locale() );
-			if ( $co ) {
-				$co->asort( $flags );
-				return $flags;
-			}
+		if ( ! class_exists( 'Collator' ) ) {
+			asort( $flags );
+			return $flags;
 		}
 
-		asort( $flags );
+		$co = Collator::create( get_user_locale() );
+		if ( $co ) {
+			$co->asort( $flags );
+		}
+
 		return $flags;
 	}
 }
