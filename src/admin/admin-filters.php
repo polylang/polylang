@@ -84,7 +84,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 				'name'        => $lang->name,
 				'lang'        => $lang->get_locale( 'display' ),
 				'direction'   => $lang->is_rtl ? 'rtl' : 'ltr',
-				'flag'        => $lang::get_flag_information( $lang->flag_code ),
+				'flag'        => PLL_Language::get_flag_information( $lang->flag_code ),
 				'description' => sanitize_user_field( 'description', $description, $profileuser->ID, 'edit' ),
 			);
 		}
