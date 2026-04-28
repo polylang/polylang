@@ -439,12 +439,6 @@ class Table_Test extends PLL_UnitTestCase {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $fr_language );
 
-		// Empty translations might be saved as empty string or entry might be removed.
-		// The behavior depends on PLL_MO implementation.
-		if ( isset( $mo->entries['Foo'] ) ) {
-			$this->assertSame( '', $mo->translate( 'Foo', 'Group1' ), 'Empty translation should be saved as empty string.' );
-		} else {
-			$this->assertEmpty( $mo->entries, 'Empty translation entry should be removed.' );
-		}
+		$this->assertEmpty( $mo->entries, 'Empty translation entry should be removed.' );
 	}
 }
