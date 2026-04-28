@@ -285,7 +285,7 @@ class Database_Repository {
 	 *
 	 * @param string        $name              A unique name for the string
 	 * @param string        $string            The string to register
-	 * @param string        $context           Optional, the group in which the string is registered, defaults to 'polylang'
+	 * @param string        $context           Optional, the group in which the string is registered, defaults to 'pll_string' (same as pll__() text domain).
 	 * @param callable|null $sanitize_callback The sanitization callback for the string. Default is a closure that calls the default_sanitization method.
 	 * @param bool          $multiline         Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
 	 * @return void
@@ -293,7 +293,7 @@ class Database_Repository {
 	public static function register(
 		string $name,
 		string $string,
-		string $context = 'Polylang',
+		string $context = 'pll_string',
 		?callable $sanitize_callback = null,
 		bool $multiline = false
 	): void {

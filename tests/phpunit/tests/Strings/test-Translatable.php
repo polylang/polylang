@@ -33,7 +33,7 @@ class Translatable_Test extends PLL_UnitTestCase {
 	public function test_constructor_with_default_context() {
 		$translatable = new Translatable( 'Test', 'test_name' );
 
-		$this->assertSame( 'Polylang', $translatable->get_context() );
+		$this->assertSame( 'pll_string', $translatable->get_context() );
 	}
 
 	public function test_constructor_with_multiline_true() {
