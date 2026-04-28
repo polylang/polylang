@@ -94,7 +94,7 @@ class PLL_MO extends MO {
 		}
 
 		foreach ( $strings as $msg ) {
-			if ( ! is_array( $msg ) ) {
+			if ( ! is_array( $msg ) || ! isset( $msg[0], $msg[1] ) ) {
 				continue;
 			}
 
@@ -138,6 +138,7 @@ class PLL_MO extends MO {
 	 * Contrary to `self::translate()`, this method doesn't fallback to the source string but returns empty string instead.
 	 *
 	 * @since 3.7
+	 * @since 3.9 Parameter `$context` added.
 	 *
 	 * @param string      $source  The source string to translate.
 	 * @param string|null $context Optional. The context to translate.

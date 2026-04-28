@@ -39,12 +39,7 @@ class Collection implements IteratorAggregate, Countable {
 	 * @param Translatable[] $translatables Initial translatables to add to the collection.
 	 */
 	public function __construct( array $translatables = array() ) {
-		array_map(
-			function ( Translatable $translatable ) {
-				$this->add( $translatable );
-			},
-			$translatables
-		);
+		array_map( array( $this, 'add' ), $translatables );
 	}
 
 	/**
@@ -111,9 +106,9 @@ class Collection implements IteratorAggregate, Countable {
 	 *
 	 * @since 3.8
 	 *
-	 * @return \ArrayIterator<string, Translatable>
+	 * @return ArrayIterator<string, Translatable>
 	 */
-	public function getIterator(): \ArrayIterator {
+	public function getIterator(): ArrayIterator {
 		return new ArrayIterator( $this->translatables );
 	}
 

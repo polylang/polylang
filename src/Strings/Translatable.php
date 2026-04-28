@@ -21,7 +21,7 @@ class Translatable {
 	 *
 	 * @var string
 	 */
-	private $id;
+	private string $id;
 
 	/**
 	 * The name of the string.

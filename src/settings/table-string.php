@@ -63,7 +63,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		if ( ! empty( $_GET['group'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			if ( in_array( $group, $this->repository->get_groups() ) ) {
+			if ( in_array( $group, $this->repository->get_groups(), true ) ) {
 				$this->selected_group = $group;
 			}
 		}
@@ -258,7 +258,7 @@ class PLL_Table_String extends WP_List_Table {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		$items = $this->repository->query()
-			->by_context( -1 !== $this->selected_group && is_string( $this->selected_group ) ? $this->selected_group : null )
+			->by_context( is_string( $this->selected_group ) ? $this->selected_group : null )
 			->by_fragment( ! empty( $_GET['s'] ) && is_string( $_GET['s'] ) ? wp_unslash( $_GET['s'] ) : null ) // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
 			->order_by(
 				! empty( $_GET['orderby'] ) ? sanitize_key( $_GET['orderby'] ) : 'name', // phpcs:ignore WordPress.Security.NonceVerification
@@ -402,7 +402,7 @@ class PLL_Table_String extends WP_List_Table {
 				);
 			}
 
-			// Save all languages at once
+			// Save all languages at once.
 			$this->repository->save( $collection );
 
 			// Clean database (removes all strings which were registered some day but are no more).

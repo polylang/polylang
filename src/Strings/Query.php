@@ -186,7 +186,7 @@ class Query {
 			$translatables = $this->sort( $translatables );
 		}
 
-		// Store total count before pagination
+		// Store total count before pagination.
 		$total_count = count( $translatables );
 
 		if ( $this->per_page ) {

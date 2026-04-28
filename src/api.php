@@ -180,6 +180,7 @@ function pll_home_url( $lang = '' ) {
  *
  * @api
  * @since 0.6
+ * @since 3.9 Parameter `$sanitize_callback` added.
  *
  * @param string        $name              A unique name for the string.
  * @param string        $string            The string to register.

@@ -177,7 +177,7 @@ class Database_Repository {
 					$translatable->get_translation( $language ),
 					$translatable->get_name(),
 					$translatable->get_context(),
-					$mo->translate_if_any( $translatable->get_source(), $translatable->get_context() ),
+					$translatable->get_source(),
 					$translatable->get_previous_translation( $language )
 				);
 
@@ -231,9 +231,8 @@ class Database_Repository {
 		);
 
 		global $wp_registered_widgets;
-		$sidebars = wp_get_sidebars_widgets();
-		foreach ( $sidebars as $sidebar => $widgets ) {
-			if ( 'wp_inactive_widgets' == $sidebar || empty( $widgets ) ) {
+		foreach ( wp_get_sidebars_widgets() as $sidebar => $widgets ) {
+			if ( 'wp_inactive_widgets' === $sidebar ) {
 				continue;
 			}
 
@@ -270,12 +269,12 @@ class Database_Repository {
 		}
 
 		/**
-		 * Filter the list of strings registered for translation
-		 * Mainly for use by our PLL_WPML_Compat class
+		 * Filter the list of strings registered for translation.
+		 * Mainly for use by our `PLL_WPML_Compat` class.
 		 *
 		 * @since 1.0.2
 		 *
-		 * @param array $strings list of strings
+		 * @param array $strings List of strings.
 		 */
 		self::$registered_strings = apply_filters( 'pll_get_strings', self::$registered_strings );
 		self::$read               = true;
