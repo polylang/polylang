@@ -421,13 +421,16 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Unregisters strings registered through WPML API
-		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) && current_user_can( 'manage_options' ) ) {
-			array_map(
-				function ( $key ) {
-					$this->repository->remove_wpml_string( sanitize_key( $key ) );
-				},
-				$_POST['strings'] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && is_array( $_POST['strings'] ) && current_user_can( 'manage_options' ) ) {
+			$ids = array_unique(
+				array_filter(
+					array_map( 'sanitize_key', $_POST['strings'] )
+				)
 			);
+
+			if ( ! empty( $ids ) ) {
+				$this->repository->remove_wpml_strings( $ids );
+			}
 		}
 
 		// To refresh the page ( possible thanks to the $_GET['noheader']=true )

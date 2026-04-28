@@ -28,6 +28,13 @@ class Query {
 	private ?string $fragment = null;
 
 	/**
+	 * Allowed string IDs (MD5 of source + context); null means no ID filter.
+	 *
+	 * @var array<string, true>|null
+	 */
+	private ?array $allowed_ids = null;
+
+	/**
 	 * Field to sort by.
 	 *
 	 * @var string
@@ -113,6 +120,20 @@ class Query {
 	}
 
 	/**
+	 * Filters by string IDs (MD5 of source + context, as from the strings table).
+	 *
+	 * @since 3.8
+	 *
+	 * @param string[] $ids Sanitized IDs (e.g. `array_map( 'sanitize_key', $raw_ids )` before calling).
+	 * @return self For method chaining.
+	 */
+	public function by_ids( array $ids ): self {
+		$this->allowed_ids = array_fill_keys( array_filter( $ids ), true );
+
+		return $this;
+	}
+
+	/**
 	 * Sets pagination parameters.
 	 *
 	 * @since 3.8
@@ -178,6 +199,10 @@ class Query {
 			$translatables = $this->filter_by_context( $translatables );
 		}
 
+		if ( null !== $this->allowed_ids ) {
+			$translatables = $this->filter_by_ids( $translatables, $this->allowed_ids );
+		}
+
 		if ( $this->fragment ) {
 			$translatables = $this->filter_by_fragment( $translatables );
 		}
@@ -195,12 +220,13 @@ class Query {
 		}
 
 		// Reset state
-		$this->context  = null;
-		$this->fragment = null;
-		$this->order_by = 'name';
-		$this->order    = 'asc';
-		$this->per_page = null;
-		$this->page     = 1;
+		$this->context     = null;
+		$this->fragment    = null;
+		$this->allowed_ids = null;
+		$this->order_by    = 'name';
+		$this->order       = 'asc';
+		$this->per_page    = null;
+		$this->page        = 1;
 
 		$collection = new Collection( $translatables );
 		$collection->set_total( $total_count );
@@ -221,6 +247,24 @@ class Query {
 			$translatables,
 			function ( Translatable $translatable ) {
 				return $translatable->get_context() === $this->context;
+			}
+		);
+	}
+
+	/**
+	 * Filters translatables by allowed IDs.
+	 *
+	 * @since 3.8
+	 *
+	 * @param Translatable[]      $translatables The translatables to filter.
+	 * @param array<string, true> $allowed_ids   Map of allowed string IDs.
+	 * @return Translatable[] The filtered translatables.
+	 */
+	private function filter_by_ids( array $translatables, array $allowed_ids ): array {
+		return array_filter(
+			$translatables,
+			static function ( Translatable $translatable ) use ( $allowed_ids ) {
+				return isset( $allowed_ids[ $translatable->get_id() ] );
 			}
 		);
 	}

@@ -88,6 +88,35 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertSame( $this->query, $result );
 	}
 
+	public function test_by_ids_filters_strings_by_id() {
+		Database_Repository::register( 'string_1', 'source_1', 'context_a' );
+		Database_Repository::register( 'string_2', 'source_2', 'context_b' );
+		Database_Repository::register( 'string_3', 'source_3', 'context_a' );
+
+		$id_1 = md5( 'source_1context_a' );
+		$id_3 = md5( 'source_3context_a' );
+
+		$result = $this->query->by_ids( array( $id_1, $id_3, 'not-a-match' ) )->get();
+
+		$this->assertCount( 2, $result );
+		$this->assertTrue( $result->has( $id_1 ) );
+		$this->assertTrue( $result->has( $id_3 ) );
+		$this->assertFalse( $result->has( md5( 'source_2context_b' ) ) );
+	}
+
+	public function test_by_ids_chains_with_by_context() {
+		Database_Repository::register( 'string_1', 'source_1', 'context_a' );
+		Database_Repository::register( 'string_2', 'source_2', 'context_b' );
+
+		$id_1 = md5( 'source_1context_a' );
+		$id_2 = md5( 'source_2context_b' );
+
+		$result = $this->query->by_context( 'context_a' )->by_ids( array( $id_1, $id_2 ) )->get();
+
+		$this->assertCount( 1, $result );
+		$this->assertTrue( $result->has( $id_1 ) );
+	}
+
 	/**
 	 * @testWith ["apple"]
 	 *           ["APPLE"]

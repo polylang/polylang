@@ -1309,12 +1309,6 @@ parameters:
 			path: src/settings/table-string.php
 
 		-
-			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/settings/table-string.php
-
-		-
 			message: '#^Parameter \#1 \$text of function esc_html expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1

@@ -7,7 +7,6 @@ namespace WP_Syntex\Polylang\Strings;
 
 use PLL_MO;
 use WP_Widget;
-use PLL_Language;
 use WP_Widget_Custom_HTML;
 use WP_Syntex\Polylang\Model\Languages;
 
@@ -98,24 +97,21 @@ class Database_Repository {
 	}
 
 	/**
-	 * Removes a translatable string by ID.
+	 * Removes translatable strings by ID.
 	 * Note: This only works for strings registered via WPML API (icl_register_string).
 	 *
 	 * @since 3.8
 	 *
-	 * @param string $id The identifier.
+	 * @param string[] $ids Keys as submitted from the strings list table (MD5 of source + context).
 	 * @return void
 	 */
-	public function remove_wpml_string( string $id ): void {
-		$string_to_remove = array_find(
-			self::get_strings(),
-			static function ( $string_data ) use ( $id ) {
-				return md5( $string_data['string'] . $string_data['context'] ) === $id && function_exists( 'icl_unregister_string' );
-			}
-		);
+	public function remove_wpml_strings( array $ids ): void {
+		if ( ! function_exists( 'icl_unregister_string' ) ) {
+			return;
+		}
 
-		if ( $string_to_remove && isset( $string_to_remove['context'], $string_to_remove['name'] ) ) {
-			icl_unregister_string( $string_to_remove['context'], $string_to_remove['name'] );
+		foreach ( $this->query()->by_ids( $ids )->get() as $translatable ) {
+			icl_unregister_string( $translatable->get_context(), $translatable->get_name() );
 		}
 	}
 
