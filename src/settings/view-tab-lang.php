@@ -125,7 +125,7 @@ defined( 'ABSPATH' ) || exit;
 						<select name="flag" id="flag_list">
 							<option value=""></option>
 							<?php
-							$flags = include __DIR__ . '/flags.php';
+							$flags = PLL_Settings::get_default_flags();
 							foreach ( $flags as $code => $label ) {
 								$flag = PLL_Language::get_flag_information( $code );
 								if ( empty( $flag['url'] ) ) {
