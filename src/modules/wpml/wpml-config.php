@@ -695,10 +695,10 @@ class PLL_WPML_Config {
 	 *
 	 * @since 3.9
 	 *
-	 * @param  SimpleXMLElement $field A XML node.
+	 * @param SimpleXMLElement $field A XML node.
 	 * @return bool
 	 */
-	protected function is_supported_field( SimpleXMLElement $field ): bool {
+	private function is_supported_field( SimpleXMLElement $field ): bool {
 		$child_type = $this->get_field_attribute( $field, 'type' );
 
 		if ( in_array( $child_type, array( 'link', 'post-ids', 'taxonomy-ids' ), true ) ) {
