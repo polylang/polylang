@@ -127,15 +127,16 @@ defined( 'ABSPATH' ) || exit;
 							<?php
 							$flags = PLL_Settings::get_default_flags();
 							foreach ( $flags as $code => $label ) {
-								$flag = PLL_Language::get_flag_information( $code );
-								if ( empty( $flag['url'] ) ) {
+								$flag_html = PLL_Language::get_predefined_flag( $code );
+
+								if ( empty( $flag_html ) ) {
 									continue;
 								}
 
 								printf(
 									'<option value="%s" data-flag-html="%s"%s>%s</option>' . "\n",
 									esc_attr( $code ),
-									esc_html( PLL_Language::get_flag_html( $flag ) ),
+									esc_html( $flag_html ),
 									selected( isset( $edit_lang->flag_code ) && $edit_lang->flag_code === $code, true, false ),
 									esc_html( $label )
 								);

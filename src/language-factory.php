@@ -211,7 +211,7 @@ class PLL_Language_Factory {
 	 * Creates flag_url and flag language properties. Also takes care of custom flag.
 	 *
 	 * @since 1.2
-	 * @since 3.4 Moved from `PLL_Language`to `PLL_Language_Factory` and renamed
+	 * @since 3.4 Moved from `PLL_Language` to `PLL_Language_Factory` and renamed
 	 *            in favor of `get_flag()` (formerly `set_flag()`).
 	 *
 	 * @param string $flag_code Flag code.
