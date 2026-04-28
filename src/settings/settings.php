@@ -28,10 +28,6 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // phpcs:ignore WordPress.Security.NonceVerification
-		}
-
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// Adds screen options and the about box in the languages admin panel.
