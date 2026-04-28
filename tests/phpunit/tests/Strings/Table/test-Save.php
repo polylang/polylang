@@ -63,8 +63,7 @@ class Table_Test extends PLL_UnitTestCase {
 	 * @return PLL_Table_String
 	 */
 	private function create_table_instance(): PLL_Table_String {
-		$table = new PLL_Table_String( $this->pll_env->model->languages );
-		return $table;
+		return new PLL_Table_String( $this->pll_env->model->languages );
 	}
 
 	/**
