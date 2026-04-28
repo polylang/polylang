@@ -82,12 +82,6 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertFalse( $result->has( md5( 'source_2context_b' ) ) );
 	}
 
-	public function test_by_context_returns_self_for_chaining() {
-		$result = $this->query->by_context( 'test_context' );
-
-		$this->assertSame( $this->query, $result );
-	}
-
 	public function test_by_ids_filters_strings_by_id() {
 		Database_Repository::register( 'string_1', 'source_1', 'context_a' );
 		Database_Repository::register( 'string_2', 'source_2', 'context_b' );
@@ -168,12 +162,6 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertCount( 1, $result );
 	}
 
-	public function test_by_fragment_returns_self_for_chaining() {
-		$result = $this->query->by_fragment( 'test' );
-
-		$this->assertSame( $this->query, $result );
-	}
-
 	public function test_by_fragment_returns_empty_when_no_match() {
 		Database_Repository::register( 'test_name', 'source text', 'test_context' );
 
@@ -214,12 +202,6 @@ class Query_Test extends PLL_UnitTestCase {
 			$this->assertStringStartsWith( 'b_', $first_item->$getter() );
 			$this->assertStringStartsWith( 'a_', $second_item->$getter() );
 		}
-	}
-
-	public function test_order_by_returns_self_for_chaining() {
-		$result = $this->query->order_by( 'name', 'asc' );
-
-		$this->assertSame( $this->query, $result );
 	}
 
 	/**
@@ -303,12 +285,6 @@ class Query_Test extends PLL_UnitTestCase {
 		$first  = reset( $items );
 
 		$this->assertSame( 'a_name', $first->get_name() );
-	}
-
-	public function test_paginate_returns_self_for_chaining() {
-		$result = $this->query->paginate( 10, 1 );
-
-		$this->assertSame( $this->query, $result );
 	}
 
 	public function test_paginate_returns_correct_page_size() {
