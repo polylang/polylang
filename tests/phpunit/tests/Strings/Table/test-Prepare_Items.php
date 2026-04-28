@@ -323,12 +323,12 @@ class Test_Prepare_Items extends PLL_UnitTestCase {
 	public function test_prepare_items_combined_group_and_search() {
 		$this->register_test_strings();
 		$_GET['group'] = 'Animals';
-		$_GET['s']     = 'First';
+		$_GET['s']     = 'string';
 
 		$table = new PLL_Table_String( $this->pll_env->model->languages );
 		$table->prepare_items();
 
-		$this->assertCount( 1, $table->items, 'Only 1 string should match both filters.' );
+		$this->assertCount( 2, $table->items, 'Only 2 strings should match both filters.' );
 		$this->assertSame( 'Animals', array_values( $table->items )[0]['context'], 'String should be in Animals group.' );
 		$this->assertStringContainsString( 'First', array_values( $table->items )[0]['string'], 'String should contain "First".' );
 	}
