@@ -283,9 +283,10 @@ class Query {
 		}
 
 		$fragment = $this->fragment;
+		$languages = $this->languages->get_list();
 		return array_filter(
 			$translatables,
-			function ( Translatable $translatable ) use ( $fragment ) {
+			static function ( Translatable $translatable ) use ( $fragment, $languages ) {
 				if (
 					false !== stripos( $translatable->get_source(), $fragment ) ||
 					false !== stripos( $translatable->get_name(), $fragment )
@@ -293,7 +294,7 @@ class Query {
 					return true;
 				}
 
-				foreach ( $this->languages->get_list() as $language ) {
+				foreach ( $languages as $language ) {
 					if ( false !== stripos( $translatable->get_translation( $language ), $fragment ) ) {
 						return true;
 					}
