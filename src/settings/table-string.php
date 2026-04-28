@@ -254,7 +254,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		$per_page              = $this->get_items_per_page( 'pll_strings_per_page' );
-		$paged                 = ! empty( $_GET['paged'] ) && is_numeric( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
+		$paged                 = $this->get_pagenum();
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		$items = $this->repository->query()

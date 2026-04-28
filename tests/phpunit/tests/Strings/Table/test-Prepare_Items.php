@@ -235,21 +235,21 @@ class Test_Prepare_Items extends PLL_UnitTestCase {
 		$this->assertCount( 2, $table->items, 'Only 2 items per page should be returned.' );
 
 		// Get second page.
-		$_GET['paged'] = 2;
+		$_REQUEST['paged'] = 2;
 		$table = new PLL_Table_String( $this->pll_env->model->languages );
 		$table->prepare_items();
 
 		$this->assertCount( 2, $table->items, 'Second page should also have 2 items.' );
 
 		// Get third page.
-		$_GET['paged'] = 3;
+		$_REQUEST['paged'] = 3;
 		$table = new PLL_Table_String( $this->pll_env->model->languages );
 		$table->prepare_items();
 
 		$this->assertCount( 2, $table->items, 'Third page should have 2 items.' );
 
 		// Get fourth page (should be empty or have no items beyond the 6 total).
-		$_GET['paged'] = 4;
+		$_REQUEST['paged'] = 4;
 		$table = new PLL_Table_String( $this->pll_env->model->languages );
 		$table->prepare_items();
 
