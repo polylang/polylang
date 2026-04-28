@@ -21,7 +21,7 @@ const pllDescription = {
 	},
 
 	/**
-	 * Called when the DOM is ready. Attaches the events to the wrapper.
+	 * Called when the DOM is ready.
 	 */
 	ready: () => {
 		const originTextarea = document.getElementById( 'description' );
