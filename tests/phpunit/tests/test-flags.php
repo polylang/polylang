@@ -41,7 +41,7 @@ class Flags_Test extends PLL_UnitTestCase {
 
 	public function test_default_flag() {
 		$lang = self::$model->get_language( 'en' );
-		$this->assertEquals( plugins_url( '/vendor/wpsyntex/flags/us.svg', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
+		$this->assertEquals( plugins_url( '/vendor/wpsyntex/flags/us.svg', POLYLANG_ROOT_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
 		$this->assertEquals( 1, preg_match( '#<img src="data:image\/svg\+xml,(.+)" alt="English" width="18" height="12" style="(.+)" \/>#', $lang->get_display_flag() ) );
 	}
 

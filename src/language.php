@@ -384,9 +384,9 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 		// Polylang builtin flags.
 		$file = "/vendor/wpsyntex/flags/{$code}.svg";
-		if ( is_readable( POLYLANG_DIR . $file ) ) {
+		if ( is_readable( POLYLANG_ROOT_DIR . $file ) ) {
 			$default_flag = array(
-				'url'    => plugins_url( $file, POLYLANG_FILE ),
+				'url'    => plugins_url( $file, POLYLANG_ROOT_FILE ),
 				'src'    => '',
 				'width'  => 18,
 				'height' => 12,
@@ -394,7 +394,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 			// If base64 encoded flags are preferred.
 			if ( pll_get_constant( 'PLL_ENCODED_FLAGS', true ) ) {
-				$content = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+				$content = file_get_contents( POLYLANG_ROOT_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
 				if ( ! empty( $content ) ) {
 					$default_flag['src'] = 'data:image/svg+xml,' . self::encode_svg( $content );
