@@ -292,9 +292,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param LanguageData $language_data
 	 */
 	public function __construct( array $language_data ) {
-		/** @phpstan-var LanguageData */
-		$language_data = array_diff_key( $language_data, array( 'cache' => array() ) );
-
 		foreach ( $language_data as $prop => $value ) {
 			$this->$prop = $value;
 		}
@@ -613,7 +610,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function to_array( $context = 'display' ) {
 		$language = get_object_vars( $this );
-		$language = array_diff_key( $language, array( 'cache' => array() ) );
+		unset( $language['cache'] );
 
 		if ( 'db' !== $context ) {
 			$language['home_url']   = $this->get_home_url();
