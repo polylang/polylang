@@ -35,10 +35,10 @@ const pllDescription = {
 		pllDescriptionData.forEach( ( data ) => {
 			const wrapper = document.createElement( 'p' );
 			wrapper.setAttribute( 'lang', data.lang );
-			wrapper.setAttribute( 'dir', data.direction );
 
 			const label = document.createElement( 'label' );
 			label.setAttribute( 'for', `description_${ data.slug }` );
+			label.setAttribute( 'dir', data.direction );
 
 			if ( data.flag.src ) {
 				const img = document.createElement( 'img' );
@@ -59,6 +59,7 @@ const pllDescription = {
 			const textarea = originTextarea.cloneNode( true );
 			textarea.setAttribute( 'id', `description_${ data.slug }` );
 			textarea.setAttribute( 'name', `description_${ data.slug }` );
+			textarea.setAttribute( 'dir', data.direction );
 			textarea.innerHTML = data.description;
 
 			wrapper.append( label, document.createElement( 'br' ), textarea ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
