@@ -52,7 +52,6 @@ test.describe(
 		 *
 		 * Steps:
 		 *     - Go to "Appearance" > "Widgets".
-		 *     - Dismiss the welcome guide if present.
 		 *     - Add a Language Switcher block.
 		 *     - Verify the block is displayed without the "block has encountered an error" message.
 		 *     - Verify the block preview lists English and French.
@@ -66,15 +65,6 @@ test.describe(
 
 			// Wait for the block editor to load.
 			await page.waitForSelector( '.edit-widgets-header' );
-
-			// Close the welcome guide if it appears.
-			const closeButton = page.locator(
-				'.edit-widgets-welcome-guide button[aria-label="Close"]'
-			);
-			if ( ( await closeButton.count() ) > 0 ) {
-				await closeButton.click();
-				await page.waitForTimeout( 300 );
-			}
 
 			// Open Block Inserter.
 			await page
