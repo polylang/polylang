@@ -493,7 +493,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 		if ( ! empty( $this->flag ) ) {
 			if ( 'no-screen-reader' === $mode ) {
-				// Hidden from screen readers.
 				$this->cache['admin_flag'][ $mode ] = str_replace( '<img ', '<img aria-hidden="true" tabindex="-1" ', $this->flag );
 			} else {
 				$this->cache['admin_flag'][ $mode ] = str_replace(
@@ -510,7 +509,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 		}
 
 		if ( 'no-screen-reader' === $mode ) {
-			// Hidden from screen readers.
 			$this->cache['admin_flag'][ $mode ] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
 		} else {
 			$this->cache['admin_flag'][ $mode ] = sprintf(
