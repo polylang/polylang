@@ -60,7 +60,7 @@ const pllDescription = {
 			textarea.setAttribute( 'id', `description_${ data.slug }` );
 			textarea.setAttribute( 'name', `description_${ data.slug }` );
 			textarea.setAttribute( 'dir', data.direction );
-			textarea.innerHTML = data.description;
+			textarea.innerHTML = data.description; // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found
 
 			wrapper.append( label, document.createElement( 'br' ), textarea ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 			rows.push( wrapper );
