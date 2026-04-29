@@ -251,6 +251,11 @@ class PLL_Language extends PLL_Language_Deprecated {
 	protected $term_props;
 
 	/**
+	 * @var array
+	 */
+	private $cache = array();
+
+	/**
 	 * Constructor: builds a language object given the corresponding data.
 	 *
 	 * @since 1.2
@@ -287,6 +292,9 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param LanguageData $language_data
 	 */
 	public function __construct( array $language_data ) {
+		/** @phpstan-var LanguageData */
+		$language_data = array_diff_key( $language_data, array( 'cache' => array() ) );
+
 		foreach ( $language_data as $prop => $value ) {
 			$this->$prop = $value;
 		}
@@ -482,35 +490,41 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param 'screen-reader'|'no-screen-reader' $mode
 	 */
 	public function get_admin_flag( string $mode = 'screen-reader' ): string {
+		if ( isset( $this->cache['admin_flag'][ $mode ] ) ) {
+			return $this->cache['admin_flag'][ $mode ];
+		}
+
 		if ( ! empty( $this->flag ) ) {
 			if ( 'no-screen-reader' === $mode ) {
 				// Hidden from screen readers.
-				return str_replace( '<img ', '<img aria-hidden="true" tabindex="-1" ', $this->flag );
+				$this->cache['admin_flag'][ $mode ] = str_replace( '<img ', '<img aria-hidden="true" tabindex="-1" ', $this->flag );
+			} else {
+				$this->cache['admin_flag'][ $mode ] = str_replace(
+					'<img ',
+					sprintf(
+						'<img lang="%1$s" dir="%2$s" ',
+						esc_attr( $this->get_locale( 'display' ) ),
+						$this->is_rtl ? 'rtl' : 'ltr'
+					),
+					$this->flag
+				);
 			}
-
-			return str_replace(
-				'<img ',
-				sprintf(
-					'<img lang="%1$s" dir="%2$s" ',
-					esc_attr( $this->get_locale( 'display' ) ),
-					$this->is_rtl ? 'rtl' : 'ltr'
-				),
-				$this->flag
-			);
+			return $this->cache['admin_flag'][ $mode ];
 		}
 
 		if ( 'no-screen-reader' === $mode ) {
 			// Hidden from screen readers.
-			return sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
+			$this->cache['admin_flag'][ $mode ] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
+		} else {
+			$this->cache['admin_flag'][ $mode ] = sprintf(
+				'<abbr title="%1$s" lang="%2$s" dir="%3$s">%4$s</abbr>',
+				esc_attr( $this->name ),
+				esc_attr( $this->get_locale( 'display' ) ),
+				$this->is_rtl ? 'rtl' : 'ltr',
+				esc_html( strtoupper( $this->slug ) )
+			);
 		}
-
-		return sprintf(
-			'<abbr title="%1$s" lang="%2$s" dir="%3$s">%4$s</abbr>',
-			esc_attr( $this->name ),
-			esc_attr( $this->get_locale( 'display' ) ),
-			$this->is_rtl ? 'rtl' : 'ltr',
-			esc_html( strtoupper( $this->slug ) )
-		);
+		return $this->cache['admin_flag'][ $mode ];
 	}
 
 	/**
@@ -599,6 +613,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function to_array( $context = 'display' ) {
 		$language = get_object_vars( $this );
+		$language = array_diff_key( $language, array( 'cache' => array() ) );
 
 		if ( 'db' !== $context ) {
 			$language['home_url']   = $this->get_home_url();

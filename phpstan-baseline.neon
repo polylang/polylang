@@ -933,7 +933,7 @@ parameters:
 		-
 			message: '#^@readonly property cannot have a default value\.$#'
 			identifier: property.readOnlyByPhpDocDefaultValue
-			count: 7
+			count: 8
 			path: src/language.php
 
 		-
@@ -952,6 +952,10 @@ parameters:
 			message: '#^Property PLL_Language\:\:\$fallbacks \(list\<non\-empty\-string\>\) does not accept array\<non\-empty\-string\>\.$#'
 			identifier: assign.propertyType
 			count: 1
+			path: src/language.php
+
+		-
+			message: '#^@readonly property PLL_Language\:\:\$cache is assigned outside of the constructor\.$#'
 			path: src/language.php
 
 		-
