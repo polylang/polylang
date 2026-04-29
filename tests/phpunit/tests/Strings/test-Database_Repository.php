@@ -63,7 +63,7 @@ class Database_Repository_Test extends PLL_UnitTestCase {
 		Database_Repository::register( 'test_name', 'test_string' );
 
 		$collection = $this->repository->find_all();
-		$id = md5( 'test_stringpll_string' ); // `$source . $context`
+		$id = md5( 'test_stringPolylang' ); // `$source . $context`
 
 		$this->assertTrue( $collection->has( $id ) );
 	}

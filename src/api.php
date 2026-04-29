@@ -184,13 +184,13 @@ function pll_home_url( $lang = '' ) {
  *
  * @param string        $name              A unique name for the string.
  * @param string        $string            The string to register.
- * @param string        $context           Optional, the group in which the string is registered, defaults to 'pll_string' (same as {@see pll__()} text domain).
+ * @param string        $context           Optional, the group in which the string is registered, defaults to 'polylang'.
  * @param bool          $multiline         Optional, true if the string table should display a multiline textarea,
  *                                         false if should display a single line input, defaults to false.
  * @param callable|null $sanitize_callback Optional, the sanitization callback for the string, defaults to null.
  * @return void
  */
-function pll_register_string( $name, $string, $context = 'pll_string', $multiline = false, ?callable $sanitize_callback = null ) {
+function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false, ?callable $sanitize_callback = null ) {
 	if ( PLL() instanceof PLL_Admin_Base ) {
 		Database_Repository::register( $name, $string, $context, $sanitize_callback, $multiline );
 	}

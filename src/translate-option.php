@@ -82,7 +82,7 @@ class PLL_Translate_Option {
 		$this->sanitize_callback = $args['sanitize_callback'] ?? Closure::fromCallable( array( $this, 'default_sanitize_option' ) );
 
 		// Registers the strings.
-		$context = $args['context'] ?? 'pll_string';
+		$context = $args['context'] ?? 'Polylang';
 		$this->register_string_recursive( $context, $name, get_option( $name ), $keys );
 
 		// Translates the strings.

@@ -73,7 +73,7 @@ class Translatable {
 	 *
 	 * @param string        $source            The string to translate.
 	 * @param string        $name              The name as defined in pll_register_string.
-	 * @param string|null   $context           The context/group of the string (default matches pll__() text domain).
+	 * @param string|null   $context           The context of the string.
 	 * @param callable|null $sanitize_callback The sanitization callback for the string.
 	 * @param bool          $multiline         Whether the string is multiline.
 	 */
@@ -84,7 +84,7 @@ class Translatable {
 		?callable $sanitize_callback = null,
 		bool $multiline = false
 	) {
-		$context                 = $context ?? 'pll_string';
+		$context                 = $context ?? 'Polylang';
 		$this->id                = md5( $source . $context );
 		$this->source            = $source;
 		$this->name              = $name;
