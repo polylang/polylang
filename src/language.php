@@ -473,17 +473,17 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string $context Optional. Allows to modify the markup depending on how the flag is used. Possible values are:
-	 *                        - `full`: the flag has everything,
-	 *                        - `minimal`: the flag is preceded or followed by a text that would make it redundant.
-	 *                        Default is `full`.
+	 * @param string $mode Optional. Allows to modify the markup depending on how the flag is used. Possible values are:
+	 *                     - `screen-reader`: the flag can be seen by screen readers,
+	 *                     - `no-screen-reader`: the flag is hidden from screen readers: it is preceded or followed by a
+	 *                     text (language name for example) that would make it redundant. Default is `screen-reader`.
 	 * @return string
 	 *
-	 * @phpstan-param 'full'|'minimal' $context
+	 * @phpstan-param 'screen-reader'|'no-screen-reader' $mode
 	 */
-	public function get_admin_flag( string $context = 'full' ): string {
+	public function get_admin_flag( string $mode = 'screen-reader' ): string {
 		if ( ! empty( $this->flag ) ) {
-			if ( 'minimal' === $context ) {
+			if ( 'no-screen-reader' === $mode ) {
 				// Hidden from screen readers.
 				return str_replace( '<img ', '<img aria-hidden="true" tabindex="-1" ', $this->flag );
 			}
@@ -499,7 +499,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 			);
 		}
 
-		if ( 'minimal' === $context ) {
+		if ( 'no-screen-reader' === $mode ) {
 			// Hidden from screen readers.
 			return sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
 		}

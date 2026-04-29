@@ -198,7 +198,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	private function get_edit_item_link_html( string $url, PLL_Language $language, int $item_id, string $item_name, string $mode ): string {
 		if ( 'list_current' === $mode ) {
-			$flag  = $language->get_admin_flag( 'minimal' );
+			$flag  = $language->get_admin_flag( 'no-screen-reader' );
 			$class = 'pll_column_flag';
 		} else {
 			$flag  = '';
