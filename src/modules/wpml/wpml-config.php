@@ -693,7 +693,7 @@ class PLL_WPML_Config {
 	/**
 	 * Tells if the given field is supported.
 	 *
-	 * @since 3.9
+	 * @since 3.8.4
 	 *
 	 * @param SimpleXMLElement $field A XML node.
 	 * @return bool
