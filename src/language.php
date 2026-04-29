@@ -23,15 +23,15 @@
  *     slug: non-empty-string,
  *     locale: non-empty-string,
  *     w3c: non-empty-string,
- *     flag_code: non-empty-string,
+ *     flag_code: string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
  *     facebook?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
  *     host: non-empty-string,
- *     flag_url: non-empty-string,
- *     flag: non-empty-string,
+ *     flag_url: string,
+ *     flag: string,
  *     custom_flag_url?: string,
  *     custom_flag?: string,
  *     page_on_front: int<0, max>,
@@ -162,8 +162,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * Code of the flag.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
 	 */
 	public $flag_code;
 
@@ -171,8 +169,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * URL of the flag. Always set to the main domain.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
 	 */
 	public $flag_url;
 
@@ -180,8 +176,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * HTML markup of the flag.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
 	 */
 	public $flag;
 
