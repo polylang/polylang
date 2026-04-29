@@ -59,7 +59,7 @@ const pllDescription = {
 			const textarea = originTextarea.cloneNode( true );
 			textarea.setAttribute( 'id', `description_${ data.slug }` );
 			textarea.setAttribute( 'name', `description_${ data.slug }` );
-			textarea.value = data.description;
+			textarea.innerHTML = data.description;
 
 			wrapper.append( label, document.createElement( 'br' ), textarea ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 			rows.push( wrapper );
