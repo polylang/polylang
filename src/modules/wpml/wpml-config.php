@@ -699,17 +699,17 @@ class PLL_WPML_Config {
 	 * @return bool
 	 */
 	private function is_supported_field( SimpleXMLElement $field ): bool {
-		$child_type = $this->get_field_attribute( $field, 'type' );
-
-		if ( in_array( $child_type, array( 'link', 'post-ids', 'taxonomy-ids' ), true ) ) {
+		if ( $this->get_field_attribute( $field, 'type' ) !== '' ) {
+			// No `type` supported for now.
 			return false;
 		}
 
-		if ( $field->getName() !== 'key' ) {
-			return true;
+		if ( $field->getName() === 'key' ) {
+			// The only supported `search-method` is `wildcards` (which is the default value).
+			return in_array( $this->get_field_attribute( $field, 'search-method' ), array( '', 'wildcards' ), true );
 		}
 
-		return 'regex' !== $this->get_field_attribute( $field, 'search-method' );
+		return true;
 	}
 
 	/**
