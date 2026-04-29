@@ -80,9 +80,9 @@ class PLL_Admin_Filters extends PLL_Filters {
 			$description = is_string( $description ) ? $description : '';
 
 			$data[] = array(
-				'slug'        => $lang->slug,
-				'name'        => $lang->name,
-				'lang'        => $lang->get_locale( 'display' ),
+				'slug'        => esc_attr( $lang->slug ),
+				'name'        => esc_html( $lang->name ),
+				'lang'        => esc_attr( $lang->get_locale( 'display' ) ),
 				'direction'   => $lang->is_rtl ? 'rtl' : 'ltr',
 				'flag'        => PLL_Language::get_flag_information( $lang->flag_code ),
 				'description' => sanitize_user_field( 'description', $description, $profileuser->ID, 'edit' ),
