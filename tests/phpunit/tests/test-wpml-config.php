@@ -438,8 +438,11 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		);
 		$expected_parsing_rules_for_attributes = array(
 			'my-plugin/my-block' => array(
-				'headingTitle' => true,
-				'text'         => true,
+				'headingTitle'  => true,
+				'text'          => true,
+				'wildcardsData' => array(
+					'foo*' => true,
+				),
 			),
 			'my-plugin/my-block-2' => array(
 				'iconLabel' => true,

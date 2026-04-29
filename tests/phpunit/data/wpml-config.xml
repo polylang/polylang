@@ -95,6 +95,9 @@
 				<key name="regexData">
 					<key name="/^[^_]\S+$/" search-method="regex" />
 				</key>
+				<key name="wildcardsData">
+					<key name="foo*" search-method="wildcards" />
+				</key>
 			</gutenberg-block>
 			<gutenberg-block type="my-plugin/my-block-2" translate="1">
 				<xpath>//div/p/a</xpath>
