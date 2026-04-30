@@ -7,7 +7,7 @@ namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
 
 use PLL_Language;
 use WP_Syntex\Polylang\Language_Switcher\Abstract_Element;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Generic as Settings;
+use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

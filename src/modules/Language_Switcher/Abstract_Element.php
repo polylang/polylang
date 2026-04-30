@@ -8,7 +8,7 @@ namespace WP_Syntex\Polylang\Language_Switcher;
 use WP_Post;
 use PLL_Language;
 use PLL_Frontend_Links;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Generic as Settings;
+use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

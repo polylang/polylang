@@ -5,7 +5,7 @@
 
 namespace WP_Syntex\Polylang\Language_Switcher;
 
-use WP_Syntex\Polylang\Language_Switcher\Settings\Generic as Settings;
+use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

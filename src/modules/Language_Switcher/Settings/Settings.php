@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-class Generic {
+class Settings {
 	private const LEGACY_ENTRIES = array(
 		'dropdown'           => 1,
 		'echo'               => 1,
