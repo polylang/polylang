@@ -16,15 +16,30 @@ defined( 'ABSPATH' ) || exit;
  */
 class Switcher {
 	/**
+	 * @var Settings
+	 */
+	private Settings $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.9
+	 *
+	 * @param Settings $settings  Instance of `Settings`.
+	 */
+	public function __construct( Settings $settings ) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * Prints the switcher.
 	 *
 	 * @since 3.9
 	 *
-	 * @param Settings $settings Settings.
 	 * @return void
 	 */
-	public function print( Settings $settings ): void {
-		echo $this->get( $settings ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	public function print(): void {
+		echo $this->get(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -32,17 +47,16 @@ class Switcher {
 	 *
 	 * @since 3.9
 	 *
-	 * @param Settings $settings Settings.
 	 * @return string
 	 */
-	public function get( Settings $settings ): string {
-		$switcher = $settings->get_switcher();
+	public function get(): string {
+		$switcher = $this->settings->get_switcher();
 
 		if ( empty( $switcher ) ) {
 			return '';
 		}
 
-		$html = $this->maybe_filter_legacy_switcher( $switcher->get(), $settings );
+		$html = $this->maybe_filter_legacy_switcher( $switcher->get() );
 
 		/**
 		 * Filter the whole switcher markup.
@@ -52,7 +66,7 @@ class Switcher {
 		 * @param string   $html     Switcher markup.
 		 * @param Settings $settings Switcher settings.
 		 */
-		return (string) apply_filters( 'pll_language_switcher', $html, $settings );
+		return (string) apply_filters( 'pll_language_switcher', $html, $this->settings );
 	}
 
 	/**
@@ -60,11 +74,10 @@ class Switcher {
 	 *
 	 * @since 3.9
 	 *
-	 * @param Settings $settings Settings.
 	 * @return Abstract_Element[]
 	 */
-	public function get_elements( Settings $settings ): array {
-		$switcher = $settings->get_switcher();
+	public function get_elements(): array {
+		$switcher = $this->settings->get_switcher();
 
 		if ( empty( $switcher ) ) {
 			return array();
@@ -79,16 +92,15 @@ class Switcher {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string   $html     The switcher's markup.
-	 * @param Settings $settings Settings.
+	 * @param string $html The switcher's markup.
 	 * @return string
 	 */
-	private function maybe_filter_legacy_switcher( string $html, Settings $settings ): string {
+	private function maybe_filter_legacy_switcher( string $html ): string {
 		if ( ! has_filter( 'pll_the_languages' ) ) {
 			return $html;
 		}
 
-		$args = $settings->convert_to_legacy( $settings->to_array() );
+		$args = $this->settings->convert_to_legacy( $this->settings->to_array() );
 
 		/**
 		 * Filter the whole HTML markup returned by the 'pll_the_languages' template tag.
