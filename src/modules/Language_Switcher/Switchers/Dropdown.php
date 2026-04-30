@@ -84,7 +84,7 @@ class Dropdown extends Abstract_Switcher {
 	private function get_current_item(): string {
 		$current_element = null;
 
-		foreach ( $this->get_all_elements() as $element ) {
+		foreach ( $this->elements as $element ) {
 			if ( $element->is_current ) {
 				$current_element = $element;
 				break;

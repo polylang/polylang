@@ -23,9 +23,9 @@ abstract class Abstract_Switcher {
 	protected Settings $settings;
 
 	/**
-	 * @var Abstract_Element[]|null
+	 * @var Abstract_Element[]
 	 */
-	private ?array $elements = null;
+	protected array $elements = array();
 
 	/**
 	 * Constructor.
@@ -36,6 +36,10 @@ abstract class Abstract_Switcher {
 	 */
 	public function __construct( Settings $settings ) {
 		$this->settings = $settings;
+
+		foreach ( $this->settings->get_links()->model->languages->get_list() as $language ) {
+			$this->elements[ $language->slug ] = $this->get_element( $language );
+		}
 	}
 
 	/**
@@ -60,7 +64,7 @@ abstract class Abstract_Switcher {
 		$out      = array();
 		$is_first = true;
 
-		foreach ( $this->get_all_elements() as $element ) {
+		foreach ( $this->elements as $element ) {
 			if ( $this->settings->hide_current && $element->is_current ) {
 				// Hide current item.
 				continue;
@@ -92,29 +96,6 @@ abstract class Abstract_Switcher {
 		}
 
 		return $out;
-	}
-
-	/**
-	 * Returns all the switcher's data, even the elements that should be excluded according to the settings.
-	 *
-	 * @since 3.9
-	 *
-	 * @return Abstract_Element[]
-	 *
-	 * @phpstan-return array<non-empty-string, Abstract_Element>
-	 */
-	protected function get_all_elements(): array {
-		if ( is_array( $this->elements ) ) {
-			return $this->elements;
-		}
-
-		$this->elements = array();
-
-		foreach ( $this->settings->get_links()->model->languages->get_list() as $language ) {
-			$this->elements[ $language->slug ] = $this->get_element( $language );
-		}
-
-		return $this->elements;
 	}
 
 	/**
