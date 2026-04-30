@@ -493,12 +493,12 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 		if ( ! empty( $this->flag ) ) {
 			if ( 'no-screen-reader' === $mode ) {
-				$this->cache['admin_flag'][ $mode ] = str_replace( '<img ', '<img aria-hidden="true" tabindex="-1" ', $this->flag );
+				$this->cache['admin_flag'][ $mode ] = str_replace( '<img', '<img aria-hidden="true" tabindex="-1"', $this->flag );
 			} else {
 				$this->cache['admin_flag'][ $mode ] = str_replace(
-					'<img ',
+					'<img',
 					sprintf(
-						'<img lang="%1$s" dir="%2$s" ',
+						'<img lang="%1$s" dir="%2$s"',
 						esc_attr( $this->get_locale( 'display' ) ),
 						$this->is_rtl ? 'rtl' : 'ltr'
 					),
