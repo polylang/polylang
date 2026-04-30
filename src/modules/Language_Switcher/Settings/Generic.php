@@ -8,6 +8,7 @@ namespace WP_Syntex\Polylang\Language_Switcher\Settings;
 use PLL_Links;
 use PLL_Switcher;
 use PLL_Admin_Links;
+use WP_Syntex\Polylang\Language_Switcher\Switchers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -209,6 +210,30 @@ class Generic {
 		$properties['alignment'] = is_rtl() ? 'right' : 'left';
 
 		return $properties;
+	}
+
+	/**
+	 * Returns an instance of the switcher.
+	 *
+	 * @since 3.9
+	 *
+	 * @return Switchers\Abstract_Switcher|null
+	 */
+	public function get_switcher(): ?Switchers\Abstract_Switcher {
+		switch ( $this->layout ) {
+			case 'horizontal':
+			case 'vertical':
+				return new Switchers\Nav( $this );
+
+			case 'dropdown':
+				return new Switchers\Dropdown( $this );
+
+			case 'select':
+				return new Switchers\Select( $this );
+
+			default:
+				return null;
+		}
 	}
 
 	/**

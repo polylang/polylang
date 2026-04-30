@@ -36,22 +36,10 @@ class Switcher {
 	 * @return string
 	 */
 	public function get( Settings $settings ): string {
-		switch ( $settings->layout ) {
-			case 'horizontal':
-			case 'vertical':
-				$switcher = new Switchers\Nav( $settings, $this->get_elements( $settings ) );
-				break;
+		$switcher = $settings->get_switcher();
 
-			case 'dropdown':
-				$switcher = new Switchers\Dropdown( $settings, $this->get_elements( $settings ) );
-				break;
-
-			case 'select':
-				$switcher = new Switchers\Select( $settings, $this->get_elements( $settings ) );
-				break;
-
-			default:
-				return '';
+		if ( empty( $switcher ) ) {
+			return '';
 		}
 
 		$html = $this->maybe_filter_legacy_switcher( $switcher->get(), $settings );
@@ -73,10 +61,16 @@ class Switcher {
 	 * @since 3.9
 	 *
 	 * @param Settings $settings Settings.
-	 * @return Elements
+	 * @return Abstract_Element[]
 	 */
-	public function get_elements( Settings $settings ): Elements {
-		return new Elements( $settings );
+	public function get_elements( Settings $settings ): array {
+		$switcher = $settings->get_switcher();
+
+		if ( empty( $switcher ) ) {
+			return array();
+		}
+
+		return $switcher->get_elements();
 	}
 
 	/**

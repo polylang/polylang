@@ -5,10 +5,9 @@
 
 namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
 
+use PLL_Language;
 use WP_Syntex\Polylang\Language_Switcher\Assets;
-use WP_Syntex\Polylang\Language_Switcher\Elements;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Generic as Settings;
-use WP_Syntex\Polylang\Language_Switcher\Switchers\Types\Select as Type;
+use WP_Syntex\Polylang\Language_Switcher\Switchers\Elements\Select as Element;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,18 +18,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Select extends Abstract_Switcher {
 	/**
-	 * Constructor.
-	 *
-	 * @since 3.9
-	 *
-	 * @param Settings $settings Instance of `Settings`.
-	 * @param Elements $elements Instance of `Elements`.
-	 */
-	public function __construct( Settings $settings, Elements $elements ) {
-		parent::__construct( $settings, $elements, new Type( $settings ) );
-	}
-
-	/**
 	 * Returns the markup of the switcher.
 	 *
 	 * @since 3.9
@@ -40,8 +27,8 @@ class Select extends Abstract_Switcher {
 	public function get(): string {
 		$out = '';
 
-		foreach ( $this->elements->get() as $element ) {
-			$out .= $this->item_type->get_row( $element );
+		foreach ( $this->get_elements() as $element ) {
+			$out .= $element->get_row();
 		}
 
 		if ( empty( $out ) || ! $this->settings->show_wrapper ) {
@@ -50,6 +37,27 @@ class Select extends Abstract_Switcher {
 
 		Assets::enqueue_frontend_scripts();
 
-		return $this->item_type->wrap( $out );
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = sprintf(
+			'<div class="%1$s"><label class="screen-reader-text" for="%2$s">%3$s</label><select class="pll-switcher-select" id="%2$s">%4$s</select></div>',
+			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
+			esc_attr( $this->settings->unique_id ),
+			esc_html( __( 'Choose a language', 'polylang' ) ),
+			"{$cr}{$out}"
+		);
+
+		return "{$cr}{$out}{$cr}";
+	}
+
+	/**
+	 * Returns an instance of `Elements\Select`.
+	 *
+	 * @since 3.9
+	 *
+	 * @param PLL_Language $language Instance of `PLL_Language`.
+	 * @return Element
+	 */
+	protected function get_element( PLL_Language $language ): Element {
+		return new Element( $language, $this->settings );
 	}
 }

@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-class Element {
+abstract class Abstract_Element {
 	/**
 	 * @since 3.9
 	 *
@@ -123,7 +123,7 @@ class Element {
 	/**
 	 * @var Settings
 	 */
-	private Settings $settings;
+	protected Settings $settings;
 
 	/**
 	 * Constructor.
@@ -162,6 +162,26 @@ class Element {
 		}
 
 		$this->set_url();
+	}
+
+	/**
+	 * Returns the markup of a row.
+	 *
+	 * @since 3.9
+	 *
+	 * @return string
+	 */
+	abstract public function get_row(): string;
+
+	/**
+	 * Returns the markup of the label of a row.
+	 *
+	 * @since 3.9
+	 *
+	 * @return string
+	 */
+	public function get_row_inner(): string {
+		return esc_html( $this->label );
 	}
 
 	/**

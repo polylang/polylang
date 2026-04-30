@@ -5,11 +5,9 @@
 
 namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
 
+use PLL_Language;
 use WP_Syntex\Polylang\Language_Switcher\Assets;
-use WP_Syntex\Polylang\Language_Switcher\Element;
-use WP_Syntex\Polylang\Language_Switcher\Elements;
-use WP_Syntex\Polylang\Language_Switcher\Switchers\Types\Nav as Type;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Generic as Settings;
+use WP_Syntex\Polylang\Language_Switcher\Switchers\Elements\Nav as Element;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,18 +18,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Dropdown extends Abstract_Switcher {
 	/**
-	 * Constructor.
-	 *
-	 * @since 3.9
-	 *
-	 * @param Settings $settings Instance of `Settings`.
-	 * @param Elements $elements Instance of `Elements`.
-	 */
-	public function __construct( Settings $settings, Elements $elements ) {
-		parent::__construct( $settings, $elements, new Type( $settings ) );
-	}
-
-	/**
 	 * Returns the markup of the switcher.
 	 *
 	 * @since 3.9
@@ -39,15 +25,16 @@ class Dropdown extends Abstract_Switcher {
 	 * @return string
 	 */
 	public function get(): string {
-		$out      = '';
-		$current  = $this->elements->get_current();
+		$current_item = $this->get_current_item();
 
-		if ( empty( $current ) ) {
-			return $out;
+		if ( empty( $current_item ) ) {
+			return '';
 		}
 
-		foreach ( $this->elements->get() as $element ) {
-			$out .= $this->item_type->get_row( $element );
+		$out = '';
+
+		foreach ( $this->get_elements() as $element ) {
+			$out .= $element->get_row();
 		}
 
 		if ( empty( $out ) || ! $this->settings->show_wrapper ) {
@@ -56,14 +43,35 @@ class Dropdown extends Abstract_Switcher {
 
 		Assets::enqueue_frontend_scripts();
 
-		return $this->item_type->wrap(
-			sprintf(
-				'%1$s%2$s<ul>%3$s</ul>',
-				$this->get_current_item( $current ),
-				$this->get_button(),
-				$out
-			)
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = sprintf(
+			"{$cr}%s{$cr}%s{$cr}<ul>{$cr}%s</ul>",
+			$current_item,
+			$this->get_button(),
+			$out
 		);
+		$out = sprintf(
+			'<%1$s id="%2$s" class="%3$s" aria-label="%4$s">%5$s</%1$s>',
+			$this->supports_html5() ? 'nav' : 'div',
+			esc_attr( $this->settings->unique_id ),
+			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
+			esc_attr( __( 'Choose a language', 'polylang' ) ),
+			$out
+		);
+
+		return "{$cr}{$out}{$cr}";
+	}
+
+	/**
+	 * Returns an instance of `Elements\Nav`.
+	 *
+	 * @since 3.9
+	 *
+	 * @param PLL_Language $language Instance of `PLL_Language`.
+	 * @return Element
+	 */
+	protected function get_element( PLL_Language $language ): Element {
+		return new Element( $language, $this->settings );
 	}
 
 	/**
@@ -71,15 +79,27 @@ class Dropdown extends Abstract_Switcher {
 	 *
 	 * @since 3.9
 	 *
-	 * @param Element $element An element.
 	 * @return string
 	 */
-	private function get_current_item( Element $element ): string {
+	private function get_current_item(): string {
+		$current_element = null;
+
+		foreach ( $this->get_all_elements() as $element ) {
+			if ( $element->is_current ) {
+				$current_element = $element;
+				break;
+			}
+		}
+
+		if ( empty( $current_element ) ) {
+			return '';
+		}
+
 		return sprintf(
 			'<a lang="%1$s" hreflang="%1$s" href="%2$s" class="current-lang" aria-current="true">%3$s</a>',
-			esc_attr( $element->locale ),
-			esc_url( $element->url ),
-			$this->item_type->get_row_inner( $element )
+			esc_attr( $current_element->locale ),
+			esc_url( $current_element->url ),
+			$current_element->get_row_inner()
 		);
 	}
 
