@@ -509,6 +509,10 @@ class PLL_WPML_Config {
 				}
 
 				foreach ( $block->children() as $child ) {
+					if ( ! $this->is_supported_field( $child ) ) {
+						continue;
+					}
+
 					$rule      = '';
 					$child_tag = $child->getName();
 
@@ -670,6 +674,10 @@ class PLL_WPML_Config {
 		$sub_attributes = array();
 
 		foreach ( $children as $child ) {
+			if ( ! $this->is_supported_field( $child ) ) {
+				continue;
+			}
+
 			$sub = $this->get_field_attributes( $child );
 
 			if ( empty( $sub ) ) {
@@ -680,6 +688,28 @@ class PLL_WPML_Config {
 		}
 
 		return $sub_attributes;
+	}
+
+	/**
+	 * Tells if the given field is supported.
+	 *
+	 * @since 3.8.4
+	 *
+	 * @param SimpleXMLElement $field A XML node.
+	 * @return bool
+	 */
+	private function is_supported_field( SimpleXMLElement $field ): bool {
+		if ( $this->get_field_attribute( $field, 'type' ) !== '' ) {
+			// No `type` supported for now.
+			return false;
+		}
+
+		if ( $field->getName() === 'key' ) {
+			// The only supported `search-method` is `wildcards` (which is the default value).
+			return in_array( $this->get_field_attribute( $field, 'search-method' ), array( '', 'wildcards' ), true );
+		}
+
+		return true;
 	}
 
 	/**

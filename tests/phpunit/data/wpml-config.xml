@@ -80,8 +80,24 @@
 			<gutenberg-block type="my-plugin/my-block" translate="1">
 				<xpath>//figure/figcaption</xpath>
 				<xpath>//figure/img/@alt</xpath>
+				<xpath type="link">//a/@href</xpath>
+				<xpath type="post-ids" sub-type="post">//*[@name="foo_form_post_ids"]/@value</xpath>
+				<xpath type="taxonomy-ids" sub-type="category">//*[@name="foo_form_category_ids"]/@value</xpath>
 				<key name="headingTitle" />
 				<key name="text" />
+				<key name="url" type="link" />
+				<key name="PostIds">
+					<key name="*" type="post-ids" sub-type="post" />
+				</key>
+				<key name="TermIds">
+					<key name="*" type="taxonomy-ids" sub-type="category" />
+				</key>
+				<key name="regexData">
+					<key name="/^[^_]\S+$/" search-method="regex" />
+				</key>
+				<key name="wildcardsData">
+					<key name="foo*" search-method="wildcards" />
+				</key>
 			</gutenberg-block>
 			<gutenberg-block type="my-plugin/my-block-2" translate="1">
 				<xpath>//div/p/a</xpath>
