@@ -68,11 +68,20 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @return void
 	 */
 	public function personal_options( $profileuser ): void {
-		if ( ! wp_script_is( 'pll_user', 'enqueued' ) ) {
+		$screen = get_current_screen();
+
+		if ( empty( $screen ) || ! in_array( $screen->base, array( 'profile', 'user-edit' ), true ) ) {
 			return;
 		}
 
-		$data = array();
+		if ( ! $this->model->has_languages() ) {
+			return;
+		}
+
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$data   = array();
+
+		wp_enqueue_script( 'pll_user', plugins_url( "/js/build/user{$suffix}.js", POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION, array( 'in_footer' => true ) );
 
 		foreach ( $this->model->languages->get_list() as $lang ) {
 			$meta        = $lang->is_default ? 'description' : "description_{$lang->slug}";
