@@ -176,9 +176,11 @@ function pll_is_edit_rest_request( WP_REST_Request $request ): bool {
 /**
  * Enqueues a JS script.
  *
+ * The filename is evaluated by removing the first 4 characters of the handle (`pll-` or `pll_`).
+ *
  * @since 3.9
  *
- * @param string   $name         The filename of the script (without the extension).
+ * @param string   $handle       The handle of the script.
  * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
  * @param array $args     {
  *     Optional. An array of additional script loading strategies. Default empty array.
@@ -189,17 +191,19 @@ function pll_is_edit_rest_request( WP_REST_Request $request ): bool {
  * }
  * @return void
  */
-function pll_enqueue_script( string $name, array $dependencies = array(), array $args = array() ): void {
-	pll_register_script( $name, $dependencies, $args );
-	wp_scripts()->enqueue( 'pll-' . $name );
+function pll_enqueue_script( string $handle, array $dependencies = array(), array $args = array() ): void {
+	pll_register_script( $handle, $dependencies, $args );
+	wp_scripts()->enqueue( $handle );
 }
 
 /**
  * Registers a JS script.
  *
+ * The filename is evaluated by removing the first 4 characters of the handle (`pll-` or `pll_`).
+ *
  * @since 3.9
  *
- * @param string   $name         The filename of the script (without the extension).
+ * @param string   $handle       The handle of the script.
  * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
  * @param array $args     {
  *     Optional. An array of additional script loading strategies. Default empty array.
@@ -210,10 +214,9 @@ function pll_enqueue_script( string $name, array $dependencies = array(), array 
  * }
  * @return void
  */
-function pll_register_script( string $name, array $dependencies = array(), array $args = array() ): void {
-	$handle  = 'pll-' . $name;
+function pll_register_script( string $handle, array $dependencies = array(), array $args = array() ): void {
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-	$file    = '/js/build/' . $name . $suffix . '.js';
+	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.js';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = filemtime( POLYLANG_ROOT_DIR . $file );
 	wp_register_script( $handle, $src, $dependencies, $version, $args );
@@ -222,30 +225,33 @@ function pll_register_script( string $name, array $dependencies = array(), array
 /**
  * Enqueues a CSS stylesheet.
  *
+ * The filename is evaluated by removing the first 4 characters of the handle (`pll-` or `pll_`).
+ *
  * @since 3.9
  *
- * @param string   $name         The filename of the stylesheet (without the extension).
+ * @param string   $handle       The handle of the stylesheet.
  * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
  * @return void
  */
-function pll_enqueue_style( string $name, array $dependencies = array() ): void {
-	pll_register_style( $name, $dependencies );
-	wp_styles()->enqueue( 'pll-' . $name );
+function pll_enqueue_style( string $handle, array $dependencies = array() ): void {
+	pll_register_style( $handle, $dependencies );
+	wp_styles()->enqueue( $handle );
 }
 
 /**
  * Registers a CSS stylesheet.
  *
+ * The filename is evaluated by removing the first 4 characters of the handle (`pll-` or `pll_`).
+ *
  * @since 3.9
  *
- * @param string   $name         The filename of the stylesheet (without the extension).
+ * @param string   $handle       The handle of the stylesheet.
  * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
  * @return void
  */
-function pll_register_style( string $name, array $dependencies = array() ): void {
-	$handle  = 'pll-' . $name;
+function pll_register_style( string $handle, array $dependencies = array() ): void {
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-	$file    = '/js/build/' . $name . $suffix . '.css';
+	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.css';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = filemtime( POLYLANG_ROOT_DIR . $file );
 	wp_register_style( $handle, $src, $dependencies, $version );
