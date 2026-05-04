@@ -171,7 +171,7 @@ abstract class Abstract_Element {
 	 *
 	 * @return string
 	 */
-	abstract public function get_row(): string;
+	abstract public function get(): string;
 
 	/**
 	 * Returns the markup of the label of a row.
@@ -180,7 +180,7 @@ abstract class Abstract_Element {
 	 *
 	 * @return string
 	 */
-	public function get_row_inner(): string {
+	public function get_label(): string {
 		return esc_html( $this->label );
 	}
 

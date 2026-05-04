@@ -34,7 +34,7 @@ class Dropdown extends Abstract_Switcher {
 		$out = '';
 
 		foreach ( $this->get_elements() as $element ) {
-			$out .= $element->get_row();
+			$out .= $element->get();
 		}
 
 		if ( empty( $out ) || ! $this->settings->show_wrapper ) {
@@ -99,7 +99,7 @@ class Dropdown extends Abstract_Switcher {
 			'<a lang="%1$s" hreflang="%1$s" href="%2$s" class="current-lang" aria-current="true">%3$s</a>',
 			esc_attr( $current_element->locale ),
 			esc_url( $current_element->url ),
-			$current_element->get_row_inner()
+			$current_element->get_label()
 		);
 	}
 

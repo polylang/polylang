@@ -27,7 +27,7 @@ class Nav extends Abstract_Switcher {
 		$out = '';
 
 		foreach ( $this->get_elements() as $element ) {
-			$out .= $element->get_row();
+			$out .= $element->get();
 		}
 
 		if ( empty( $out ) || ! $this->settings->show_wrapper ) {

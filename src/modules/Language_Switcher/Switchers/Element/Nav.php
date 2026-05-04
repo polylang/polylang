@@ -20,7 +20,7 @@ class Nav extends Abstract_Element {
 	 *
 	 * @return string
 	 */
-	public function get_row(): string {
+	public function get(): string {
 		$link_atts = sprintf(
 			'lang="%1$s" hreflang="%1$s" href="%2$s"',
 			esc_attr( $this->locale ),
@@ -42,7 +42,7 @@ class Nav extends Abstract_Element {
 			'<li class="%s"><a %s>%s</a></li>',
 			esc_attr( implode( ' ', $this->item_classes ) ),
 			$link_atts,
-			$this->get_row_inner()
+			$this->get_label()
 		);
 
 		if ( ! $this->settings->preserve_spacing ) {
@@ -59,7 +59,7 @@ class Nav extends Abstract_Element {
 	 *
 	 * @return string
 	 */
-	public function get_row_inner(): string {
+	public function get_label(): string {
 		if ( ! empty( $this->flag ) && ! empty( $this->label ) ) {
 			return sprintf(
 				'<span class="pll-switcher-flag">%s</span><span>%s</span>',

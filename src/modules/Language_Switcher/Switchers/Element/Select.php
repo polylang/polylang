@@ -20,7 +20,7 @@ class Select extends Abstract_Element {
 	 *
 	 * @return string
 	 */
-	public function get_row(): string {
+	public function get(): string {
 		$item_atts = sprintf(
 			'lang="%1$s" value="%2$s"%3$s',
 			esc_attr( $this->locale ),
@@ -38,7 +38,7 @@ class Select extends Abstract_Element {
 		$out = sprintf(
 			'<option %s>%s</option>',
 			$item_atts,
-			$this->get_row_inner()
+			$this->get_label()
 		);
 
 		if ( ! $this->settings->preserve_spacing ) {
