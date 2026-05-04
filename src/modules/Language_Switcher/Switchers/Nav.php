@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
 
 use PLL_Language;
-use WP_Syntex\Polylang\Language_Switcher\Switchers\Elements\Nav as Element;
+use WP_Syntex\Polylang\Language_Switcher\Switchers\Element\Nav as Element;
 
 defined( 'ABSPATH' ) || exit;
 

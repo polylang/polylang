@@ -7,7 +7,7 @@ namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
 
 use PLL_Language;
 use WP_Syntex\Polylang\Language_Switcher\Assets;
-use WP_Syntex\Polylang\Language_Switcher\Switchers\Elements\Select as Element;
+use WP_Syntex\Polylang\Language_Switcher\Switchers\Element\Select as Element;
 
 defined( 'ABSPATH' ) || exit;
 

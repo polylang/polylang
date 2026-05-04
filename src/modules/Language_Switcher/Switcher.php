@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Language_Switcher;
 
 use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
+use WP_Syntex\Polylang\Language_Switcher\Switchers\Element\Abstract_Element;
 
 defined( 'ABSPATH' ) || exit;
 

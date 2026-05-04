@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher;
+namespace WP_Syntex\Polylang\Language_Switcher\Switchers\Element;
 
 use WP_Post;
 use PLL_Language;
