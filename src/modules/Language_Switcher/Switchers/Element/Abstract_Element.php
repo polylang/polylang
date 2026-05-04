@@ -207,9 +207,9 @@ abstract class Abstract_Element {
 	 * @return void
 	 */
 	private function set_url(): void {
-		$this->set_original_url();
+		$url = $this->get_original_url();
 
-		if ( empty( $this->url ) ) {
+		if ( empty( $url ) ) {
 			$this->has_translations = false;
 			$this->item_classes[]   = 'no-translation';
 		}
@@ -224,28 +224,30 @@ abstract class Abstract_Element {
 		 * @param string $slug   The language code.
 		 * @param string $locale The language locale.
 		 */
-		$url = apply_filters( 'pll_the_language_link', $this->url, $this->language->slug, $this->language->locale );
+		$url = apply_filters( 'pll_the_language_link', $url, $this->language->slug, $this->language->locale );
 
 		if ( is_null( $url ) ) {
 			// Backward compatibility.
-			$this->url = '';
-		} elseif ( is_string( $url ) ) {
-			$this->url = $url;
+			$url = '';
+		} elseif ( ! is_string( $url ) ) {
+			return;
 		}
 
-		if ( empty( $this->url ) || $this->settings->force_home ) {
+		if ( empty( $url ) || $this->settings->force_home ) {
 			$this->url = $this->settings->get_links()->get_home_url( $this->language );
+		} else {
+			$this->url = $url;
 		}
 	}
 
 	/**
-	 * Sets the original URL of the element.
+	 * Returns the original URL of the element.
 	 *
 	 * @since 3.9
 	 *
-	 * @return void
+	 * @return string
 	 */
-	private function set_original_url(): void {
+	private function get_original_url(): string {
 		global $post;
 
 		// Priority to the post passed in parameters.
@@ -253,15 +255,13 @@ abstract class Abstract_Element {
 			$tr_id = $this->settings->get_links()->model->post->get( $this->settings->post_id, $this->language );
 
 			if ( $tr_id && $this->settings->get_links()->model->post->current_user_can_read( $tr_id ) ) {
-				$this->url = (string) get_permalink( $tr_id );
-				return;
+				return (string) get_permalink( $tr_id );
 			}
 		}
 
 		// If we are on frontend.
 		if ( $this->settings->get_links() instanceof PLL_Frontend_Links ) {
-			$this->url = $this->settings->get_links()->get_translation_url( $this->language );
-			return;
+			return $this->settings->get_links()->get_translation_url( $this->language );
 		}
 
 		// For blocks in posts in REST requests.
@@ -269,9 +269,10 @@ abstract class Abstract_Element {
 			$tr_id = $this->settings->get_links()->model->post->get( $post->ID, $this->language );
 
 			if ( $tr_id && $this->settings->get_links()->model->post->current_user_can_read( $tr_id ) ) {
-				$this->url = (string) get_permalink( $tr_id );
-				return;
+				return (string) get_permalink( $tr_id );
 			}
 		}
+
+		return '';
 	}
 }
