@@ -133,18 +133,18 @@ abstract class Abstract_Switcher {
 	}
 
 	/**
-	 * Tells whether the current theme supports HTML5 features.
+	 * Returns the name of the tag to use as "navigation", depending if the current theme supports HTML5 features.
 	 *
 	 * @since 3.9
 	 *
-	 * @return bool
+	 * @return string
 	 */
-	protected function supports_html5(): bool {
+	protected function get_nav_tag(): string {
 		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 
 		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
-		return 'html5' === $format;
+		return 'html5' === $format ? 'nav' : 'div';
 	}
 }
