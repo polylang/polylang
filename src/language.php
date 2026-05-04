@@ -111,7 +111,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @var string
 	 */
-	public $facebook = '';
+	public $facebook;
 
 	/**
 	 * Home URL in this language.
@@ -147,7 +147,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @phpstan-var int<0, max>
 	 */
-	public $page_on_front = 0;
+	public $page_on_front;
 
 	/**
 	 * ID of the page for posts in this language (set from pll_additional_language_data filter).
@@ -156,7 +156,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @phpstan-var int<0, max>
 	 */
-	public $page_for_posts = 0;
+	public $page_for_posts;
 
 	/**
 	 * Code of the flag.
@@ -190,21 +190,21 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @var string
 	 */
-	public $custom_flag_url = '';
+	public $custom_flag_url;
 
 	/**
 	 * HTML markup of the custom flag if it exists.
 	 *
 	 * @var string
 	 */
-	public $custom_flag = '';
+	public $custom_flag;
 
 	/**
 	 * Whether or not the language is active. Default `true`.
 	 *
 	 * @var bool
 	 */
-	public $active = true;
+	public $active;
 
 	/**
 	 * List of WordPress language locales. Ex: array( 'en_GB' ).
@@ -213,7 +213,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @phpstan-var list<non-empty-string>
 	 */
-	public $fallbacks = array();
+	public $fallbacks;
 
 	/**
 	 * Whether the language is the default one.
@@ -293,7 +293,18 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param LanguageData $language_data
 	 */
 	public function __construct( array $language_data ) {
-		foreach ( $language_data as $prop => $value ) {
+		// Default values for optional params.
+		$defaults = array(
+			'facebook'        => '',
+			'page_on_front'   => 0,
+			'page_for_posts'  => 0,
+			'custom_flag_url' => '',
+			'custom_flag'     => '',
+			'active'          => true,
+			'fallbacks'       => array(),
+		);
+
+		foreach ( array_merge( $defaults, $language_data ) as $prop => $value ) {
 			$this->$prop = $value;
 		}
 
