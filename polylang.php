@@ -68,11 +68,12 @@ define( 'PLL_MIN_PHP_VERSION', '7.4' );
 define( 'POLYLANG_FILE', __FILE__ );
 define( 'POLYLANG_DIR', __DIR__ );
 
-// Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
+// The filename of the plugin in use, whether it is Polylang or Polylang Pro.
 if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
 	define( 'POLYLANG_ROOT_FILE', __FILE__ );
 }
 
+// The root directory of the plugin in use, whether it is Polylang or Polylang Pro.
 if ( ! defined( 'POLYLANG_ROOT_DIR' ) ) {
 	define( 'POLYLANG_ROOT_DIR', __DIR__ );
 }
