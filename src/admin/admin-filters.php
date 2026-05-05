@@ -58,11 +58,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	/**
 	 * Adds data to modify the biography form with JS.
 	 *
-	 * This is done here instead of `PLL_Admin_Base::add_inline_scripts()` because we have direct access to the user ID
-	 * And the user capability check has been done by WP.
-	 *
 	 * @since 0.4
-	 * @since 3.9 Doesn't print hidden inputs anymore.
 	 *
 	 * @param WP_User $profileuser The current WP_User object.
 	 * @return void
