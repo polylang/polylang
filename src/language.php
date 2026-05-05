@@ -34,9 +34,9 @@
  *     flag: non-empty-string,
  *     custom_flag_url?: string,
  *     custom_flag?: string,
- *     page_on_front: int<0, max>,
- *     page_for_posts: int<0, max>,
- *     active: bool,
+ *     page_on_front?: int<0, max>,
+ *     page_for_posts?: int<0, max>,
+ *     active?: bool,
  *     fallbacks?: array<non-empty-string>,
  *     is_default: bool
  * }
@@ -285,8 +285,8 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *     @type string   $custom_flag     Optional. HTML markup of the custom flag if it exists.
 	 *     @type int      $page_on_front   Optional. ID of the page on front in this language.
 	 *     @type int      $page_for_posts  Optional. ID of the page for posts in this language.
-	 *     @type bool     $active          Whether or not the language is active. Default `true`.
-	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
+	 *     @type bool     $active          Optional. Whether or not the language is active. Default `true`.
+	 *     @type string[] $fallbacks       Optional. List of WordPress language locales. Ex: array( 'en_GB' ).
 	 *     @type bool     $is_default      Whether or not the language is the default one.
 	 * }
 	 *
