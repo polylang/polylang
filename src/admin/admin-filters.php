@@ -23,7 +23,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 		// Language management for users
 		add_action( 'personal_options_update', array( $this, 'personal_options_update' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'personal_options_update' ) );
-		add_action( 'personal_options', array( $this, 'enqueue_scripts' ) );
+		add_action( 'personal_options', array( $this, 'user_profile_enqueue_scripts' ) );
 
 		// Upgrades plugins and themes translations files
 		add_filter( 'themes_update_check_locales', array( $this, 'update_check_locales' ) );
@@ -58,12 +58,12 @@ class PLL_Admin_Filters extends PLL_Filters {
 	/**
 	 * Enqueues scripts for the multilingual biography on the user's profile admin page.
 	 *
-	 * @since 3.9
+	 * @since 3.8.4
 	 *
 	 * @param WP_User $profileuser The current WP_User object.
 	 * @return void
 	 */
-	public function enqueue_scripts( $profileuser ): void {
+	public function user_profile_enqueue_scripts( $profileuser ): void {
 		$screen = get_current_screen();
 
 		if ( empty( $screen ) || ! in_array( $screen->base, array( 'profile', 'user-edit' ), true ) ) {
