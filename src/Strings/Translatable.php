@@ -5,10 +5,10 @@
 
 namespace WP_Syntex\Polylang\Strings;
 
+use PLL_MO;
 use Closure;
 use PLL_Language;
 use Translation_Entry;
-use WP_Syntex\Polylang\Strings\Database_Repository;
 
 /**
  * Entity representing a translatable string with registration and sanitization.
@@ -211,13 +211,16 @@ class Translatable {
 	 * @return Translation_Entry The translation entry.
 	 */
 	public function get_entry( PLL_Language $language ): Translation_Entry {
-		return new Translation_Entry(
-			array(
-				'singular'     => $this->source,
-				'translations' => array( $this->get_translation( $language ) ),
-				'context'      => $this->context,
-			)
+		$args = array(
+			'singular'     => $this->source,
+			'translations' => array( $this->get_translation( $language ) ),
 		);
+
+		if ( ! PLL_MO::is_builtin_strings_table_context( $this->context ) ) {
+			$args['context'] = $this->context;
+		}
+
+		return new Translation_Entry( $args );
 	}
 
 	/**

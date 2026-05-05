@@ -392,7 +392,7 @@ class PLL_Translate_Option {
 				}
 			}
 		} elseif ( $old_values !== $values ) {
-			if ( $mo->translate( $old_values ) === $values ) {
+			if ( is_scalar( $old_values ) && $mo->translate( (string) $old_values ) === $values ) {
 				$values = $old_values; // Prevents updating the value to its translation.
 			} else {
 				$this->updated_strings[ $old_values ] = $values; // Stores the updated strings.

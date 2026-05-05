@@ -1321,12 +1321,6 @@ parameters:
 			path: src/translate-option.php
 
 		-
-			message: '#^Parameter \#1 \$singular of method Translations\:\:translate\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/translate-option.php
-
-		-
 			message: '#^Parameter \#1 \$string of function pll__ expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1

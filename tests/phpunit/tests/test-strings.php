@@ -289,8 +289,8 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		$strings  = get_term_meta( $lang->term_id, '_pll_strings_translations', true );
 		$expected = array(
-			array( 'test', 'test fr' ),
-			array( 'test 2', 'test 2 fr' ),
+			array( 'test', 'test fr', '' ),
+			array( 'test 2', 'test 2 fr', '' ),
 		);
 
 		$this->assertSame( $expected, $strings );
