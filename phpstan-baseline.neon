@@ -955,7 +955,7 @@ parameters:
 			path: src/language.php
 
 		-
-			message: '#^@readonly property PLL_Language\:\:\$cache is assigned outside of the constructor\.$#'
+			message: '#^@readonly property PLL_Language\:\:\$admin_flag is assigned outside of the constructor\.$#'
 			path: src/language.php
 
 		-
