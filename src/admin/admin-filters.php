@@ -23,7 +23,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 		// Language management for users
 		add_action( 'personal_options_update', array( $this, 'personal_options_update' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'personal_options_update' ) );
-		add_action( 'personal_options', array( $this, 'personal_options' ) );
+		add_action( 'personal_options', array( $this, 'user_profile_enqueue_scripts' ) );
 
 		// Upgrades plugins and themes translations files
 		add_filter( 'themes_update_check_locales', array( $this, 'update_check_locales' ) );
@@ -56,25 +56,46 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Outputs hidden information to modify the biography form with js.
+	 * Enqueues scripts for the multilingual biography on the user's profile admin page.
 	 *
-	 * @since 0.4
+	 * @since 3.8.4
 	 *
 	 * @param WP_User $profileuser The current WP_User object.
 	 * @return void
 	 */
-	public function personal_options( $profileuser ) {
-		foreach ( $this->model->get_languages_list() as $lang ) {
-			$meta        = $lang->is_default ? 'description' : 'description_' . $lang->slug;
-			$description = get_user_meta( $profileuser->ID, $meta, true );
+	public function user_profile_enqueue_scripts( $profileuser ): void {
+		$screen = get_current_screen();
 
-			printf(
-				'<input type="hidden" class="biography" name="%s___%s" value="%s" />',
-				esc_attr( $lang->slug ),
-				esc_attr( $lang->name ),
-				sanitize_user_field( 'description', $description, $profileuser->ID, 'edit' )
+		if ( empty( $screen ) || ! in_array( $screen->base, array( 'profile', 'user-edit' ), true ) ) {
+			return;
+		}
+
+		if ( ! $this->model->has_languages() ) {
+			return;
+		}
+
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$data   = array();
+
+		wp_enqueue_script( 'pll_user', plugins_url( "/js/build/user{$suffix}.js", POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION, array( 'in_footer' => true ) );
+
+		foreach ( $this->model->languages->get_list() as $lang ) {
+			$meta        = $lang->is_default ? 'description' : "description_{$lang->slug}";
+			$description = get_user_meta( $profileuser->ID, $meta, true );
+			$description = is_string( $description ) ? $description : '';
+
+			$data[] = array(
+				'slug'        => esc_attr( $lang->slug ),
+				'name'        => esc_html( $lang->name ),
+				'lang'        => esc_attr( $lang->get_locale( 'display' ) ),
+				'direction'   => $lang->is_rtl ? 'rtl' : 'ltr',
+				'flag'        => PLL_Language::get_flag_information( $lang->flag_code ),
+				'description' => sanitize_user_field( 'description', $description, $profileuser->ID, 'edit' ),
 			);
 		}
+
+		$script = sprintf( 'const pllDescriptionData = %s;', wp_json_encode( $data ) );
+		wp_add_inline_script( 'pll_user', $script, 'before' );
 	}
 
 	/**

@@ -7,7 +7,6 @@ abstract class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	 */
 	private $polylang_assets = array(
 		'header' => array(
-			'pll_user-js',
 			'polylang_admin-css',
 		),
 		'footer' => array(
@@ -16,6 +15,7 @@ abstract class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 			'pll_term-js',
 			'pll_classic-editor-js',
 			'pll_block-editor-js',
+			'pll_user-js',
 		),
 	);
 
@@ -30,10 +30,10 @@ abstract class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	protected function _test_scripts( $scripts ) {
-		$links_model      = self::$model->get_links_model();
-		$pll_admin        = new PLL_Admin( $links_model );
-		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
-		$pll_admin->init();
+		$links_model        = self::$model->get_links_model();
+		$pll_admin          = new PLL_Admin( $links_model );
+		$pll_admin->links   = new PLL_Admin_Links( $pll_admin );
+		$pll_admin->filters = new PLL_Admin_Filters( $pll_admin ); // Instance created on `wp_loaded`: see `PLL_Admin::init()`.
 
 		$GLOBALS['wp_styles']  = new WP_Styles();
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
@@ -45,6 +45,10 @@ abstract class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 		do_action( 'admin_print_styles' );
 		do_action( 'admin_print_scripts' );
 		$this->assert_scripts_are_enqueued_correctly( $scripts, ob_get_clean(), 'header' );
+
+		if ( 'profile.php' === $GLOBALS['hook_suffix'] ) {
+			do_action( 'personal_options', wp_get_current_user() );
+		}
 
 		ob_start();
 		// Based on what's done in wp-admin/admin-footer.php
