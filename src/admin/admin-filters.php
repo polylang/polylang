@@ -56,7 +56,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Adds data to modify the biography form with JS.
+	 * Enqueues scripts for the multilingual biography on the user's profile admin page.
 	 *
 	 * @since 0.4
 	 *
