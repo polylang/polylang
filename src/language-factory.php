@@ -183,6 +183,30 @@ class PLL_Language_Factory {
 			unset( $data['fallbacks'] );
 		}
 
+		$data['admin_flag'] = array();
+
+		if ( ! empty( $data['flag'] ) ) {
+			$data['admin_flag']['aria-hidden'] = str_replace( '<img', '<img aria-hidden="true" tabindex="-1"', $data['flag'] );
+			$data['admin_flag']['']            = str_replace(
+				'<img',
+				sprintf(
+					'<img lang="%1$s" dir="%2$s"',
+					esc_attr( $data['w3c'] ),
+					$data['is_rtl'] ? 'rtl' : 'ltr'
+				),
+				$data['flag']
+			);
+		} else {
+			$data['admin_flag']['aria-hidden'] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $data['slug'] ) ) );
+			$data['admin_flag']['']            = sprintf(
+				'<abbr title="%1$s" lang="%2$s" dir="%3$s">%4$s</abbr>',
+				esc_attr( $data['name'] ),
+				esc_attr( $data['w3c'] ),
+				$data['is_rtl'] ? 'rtl' : 'ltr',
+				esc_html( strtoupper( $data['slug'] ) )
+			);
+		}
+
 		/**
 		 * @var LanguageData
 		 */

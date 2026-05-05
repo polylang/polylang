@@ -38,7 +38,8 @@
  *     page_for_posts: int<0, max>,
  *     active: bool,
  *     fallbacks?: array<non-empty-string>,
- *     is_default: bool
+ *     is_default: bool,
+ *     admin_flag: array{'aria-hidden': non-empty-string, '': non-empty-string}
  * }
  */
 class PLL_Language extends PLL_Language_Deprecated {
@@ -252,8 +253,10 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 	/**
 	 * @var array
+	 *
+	 * @phpstan-var array{'aria-hidden': non-empty-string, '': non-empty-string}
 	 */
-	private $admin_flag = array();
+	private $admin_flag;
 
 	/**
 	 * Constructor: builds a language object given the corresponding data.
@@ -287,6 +290,8 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *     @type bool     $active          Whether or not the language is active. Default `true`.
 	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
 	 *     @type bool     $is_default      Whether or not the language is the default one.
+	 *     @type array    $admin_flag      An array containing the keys `''` (empty string) for the "normal" flag, and
+	 *                                     `'aria-hidden'` for the flag hidden to screen readers.
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
@@ -488,38 +493,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param ''|'aria-hidden' $mode
 	 */
 	public function get_admin_flag( string $mode = '' ): string {
-		if ( isset( $this->admin_flag[ $mode ] ) ) {
-			return $this->admin_flag[ $mode ];
-		}
-
-		if ( ! empty( $this->flag ) ) {
-			if ( 'aria-hidden' === $mode ) {
-				$this->admin_flag[ $mode ] = str_replace( '<img', '<img aria-hidden="true" tabindex="-1"', $this->flag );
-			} else {
-				$this->admin_flag[ $mode ] = str_replace(
-					'<img',
-					sprintf(
-						'<img lang="%1$s" dir="%2$s"',
-						esc_attr( $this->get_locale( 'display' ) ),
-						$this->is_rtl ? 'rtl' : 'ltr'
-					),
-					$this->flag
-				);
-			}
-			return $this->admin_flag[ $mode ];
-		}
-
-		if ( 'aria-hidden' === $mode ) {
-			$this->admin_flag[ $mode ] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
-		} else {
-			$this->admin_flag[ $mode ] = sprintf(
-				'<abbr title="%1$s" lang="%2$s" dir="%3$s">%4$s</abbr>',
-				esc_attr( $this->name ),
-				esc_attr( $this->get_locale( 'display' ) ),
-				$this->is_rtl ? 'rtl' : 'ltr',
-				esc_html( strtoupper( $this->slug ) )
-			);
-		}
 		return $this->admin_flag[ $mode ];
 	}
 
