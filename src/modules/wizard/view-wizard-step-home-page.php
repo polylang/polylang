@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) || exit;
 		printf(
 			/* translators: %s is the language of the front page ( flag, native name and locale ) */
 			esc_html__( 'Its language is : %s.', 'polylang' ),
-			$home_page_language->get_admin_flag( 'no-screen-reader' ) . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$home_page_language->get_admin_flag( 'aria-hidden' ) . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 		?>
 	<br />
@@ -60,7 +60,7 @@ defined( 'ABSPATH' ) || exit;
 		<tr>
 			<td>
 				<?php
-				echo $language->get_admin_flag( 'no-screen-reader' );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $language->get_admin_flag( 'aria-hidden' );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo ' ' . esc_html( $language->name ) . ' ' . esc_html( $language->locale ) . ' ';
 				?>
 				<?php if ( $language->is_default ) : ?>
@@ -105,7 +105,7 @@ defined( 'ABSPATH' ) || exit;
 		<tr>
 			<td>
 				<?php
-				echo $lg->get_admin_flag( 'no-screen-reader' );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $lg->get_admin_flag( 'aria-hidden' );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo ' ' . esc_html( $lg->name ) . ' ' . esc_html( $lg->locale ) . ' ';
 				?>
 				<?php if ( $lg->is_default ) : ?>

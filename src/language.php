@@ -479,20 +479,21 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @since 3.9
 	 *
 	 * @param string $mode Optional. Allows to modify the markup depending on how the flag is used. Possible values are:
-	 *                     - `screen-reader`: the flag can be seen by screen readers,
-	 *                     - `no-screen-reader`: the flag is hidden from screen readers: it is preceded or followed by a
-	 *                     text (language name for example) that would make it redundant. Default is `screen-reader`.
+	 *                     - Empty string: the flag can be seen by screen readers,
+	 *                     - `aria-hidden`: the flag is hidden from screen readers: it is preceded or followed by a
+	 *                     text (language name for example) that would make the information redundant.
+	 *                     Default is an empty string.
 	 * @return string
 	 *
-	 * @phpstan-param 'screen-reader'|'no-screen-reader' $mode
+	 * @phpstan-param ''|'aria-hidden' $mode
 	 */
-	public function get_admin_flag( string $mode = 'screen-reader' ): string {
+	public function get_admin_flag( string $mode = '' ): string {
 		if ( isset( $this->cache['admin_flag'][ $mode ] ) ) {
 			return $this->cache['admin_flag'][ $mode ];
 		}
 
 		if ( ! empty( $this->flag ) ) {
-			if ( 'no-screen-reader' === $mode ) {
+			if ( 'aria-hidden' === $mode ) {
 				$this->cache['admin_flag'][ $mode ] = str_replace( '<img', '<img aria-hidden="true" tabindex="-1"', $this->flag );
 			} else {
 				$this->cache['admin_flag'][ $mode ] = str_replace(
@@ -508,7 +509,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 			return $this->cache['admin_flag'][ $mode ];
 		}
 
-		if ( 'no-screen-reader' === $mode ) {
+		if ( 'aria-hidden' === $mode ) {
 			$this->cache['admin_flag'][ $mode ] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
 		} else {
 			$this->cache['admin_flag'][ $mode ] = sprintf(

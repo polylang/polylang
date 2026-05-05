@@ -87,7 +87,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 			$lang = reset( $current );
 			$output = sprintf(
 				'<span class="pll-select-flag">%s</span>',
-				$lang->get_admin_flag( 'no-screen-reader' )
+				$lang->get_admin_flag( 'aria-hidden' )
 			);
 		}
 

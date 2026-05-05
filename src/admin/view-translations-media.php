@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
 		}
 		?>
 		<tr>
-			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->get_admin_flag( 'no-screen-reader' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span><?php echo esc_html( $language->name ); ?></td>
+			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->get_admin_flag( 'aria-hidden' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span><?php echo esc_html( $language->name ); ?></td>
 			<td class = "pll-media-edit-column">
 				<?php
 				if ( $translation instanceof WP_Post ) {
