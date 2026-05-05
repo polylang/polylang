@@ -75,6 +75,9 @@ class PLL_Table_Languages extends WP_List_Table {
 
 			case 'flag':
 				return $item->get_admin_flag();
+
+			default:
+				return '';
 		}
 	}
 
