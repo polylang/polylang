@@ -919,12 +919,6 @@ parameters:
 			path: src/language-factory.php
 
 		-
-			message: '#^@readonly property cannot have a default value\.$#'
-			identifier: property.readOnlyByPhpDocDefaultValue
-			count: 7
-			path: src/language.php
-
-		-
 			message: '#^PHPDoc tag @var with type array\{tax\: non\-empty\-string, field\: ''count''\|''term_id''\|''term_taxonomy_id''\} is not subtype of native type array\{0\: non\-falsy\-string, tax\: non\-empty\-string, 1\: non\-empty\-string, field\: ''count''\|''term_id''\|''term_taxonomy_id'', 2\: ''count''\|''term_id''\|''term_taxonomy_id''\}\.$#'
 			identifier: varTag.nativeType
 			count: 1
