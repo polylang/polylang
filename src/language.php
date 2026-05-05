@@ -253,7 +253,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	/**
 	 * @var array
 	 */
-	private $cache = array();
+	private $admin_flag = array();
 
 	/**
 	 * Constructor: builds a language object given the corresponding data.
@@ -488,15 +488,15 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param ''|'aria-hidden' $mode
 	 */
 	public function get_admin_flag( string $mode = '' ): string {
-		if ( isset( $this->cache['admin_flag'][ $mode ] ) ) {
-			return $this->cache['admin_flag'][ $mode ];
+		if ( isset( $this->admin_flag[ $mode ] ) ) {
+			return $this->admin_flag[ $mode ];
 		}
 
 		if ( ! empty( $this->flag ) ) {
 			if ( 'aria-hidden' === $mode ) {
-				$this->cache['admin_flag'][ $mode ] = str_replace( '<img', '<img aria-hidden="true" tabindex="-1"', $this->flag );
+				$this->admin_flag[ $mode ] = str_replace( '<img', '<img aria-hidden="true" tabindex="-1"', $this->flag );
 			} else {
-				$this->cache['admin_flag'][ $mode ] = str_replace(
+				$this->admin_flag[ $mode ] = str_replace(
 					'<img',
 					sprintf(
 						'<img lang="%1$s" dir="%2$s"',
@@ -506,13 +506,13 @@ class PLL_Language extends PLL_Language_Deprecated {
 					$this->flag
 				);
 			}
-			return $this->cache['admin_flag'][ $mode ];
+			return $this->admin_flag[ $mode ];
 		}
 
 		if ( 'aria-hidden' === $mode ) {
-			$this->cache['admin_flag'][ $mode ] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
+			$this->admin_flag[ $mode ] = sprintf( '<abbr aria-hidden="true" tabindex="-1">%s</abbr>', esc_html( strtoupper( $this->slug ) ) );
 		} else {
-			$this->cache['admin_flag'][ $mode ] = sprintf(
+			$this->admin_flag[ $mode ] = sprintf(
 				'<abbr title="%1$s" lang="%2$s" dir="%3$s">%4$s</abbr>',
 				esc_attr( $this->name ),
 				esc_attr( $this->get_locale( 'display' ) ),
@@ -520,7 +520,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 				esc_html( strtoupper( $this->slug ) )
 			);
 		}
-		return $this->cache['admin_flag'][ $mode ];
+		return $this->admin_flag[ $mode ];
 	}
 
 	/**
@@ -609,7 +609,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function to_array( $context = 'display' ) {
 		$language = get_object_vars( $this );
-		unset( $language['cache'] );
+		unset( $language['admin_flag'] );
 
 		if ( 'db' !== $context ) {
 			$language['home_url']   = $this->get_home_url();
