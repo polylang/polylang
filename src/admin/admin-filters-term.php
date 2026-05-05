@@ -509,7 +509,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// Flag
-		$x->Add( array( 'what' => 'flag', 'data' => $lang->get_admin_flag() ) );
+		$x->Add( array( 'what' => 'flag', 'data' => $lang->get_admin_flag( 'no-screen-reader' ) ) );
 
 		$x->send();
 	}

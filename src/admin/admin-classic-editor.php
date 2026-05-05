@@ -265,7 +265,7 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		// Flag
-		$x->Add( array( 'what' => 'flag', 'data' => $lang->get_admin_flag() ) );
+		$x->Add( array( 'what' => 'flag', 'data' => $lang->get_admin_flag( 'no-screen-reader' ) ) );
 
 		// Sample permalink
 		$x->Add( array( 'what' => 'permalink', 'data' => get_sample_permalink_html( $post->ID ) ) );
