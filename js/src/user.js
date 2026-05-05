@@ -33,7 +33,7 @@ const pllDescription = {
 		const rows = [];
 
 		pllDescriptionData.forEach( ( data ) => {
-			const wrapper = document.createElement( 'p' );
+			const wrapper = document.createElement( 'div' );
 			wrapper.setAttribute( 'lang', data.lang );
 
 			const label = document.createElement( 'label' );
