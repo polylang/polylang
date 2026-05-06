@@ -94,6 +94,7 @@ abstract class Abstract_Switcher {
 			}
 
 			if ( $is_first && ! in_array( 'lang-item-first', $element->item_classes, true ) ) {
+				// This is the first element of the list, for example the first `<li>` in the `<ul>` tag.
 				$is_first = false;
 				$element->item_classes[] = 'lang-item-first';
 			}
