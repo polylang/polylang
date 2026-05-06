@@ -35,7 +35,7 @@ class Settings {
 	 *
 	 * @phpstan-var 'horizontal'|'vertical'|'dropdown'|'select'
 	 */
-	public string $layout = 'horizontal';
+	public string $layout = 'vertical';
 
 	/**
 	 * No default value here because it depends on `is_rtl()`. see `self::get_defaults()`.
@@ -140,7 +140,7 @@ class Settings {
 	 *     Optional switcher settings.
 	 *
 	 *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
-	 *                                            `dropdown`, and `select`. Default is `horizontal`.
+	 *                                            `dropdown`, and `select`. Default is `vertical`.
 	 *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
 	 *                                            `stretched`. Default is `center`.
 	 *     @type bool     $show_wrapper           Display the wrapper or not. Default is `false`.
@@ -353,10 +353,10 @@ class Settings {
 			if ( ! empty( $settings['dropdown'] ) && 'select' !== $settings['layout'] ) {
 				$settings['layout'] = 'select';
 			} elseif ( empty( $settings['dropdown'] ) && 'select' === $settings['layout'] ) {
-				$settings['layout'] = 'horizontal';
+				$settings['layout'] = 'vertical';
 			}
 		} elseif ( ! isset( $settings['layout'] ) ) {
-			$settings['layout'] = ! empty( $settings['dropdown'] ) ? 'select' : 'horizontal';
+			$settings['layout'] = ! empty( $settings['dropdown'] ) ? 'select' : 'vertical';
 		}
 
 		if ( isset( $settings['show_names'] ) && empty( $settings['show_names'] ) ) {
