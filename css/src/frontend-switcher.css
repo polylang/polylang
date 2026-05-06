@@ -105,11 +105,6 @@
 	flex-grow: 1;
 }
 
-/* Vertical layout */
-.pll-layout-vertical ul {
-	flex-direction: column;
-}
-
 /* Rows */
 .pll-layout-horizontal li:not(:last-child) {
 	margin-inline-end: 20px;
