@@ -73,8 +73,11 @@ class PLL_Table_Languages extends WP_List_Table {
 			case 'count':
 				return $item->get_tax_prop( 'language', $column_name );
 
+			case 'flag':
+				return $item->get_admin_flag();
+
 			default:
-				return $item->$column_name; // Flag.
+				return '';
 		}
 	}
 

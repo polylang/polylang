@@ -23,22 +23,23 @@
  *     slug: non-empty-string,
  *     locale: non-empty-string,
  *     w3c: non-empty-string,
- *     flag_code: non-empty-string,
+ *     flag_code: string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
  *     facebook?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
  *     host: non-empty-string,
- *     flag_url: non-empty-string,
- *     flag: non-empty-string,
+ *     flag_url: string,
+ *     flag: string,
  *     custom_flag_url?: string,
  *     custom_flag?: string,
  *     page_on_front?: int<0, max>,
  *     page_for_posts?: int<0, max>,
  *     active?: bool,
  *     fallbacks?: array<non-empty-string>,
- *     is_default: bool
+ *     is_default: bool,
+ *     admin_flag: array{'aria-hidden': non-empty-string, '': non-empty-string}
  * }
  */
 class PLL_Language extends PLL_Language_Deprecated {
@@ -162,8 +163,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * Code of the flag.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
 	 */
 	public $flag_code;
 
@@ -171,8 +170,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * URL of the flag. Always set to the main domain.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
 	 */
 	public $flag_url;
 
@@ -180,8 +177,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * HTML markup of the flag.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
 	 */
 	public $flag;
 
@@ -257,6 +252,13 @@ class PLL_Language extends PLL_Language_Deprecated {
 	protected $term_props;
 
 	/**
+	 * @var array
+	 *
+	 * @phpstan-var array{'aria-hidden': non-empty-string, '': non-empty-string}
+	 */
+	private $admin_flag;
+
+	/**
 	 * Constructor: builds a language object given the corresponding data.
 	 *
 	 * @since 1.2
@@ -288,6 +290,8 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *     @type bool     $active          Optional. Whether or not the language is active. Default `true`.
 	 *     @type string[] $fallbacks       Optional. List of WordPress language locales. Ex: array( 'en_GB' ).
 	 *     @type bool     $is_default      Whether or not the language is the default one.
+	 *     @type array    $admin_flag      An array containing the keys `''` (empty string) for the "normal" flag, and
+	 *                                     `'aria-hidden'` for the flag hidden to screen readers.
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
@@ -515,6 +519,24 @@ class PLL_Language extends PLL_Language_Deprecated {
 	}
 
 	/**
+	 * Returns the language flag or the language slug if there is no flag.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $mode Optional. Allows to modify the markup depending on how the flag is used. Possible values are:
+	 *                     - Empty string: the flag can be seen by screen readers,
+	 *                     - `aria-hidden`: the flag is hidden from screen readers: it is preceded or followed by a
+	 *                     text (language name for example) that would make the information redundant.
+	 *                     Default is an empty string.
+	 * @return string
+	 *
+	 * @phpstan-param ''|'aria-hidden' $mode
+	 */
+	public function get_admin_flag( string $mode = '' ): string {
+		return $this->admin_flag[ $mode ];
+	}
+
+	/**
 	 * Returns the html of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
@@ -600,6 +622,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function to_array( $context = 'display' ) {
 		$language = get_object_vars( $this );
+		unset( $language['admin_flag'] );
 
 		if ( 'db' !== $context ) {
 			$language['home_url']   = $this->get_home_url();

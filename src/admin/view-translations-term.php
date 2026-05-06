@@ -53,7 +53,7 @@ else {
 		?>
 		<tr>
 			<th class = "pll-language-column">
-				<span class = "pll-translation-flag"><?php echo $language->flag ?: esc_html( $language->slug ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+				<span class = "pll-translation-flag"><?php echo $language->get_admin_flag(); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 				<?php
 				printf(
 					'<span class="pll-language-name%1$s">%2$s</span>',

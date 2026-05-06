@@ -509,7 +509,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// Flag
-		$x->Add( array( 'what' => 'flag', 'data' => empty( $lang->flag ) ? esc_html( $lang->slug ) : $lang->flag ) );
+		$x->Add( array( 'what' => 'flag', 'data' => $lang->get_admin_flag( 'aria-hidden' ) ) );
 
 		$x->send();
 	}

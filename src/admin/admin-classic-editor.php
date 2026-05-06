@@ -265,7 +265,7 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		// Flag
-		$x->Add( array( 'what' => 'flag', 'data' => empty( $lang->flag ) ? esc_html( $lang->slug ) : $lang->flag ) );
+		$x->Add( array( 'what' => 'flag', 'data' => $lang->get_admin_flag( 'aria-hidden' ) ) );
 
 		// Sample permalink
 		$x->Add( array( 'what' => 'permalink', 'data' => get_sample_permalink_html( $post->ID ) ) );

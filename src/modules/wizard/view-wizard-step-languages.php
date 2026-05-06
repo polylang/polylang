@@ -79,10 +79,10 @@ $languages_list = array_diff_key(
 	<?php
 	foreach ( $existing_languages as $lg ) {
 		printf(
-			'<tr><td>%3$s<span>%2$s - %1$s</span> %4$s</td></tr>' . "\n",
+			'<tr><td>%3$s <span>%2$s - %1$s</span> %4$s</td></tr>' . "\n",
 			esc_attr( $lg->locale ),
 			esc_html( $lg->name ),
-			$lg->flag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$lg->get_admin_flag( 'aria-hidden' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$lg->is_default ? ' <span class="icon-default-lang"><span class="screen-reader-text">' . esc_html__( 'Default language', 'polylang' ) . '</span></span>' : ''
 		);
 	}

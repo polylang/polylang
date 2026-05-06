@@ -198,7 +198,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 */
 	private function get_edit_item_link_html( string $url, PLL_Language $language, int $item_id, string $item_name, string $mode ): string {
 		if ( 'list_current' === $mode ) {
-			$flag  = $this->get_flag_html( $language );
+			$flag  = $language->get_admin_flag( 'aria-hidden' );
 			$class = 'pll_column_flag';
 		} else {
 			$flag  = '';
@@ -334,18 +334,6 @@ class PLL_Admin_Links extends PLL_Links {
 
 		$url = (string) get_edit_term_link( $term->term_id, $term->taxonomy, $post_type );
 		return $this->get_edit_item_link_html( $url, $language, $term->term_id, $term->name, $mode );
-	}
-
-	/**
-	 * Returns the language flag or the language slug if there is no flag.
-	 *
-	 * @since 3.8
-	 *
-	 * @param PLL_Language $language PLL_Language object.
-	 * @return string
-	 */
-	public function get_flag_html( PLL_Language $language ): string {
-		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 
 	/**

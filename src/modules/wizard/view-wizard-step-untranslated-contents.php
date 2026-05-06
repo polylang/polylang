@@ -25,10 +25,10 @@ $languages_list = $model->languages->get_list();
 		<?php
 		foreach ( $languages_list as $lg ) {
 			printf(
-				'<option value="%1$s" data-flag-html="%3$s" data-language-name="%2$s"%4$s>%2$s - %1$s</option>' . "\n",
+				'<option value="%1$s" data-flag-html="%3$s " data-language-name="%2$s"%4$s>%2$s - %1$s</option>' . "\n",
 				esc_attr( $lg->locale ),
 				esc_html( $lg->name ),
-				esc_html( $lg->flag ),
+				esc_html( $lg->get_admin_flag( 'aria-hidden' ) ),
 				$lg->is_default ? ' selected="selected"' : ''
 			);
 		}
