@@ -57,7 +57,6 @@
 	visibility: hidden;
 	overflow: hidden;
 	opacity: 0;
-	transition: opacity 0.1s linear;
 }
 .pll-layout-dropdown:hover > ul,
 .pll-layout-dropdown > [aria-expanded="true"] + ul {
