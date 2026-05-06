@@ -9,6 +9,7 @@ use WP_Post;
 use PLL_Links;
 use PLL_Language;
 use PLL_Frontend_Links;
+use PLL_Translated_Post;
 use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -132,6 +133,11 @@ abstract class Abstract_Element {
 	private PLL_Links $links;
 
 	/**
+	 * @var PLL_Translated_Post
+	 */
+	private PLL_Translated_Post $post_model;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.9
@@ -141,9 +147,10 @@ abstract class Abstract_Element {
 	 * @param PLL_Links    $links    Instance of `PLL_Links`.
 	 */
 	public function __construct( PLL_Language $language, Settings $settings, PLL_Links $links ) {
-		$this->language = $language;
-		$this->settings = $settings;
-		$this->links    = $links;
+		$this->language   = $language;
+		$this->settings   = $settings;
+		$this->links      = $links;
+		$this->post_model = $links->model->post;
 
 		$this->id               = (int) $language->term_id;
 		$this->slug             = $language->slug;
@@ -260,9 +267,9 @@ abstract class Abstract_Element {
 
 		// Priority to the post passed in parameters.
 		if ( $this->settings->post_id ) {
-			$tr_id = $this->links->model->post->get( $this->settings->post_id, $this->language );
+			$tr_id = $this->post_model->get( $this->settings->post_id, $this->language );
 
-			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+			if ( $tr_id && $this->post_model->current_user_can_read( $tr_id ) ) {
 				return (string) get_permalink( $tr_id );
 			}
 		}
@@ -274,9 +281,9 @@ abstract class Abstract_Element {
 
 		// For blocks in posts in REST requests.
 		if ( $post instanceof WP_Post ) {
-			$tr_id = $this->links->model->post->get( $post->ID, $this->language );
+			$tr_id = $this->post_model->get( $post->ID, $this->language );
 
-			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+			if ( $tr_id && $this->post_model->current_user_can_read( $tr_id ) ) {
 				return (string) get_permalink( $tr_id );
 			}
 		}
