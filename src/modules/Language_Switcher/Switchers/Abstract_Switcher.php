@@ -93,10 +93,7 @@ abstract class Abstract_Switcher {
 				continue;
 			}
 
-			if ( $is_first ) {
-				$is_first = false;
-				$element  = clone( $element ); // We don't want the item class to be added permanently to the object.
-
+			if ( $is_first && ! in_array( 'lang-item-first', $element->item_classes, true ) ) {
 				$element->item_classes[] = 'lang-item-first';
 			}
 
