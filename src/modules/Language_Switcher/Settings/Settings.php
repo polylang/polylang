@@ -127,11 +127,6 @@ class Settings {
 	public string $unique_id = '';
 
 	/**
-	 * @var PLL_Links
-	 */
-	private PLL_Links $links;
-
-	/**
 	 * @var int
 	 */
 	private static int $increment = 0;
@@ -141,7 +136,7 @@ class Settings {
 	 *
 	 * @since 3.9
 	 *
-	 * @param array     $settings {
+	 * @param array $settings {
 	 *     Optional switcher settings.
 	 *
 	 *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
@@ -167,11 +162,9 @@ class Settings {
 	 *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
 	 *     @type string   $unique_id              A unique identifier. Default is an empty string.
 	 * }
-	 * @param PLL_Links $links    Instance of `PLL_Links`.
 	 */
-	public function __construct( array $settings, PLL_Links $links ) {
-		$this->links = $links;
-		$settings    = $this->maybe_convert_and_filter_legacy_settings( $settings );
+	public function __construct( array $settings ) {
+		$settings = $this->maybe_convert_and_filter_legacy_settings( $settings );
 
 		/**
 		 * Filter the language switcher settings.
@@ -184,11 +177,6 @@ class Settings {
 
 		foreach ( $this->validate( $settings ) as $name => $value ) {
 			$this->$name = $value;
-		}
-
-		if ( $this->links instanceof PLL_Admin_Links ) {
-			// Force not to hide the language for the widget preview even if the option is checked.
-			$this->hide_if_no_translation = false;
 		}
 
 		if ( '' === $this->unique_id ) {
@@ -217,19 +205,20 @@ class Settings {
 	 *
 	 * @since 3.9
 	 *
+	 * @param PLL_Links $links Instance of `PLL_Links`.
 	 * @return Switchers\Abstract_Switcher|null
 	 */
-	public function get_switcher(): ?Switchers\Abstract_Switcher {
+	public function get_switcher( PLL_Links $links ): ?Switchers\Abstract_Switcher {
 		switch ( $this->layout ) {
 			case 'horizontal':
 			case 'vertical':
-				return new Switchers\Nav( $this );
+				return new Switchers\Nav( $this, $links );
 
 			case 'dropdown':
-				return new Switchers\Dropdown( $this );
+				return new Switchers\Dropdown( $this, $links );
 
 			case 'select':
-				return new Switchers\Select( $this );
+				return new Switchers\Select( $this, $links );
 
 			default:
 				return null;
@@ -246,17 +235,6 @@ class Settings {
 	public function get_legacy(): array {
 		$settings = array_diff_key( get_object_vars( $this ), array( 'links' => 0, 'increment' => 0 ) );
 		return $this->convert_to_legacy( $settings );
-	}
-
-	/**
-	 * Returns the instance of `PLL_Links`.
-	 *
-	 * @since 3.9
-	 *
-	 * @return PLL_Links
-	 */
-	public function get_links(): PLL_Links {
-		return $this->links;
 	}
 
 	/**

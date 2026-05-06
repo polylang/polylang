@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Language_Switcher\Switchers\Element;
 
 use WP_Post;
+use PLL_Links;
 use PLL_Language;
 use PLL_Frontend_Links;
 use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
@@ -126,16 +127,23 @@ abstract class Abstract_Element {
 	protected Settings $settings;
 
 	/**
+	 * @var PLL_Links
+	 */
+	private PLL_Links $links;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.9
 	 *
 	 * @param PLL_Language $language Instance of `PLL_Language`.
 	 * @param Settings     $settings Instance of `Settings`.
+	 * @param PLL_Links    $links    Instance of `PLL_Links`.
 	 */
-	public function __construct( PLL_Language $language, Settings $settings ) {
+	public function __construct( PLL_Language $language, Settings $settings, PLL_Links $links ) {
 		$this->language = $language;
 		$this->settings = $settings;
+		$this->links    = $links;
 
 		$this->id               = (int) $language->term_id;
 		$this->slug             = $language->slug;
@@ -192,11 +200,11 @@ abstract class Abstract_Element {
 	 * @return string
 	 */
 	private function get_current_language(): string {
-		if ( ! empty( $this->settings->get_links()->curlang ) ) {
-			return $this->settings->get_links()->curlang->slug;
+		if ( ! empty( $this->links->curlang ) ) {
+			return $this->links->curlang->slug;
 		}
 
-		return $this->settings->get_links()->options['default_lang'];
+		return $this->links->options['default_lang'];
 	}
 
 	/**
@@ -234,7 +242,7 @@ abstract class Abstract_Element {
 		}
 
 		if ( empty( $url ) || $this->settings->force_home ) {
-			$this->url = $this->settings->get_links()->get_home_url( $this->language );
+			$this->url = $this->links->get_home_url( $this->language );
 		} else {
 			$this->url = $url;
 		}
@@ -252,23 +260,23 @@ abstract class Abstract_Element {
 
 		// Priority to the post passed in parameters.
 		if ( $this->settings->post_id ) {
-			$tr_id = $this->settings->get_links()->model->post->get( $this->settings->post_id, $this->language );
+			$tr_id = $this->links->model->post->get( $this->settings->post_id, $this->language );
 
-			if ( $tr_id && $this->settings->get_links()->model->post->current_user_can_read( $tr_id ) ) {
+			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
 				return (string) get_permalink( $tr_id );
 			}
 		}
 
 		// If we are on frontend.
-		if ( $this->settings->get_links() instanceof PLL_Frontend_Links ) {
-			return $this->settings->get_links()->get_translation_url( $this->language );
+		if ( $this->links instanceof PLL_Frontend_Links ) {
+			return $this->links->get_translation_url( $this->language );
 		}
 
 		// For blocks in posts in REST requests.
 		if ( $post instanceof WP_Post ) {
-			$tr_id = $this->settings->get_links()->model->post->get( $post->ID, $this->language );
+			$tr_id = $this->links->model->post->get( $post->ID, $this->language );
 
-			if ( $tr_id && $this->settings->get_links()->model->post->current_user_can_read( $tr_id ) ) {
+			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
 				return (string) get_permalink( $tr_id );
 			}
 		}

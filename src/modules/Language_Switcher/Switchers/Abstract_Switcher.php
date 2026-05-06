@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
 
+use PLL_Links;
 use PLL_Language;
 use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
 use WP_Syntex\Polylang\Language_Switcher\Switchers\Element\Abstract_Element;
@@ -23,6 +24,11 @@ abstract class Abstract_Switcher {
 	protected Settings $settings;
 
 	/**
+	 * @var PLL_Links
+	 */
+	protected PLL_Links $links;
+
+	/**
 	 * @var Abstract_Element[]
 	 */
 	protected array $elements = array();
@@ -32,12 +38,14 @@ abstract class Abstract_Switcher {
 	 *
 	 * @since 3.9
 	 *
-	 * @param Settings $settings  Instance of `Settings`.
+	 * @param Settings  $settings Instance of `Settings`.
+	 * @param PLL_Links $links    Instance of `PLL_Links`.
 	 */
-	public function __construct( Settings $settings ) {
+	public function __construct( Settings $settings, PLL_Links $links ) {
 		$this->settings = $settings;
+		$this->links    = $links;
 
-		foreach ( $this->settings->get_links()->model->languages->get_list() as $language ) {
+		foreach ( $this->links->model->languages->get_list() as $language ) {
 			$this->elements[ $language->slug ] = $this->get_element( $language );
 		}
 	}

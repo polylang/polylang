@@ -56,6 +56,6 @@ class Nav extends Abstract_Switcher {
 	 * @return Element
 	 */
 	protected function get_element( PLL_Language $language ): Element {
-		return new Element( $language, $this->settings );
+		return new Element( $language, $this->settings, $this->links );
 	}
 }
