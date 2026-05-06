@@ -196,9 +196,9 @@ test.describe.serial( 'Strings translations', () => {
 					} )
 				).toBeVisible();
 
-				await expect( multilineRow.getByLabel( 'Français' ) ).toHaveValue(
-					'Ligne un\nLigne deux'
-				);
+				await expect(
+					multilineRow.getByLabel( 'Français' )
+				).toHaveValue( 'Ligne un\nLigne deux' );
 			} );
 		} );
 	} );
