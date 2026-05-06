@@ -1,10 +1,3 @@
-/* Select layout */
-.pll-layout-select select {
-	background: none;
-	border-radius: 0;
-	border: solid 1px #515962;
-}
-
 /* List layouts */
 .pll-switcher ul {
 	padding: 0;
