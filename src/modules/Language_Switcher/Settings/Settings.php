@@ -98,7 +98,7 @@ class Settings {
 	/**
 	 * @var bool
 	 */
-	public bool $show_wrapper = false;
+	public bool $show_wrapper = true;
 
 	/**
 	 * @var array
