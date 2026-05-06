@@ -237,14 +237,15 @@ class Settings {
 	}
 
 	/**
-	 * Returns the values.
+	 * Returns the values as an array after converting them to the legacy format.
 	 *
 	 * @since 3.9
 	 *
 	 * @return array
 	 */
-	public function to_array(): array {
-		return array_diff_key( get_object_vars( $this ), array( 'links' => 0, 'increment' => 0 ) );
+	public function get_legacy(): array {
+		$settings = array_diff_key( get_object_vars( $this ), array( 'links' => 0, 'increment' => 0 ) );
+		return $this->convert_to_legacy( $settings );
 	}
 
 	/**
@@ -412,7 +413,7 @@ class Settings {
 	 * @param array $settings Settings in new structure.
 	 * @return array
 	 */
-	public function convert_to_legacy( array $settings ): array {
+	protected function convert_to_legacy( array $settings ): array {
 		$args = PLL_Switcher::DEFAULTS;
 
 		if ( isset( $settings['layout'] ) && 'select' === $settings['layout'] ) {

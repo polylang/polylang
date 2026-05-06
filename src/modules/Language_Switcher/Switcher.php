@@ -101,8 +101,6 @@ class Switcher {
 			return $html;
 		}
 
-		$args = $this->settings->convert_to_legacy( $this->settings->to_array() );
-
 		/**
 		 * Filter the whole HTML markup returned by the 'pll_the_languages' template tag.
 		 *
@@ -113,6 +111,11 @@ class Switcher {
 		 * @param string $html HTML returned/outputted by the template tag.
 		 * @param array  $args Arguments passed to the template tag.
 		 */
-		return (string) apply_filters_deprecated( 'pll_the_languages', array( $html, $args ), '3.9.0', 'pll_language_switcher' );
+		return (string) apply_filters_deprecated(
+			'pll_the_languages',
+			array( $html, $this->settings->get_legacy() ),
+			'3.9.0',
+			'pll_language_switcher'
+		);
 	}
 }
