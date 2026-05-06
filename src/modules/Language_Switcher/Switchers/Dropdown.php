@@ -25,7 +25,7 @@ class Dropdown extends Abstract_Switcher {
 	 * @return string
 	 */
 	public function get(): string {
-		$current_item = $this->get_current_item();
+		$current_item = $this->get_top_level_item();
 
 		if ( empty( $current_item ) ) {
 			return '';
@@ -81,7 +81,7 @@ class Dropdown extends Abstract_Switcher {
 	 *
 	 * @return string
 	 */
-	private function get_current_item(): string {
+	private function get_top_level_item(): string {
 		$current_element = null;
 
 		foreach ( $this->elements as $element ) {
