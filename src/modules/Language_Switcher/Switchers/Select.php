@@ -50,7 +50,7 @@ class Select extends Abstract_Switcher {
 	}
 
 	/**
-	 * Returns an instance of `Elements\Select`.
+	 * Returns an instance of `Element\Select`.
 	 *
 	 * @since 3.9
 	 *

@@ -7,7 +7,6 @@ namespace WP_Syntex\Polylang\Language_Switcher\Settings;
 
 use PLL_Links;
 use PLL_Switcher;
-use PLL_Admin_Links;
 use WP_Syntex\Polylang\Language_Switcher\Switchers;
 
 defined( 'ABSPATH' ) || exit;
@@ -142,8 +141,8 @@ class Settings {
 	 *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
 	 *                                            `dropdown`, and `select`. Default is `vertical`.
 	 *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
-	 *                                            `stretched`. Default is `center`.
-	 *     @type bool     $show_wrapper           Display the wrapper or not. Default is `false`.
+	 *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
+	 *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true`.
 	 *     @type bool     $show_flags             Display the flags or not. Default is `false`.
 	 *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
 	 *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
@@ -193,7 +192,7 @@ class Settings {
 	 * @return array
 	 */
 	public static function get_defaults(): array {
-		$properties = array_diff_key( get_class_vars( self::class ), array( 'links' => 0, 'increment' => 0 ) );
+		$properties = array_diff_key( get_class_vars( self::class ), array( 'increment' => 0 ) );
 
 		$properties['alignment'] = is_rtl() ? 'right' : 'left';
 
@@ -233,8 +232,7 @@ class Settings {
 	 * @return array
 	 */
 	public function get_legacy(): array {
-		$settings = array_diff_key( get_object_vars( $this ), array( 'links' => 0, 'increment' => 0 ) );
-		return $this->convert_to_legacy( $settings );
+		return $this->convert_to_legacy( get_object_vars( $this ) );
 	}
 
 	/**

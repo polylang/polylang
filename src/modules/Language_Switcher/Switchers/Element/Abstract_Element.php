@@ -159,7 +159,7 @@ abstract class Abstract_Element {
 		$this->order            = (int) $language->term_group;
 		$this->has_translations = true;
 		$this->is_empty         = $language->get_tax_prop( 'language', 'count' ) <= 0;
-		$this->is_current       = $this->get_current_language() === $language->slug;
+		$this->is_current       = $this->get_current_language_slug() === $language->slug;
 		$this->item_classes     = array_merge(
 			array( 'lang-item', "lang-item-{$language->term_id}", "lang-item-{$language->slug}" ),
 			$settings->item_classes
@@ -206,7 +206,7 @@ abstract class Abstract_Element {
 	 *
 	 * @return string
 	 */
-	private function get_current_language(): string {
+	private function get_current_language_slug(): string {
 		if ( ! empty( $this->links->curlang ) ) {
 			return $this->links->curlang->slug;
 		}

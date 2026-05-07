@@ -74,8 +74,9 @@ class Switcher {
 		 *
 		 * @param string   $html     Switcher markup.
 		 * @param Settings $settings Switcher settings.
+		 * @param Switcher $switcher Switcher's instance.
 		 */
-		return (string) apply_filters( 'pll_language_switcher', $html, $this->settings );
+		return (string) apply_filters( 'pll_language_switcher_output', $html, $this->settings, $this );
 	}
 
 	/**

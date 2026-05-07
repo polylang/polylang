@@ -48,7 +48,7 @@ class Nav extends Abstract_Switcher {
 	}
 
 	/**
-	 * Returns an instance of `Elements\Nav`.
+	 * Returns an instance of `Element\Nav`.
 	 *
 	 * @since 3.9
 	 *
