@@ -68,6 +68,11 @@ class PLL_Filter_REST_Routes {
 
 			// Add params in query params
 			foreach ( $args as $key => $value ) {
+				if ( array_key_exists( $key, $query_params ) ) {
+					// Don't override existing query params.
+					continue;
+				}
+
 				$query_params[ $key ] = $value;
 			}
 
