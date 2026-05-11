@@ -79,11 +79,11 @@ class PLL_Filter_REST_Routes {
 			// Sort query params to put it in the same order as the preloading middleware does
 			ksort( $query_params );
 
-			// Replace the key by the correct path with query params reordered.
-			// Uses `build_query()` instead of `add_query_arg()` to preserve empty values as `key=`.
 			$sorted_query = build_query( urlencode_deep( $query_params ) );
 			$sorted_path  = $path_parts['path'];
 
+			// Replace the key by the correct path with query params reordered.
+			// Uses `build_query()` instead of `add_query_arg()` to preserve empty values as `key=`.
 			if ( '' !== $sorted_query ) {
 				$sorted_path .= '?' . $sorted_query;
 			}
