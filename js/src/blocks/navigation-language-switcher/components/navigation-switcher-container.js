@@ -8,7 +8,10 @@ import { useContext } from '@wordpress/element';
  */
 import { LanguagesContext } from '../../languages-context';
 import { SwitcherUI } from './switcher-ui';
-import { useCurrentLanguage, useCuratedLanguages } from '@wpsyntex/polylang-react-library';
+import {
+	useCurrentLanguage,
+	useCuratedLanguages,
+} from '@wpsyntex/polylang-react-library';
 
 /**
  * Switcher container component.

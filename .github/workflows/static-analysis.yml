@@ -39,12 +39,13 @@ jobs:
       with:
         filters: |
           js:
+            - 'js/src/blocks/**/*.js'
             - 'tests/e2e/**/*.{js,mjs,cjs}'
 
-    - name: Run ESLint only on e2e tests files for now...
+    - name: Run ESLint on blocks JS source files and e2e tests
       uses: polylang/actions/eslint@main
       if: ${{ steps.filter.outputs.js == 'true' }}
       with:
         do-js: true
-        js-path: './tests/e2e'
+        js-path: './js/src/blocks ./tests/e2e'
         do-style: false
