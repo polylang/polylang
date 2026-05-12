@@ -84,13 +84,9 @@ function configureWebpack( options ) {
 		],
 	} );
 
-	return [
-		...vanillaConfig,
-		...reactifiedConfig,
-	];
+	return [ ...vanillaConfig, ...reactifiedConfig ];
 }
 
 module.exports = ( env, options ) => {
 	return configureWebpack( options );
 };
-

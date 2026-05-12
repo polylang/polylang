@@ -1,6 +1,39 @@
 {
 	"extends": [ "plugin:@wordpress/eslint-plugin/recommended" ],
+	"settings": {
+		"import/core-modules": [
+			"@wordpress/block-editor",
+			"@wordpress/blocks",
+			"@wordpress/components",
+			"@wordpress/element",
+			"@wordpress/hooks",
+			"@wordpress/i18n"
+		]
+	},
+	"rules": {
+		"jsdoc/no-undefined-types": [
+			1,
+			{
+				"definedTypes": [ "React", "ReactElement", "APIFetchOptions" ]
+			}
+		],
+		"camelcase": [
+			2,
+			{
+				"allow": [ "pll_block_editor_blocks_settings", "show_flags", "show_names" ],
+				"properties": "never",
+				"ignoreDestructuring": true
+			}
+		]
+	},
 	"globals": {
-		"pllDescriptionData": true
+		"pll_block_editor_blocks_settings": true,
+		"pllDefaultLanguage": true
+	},
+	"env": {
+		"browser": true
+	},
+	"parserOptions": {
+		"requireConfigFile": false
 	}
 }
