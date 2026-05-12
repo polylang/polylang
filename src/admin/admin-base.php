@@ -568,7 +568,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				array(
 					'parent' => 'languages',
 					'id'     => $lang->slug,
-					'title'  => sprintf( '%s %s', $lang->get_admin_flag( 'aria-hidden' ), esc_html( $lang->name ) ),
+					'title'  => sprintf( '%s %s', 'all' === $lang->slug ? $lang->flag : $lang->get_admin_flag( 'aria-hidden' ), esc_html( $lang->name ) ),
 					'href'   => esc_url( add_query_arg( 'lang', $lang->slug, remove_query_arg( 'paged' ) ) ),
 					'meta'   => 'all' === $lang->slug ? array() : array( 'lang' => esc_attr( $lang->get_locale( 'display' ) ) ),
 				)
