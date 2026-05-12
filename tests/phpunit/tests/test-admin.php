@@ -49,6 +49,32 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '/wp-admin/edit.php?lang=fr', $fr->href );
 	}
 
+	public function test_admin_bar_menu_with_filtered_language() {
+		global $wp_admin_bar;
+		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		$this->go_to( home_url( '/wp-admin/edit.php' ) );
+		$links_model            = self::$model->get_links_model();
+		$pll_admin              = new PLL_Admin( $links_model );
+		$pll_admin->init();
+		$pll_admin->filter_lang = self::$model->get_language( 'fr' );
+		$pll_admin->pref_lang   = $pll_admin->filter_lang;
+
+		_wp_admin_bar_init();
+		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
+
+		// 'fr' is selected, so it should not appear in the dropdown.
+		$fr = $wp_admin_bar->get_node( 'fr' );
+		$this->assertNull( $fr );
+
+		// 'all' and 'en' should appear as dropdown items.
+		$all = $wp_admin_bar->get_node( 'all' );
+		$this->assertSame( 'languages', $all->parent );
+
+		$en = $wp_admin_bar->get_node( 'en' );
+		$this->assertSame( 'languages', $en->parent );
+	}
+
 	public function test_admin_bar_menu_should_hide() {
 		global $wp_admin_bar;
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
