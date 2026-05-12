@@ -1,19 +1,5 @@
 {
 	"extends": [ "plugin:@wordpress/eslint-plugin/recommended" ],
-	"ignorePatterns": [
-		"js/src/admin.js",
-		"js/src/block-editor.js",
-		"js/src/classic-editor.js",
-		"js/src/lib/**",
-		"js/src/media.js",
-		"js/src/nav-menu.js",
-		"js/src/post.js",
-		"js/src/settings.js",
-		"js/src/term.js",
-		"js/src/user.js",
-		"js/src/widgets.js",
-		"src/modules/wizard/js/languages-step.js"
-	],
 	"settings": {
 		"import/core-modules": [
 			"@wordpress/block-editor",
