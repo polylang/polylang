@@ -109,8 +109,8 @@
 	margin-inline-end: 20px;
 	writing-mode: horizontal-tb;
 }
-.pll-layout-vertical li:not(:last-child) {
-	margin-bottom: 20px;
+.pll-layout-vertical li {
+	margin: 0;
 }
 
 /* Links */
