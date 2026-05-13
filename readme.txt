@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.5
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.8.3
+Stable tag: 3.8.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,6 +104,15 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.8.4 (2026-05-18) =
+
+* Security: Fix an XSS in the multilingual biography
+* Pro: Fix draft post translations not shown in the languages sidebar in the block editor #3006
+* Pro: Fix compatibility with libxml 2.15.1 #2920
+* Pro: Fix Allowed memory size exhausted with Divi 5 #3008
+* Improve accessibility of the multilingual biography on user profile page #1869
+* Prevent using unsupported block fields in wpml-config.xml #1868
 
 = 3.8.3 (2026-04-27) =
 
