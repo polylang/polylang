@@ -241,14 +241,7 @@ abstract class Abstract_Element {
 		 */
 		$url = apply_filters( 'pll_the_language_link', $url, $this->language->slug, $this->language->locale );
 
-		if ( is_null( $url ) ) {
-			// Backward compatibility.
-			$url = '';
-		} elseif ( ! is_string( $url ) ) {
-			return;
-		}
-
-		if ( empty( $url ) || $this->settings->force_home ) {
+		if ( empty( $url ) || ! is_string( $url ) || $this->settings->force_home ) {
 			$this->url = $this->links->get_home_url( $this->language );
 		} else {
 			$this->url = $url;
