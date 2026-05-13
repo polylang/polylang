@@ -54,8 +54,8 @@ class Admin_Test extends PLL_UnitTestCase {
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
 		$this->go_to( home_url( '/wp-admin/edit.php' ) );
-		$links_model            = self::$model->get_links_model();
-		$pll_admin              = new PLL_Admin( $links_model );
+		$links_model = self::$model->get_links_model();
+		$pll_admin   = new PLL_Admin( $links_model );
 		$pll_admin->init();
 		$pll_admin->filter_lang = self::$model->get_language( 'fr' );
 		$pll_admin->pref_lang   = $pll_admin->filter_lang;
