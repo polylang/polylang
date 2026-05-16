@@ -269,17 +269,13 @@ class PLL_CRUD_Posts {
 	public function wp_delete_file( $file ) {
 		global $wpdb;
 
-		$uploadpath = wp_upload_dir();
-
-		// Get the main attached file.
-		$attached_file = substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) );
-		$attached_file = preg_replace( '#-\d+x\d+\.([a-z]+)$#', '.$1', $attached_file );
+		$basefile = basename( $file );
 
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT post_id FROM $wpdb->postmeta
-				WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
-				$attached_file
+				WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s",
+				'%"' . $wpdb->esc_like( $basefile ) . '"%' // Search the base file in the serialized array.
 			)
 		);
 
