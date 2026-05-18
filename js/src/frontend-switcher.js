@@ -72,12 +72,6 @@ const pllSwitcher = {
 				'aria-expanded',
 				'true' === expanded ? 'false' : 'true'
 			);
-			event.currentTarget.setAttribute(
-				'aria-label',
-				'true' === expanded
-					? window.pllSwitcherI18n.openDropdown
-					: window.pllSwitcherI18n.closeDropdown
-			);
 		},
 	},
 

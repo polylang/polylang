@@ -43,9 +43,6 @@ class Assets {
 		wp_register_style( self::FRONTEND_ASSET_HANDLE, plugins_url( "/css/build/frontend-switcher{$suffix}.css", POLYLANG_FILE ), array(), POLYLANG_VERSION );
 
 		wp_register_script( self::FRONTEND_ASSET_HANDLE, plugins_url( "/js/build/frontend-switcher{$suffix}.js", POLYLANG_FILE ), array(), POLYLANG_VERSION, true );
-
-		$i18n = array( 'openDropdown' => __( 'Open languages submenu', 'polylang' ), 'closeDropdown' => __( 'Close languages submenu', 'polylang' ) );
-		wp_localize_script( self::FRONTEND_ASSET_HANDLE, 'pllSwitcherI18n', $i18n );
 	}
 
 	/**
