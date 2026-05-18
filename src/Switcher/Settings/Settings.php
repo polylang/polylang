@@ -3,11 +3,11 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher\Settings;
+namespace WP_Syntex\Polylang\Switcher\Settings;
 
 use PLL_Links;
 use PLL_Switcher;
-use WP_Syntex\Polylang\Language_Switcher\Switchers;
+use WP_Syntex\Polylang\Switcher\Layout;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -205,19 +205,19 @@ class Settings {
 	 * @since 3.9
 	 *
 	 * @param PLL_Links $links Instance of `PLL_Links`.
-	 * @return Switchers\Abstract_Switcher|null
+	 * @return Layout\Abstract_Layout|null
 	 */
-	public function get_switcher( PLL_Links $links ): ?Switchers\Abstract_Switcher {
+	public function get_switcher( PLL_Links $links ): ?Layout\Abstract_Layout {
 		switch ( $this->layout ) {
 			case 'horizontal':
 			case 'vertical':
-				return new Switchers\Nav( $this, $links );
+				return new Layout\Nav( $this, $links );
 
 			case 'dropdown':
-				return new Switchers\Dropdown( $this, $links );
+				return new Layout\Dropdown( $this, $links );
 
 			case 'select':
-				return new Switchers\Select( $this, $links );
+				return new Layout\Select( $this, $links );
 
 			default:
 				return null;

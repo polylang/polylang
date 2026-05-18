@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher;
+namespace WP_Syntex\Polylang\Switcher;
 
 use WP_Widget_Factory;
 

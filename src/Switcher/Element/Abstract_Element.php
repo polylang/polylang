@@ -3,14 +3,14 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher\Switchers\Element;
+namespace WP_Syntex\Polylang\Switcher\Element;
 
 use WP_Post;
 use PLL_Links;
 use PLL_Language;
 use PLL_Frontend_Links;
 use PLL_Translated_Post;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

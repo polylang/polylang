@@ -3,11 +3,11 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
+namespace WP_Syntex\Polylang\Switcher\Layout;
 
 use PLL_Language;
-use WP_Syntex\Polylang\Language_Switcher\Assets;
-use WP_Syntex\Polylang\Language_Switcher\Switchers\Element\Nav as Element;
+use WP_Syntex\Polylang\Switcher\Assets;
+use WP_Syntex\Polylang\Switcher\Element\Nav as Element;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-class Dropdown extends Abstract_Switcher {
+class Dropdown extends Abstract_Layout {
 	/**
 	 * Returns the markup of the switcher.
 	 *

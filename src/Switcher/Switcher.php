@@ -3,10 +3,10 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher;
+namespace WP_Syntex\Polylang\Switcher;
 
 use PLL_Links;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -83,7 +83,7 @@ class Switcher {
 	 *
 	 * @since 3.9
 	 *
-	 * @return Switchers\Element\Abstract_Element[]
+	 * @return Element\Abstract_Element[]
 	 */
 	public function get_elements(): array {
 		$switcher = $this->settings->get_switcher( $this->links );

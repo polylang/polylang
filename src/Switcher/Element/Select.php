@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher\Switchers\Element;
+namespace WP_Syntex\Polylang\Switcher\Element;
 
 defined( 'ABSPATH' ) || exit;
 

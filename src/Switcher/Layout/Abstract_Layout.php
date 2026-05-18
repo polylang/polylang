@@ -3,12 +3,12 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Language_Switcher\Switchers;
+namespace WP_Syntex\Polylang\Switcher\Layout;
 
 use PLL_Links;
 use PLL_Language;
-use WP_Syntex\Polylang\Language_Switcher\Settings\Settings;
-use WP_Syntex\Polylang\Language_Switcher\Switchers\Element\Abstract_Element;
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
+use WP_Syntex\Polylang\Switcher\Element\Abstract_Element;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-abstract class Abstract_Switcher {
+abstract class Abstract_Layout {
 	/**
 	 * @var Settings
 	 */
