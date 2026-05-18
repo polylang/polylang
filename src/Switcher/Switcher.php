@@ -58,13 +58,14 @@ class Switcher {
 	 * @return string
 	 */
 	public function get(): string {
-		$switcher = $this->settings->get_switcher( $this->links );
+		$switcher_class = $this->settings->get_switcher_class();
 
-		if ( empty( $switcher ) ) {
+		if ( ! class_exists( $switcher_class ) ) {
 			return '';
 		}
 
-		$html = Legacy::maybe_filter_legacy_markup( $switcher->get(), $this->settings );
+		$switcher = new $switcher_class( $this->settings, $this->links );
+		$html     = Legacy::maybe_filter_legacy_markup( $switcher->get(), $this->settings );
 
 		/**
 		 * Filter the whole switcher markup.
@@ -86,11 +87,13 @@ class Switcher {
 	 * @return Element\Abstract_Element[]
 	 */
 	public function get_elements(): array {
-		$switcher = $this->settings->get_switcher( $this->links );
+		$switcher_class = $this->settings->get_switcher_class();
 
-		if ( empty( $switcher ) ) {
+		if ( ! class_exists( $switcher_class ) ) {
 			return array();
 		}
+
+		$switcher = new $switcher_class( $this->settings, $this->links );
 
 		return $switcher->get_elements();
 	}

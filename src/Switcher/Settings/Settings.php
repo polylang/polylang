@@ -5,7 +5,6 @@
 
 namespace WP_Syntex\Polylang\Switcher\Settings;
 
-use PLL_Links;
 use PLL_Switcher;
 use WP_Syntex\Polylang\Switcher\Layout;
 use WP_Syntex\Polylang\Switcher\Legacy;
@@ -193,23 +192,24 @@ class Settings {
 	 *
 	 * @since 3.9
 	 *
-	 * @param PLL_Links $links Instance of `PLL_Links`.
-	 * @return Layout\Abstract_Layout|null
+	 * @return string
+	 *
+	 * @phpstan-return class-string<Layout\Abstract_Layout>|''
 	 */
-	public function get_switcher( PLL_Links $links ): ?Layout\Abstract_Layout {
+	public function get_switcher_class(): string {
 		switch ( $this->layout ) {
 			case 'horizontal':
 			case 'vertical':
-				return new Layout\Nav( $this, $links );
+				return Layout\Nav::class;
 
 			case 'dropdown':
-				return new Layout\Dropdown( $this, $links );
+				return Layout\Dropdown::class;
 
 			case 'select':
-				return new Layout\Select( $this, $links );
+				return Layout\Select::class;
 
 			default:
-				return null;
+				return '';
 		}
 	}
 
