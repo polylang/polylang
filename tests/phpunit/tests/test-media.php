@@ -29,7 +29,9 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->pll_admin->posts         = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->links         = new PLL_Admin_Links( $this->pll_admin );
 		$this->pll_admin->sync          = new PLL_Admin_Sync( $this->pll_admin );
-		add_filter( 'intermediate_image_sizes', '__return_empty_array' );  // don't create intermediate sizes to save time
+
+		$GLOBALS['polylang'] = $this->pll_admin; // FIXME We use PLL() in create_media_translation().
+		self::require_api();
 	}
 
 	public function test_upload() {

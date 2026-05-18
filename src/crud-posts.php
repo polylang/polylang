@@ -269,13 +269,17 @@ class PLL_CRUD_Posts {
 	public function wp_delete_file( $file ) {
 		global $wpdb;
 
-		$basefile = basename( $file );
+		$uploadpath = wp_upload_dir();
+		$basefile   = basename( $file );
+		$pattern    = '"(' . trailingslashit( ltrim( $uploadpath['subdir'], '/' ) ) . ')?' . preg_quote( $basefile ) . '"';
 
+		// Search in the serialized array of the attachment metadata.
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT post_id FROM $wpdb->postmeta
-				WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s",
-				'%"' . $wpdb->esc_like( $basefile ) . '"%' // Search the base file in the serialized array.
+				WHERE meta_key = '_wp_attachment_metadata' AND ( meta_value LIKE %s OR meta_value LIKE %s )",
+				'%"' . $wpdb->esc_like( $basefile ) . '"%', // Intermediate sizes.
+				'%"' . $wpdb->esc_like( trailingslashit( ltrim( $uploadpath['subdir'], '/' ) ) . $basefile ) . '"%' // Main file.
 			)
 		);
 
