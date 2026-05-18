@@ -271,7 +271,6 @@ class PLL_CRUD_Posts {
 
 		$uploadpath = wp_upload_dir();
 		$basefile   = basename( $file );
-		$pattern    = '"(' . trailingslashit( ltrim( $uploadpath['subdir'], '/' ) ) . ')?' . preg_quote( $basefile ) . '"';
 
 		// Search in the serialized array of the attachment metadata.
 		$ids = $wpdb->get_col(
