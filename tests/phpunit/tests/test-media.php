@@ -87,4 +87,35 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_excerpt );
 		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $fr, '_wp_attachment_image_alt', true ) );
 	}
+
+	public function test_delete_edited_image() {
+		require_once ABSPATH . 'wp-admin/includes/image-edit.php';
+
+		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+
+		$filename = __DIR__ . '/../data/big-image.jpg';
+		$en = self::factory()->attachment->create_upload_object( $filename );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
+
+		// Scale image.
+		$_REQUEST = array(
+			'do'      => 'scale',
+			'fwidth'  => '2300',
+			'fheight' => '1725',
+		);
+
+		wp_save_image( $en );
+		$uploads_dir = wp_upload_dir();
+		$filenames   = glob( "{$uploads_dir['basedir']}/{$uploads_dir['subdir']}/big-image*" );
+
+		wp_delete_attachment( $en );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileExists( $filename, 'Deleting a translation must not delete the files' );
+		}
+
+		wp_delete_attachment( $fr );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
+		}
+	}
 }
