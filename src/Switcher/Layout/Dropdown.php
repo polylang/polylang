@@ -98,7 +98,7 @@ class Dropdown extends Abstract_Layout {
 		return sprintf(
 			'<a lang="%1$s" hreflang="%1$s" href="%2$s" class="current-lang" aria-current="true">%3$s</a>',
 			esc_attr( $current_element->locale ),
-			esc_url( $current_element->url ),
+			esc_url( $current_element->get_url() ),
 			$current_element->get_label()
 		);
 	}
