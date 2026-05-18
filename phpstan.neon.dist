@@ -87,12 +87,6 @@ parameters:
 			count: 1
 			path: src/frontend/frontend-auto-translate.php
 
-		# Ignored because PHPStan is drunk ¯\(°_o)/¯
-		-
-			identifier: deadCode.unreachable
-			count: 1
-			path: src/admin/admin-filters-columns.php
-
 		# Ignored globally
 		-
 			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
