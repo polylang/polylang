@@ -5,7 +5,6 @@
 
 namespace WP_Syntex\Polylang\Switcher\Settings;
 
-use PLL_Switcher;
 use WP_Syntex\Polylang\Switcher\Layout;
 use WP_Syntex\Polylang\Switcher\Legacy;
 
