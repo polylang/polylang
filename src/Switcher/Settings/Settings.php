@@ -8,6 +8,7 @@ namespace WP_Syntex\Polylang\Switcher\Settings;
 use PLL_Links;
 use PLL_Switcher;
 use WP_Syntex\Polylang\Switcher\Layout;
+use WP_Syntex\Polylang\Switcher\Legacy;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,18 +18,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.9
  */
 class Settings {
-	private const LEGACY_ENTRIES = array(
-		'dropdown'           => 1,
-		'echo'               => 1,
-		'show_names'         => 1,
-		'display_names_as'   => 1,
-		'raw'                => 1,
-		'item_spacing'       => 1,
-		'admin_render'       => 1,
-		'admin_current_lang' => 1,
-		'classes'            => 1,
-	);
-
 	/**
 	 * @var string
 	 *
@@ -163,7 +152,7 @@ class Settings {
 	 * }
 	 */
 	public function __construct( array $settings ) {
-		$settings = $this->maybe_convert_and_filter_legacy_settings( $settings );
+		$settings = Legacy::maybe_filter_legacy_settings( $settings );
 
 		/**
 		 * Filter the language switcher settings.
@@ -222,54 +211,6 @@ class Settings {
 			default:
 				return null;
 		}
-	}
-
-	/**
-	 * Returns the values as an array after converting them to the legacy format.
-	 *
-	 * @since 3.9
-	 *
-	 * @return array
-	 */
-	public function get_legacy(): array {
-		return $this->convert_to_legacy( get_object_vars( $this ) );
-	}
-
-	/**
-	 * Converts new settings structure to the legacy one, then applies the deprecated filter `pll_the_languages_args`,
-	 * then converts it back to new settings structure.
-	 * This removes legacy settings.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $settings Settings in new structure.
-	 * @return array
-	 */
-	private function maybe_convert_and_filter_legacy_settings( array $settings ): array {
-		if ( ! has_filter( 'pll_the_languages_args' ) ) {
-			if ( ! $this->is_legacy( $settings ) ) {
-				return $settings;
-			}
-
-			return array_diff_key( $this->convert_from_legacy( $settings ), self::LEGACY_ENTRIES );
-		}
-
-		if ( ! $this->is_legacy( $settings ) ) {
-			$settings = $this->convert_to_legacy( $settings );
-		}
-
-		/**
-		 * Filter the arguments of the 'pll_the_languages' template tag.
-		 *
-		 * @since 1.5
-		 * @since 3.9 Deprecated.
-		 * @deprecated
-		 *
-		 * @param array $args
-		 */
-		$settings = apply_filters_deprecated( 'pll_the_languages_args', array( $settings ), '3.9.0', 'pll_language_switcher_settings' );
-
-		return array_diff_key( $this->convert_from_legacy( $settings ), self::LEGACY_ENTRIES );
 	}
 
 	/**
@@ -334,102 +275,5 @@ class Settings {
 		}
 
 		return $validated;
-	}
-
-	/**
-	 * Converts the legacy structure to the new one.
-	 * This preserves the legacy structure's keys.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $settings The settings.
-	 * @return array
-	 */
-	protected function convert_from_legacy( array $settings ): array {
-		if ( isset( $settings['layout'], $settings['dropdown'] ) ) {
-			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match.
-			if ( ! empty( $settings['dropdown'] ) && 'select' !== $settings['layout'] ) {
-				$settings['layout'] = 'select';
-			} elseif ( empty( $settings['dropdown'] ) && 'select' === $settings['layout'] ) {
-				$settings['layout'] = 'vertical';
-			}
-		} elseif ( ! isset( $settings['layout'] ) ) {
-			$settings['layout'] = ! empty( $settings['dropdown'] ) ? 'select' : 'vertical';
-		}
-
-		if ( isset( $settings['show_names'] ) && empty( $settings['show_names'] ) ) {
-			$settings['show_labels'] = '';
-		} elseif ( isset( $settings['display_names_as'] ) && 'slug' === $settings['display_names_as'] ) {
-			$settings['show_labels'] = 'codes';
-		}
-
-		foreach ( array( 'hide_if_empty', 'show_flags', 'force_home', 'hide_if_no_translation', 'hide_current' ) as $name ) {
-			if ( isset( $settings[ $name ] ) ) {
-				$settings[ $name ] = ! empty( $settings[ $name ] );
-			}
-		}
-
-		if ( isset( $settings['item_spacing'] ) && 'discard' === $settings['item_spacing'] ) {
-			$settings['preserve_spacing'] = false;
-		}
-
-		if ( ! empty( $settings['classes'] ) && is_array( $settings['classes'] ) ) {
-			$settings['item_classes'] = $settings['classes'];
-		}
-
-		return $settings;
-	}
-
-	/**
-	 * Converts the new structure to the legacy one.
-	 * This preserves the new structure's keys.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $settings Settings in new structure.
-	 * @return array
-	 */
-	protected function convert_to_legacy( array $settings ): array {
-		$args = PLL_Switcher::DEFAULTS;
-
-		if ( isset( $settings['layout'] ) && 'select' === $settings['layout'] ) {
-			$args['dropdown'] = 1;
-		}
-
-		if ( isset( $settings['show_labels'] ) ) {
-			if ( empty( $settings['show_labels'] ) ) {
-				$args['show_names'] = 0;
-			} elseif ( 'codes' === $settings['show_labels'] ) {
-				$args['display_names_as'] = 'slug';
-			}
-		}
-
-		foreach ( array( 'hide_if_empty', 'show_flags', 'force_home', 'hide_if_no_translation', 'hide_current' ) as $name ) {
-			if ( isset( $settings[ $name ] ) ) {
-				$args[ $name ] = (int) ! empty( $settings[ $name ] );
-			}
-		}
-
-		if ( isset( $settings['preserve_spacing'] ) && ! $settings['preserve_spacing'] ) {
-			$args['item_spacing'] = 'discard';
-		}
-
-		if ( ! empty( $settings['item_classes'] ) && is_array( $settings['item_classes'] ) ) {
-			$args['classes'] = array_filter( $settings['item_classes'] );
-		}
-
-		return array_merge( $settings, $args );
-	}
-
-	/**
-	 * Tells if the given settings list contain legacy settings.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $settings Settings.
-	 * @return bool
-	 */
-	protected function is_legacy( array $settings ): bool {
-		return ! empty( array_intersect_key( $settings, self::LEGACY_ENTRIES ) );
 	}
 }
