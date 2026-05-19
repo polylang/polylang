@@ -39,6 +39,10 @@
 	margin: 0;
 	stroke: currentColor;
 }
+.pll-layout-dropdown:hover > button:not([aria-expanded]) svg,
+.pll-layout-dropdown > [aria-expanded="true"] svg {
+	transform: rotate(180deg);
+}
 .pll-layout-dropdown > ul {
 	list-style: none;
 	display: flex;
@@ -58,7 +62,7 @@
 	overflow: hidden;
 	opacity: 0;
 }
-.pll-layout-dropdown:hover > ul,
+.pll-layout-dropdown:hover > button:not([aria-expanded]) + ul,
 .pll-layout-dropdown > [aria-expanded="true"] + ul {
 	width: auto;
 	height: auto;
