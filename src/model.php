@@ -344,7 +344,6 @@ class PLL_Model {
 	 *     author_name?: non-falsy-string,
 	 *     post_format?: non-falsy-string
 	 * } $q
-	 * @phpstan-return int<0, max>
 	 */
 	public function count_posts( $lang, $q = array() ): int {
 		global $wpdb;
@@ -434,7 +433,7 @@ class PLL_Model {
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
 
 		if ( 'any' === $q['post_status'] ) {
-			return array_sum( $counts[ $term_taxonomy_id ] );
+			return (int) array_sum( $counts[ $term_taxonomy_id ] );
 		}
 
 		return $counts[ $term_taxonomy_id ][ $q['post_status'] ] ?? 0;
@@ -646,8 +645,8 @@ class PLL_Model {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string $cache_key The cache key.
-	 * @param int[]  $counts    The number of posts grouped per language.
+	 * @param string  $cache_key The cache key.
+	 * @param int[][] $counts    The number of posts grouped per language and post status.
 	 * @return bool True if the value has been stored, false otherwise.
 	 */
 	private function set_counts_cache( $cache_key, array $counts ): bool {
