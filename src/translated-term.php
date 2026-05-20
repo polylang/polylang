@@ -450,6 +450,40 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Get a translated term by term field
+	 *
+	 * @since 3.9
+	 *
+	 * @param string                  $field    The term field. Accepted values are 'term_id', 'slug', 'name', 'term_taxonomy_id'.
+	 * @param int|string              $value    Search for this term value.
+	 * @param PLL_Language|string|int $lang     Language (object, slug, or term ID).
+	 * @param string                  $taxonomy Taxonomy name. Optional if $field is 'term_id'.
+	 * @return int|string The $field of the translated term. Empty if not found.
+	 */
+	public function get_by( string $field, $value, $lang, string $taxonomy = '' ) {
+		if ( 'term_id' === $field ) {
+			return $this->get( $value, $lang );
+		}
+
+		$empty = 'term_taxonomy_id' === $field ? 0 : '';
+		$terms = get_terms( array( 'taxonomy' => $taxonomy, $field => $value, 'lang' => '' ) );
+
+		if ( empty( $terms ) || ! is_array( $terms ) ) {
+			return $empty;
+		}
+
+		$t = reset( $terms );
+		if ( ! $t instanceof WP_Term ) {
+			return $empty;
+		}
+
+		$tr_id   = $this->get( $t->term_id, $lang );
+		$tr_term = get_term( $tr_id );
+
+		return $tr_term instanceof WP_Term ? $tr_term->$field : $empty;
+	}
+
+	/**
 	 * Toggles Polylang term slug filters management.
 	 * Must be used before and after any term slug modification or insertion.
 	 *
