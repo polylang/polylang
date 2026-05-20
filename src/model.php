@@ -432,6 +432,11 @@ class PLL_Model {
 		}
 
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
+
+		if ( 'any' === $q['post_status'] ) {
+			return array_sum( $counts[ $term_taxonomy_id ] );
+		}
+
 		return $counts[ $term_taxonomy_id ][ $q['post_status'] ] ?? 0;
 	}
 
