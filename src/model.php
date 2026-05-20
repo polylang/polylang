@@ -321,7 +321,7 @@ class PLL_Model {
 	 * @param array        $q    {
 	 *   WP_Query arguments:
 	 *
-	 *   @type string|string[] $post_type   Post type or array of post types.
+	 *   @type string|string[] $post_type   Post type or array of post types, defaults to 'post'.
 	 *   @type int             $m           Combination YearMonth. Accepts any four-digit year and month.
 	 *   @type int             $year        Four-digit year.
 	 *   @type int             $monthnum    Two-digit month.
@@ -329,7 +329,7 @@ class PLL_Model {
 	 *   @type int             $author      Author id.
 	 *   @type string          $author_name User 'user_nicename'.
 	 *   @type string          $post_format Post format.
-	 *   @type string          $post_status Post status.
+	 *   @type string          $post_status Post status, defaults to 'publish'.
 	 * }
 	 * @return int
 	 *
