@@ -3,6 +3,11 @@
  */
 
 export default class Dropdown {
+	/**
+	 * Attaches events to the dropdown's elements.
+	 *
+	 * @param {HTMLElement} button The button that opens/closes the dropdown.
+	 */
 	constructor( button ) {
 		this.button = button;
 		this.closeOnClickOutsideBinded = this.closeOnClickOutside.bind( this );
