@@ -35,7 +35,7 @@ const pllSwitcher = {
 		for ( const select of selects ) {
 			select.addEventListener( 'change', ( event ) => {
 				if ( event.currentTarget.value ) {
-					window.location.href = event.currentTarget.value; // PHPCS:ignore WordPressVIPMinimum.JS.Window.location, Already escaped in php.
+					window.location.href = event.currentTarget.value; // PHPCS:ignore WordPressVIPMinimum.JS.Window.location, Already escaped in `WP_Syntex\Polylang\Switcher\Element\Select::get()`.
 				}
 			} );
 		}
