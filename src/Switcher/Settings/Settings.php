@@ -14,7 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-class Settings extends Abstract_Settings_Legacy {
+class Settings {
+	use Legacy_Trait;
+
 	/**
 	 * @var string
 	 *

@@ -12,11 +12,13 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-abstract class Abstract_Settings_Legacy {
+trait Legacy_Trait {
 	/**
 	 * Legacy settings that don't exist anymore.
+	 *
+	 * @var array
 	 */
-	protected const REMOVED_ENTRIES = array(
+	protected static array $removed_entries = array(
 		'dropdown'           => 1,
 		'echo'               => 1,
 		'show_names'         => 1,
@@ -31,8 +33,10 @@ abstract class Abstract_Settings_Legacy {
 	/**
 	 * Legacy default settings.
 	 * Copied from `PLL_Switcher`.
+	 *
+	 * @var array
 	 */
-	protected const DEFAULTS = array(
+	protected static array $defaults = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
 		'echo'                   => 1, // Echoes the list.
 		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
@@ -65,7 +69,7 @@ abstract class Abstract_Settings_Legacy {
 				return $settings;
 			}
 
-			return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
+			return array_diff_key( $this->convert_from_legacy( $settings ), self::$removed_entries );
 		}
 
 		if ( ! $this->is_legacy( $settings ) ) {
@@ -88,7 +92,7 @@ abstract class Abstract_Settings_Legacy {
 			'pll_language_switcher_settings'
 		);
 
-		return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
+		return array_diff_key( $this->convert_from_legacy( $settings ), self::$removed_entries );
 	}
 
 	/**
@@ -111,7 +115,7 @@ abstract class Abstract_Settings_Legacy {
 	 * @return bool
 	 */
 	protected function is_legacy( array $settings ): bool {
-		return ! empty( array_intersect_key( $settings, self::REMOVED_ENTRIES ) );
+		return ! empty( array_intersect_key( $settings, self::$removed_entries ) );
 	}
 
 	/**
@@ -183,7 +187,7 @@ abstract class Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function convert_to_legacy( array $settings ): array {
-		$args = self::DEFAULTS;
+		$args = self::$defaults;
 
 		if ( isset( $settings['layout'] ) && 'select' === $settings['layout'] ) {
 			$args['dropdown'] = 1;
