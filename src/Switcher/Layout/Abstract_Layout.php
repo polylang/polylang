@@ -88,7 +88,7 @@ abstract class Abstract_Layout {
 				continue;
 			}
 
-			if ( empty( $element->get_url() ) ) {
+			if ( empty( $element->url ) ) {
 				// Failed to get a URL.
 				continue;
 			}

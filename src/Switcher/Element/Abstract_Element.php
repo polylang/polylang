@@ -50,6 +50,13 @@ abstract class Abstract_Element {
 	 *
 	 * @var string
 	 */
+	public string $url = '';
+
+	/**
+	 * @since 3.9
+	 *
+	 * @var string
+	 */
 	public string $label = '';
 
 	/**
@@ -168,6 +175,8 @@ abstract class Abstract_Element {
 		if ( $this->settings->show_flags ) {
 			$this->flag = $this->language->get_display_flag( $this->settings->show_labels ? 'no-alt' : 'alt' );
 		}
+
+		$this->set_url();
 	}
 
 	/**
@@ -191,13 +200,28 @@ abstract class Abstract_Element {
 	}
 
 	/**
-	 * Returns the URL of the element.
+	 * Returns the current language code.
 	 *
 	 * @since 3.9
 	 *
 	 * @return string
 	 */
-	public function get_url(): string {
+	private function get_current_language_slug(): string {
+		if ( ! empty( $this->links->curlang ) ) {
+			return $this->links->curlang->slug;
+		}
+
+		return $this->links->options['default_lang'];
+	}
+
+	/**
+	 * Sets the URL of the given element.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	private function set_url(): void {
 		$url = $this->get_original_url();
 
 		if ( empty( $url ) ) {
@@ -218,25 +242,10 @@ abstract class Abstract_Element {
 		$url = apply_filters( 'pll_the_language_link', $url, $this->language->slug, $this->language->locale );
 
 		if ( empty( $url ) || ! is_string( $url ) || $this->settings->force_home ) {
-			return $this->links->get_home_url( $this->language );
+			$this->url = $this->links->get_home_url( $this->language );
+		} else {
+			$this->url = $url;
 		}
-
-		return $url;
-	}
-
-	/**
-	 * Returns the current language code.
-	 *
-	 * @since 3.9
-	 *
-	 * @return string
-	 */
-	private function get_current_language_slug(): string {
-		if ( ! empty( $this->links->curlang ) ) {
-			return $this->links->curlang->slug;
-		}
-
-		return $this->links->options['default_lang'];
 	}
 
 	/**
