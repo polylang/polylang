@@ -3,23 +3,20 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Switcher;
-
-use WP_Syntex\Polylang\Model\Languages;
-use WP_Syntex\Polylang\Switcher\Settings\Settings;
+namespace WP_Syntex\Polylang\Switcher\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Compatibility layer between new and legacy switchers.
+ * Compatibility layer between new and legacy switcher settings.
  *
  * @since 3.9
  */
-class Legacy {
+abstract class Abstract_Settings_Legacy {
 	/**
 	 * Legacy settings that don't exist anymore.
 	 */
-	private const ENTRIES = array(
+	protected const REMOVED_ENTRIES = array(
 		'dropdown'           => 1,
 		'echo'               => 1,
 		'show_names'         => 1,
@@ -35,7 +32,7 @@ class Legacy {
 	 * Legacy default settings.
 	 * Copied from `PLL_Switcher`.
 	 */
-	public const DEFAULTS = array(
+	protected const DEFAULTS = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
 		'echo'                   => 1, // Echoes the list.
 		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
@@ -62,17 +59,17 @@ class Legacy {
 	 * @param array $settings Settings in new structure.
 	 * @return array
 	 */
-	public static function maybe_filter_legacy_settings( array $settings ): array {
+	public function maybe_filter_legacy( array $settings ): array {
 		if ( ! has_filter( 'pll_the_languages_args' ) ) {
-			if ( ! self::is_legacy_settings( $settings ) ) {
+			if ( ! $this->is_legacy( $settings ) ) {
 				return $settings;
 			}
 
-			return array_diff_key( self::convert_from_legacy_settings( $settings ), self::ENTRIES );
+			return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
 		}
 
-		if ( ! self::is_legacy_settings( $settings ) ) {
-			$settings = self::convert_to_legacy_settings( $settings );
+		if ( ! $this->is_legacy( $settings ) ) {
+			$settings = $this->convert_to_legacy( $settings );
 		}
 
 		/**
@@ -91,83 +88,18 @@ class Legacy {
 			'pll_language_switcher_settings'
 		);
 
-		return array_diff_key( self::convert_from_legacy_settings( $settings ), self::ENTRIES );
+		return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
 	}
 
 	/**
-	 * Returns the switcher's markup after applying the deprecated filter `pll_the_languages`.
-	 * However, 100% backward compatibility is not ensured since the markup is different.
+	 * Returns the values as an array after converting them to the legacy format.
 	 *
 	 * @since 3.9
 	 *
-	 * @param string   $html     The switcher's markup.
-	 * @param Settings $settings Instance of `Settings`.
-	 * @return string
+	 * @return array
 	 */
-	public static function maybe_filter_legacy_markup( string $html, Settings $settings ): string {
-		if ( ! has_filter( 'pll_the_languages' ) ) {
-			return $html;
-		}
-
-		$legacy_settings = self::convert_to_legacy_settings( get_object_vars( $settings ) );
-
-		/**
-		 * Filter the whole HTML markup returned by the 'pll_the_languages' template tag.
-		 *
-		 * @since 0.8
-		 * @since 3.9 Deprecated.
-		 * @deprecated
-		 *
-		 * @param string $html HTML returned/outputted by the template tag.
-		 * @param array  $args Arguments passed to the template tag.
-		 */
-		return (string) apply_filters_deprecated(
-			'pll_the_languages',
-			array( $html, $legacy_settings ),
-			'3.9.0',
-			'pll_language_switcher_output'
-		);
-	}
-
-	/**
-	 * Converts the new elements structure to the legacy one.
-	 *
-	 * @since 3.9
-	 *
-	 * @param \WP_Syntex\Polylang\Switcher\Element\Abstract_Element[] $elements  List of instances of `Abstract_Element`.
-	 * @param Settings                                                $settings  Instance of `Settings`.
-	 * @param Languages                                               $languages Languages model.
-	 * @return array[]
-	 */
-	public static function convert_to_legacy_elements( array $elements, Settings $settings, Languages $languages ): array {
-		$languages       = $languages->get_list();
-		$keyed_languages = array_combine( array_column( $languages, 'slug' ), $languages );
-		$data            = array();
-
-		foreach ( $elements as $slug => $element ) {
-			if ( ! isset( $keyed_languages[ $element->slug ] ) ) {
-				// Should not happen.
-				continue;
-			}
-
-			$language      = $keyed_languages[ $element->slug ];
-			$data[ $slug ] = array(
-				'id'             => $element->id,
-				'order'          => $element->order,
-				'slug'           => $element->slug,
-				'locale'         => $element->locale,
-				'is_rtl'         => 'rtl' === $element->direction,
-				'name'           => 'codes' === $settings->show_labels ? $element->slug : $language->name,
-				'url'            => $element->get_url(),
-				'flag'           => ! empty( $settings->show_flags ) ? $element->flag : $language->get_display_flag_url(),
-				'current_lang'   => $element->is_current,
-				'no_translation' => ! $element->has_translations,
-				'classes'        => $element->item_classes,
-				'link_classes'   => $element->link_classes,
-			);
-		}
-
-		return $data;
+	public function get_legacy(): array {
+		return $this->convert_to_legacy( get_object_vars( $this ) );
 	}
 
 	/**
@@ -178,8 +110,8 @@ class Legacy {
 	 * @param array $settings Settings.
 	 * @return bool
 	 */
-	private static function is_legacy_settings( array $settings ): bool {
-		return ! empty( array_intersect_key( $settings, self::ENTRIES ) );
+	protected function is_legacy( array $settings ): bool {
+		return ! empty( array_intersect_key( $settings, self::REMOVED_ENTRIES ) );
 	}
 
 	/**
@@ -191,9 +123,9 @@ class Legacy {
 	 * @param array $settings The settings.
 	 * @return array
 	 */
-	private static function convert_from_legacy_settings( array $settings ): array {
+	protected function convert_from_legacy( array $settings ): array {
 		_deprecated_argument(
-			Settings::class . '::__construct()',
+			static::class . '::__construct()',
 			'3.9',
 			sprintf(
 				/* translators: %s is a function name. */
@@ -202,9 +134,9 @@ class Legacy {
 			)
 		);
 
-		if ( ! empty( $settings['dropdown'] ) && ! isset( $settings['show_wrapper'] ) ) {
-			// `PLL_Walker_Dropdown` displays the wrapper (`<select>`).
-			$settings['show_wrapper'] = true;
+		if ( ! isset( $settings['show_wrapper'] ) ) {
+			// `PLL_Walker_Dropdown` displays the wrapper (`<select>`) while `PLL_Walker_List` didn't.
+			$settings['show_wrapper'] = ! empty( $settings['dropdown'] );
 		}
 
 		if ( isset( $settings['layout'], $settings['dropdown'] ) ) {
@@ -250,7 +182,7 @@ class Legacy {
 	 * @param array $settings Settings in new structure.
 	 * @return array
 	 */
-	private static function convert_to_legacy_settings( array $settings ): array {
+	protected function convert_to_legacy( array $settings ): array {
 		$args = self::DEFAULTS;
 
 		if ( isset( $settings['layout'] ) && 'select' === $settings['layout'] ) {

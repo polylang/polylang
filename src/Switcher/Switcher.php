@@ -64,8 +64,26 @@ class Switcher {
 			return '';
 		}
 
-		$switcher = new $switcher_class( $this->settings, $this->links );
-		$html     = Legacy::maybe_filter_legacy_markup( $switcher->get(), $this->settings );
+		$html = ( new $switcher_class( $this->settings, $this->links ) )->get();
+
+		if ( has_filter( 'pll_the_languages' ) ) {
+			/**
+			 * Filter the whole HTML markup returned by the 'pll_the_languages' template tag.
+			 *
+			 * @since 0.8
+			 * @since 3.9 Deprecated.
+			 * @deprecated
+			 *
+			 * @param string $html HTML returned/outputted by the template tag.
+			 * @param array  $args Arguments passed to the template tag.
+			 */
+			$html = (string) apply_filters_deprecated(
+				'pll_the_languages',
+				array( $html, $this->settings->get_legacy() ),
+				'3.9.0',
+				'pll_language_switcher_output'
+			);
+		}
 
 		/**
 		 * Filter the whole switcher markup.

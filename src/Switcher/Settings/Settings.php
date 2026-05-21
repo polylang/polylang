@@ -6,7 +6,6 @@
 namespace WP_Syntex\Polylang\Switcher\Settings;
 
 use WP_Syntex\Polylang\Switcher\Layout;
-use WP_Syntex\Polylang\Switcher\Legacy;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.9
  */
-class Settings {
+class Settings extends Abstract_Settings_Legacy {
 	/**
 	 * @var string
 	 *
@@ -150,7 +149,7 @@ class Settings {
 	 * }
 	 */
 	public function __construct( array $settings ) {
-		$settings = Legacy::maybe_filter_legacy_settings( $settings );
+		$settings = $this->maybe_filter_legacy( $settings );
 
 		/**
 		 * Filter the language switcher settings.
