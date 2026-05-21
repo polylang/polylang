@@ -276,12 +276,11 @@ class PLL_CRUD_Posts {
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT post_id FROM $wpdb->postmeta
-				WHERE meta_key = '_wp_attachment_metadata' AND ( meta_value LIKE %s OR meta_value LIKE %s )",
-				'%"' . $wpdb->esc_like( $basefile ) . '"%', // Intermediate sizes.
-				'%"' . $wpdb->esc_like( trailingslashit( ltrim( $uploadpath['subdir'], '/' ) ) . $basefile ) . '"%' // Main file.
+				WHERE meta_key IN ( '_wp_attachment_metadata', '_wp_attachment_backup_sizes' ) AND ( meta_value LIKE %s OR meta_value LIKE %s )",
+				'%"' . $wpdb->esc_like( $basefile ) . '"%', // Intermediate sizes in '_wp_attachment_metadata' + '_wp_attachment_backup_sizes'.
+				'%"' . $wpdb->esc_like( trailingslashit( ltrim( $uploadpath['subdir'], '/' ) ) . $basefile ) . '"%' // Main file in '_wp_attachment_metadata'.
 			)
 		);
-
 		if ( ! empty( $ids ) ) {
 			return ''; // Prevent deleting the file.
 		}
