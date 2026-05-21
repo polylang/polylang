@@ -180,7 +180,10 @@ class Settings {
 	 * @return array
 	 */
 	public static function get_defaults(): array {
-		$properties = array_diff_key( get_class_vars( self::class ), array( 'increment' => 0 ) );
+		$properties = array_diff_key(
+			get_class_vars( self::class ),
+			array( 'increment' => 0, 'removed_entries' => 0, 'defaults' => 0 )
+		);
 
 		$properties['alignment'] = is_rtl() ? 'right' : 'left';
 
