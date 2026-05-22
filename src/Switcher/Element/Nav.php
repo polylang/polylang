@@ -21,6 +21,27 @@ class Nav extends Abstract_Element {
 	 * @return string
 	 */
 	public function get(): string {
+		$out = sprintf(
+			'<li class="%s">%s</li>',
+			esc_attr( implode( ' ', $this->item_classes ) ),
+			$this->get_link()
+		);
+
+		if ( ! $this->settings->preserve_spacing ) {
+			return $out;
+		}
+
+		return "\t{$out}\n";
+	}
+
+	/**
+	 * Returns the markup of a link.
+	 *
+	 * @since 3.9
+	 *
+	 * @return string
+	 */
+	public function get_link(): string {
 		$link_atts = sprintf(
 			'lang="%1$s" hreflang="%1$s" href="%2$s"',
 			esc_attr( $this->locale ),
@@ -38,18 +59,7 @@ class Nav extends Abstract_Element {
 			$link_atts .= ' aria-current="true"';
 		}
 
-		$out = sprintf(
-			'<li class="%s"><a %s>%s</a></li>',
-			esc_attr( implode( ' ', $this->item_classes ) ),
-			$link_atts,
-			$this->get_label()
-		);
-
-		if ( ! $this->settings->preserve_spacing ) {
-			return $out;
-		}
-
-		return "\t{$out}\n";
+		return sprintf( '<a %s>%s</a>', $link_atts, $this->get_label() );
 	}
 
 	/**

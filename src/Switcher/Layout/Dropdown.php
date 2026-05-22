@@ -82,25 +82,17 @@ class Dropdown extends Abstract_Layout {
 	 * @return string
 	 */
 	private function get_top_level_item(): string {
-		$current_element = null;
-
-		foreach ( $this->elements as $element ) {
-			if ( $element->is_current ) {
-				$current_element = $element;
-				break;
-			}
+		if ( ! empty( $this->links->curlang ) ) {
+			$curlang = $this->links->curlang;
+		} else {
+			$curlang = $this->links->model->languages->get( $this->links->options['default_lang'] );
 		}
 
-		if ( empty( $current_element ) ) {
+		if ( empty( $curlang ) ) {
 			return '';
 		}
 
-		return sprintf(
-			'<a lang="%1$s" hreflang="%1$s" href="%2$s" class="current-lang" aria-current="true">%3$s</a>',
-			esc_attr( $current_element->locale ),
-			esc_url( $current_element->url ),
-			$current_element->get_label()
-		);
+		return $this->get_element( $curlang )->get_link();
 	}
 
 	/**
