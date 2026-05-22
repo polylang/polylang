@@ -57,50 +57,57 @@ test.describe.serial(
 		test( 'Block should be displayed in the editor', async ( {
 			admin,
 			page,
+			editor,
 		} ) => {
-			// Go to the Navigation Editor.
-			await admin.visitSiteEditor();
-			await page.getByRole( 'button', { name: 'Navigation' } ).click();
-			await page.getByRole( 'button', { name: 'Actions' } ).click();
-			await page.getByRole( 'menuitem', { name: 'Edit' } ).click();
+			await navigateToNavigationEditor( admin, page, navigation );
 
-			// Check the editor opens.
-			await expect(
-				page.getByRole( 'heading', { name: 'Navigation' } )
-			).toBeVisible();
+			// Navigation editor: Add page (WP 7) or Add block appender (WP 6.9) → Link UI → Browse all.
+			const navigationBlock = editor.canvas.getByRole( 'document', {
+				name: 'Block: Navigation',
+			} );
+			await navigationBlock.click();
 
-			// Add the Navigation Language Switcher block.
-			await page.locator( '.editor-visual-editor' ).click();
+			const navInserter = navigationBlock
+				.getByRole( 'button', { name: 'Add page' } )
+				.or(
+					navigationBlock.getByRole( 'button', { name: 'Add block' } )
+				);
+			await expect( navInserter ).toBeVisible();
+			await navInserter.click();
+
 			await page
-				.locator( 'iframe[name="editor-canvas"]' )
-				.contentFrame()
-				.locator( 'html' )
-				.click();
-			await page
-				.locator( 'iframe[name="editor-canvas"]' )
-				.contentFrame()
 				.getByRole( 'button', { name: 'Add block' } )
+				.filter( { hasText: 'Add block' } )
+				.first()
 				.click();
-			await page.getByText( 'Add block' ).click();
-			await page
-				.getByRole( 'button', { name: 'Browse all. This will open' } )
+
+			// QuickInserter only lists a few blocks; Polylang's block is not among them.
+			const addBlockDialog = page.getByRole( 'dialog', {
+				name: 'Add block',
+			} );
+			await expect( addBlockDialog ).toBeVisible();
+
+			await addBlockDialog
+				.getByRole( 'button', {
+					name: 'Browse all. This will open the main inserter panel in the editor toolbar.',
+				} )
 				.click();
-			await page.getByRole( 'searchbox', { name: 'Search' } ).click();
-			await page
+
+			const blockLibrary = page.getByRole( 'region', {
+				name: 'Block Library',
+			} );
+			await blockLibrary
 				.getByRole( 'searchbox', { name: 'Search' } )
 				.fill( 'language' );
-			await page
+			await blockLibrary
 				.getByRole( 'option', { name: 'Navigation Language Switcher' } )
 				.click();
 
 			// Check the Navigation Language Switcher block is displayed in the canvas.
 			await expect(
-				page
-					.locator( 'iframe[name="editor-canvas"]' )
-					.contentFrame()
-					.getByRole( 'document', {
-						name: 'Block: Navigation Language',
-					} )
+				editor.canvas.getByRole( 'document', {
+					name: 'Block: Navigation Language',
+				} )
 			).toBeVisible();
 
 			// Save the changes for next tests.
@@ -119,8 +126,8 @@ test.describe.serial(
 		 *     - Edit the Navigation Language Switcher block settings to dropdown.
 		 *     - Ensure the dropdown is displayed in the editor.
 		 */
-		test( 'Block in dropdown mode', async ( { page } ) => {
-			await navigateToNavigationEditor( page, navigation );
+		test( 'Block in dropdown mode', async ( { admin, page } ) => {
+			await navigateToNavigationEditor( admin, page, navigation );
 
 			// Edit the Navigation Language Switcher block settings to dropdown and add language names and flags.
 			await page
@@ -202,8 +209,8 @@ test.describe.serial(
 		 *     - Edit the Navigation Language Switcher block settings to list.
 		 *     - Ensure the list is displayed in the editor.
 		 */
-		test( 'Block in list mode', async ( { page } ) => {
-			await navigateToNavigationEditor( page, navigation );
+		test( 'Block in list mode', async ( { admin, page } ) => {
+			await navigateToNavigationEditor( admin, page, navigation );
 
 			// Edit the Navigation Language Switcher block settings to dropdown and add language names and flags.
 			await selectNavigationLanguageSwitcherBlock( page );
@@ -286,8 +293,11 @@ test.describe.serial(
 		 *     - Ensure the hides languages with no translation setting is displayed correctly.
 		 *     - Ensure settings (forces link to front page, hides the current language, hides languages with no translation) are dispal correctly.
 		 */
-		test( 'Block advanced settings can be edited', async ( { page } ) => {
-			await navigateToNavigationEditor( page, navigation );
+		test( 'Block advanced settings can be edited', async ( {
+			admin,
+			page,
+		} ) => {
+			await navigateToNavigationEditor( admin, page, navigation );
 
 			// Edit the Navigation Language Switcher block settings to forces link to front page.
 			await selectNavigationLanguageSwitcherBlock( page );
@@ -359,15 +369,22 @@ const getNavigationLanguageSwitcherBlockLocator = async ( page ) => {
 };
 
 /**
- * Navigates to the Navigation editor page.
+ * Navigates to the Navigation editor page and waits for the canvas to be ready.
  *
+ * @param {Object} admin      The admin object.
  * @param {Page}   page       The page object.
- * @param {Object} navigation The navigation object with id property.
+ * @param {Object} navigation The navigation object with id and title properties.
  */
-const navigateToNavigationEditor = async ( page, navigation ) => {
-	await page.goto(
-		`wp-admin/site-editor.php?p=/wp_navigation/${ navigation.id }&canvas=edit`
-	);
+const navigateToNavigationEditor = async ( admin, page, navigation ) => {
+	await admin.visitSiteEditor( {
+		postId: navigation.id,
+		postType: 'wp_navigation',
+		canvas: 'edit',
+	} );
+
+	await expect(
+		page.locator( 'iframe[name="editor-canvas"]' )
+	).toBeVisible();
 };
 
 /**

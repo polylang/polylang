@@ -43,6 +43,14 @@ test.describe(
 			await resetAllSettings( requestUtils );
 		} );
 
+		test.beforeEach( async ( { admin, editor } ) => {
+			await admin.visitAdminPage( 'widgets.php' );
+
+			await editor.setPreferences( 'core/edit-widgets', {
+				welcomeGuide: false,
+			} );
+		} );
+
 		/**
 		 * Ensures the language switcher block can be added in the widget editor without crashing and displays the languages.
 		 *
@@ -57,25 +65,22 @@ test.describe(
 		 *     - Verify the block preview lists English and French.
 		 */
 		test( 'Block can be added in a widget area and displays languages', async ( {
-			admin,
 			page,
 		} ) => {
-			// Navigate to widget editor.
-			await admin.visitAdminPage( 'widgets.php' );
-
-			// Wait for the block editor to load.
-			await page.waitForSelector( '.edit-widgets-header' );
-
-			// Open Block Inserter.
 			await page
-				.getByRole( 'button', { name: 'Block Inserter' } )
+				.getByRole( 'toolbar', { name: 'Document tools' } )
+				.getByRole( 'button', { name: 'Block Inserter', exact: true } )
 				.click();
 
-			// Search for the Language Switcher block.
-			await page
+			const blockLibrary = page.getByRole( 'region', {
+				name: 'Block Library',
+			} );
+			await expect( blockLibrary ).toBeVisible();
+
+			await blockLibrary
 				.getByRole( 'searchbox', { name: 'Search' } )
 				.fill( 'Language Switcher' );
-			await page
+			await blockLibrary
 				.getByRole( 'option', {
 					name: 'Language Switcher',
 					exact: true,
