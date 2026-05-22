@@ -50,6 +50,17 @@ abstract class Abstract_Settings_Legacy {
 	);
 
 	/**
+	 * Returns the values as an array after converting them to the legacy format.
+	 *
+	 * @since 3.9
+	 *
+	 * @return array
+	 */
+	public function get_legacy(): array {
+		return $this->convert_to_legacy( get_object_vars( $this ) );
+	}
+
+	/**
 	 * Converts new settings structure to the legacy one, then applies the deprecated filter `pll_the_languages_args`,
 	 * then converts it back to new settings structure.
 	 * This removes legacy settings.
@@ -59,7 +70,7 @@ abstract class Abstract_Settings_Legacy {
 	 * @param array $settings Settings in new structure.
 	 * @return array
 	 */
-	public function maybe_filter_legacy( array $settings ): array {
+	protected function maybe_filter_legacy( array $settings ): array {
 		if ( ! has_filter( 'pll_the_languages_args' ) ) {
 			if ( ! $this->is_legacy( $settings ) ) {
 				return $settings;
@@ -89,17 +100,6 @@ abstract class Abstract_Settings_Legacy {
 		);
 
 		return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
-	}
-
-	/**
-	 * Returns the values as an array after converting them to the legacy format.
-	 *
-	 * @since 3.9
-	 *
-	 * @return array
-	 */
-	public function get_legacy(): array {
-		return $this->convert_to_legacy( get_object_vars( $this ) );
 	}
 
 	/**
