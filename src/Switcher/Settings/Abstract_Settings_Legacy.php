@@ -156,12 +156,6 @@ abstract class Abstract_Settings_Legacy {
 			$settings['show_labels'] = 'codes';
 		}
 
-		foreach ( array( 'hide_if_empty', 'show_flags', 'force_home', 'hide_if_no_translation', 'hide_current' ) as $name ) {
-			if ( isset( $settings[ $name ] ) ) {
-				$settings[ $name ] = ! empty( $settings[ $name ] );
-			}
-		}
-
 		if ( isset( $settings['item_spacing'] ) && 'discard' === $settings['item_spacing'] ) {
 			$settings['preserve_spacing'] = false;
 		}
