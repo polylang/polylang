@@ -551,7 +551,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			array(
 				'id'    => 'languages',
 				'title' => $selected->flag . $title,
-				'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
+				'href'  => esc_url( $this->get_admin_bar_menu_url( $selected ) ),
 				'meta'  => array(
 					'title' => __( 'Filters content by language', 'polylang' ),
 					'class' => 'all' === $selected->slug ? '' : 'pll-filtered-languages',
@@ -569,11 +569,67 @@ abstract class PLL_Admin_Base extends PLL_Base {
 					'parent' => 'languages',
 					'id'     => $lang->slug,
 					'title'  => sprintf( '%s %s', 'all' === $lang->slug ? $lang->flag : $lang->get_admin_flag( 'aria-hidden' ), esc_html( $lang->name ) ),
-					'href'   => esc_url( add_query_arg( 'lang', $lang->slug, remove_query_arg( 'paged' ) ) ),
+					'href'   => esc_url( $this->get_admin_bar_menu_url( $lang ) ),
 					'meta'   => 'all' === $lang->slug ? array() : array( 'lang' => esc_attr( $lang->get_locale( 'display' ) ) ),
 				)
 			);
 		}
+	}
+
+	/**
+	 * Returns the admin language filter url for a given language.
+	 *
+	 * @since 3.9
+	 *
+	 * @param object $language The language or an object for all languages.
+	 * @return string
+	 *
+	 * @phpstan-param object{'slug': string} $language
+	 */
+	protected function get_admin_bar_menu_url( $language ): string {
+		global $pagenow;
+
+		$url = add_query_arg( 'lang', $language->slug, remove_query_arg( 'paged' ) );
+
+		if ( 'edit.php' !== $pagenow || ! $language instanceof PLL_Language ) {
+			return $url;
+		}
+
+		// Attempt to translate the category (taxonomy) filter if present.
+		$post_type = get_post_type();
+
+		if ( ! $post_type ) {
+			return $url;
+		}
+
+		foreach ( get_object_taxonomies( $post_type, 'objects' ) as $tax ) {
+			if ( ! $this->model->is_translated_taxonomy( $tax->name ) ) {
+				continue;
+			}
+
+			if ( 'category' === $tax->name ) {
+				$field     = 'term_id';
+				$query_var = 'cat';
+				$qv        = get_query_var( $query_var );
+				if ( ! is_int( $qv ) ) {
+					continue;
+				}
+			} else {
+				$field     = 'slug';
+				$query_var = (string) $tax->query_var;
+				$qv        = get_query_var( $query_var );
+				if ( ! is_string( $qv ) ) {
+					continue;
+				}
+			}
+
+			$qv = $this->model->term->get_by( $field, $qv, $language, $tax->name );
+			if ( ! empty( $qv ) ) {
+				$url = add_query_arg( $query_var, $qv, remove_query_arg( $query_var, $url ) );
+			}
+		}
+
+		return $url;
 	}
 
 	/**
