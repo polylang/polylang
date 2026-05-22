@@ -57,11 +57,6 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
-	 * @var Assets|null
-	 */
-	public $switcher_assets;
-
-	/**
 	 * @var Request
 	 */
 	public $request;
@@ -106,9 +101,8 @@ abstract class PLL_Base {
 			return;
 		}
 
-		$this->posts           = new PLL_CRUD_Posts( $this );
-		$this->terms           = new PLL_CRUD_Terms( $this );
-		$this->switcher_assets = ( new Assets() )->init();
+		$this->posts = new PLL_CRUD_Posts( $this );
+		$this->terms = new PLL_CRUD_Terms( $this );
 
 		// WordPress options.
 		new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
