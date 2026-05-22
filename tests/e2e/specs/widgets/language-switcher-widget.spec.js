@@ -43,12 +43,8 @@ test.describe(
 			await resetAllSettings( requestUtils );
 		} );
 
-		test.beforeEach( async ( { admin, editor } ) => {
+		test.beforeEach( async ( { admin } ) => {
 			await admin.visitAdminPage( 'widgets.php' );
-
-			await editor.setPreferences( 'core/edit-widgets', {
-				welcomeGuide: false,
-			} );
 		} );
 
 		/**
