@@ -5,6 +5,7 @@
 
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
+use WP_Syntex\Polylang\Switcher\Assets as Switcher_Assets;
 use WP_Syntex\Polylang\Widgets\Languages as Languages_Widget;
 
 /**
@@ -100,6 +101,7 @@ abstract class PLL_Base {
 		if ( $this->model->has_languages() ) {
 			$this->posts = new PLL_CRUD_Posts( $this );
 			$this->terms = new PLL_CRUD_Terms( $this );
+			Switcher_Assets::init();
 
 			// WordPress options.
 			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
