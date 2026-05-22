@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Switcher\Assets as Switcher_Assets;
+
 /**
  * Main Polylang class when on frontend, accessible from @see PLL().
  *
@@ -135,6 +137,8 @@ class PLL_Frontend extends PLL_Base {
 
 		// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
 		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'maybe_enqueue_styles' ) );
 	}
 
 	/**
@@ -315,5 +319,65 @@ class PLL_Frontend extends PLL_Base {
 
 		remove_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' ); // To avoid the script launch.
 		$wp_admin_bar->remove_menu( 'customize' );
+	}
+
+	/**
+	 * Maybe enqueues styles for the switcher.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	private function maybe_enqueue_styles(): void {
+		if ( ! $this->model->has_languages() || ! $this->has_classic_widget() ) {
+			return;
+		}
+		Switcher_Assets::enqueue_frontend_styles();
+	}
+
+	/**
+	 * Tells if the site has an active Polylang classic widget.
+	 * Note that this doesn't tell if the said widget will be actually shown, because we can't know if the sidebar it's
+	 * in will be shown in the template.
+	 *
+	 * @since 3.9
+	 *
+	 * @return bool
+	 */
+	private function has_classic_widget(): bool {
+		global $wp_widget_factory, $wp_registered_sidebars;
+
+		if ( ! $wp_widget_factory instanceof WP_Widget_Factory || ! is_array( $wp_registered_sidebars ) ) {
+			// If this happens, the site owner has bigger problems.
+			return false;
+		}
+
+		$pll_widget_id = 'polylang';
+
+		if ( empty( $wp_widget_factory->get_widget_key( $pll_widget_id ) ) ) {
+			// The widget has been unregistered.
+			return false;
+		}
+
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+		// Array( 'sidebar-1' => Array( 'search-2', 'polylang-3', 'polylang-2' ), 'sidebar-2' => Array( 'polylang-5' ) ).
+		$active_widgets_by_sidebars = array_intersect_key( wp_get_sidebars_widgets(), $wp_registered_sidebars );
+
+		if ( empty( $active_widgets_by_sidebars ) ) {
+			// No widgets in the registered sidebars.
+			return false;
+		}
+
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+		// Array( 'search-2', 'polylang-3', 'polylang-2', 'polylang-5' ).
+		$active_widgets = array_merge( ...array_values( $active_widgets_by_sidebars ) );
+
+		foreach ( $active_widgets as $widget ) {
+			if ( is_string( $widget ) && preg_match( "/^{$pll_widget_id}-\d+$/", $widget ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

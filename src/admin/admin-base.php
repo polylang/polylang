@@ -4,6 +4,7 @@
  */
 
 use WP_Syntex\Polylang\Capabilities\Capabilities;
+use WP_Syntex\Polylang\Switcher\Assets as Switcher_Assets;
 
 /**
  * Setup features available on all admin pages.
@@ -291,6 +292,14 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		wp_enqueue_style( 'polylang_dialog', plugins_url( "/css/build/dialog{$suffix}.css", POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->add_inline_scripts();
+
+		// Switcher.
+		if ( 'site-editor' === $screen->base ) {
+			Switcher_Assets::enqueue_frontend_styles();
+			wp_enqueue_style( 'polylang_admin' );
+		} elseif ( 'widgets' === $screen->base || 'customize' === $screen->base ) {
+			wp_enqueue_style( 'polylang_admin' );
+		}
 	}
 
 	/**

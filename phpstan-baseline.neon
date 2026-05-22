@@ -1397,9 +1397,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/walker-list.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_attr expects string, bool\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Widgets/widget-languages.php

@@ -5,6 +5,7 @@
 
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
+use WP_Syntex\Polylang\Widgets\Languages as Languages_Widget;
 
 /**
  * Base class for both admin and frontend
@@ -116,12 +117,12 @@ abstract class PLL_Base {
 	 * @return void
 	 */
 	public function widgets_init() {
-		register_widget( 'PLL_Widget_Languages' );
+		register_widget( Languages_Widget::class );
 
 		// Overwrites the calendar widget to filter posts by language
 		if ( ! defined( 'PLL_WIDGET_CALENDAR' ) || PLL_WIDGET_CALENDAR ) {
-			unregister_widget( 'WP_Widget_Calendar' );
-			register_widget( 'PLL_Widget_Calendar' );
+			unregister_widget( WP_Widget_Calendar::class );
+			register_widget( PLL_Widget_Calendar::class );
 		}
 	}
 
