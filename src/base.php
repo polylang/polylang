@@ -4,7 +4,6 @@
  */
 
 use WP_Syntex\Polylang\REST\Request;
-use WP_Syntex\Polylang\Switcher\Assets;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
 
 /**
@@ -97,18 +96,16 @@ abstract class PLL_Base {
 	 * @return void
 	 */
 	public function init() {
-		if ( ! $this->model->has_languages() ) {
-			return;
+		if ( $this->model->has_languages() ) {
+			$this->posts = new PLL_CRUD_Posts( $this );
+			$this->terms = new PLL_CRUD_Terms( $this );
+
+			// WordPress options.
+			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
+			new PLL_Translate_Option( 'blogdescription', array(), array( 'context' => 'WordPress' ) );
+			new PLL_Translate_Option( 'date_format', array(), array( 'context' => 'WordPress' ) );
+			new PLL_Translate_Option( 'time_format', array(), array( 'context' => 'WordPress' ) );
 		}
-
-		$this->posts = new PLL_CRUD_Posts( $this );
-		$this->terms = new PLL_CRUD_Terms( $this );
-
-		// WordPress options.
-		new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
-		new PLL_Translate_Option( 'blogdescription', array(), array( 'context' => 'WordPress' ) );
-		new PLL_Translate_Option( 'date_format', array(), array( 'context' => 'WordPress' ) );
-		new PLL_Translate_Option( 'time_format', array(), array( 'context' => 'WordPress' ) );
 	}
 
 	/**
