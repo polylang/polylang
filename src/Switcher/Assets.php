@@ -5,8 +5,6 @@
 
 namespace WP_Syntex\Polylang\Switcher;
 
-use WP_Widget_Factory;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
