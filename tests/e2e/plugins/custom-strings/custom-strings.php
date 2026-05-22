@@ -35,14 +35,16 @@ add_action(
 add_filter(
 	'the_content',
 	function ( $content ) {
+		$group = 'Polylang E2E';
+
 		$single = sprintf(
 			'<p class="pll-e2e-custom-string">%s</p>',
-			pll__( 'Hello Polylang E2E' )
+			pll_x__( 'Hello Polylang E2E', $group )
 		);
 
 		$multiline = sprintf(
 			'<div class="pll-e2e-custom-string-multiline">%s</div>',
-			pll__( "Line one\nLine two" )
+			pll_x__( "Line one\nLine two", $group )
 		);
 
 		return $content . $single . $multiline;

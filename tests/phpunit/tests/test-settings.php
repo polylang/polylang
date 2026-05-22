@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 class Settings_Test extends PLL_UnitTestCase {
 	use PLL_Handle_WP_Redirect_Trait;
 
@@ -127,7 +129,7 @@ class Settings_Test extends PLL_UnitTestCase {
 	public function test_strings_are_saved_when_submitted() {
 		$lang = self::$model->get_language( 'fr' );
 
-		PLL_Admin_Strings::register_string( 'Test', 'Some string' );
+		Database_Repository::register( 'Test', 'Some string' );
 
 		$_GET['page'] = 'mlang_strings';
 		$_POST = array(
@@ -136,7 +138,7 @@ class Settings_Test extends PLL_UnitTestCase {
 			'submit' => 'Save changes',
 			'translation' => array(
 				'fr' => array(
-					md5( 'Some string' ) => 'The translation',
+					md5( 'Some stringPolylang' ) => 'The translation',
 				),
 			),
 		);
