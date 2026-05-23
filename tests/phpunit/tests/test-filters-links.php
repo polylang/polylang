@@ -49,12 +49,14 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		parent::tear_down();
-
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );
 		_unregister_post_type( 'trcpt' );
 		_unregister_taxonomy( 'trtax' );
+
+		$this->remove_added_uploads();
+
+		parent::tear_down();
 	}
 
 	public function test_get_permalink_for_posts() {
@@ -207,12 +209,8 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_custom_logo() {
-		// Setup logo
 		$filename = __DIR__ . '/../data/image.jpg';
-		$contents = file_get_contents( $filename ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$upload   = wp_upload_bits( basename( $filename ), null, $contents );
-
-		$custom_logo_id = $this->_make_attachment( $upload );
+		$custom_logo_id = self::factory()->attachment->create_upload_object( $filename );
 		set_theme_mod( 'custom_logo', $custom_logo_id );
 
 		// For home_url filter

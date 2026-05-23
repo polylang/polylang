@@ -34,6 +34,12 @@ class Media_Test extends PLL_UnitTestCase {
 		self::require_api();
 	}
 
+	public function tear_down() {
+		$this->remove_added_uploads();
+
+		parent::tear_down();
+	}
+
 	public function test_upload() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
 
