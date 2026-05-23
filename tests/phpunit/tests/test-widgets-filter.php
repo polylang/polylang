@@ -28,6 +28,12 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		);
 	}
 
+	public function tear_down() {
+		$this->remove_added_uploads();
+
+		parent::tear_down();
+	}
+
 	/**
 	 * Copied from WP widgets tests
 	 */

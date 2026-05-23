@@ -32,6 +32,12 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 	}
 
+	public function tear_down() {
+		$this->remove_added_uploads();
+
+		parent::tear_down();
+	}
+
 	public function test_copy_taxonomies() {
 		$tag_en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
 		self::$model->term->set_language( $tag_en, 'en' );

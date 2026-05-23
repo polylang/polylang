@@ -29,7 +29,15 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->pll_admin->posts         = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->links         = new PLL_Admin_Links( $this->pll_admin );
 		$this->pll_admin->sync          = new PLL_Admin_Sync( $this->pll_admin );
-		add_filter( 'intermediate_image_sizes', '__return_empty_array' );  // don't create intermediate sizes to save time
+
+		$GLOBALS['polylang'] = $this->pll_admin; // FIXME We use PLL() in create_media_translation().
+		self::require_api();
+	}
+
+	public function tear_down() {
+		$this->remove_added_uploads();
+
+		parent::tear_down();
 	}
 
 	public function test_upload() {
@@ -84,5 +92,36 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_content );
 		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_excerpt );
 		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $fr, '_wp_attachment_image_alt', true ) );
+	}
+
+	public function test_delete_edited_image() {
+		require_once ABSPATH . 'wp-admin/includes/image-edit.php';
+
+		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+
+		$filename = __DIR__ . '/../data/big-image.jpg';
+		$en = self::factory()->attachment->create_upload_object( $filename );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
+
+		// Scale image.
+		$_REQUEST = array(
+			'do'      => 'scale',
+			'fwidth'  => '2300',
+			'fheight' => '1725',
+		);
+
+		wp_save_image( $en );
+		$uploads_dir = wp_upload_dir();
+		$filenames   = glob( "{$uploads_dir['basedir']}/{$uploads_dir['subdir']}/big-image*" );
+
+		wp_delete_attachment( $en );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileExists( $filename, 'Deleting a translation must not delete the files' );
+		}
+
+		wp_delete_attachment( $fr );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
+		}
 	}
 }
