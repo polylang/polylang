@@ -44,14 +44,7 @@ const pllWidget = {
 						return;
 					}
 
-					if ( event.target.closest( '.widget .pll-lang-choice' ) ) {
-						// With Classic Widgets.
-						pllWidget.displayFlags.handleEvent(
-							event,
-							'.widget',
-							'.widget-top .widget-title h3'
-						);
-					} else if (
+					if (
 						event.target.closest(
 							'.wp-block-legacy-widget__edit-form .pll-lang-choice'
 						)
@@ -62,18 +55,30 @@ const pllWidget = {
 							'.wp-block-legacy-widget__edit-form',
 							'.wp-block-legacy-widget__edit-form-title'
 						);
+					} else if (
+						event.target.closest( '.widget .pll-lang-choice' )
+					) {
+						// With Classic Widgets.
+						pllWidget.displayFlags.handleEvent(
+							event,
+							'.widget',
+							'.widget-top .widget-title h3'
+						);
 					}
 				} );
 
 				if ( 'customize-theme-controls' !== wrapper.id ) {
 					// No flags for the customizer.
-					wrapper
-						.querySelectorAll( ':scope .pll-lang-choice' )
-						.forEach( ( select ) => {
-							select.dispatchEvent(
-								new Event( 'change', { bubbles: true } )
-							);
-						} );
+					if (
+						wrapper.classList.contains( 'blocks-widgets-container' )
+					) {
+						// Without Classic Widgets: wait a second that everything is inserted into the page by WP.
+						setTimeout( () => {
+							pllWidget.displayFlags.triggerChange( wrapper );
+						}, 1000 );
+					} else {
+						pllWidget.displayFlags.triggerChange( wrapper );
+					}
 				}
 			} );
 	},
@@ -203,6 +208,21 @@ const pllWidget = {
 			} else if ( currentFlag ) {
 				currentFlag.remove();
 			}
+		},
+
+		/**
+		 * Triggers a language selection.
+		 *
+		 * @param {HTMLElement} wrapper Wrapper.
+		 */
+		triggerChange: ( wrapper ) => {
+			wrapper
+				.querySelectorAll( ':scope .pll-lang-choice' )
+				.forEach( ( select ) => {
+					select.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				} );
 		},
 	},
 };
