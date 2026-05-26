@@ -56,12 +56,6 @@ class Assets {
 			return;
 		}
 
-		if ( 'site-editor' === $screen->base ) {
-			self::enqueue_frontend_styles();
-			wp_enqueue_style( 'polylang_admin' );
-			return;
-		}
-
 		if ( 'widgets' === $screen->base || 'customize' === $screen->base ) {
 			wp_enqueue_style( 'polylang_admin' );
 			return;
