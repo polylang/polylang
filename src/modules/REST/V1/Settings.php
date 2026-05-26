@@ -32,6 +32,22 @@ class Settings extends Abstract_Controller {
 	private $languages;
 
 	/**
+	 * The namespace of this controller's route. Override the parent class property with a default value.
+	 *
+	 * @var string
+	 * @phpstan-var 'pll/v1'
+	 */
+	protected $namespace = 'pll/v1';
+
+	/**
+	 * The base of this controller's route. Override the parent class property with a default value.
+	 *
+	 * @var string
+	 * @phpstan-var 'settings'
+	 */
+	protected $rest_base = 'settings';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -39,8 +55,6 @@ class Settings extends Abstract_Controller {
 	 * @param PLL_Model $model Polylang's model.
 	 */
 	public function __construct( PLL_Model $model ) {
-		$this->namespace = 'pll/v1';
-		$this->rest_base = 'settings';
 		$this->options   = $model->options;
 		$this->languages = $model->languages;
 	}
