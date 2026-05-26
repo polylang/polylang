@@ -36,6 +36,22 @@ class Languages extends Abstract_Controller {
 	private $translatable_objects;
 
 	/**
+	 * The namespace of this controller's route. Override the parent class property with a default value.
+	 *
+	 * @var string
+	 * @phpstan-var 'pll/v1'
+	 */
+	protected $namespace = 'pll/v1';
+
+	/**
+	 * The base of this controller's route. Override the parent class property with a default value.
+	 *
+	 * @var string
+	 * @phpstan-var 'languages'
+	 */
+	protected $rest_base = 'languages';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -43,8 +59,6 @@ class Languages extends Abstract_Controller {
 	 * @param PLL_Model $model Polylang's model.
 	 */
 	public function __construct( PLL_Model $model ) {
-		$this->namespace            = 'pll/v1';
-		$this->rest_base            = 'languages';
 		$this->languages            = $model->languages;
 		$this->translatable_objects = $model->translatable_objects;
 	}
@@ -58,6 +72,7 @@ class Languages extends Abstract_Controller {
 	 */
 	public function register_routes(): void {
 		register_rest_route(
+			/** @phpstan-var non-falsy-string */
 			$this->namespace,
 			"/{$this->rest_base}",
 			array(
