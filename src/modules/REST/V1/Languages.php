@@ -72,7 +72,6 @@ class Languages extends Abstract_Controller {
 	 */
 	public function register_routes(): void {
 		register_rest_route(
-			/** @phpstan-var non-falsy-string */
 			$this->namespace,
 			"/{$this->rest_base}",
 			array(
