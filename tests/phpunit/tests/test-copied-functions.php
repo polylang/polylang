@@ -15,10 +15,6 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 		$this->check_method( 'cc6308276c4e0553f75da06592f881cb', '6.2', 'wp_admin_bar_search_menu' );
 	}
 
-	public function test_sanitize_locale_name() {
-		$this->check_method( 'c095fac87bb4632618334ab540b9e87d', '6.2.1', 'sanitize_locale_name' );
-	}
-
 	/**
 	 * Monitors PLL_Term_Slug::maybe_get_parent_suffix()
 	 */

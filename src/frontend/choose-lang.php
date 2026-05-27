@@ -61,7 +61,13 @@ abstract class PLL_Choose_Lang {
 	 */
 	public function init() {
 		if ( Polylang::is_ajax_on_front() || ! wp_using_themes() ) {
-			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = isset( $_REQUEST['lang'] ) && is_string( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : ''; // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			// Use `sanitize_locale_name` for locale-format values (e.g. `en_GB`) to preserve case, `sanitize_key` otherwise.
+			$this->set_language(
+				empty( $lang )
+					? $this->get_preferred_language()
+					: $this->model->get_language( str_contains( $lang, '_' ) ? sanitize_locale_name( $lang ) : sanitize_key( $lang ) )
+			);
 		}
 
 		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment
