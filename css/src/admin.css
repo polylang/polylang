@@ -381,7 +381,10 @@ td.column-default_lang .icon-default-lang:before,
 .polylang-language-switcher-widget-content th {
 	width: 10em;
 	padding: 0 10px 10px 0;
-	text-align: left;
+	text-align: start;
+}
+body.rtl .polylang-language-switcher-widget-content th {
+	padding: 0 0 10px 10px;
 }
 .polylang-language-switcher-widget-content td {
 	padding: 0 0 10px 0;
