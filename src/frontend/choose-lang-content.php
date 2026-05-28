@@ -51,7 +51,6 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	protected function get_current_language() {
 		global $wp_query;
 		if ( ! isset( $wp_query ) ) {
-			// `$wp_query` is not yet initialized before the query runs (e.g. during `plugins_loaded` in AJAX context).
 			return false;
 		}
 
