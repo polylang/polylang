@@ -257,7 +257,7 @@ class Languages extends WP_Widget {
 	}
 
 	/**
-	 * Prints the start of the outer wrapper.
+	 * Returns the outer wrapper's `class` attribute.
 	 *
 	 * @since 3.9
 	 *
