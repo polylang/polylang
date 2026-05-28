@@ -97,7 +97,7 @@ class Languages extends WP_Widget {
 			unset( $instance['dropdown'], $instance['show_names'] );
 		}
 
-		$settings = new Settings( $instance );
+		$settings = new Settings( Fields::validate( $instance ) );
 		$list     = ( new Switcher( $settings, PLL()->links ) )->get();
 
 		if ( empty( $list ) ) {
