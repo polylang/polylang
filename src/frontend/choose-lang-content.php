@@ -49,6 +49,11 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * @return PLL_Language|false
 	 */
 	protected function get_current_language() {
+		global $wp_query;
+		if ( ! isset( $wp_query ) ) {
+			return false;
+		}
+
 		// No language set for 404.
 		if ( is_404() || ( is_attachment() && ! $this->options['media_support'] ) ) {
 			return false;
