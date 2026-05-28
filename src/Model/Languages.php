@@ -936,8 +936,8 @@ class Languages {
 	 * @param string $value The value to check.
 	 * @return bool
 	 */
-	public static function is_locale( string $value ): bool {
-		return (bool) preg_match( '#' . self::LOCALE_PATTERN . '#', $value );
+	public static function is_locale( $value ): bool {
+		return is_string( $value ) && (bool) preg_match( '#' . self::LOCALE_PATTERN . '#', $value );
 	}
 
 	/**

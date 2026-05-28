@@ -62,19 +62,20 @@ abstract class PLL_Choose_Lang {
 	 * @return void
 	 */
 	public function init() {
-		if ( Polylang::is_ajax_on_front() || ! wp_using_themes() ) {
-			$lang = isset( $_REQUEST['lang'] ) && is_string( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : ''; // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			// Use Languages locale pattern for locale-format values (e.g. `en_GB`), `sanitize_key` otherwise.
-			$this->set_language(
-				empty( $lang )
-					? $this->get_preferred_language()
-					: $this->model->get_language( Languages::is_locale( $lang ) ? $lang : sanitize_key( $lang ) )
-			);
+		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment.
+		add_action( 'parse_query', array( $this, 'parse_main_query' ), 2 ); // sets the language in special cases.
+		add_action( 'wp', array( $this, 'maybe_setcookie' ), 7 );
+
+		if ( ! Polylang::is_ajax_on_front() && wp_using_themes() ) {
+			return;
 		}
 
-		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment
-		add_action( 'parse_query', array( $this, 'parse_main_query' ), 2 ); // sets the language in special cases
-		add_action( 'wp', array( $this, 'maybe_setcookie' ), 7 );
+		if ( isset( $_REQUEST['lang'] ) && is_string( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// Let's accept either WordPress locales or language codes.
+			$lang = $this->model->languages->get( Languages::is_locale( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : sanitize_key( $_REQUEST['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		}
+
+		$this->set_language( empty( $lang ) ? $this->get_preferred_language() : $lang );
 	}
 
 	/**
