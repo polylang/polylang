@@ -50,6 +50,14 @@ abstract class Abstract_Settings_Legacy {
 	);
 
 	/**
+	 * @var bool[]
+	 */
+	protected array $args = array(
+		'filter_settings'    => true,
+		'deprecate_settings' => false,
+	);
+
+	/**
 	 * Returns the values as an array after converting them to the legacy format.
 	 *
 	 * @since 3.9
@@ -71,7 +79,7 @@ abstract class Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function maybe_filter_legacy( array $settings ): array {
-		if ( ! has_filter( 'pll_the_languages_args' ) ) {
+		if ( ! $this->args['filter_settings'] || ! has_filter( 'pll_the_languages_args' ) ) {
 			if ( ! $this->is_legacy( $settings ) ) {
 				return $settings;
 			}
@@ -124,15 +132,17 @@ abstract class Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function convert_from_legacy( array $settings ): array {
-		_deprecated_argument(
-			static::class . '::__construct()',
-			'3.9',
-			sprintf(
-				/* translators: %s is a function name. */
-				esc_html__( "See %s's documentation.", 'polylang' ),
-				'pll_the_languages()'
-			)
-		);
+		if ( $this->args['deprecate_settings'] ) {
+			_deprecated_argument(
+				static::class . '::__construct()',
+				'3.9',
+				sprintf(
+					/* translators: %s is a function name. */
+					esc_html__( "See %s's documentation.", 'polylang' ),
+					'pll_the_languages()'
+				)
+			);
+		}
 
 		if ( ! isset( $settings['show_wrapper'] ) ) {
 			// `PLL_Walker_Dropdown` displays the wrapper (`<select>`) while `PLL_Walker_List` didn't.
@@ -140,7 +150,7 @@ abstract class Abstract_Settings_Legacy {
 		}
 
 		if ( isset( $settings['layout'], $settings['dropdown'] ) ) {
-			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match.
+			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match, so we don't loose `layout`'s real value.
 			if ( ! empty( $settings['dropdown'] ) && 'select' !== $settings['layout'] ) {
 				$settings['layout'] = 'select';
 			} elseif ( empty( $settings['dropdown'] ) && 'select' === $settings['layout'] ) {

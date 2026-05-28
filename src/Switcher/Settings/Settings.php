@@ -23,7 +23,7 @@ class Settings extends Abstract_Settings_Legacy {
 	public string $layout = 'vertical';
 
 	/**
-	 * No default value here because it depends on `is_rtl()`. see `self::get_defaults()`.
+	 * No default value here because it depends on `is_rtl()`.
 	 *
 	 * @var string
 	 *
@@ -147,18 +147,27 @@ class Settings extends Abstract_Settings_Legacy {
 	 *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
 	 *     @type string   $unique_id              A unique identifier. Default is an empty string.
 	 * }
+	 * @param array $args     {
+	 *     Optional arguments.
+	 *
+	 *     @type bool $filter_settings    Whether to allow the settings to be filtered or not. Default is `true`.
+	 *     @type bool $deprecate_settings Whether to mark legacy settings and filters as deprecated or not. Default is `false`.
+	 * }
 	 */
-	public function __construct( array $settings ) {
-		$settings = $this->maybe_filter_legacy( $settings );
+	public function __construct( array $settings, array $args = array() ) {
+		$this->args = array_merge( $this->args, $args );
+		$settings   = $this->maybe_filter_legacy( $settings );
 
-		/**
-		 * Filter the language switcher settings.
-		 *
-		 * @since 3.9
-		 *
-		 * @param array $settings Settings.
-		 */
-		$settings = apply_filters( 'pll_language_switcher_settings', $settings );
+		if ( $this->args['filter_settings'] ) {
+			/**
+			 * Filter the language switcher settings.
+			 *
+			 * @since 3.9
+			 *
+			 * @param array $settings Settings.
+			 */
+			$settings = apply_filters( 'pll_language_switcher_settings', $settings );
+		}
 
 		foreach ( $this->validate( $settings ) as $name => $value ) {
 			$this->$name = $value;
@@ -168,21 +177,6 @@ class Settings extends Abstract_Settings_Legacy {
 			++self::$increment;
 			$this->unique_id = 'pll-switcher-' . self::$increment;
 		}
-	}
-
-	/**
-	 * Returns the public default values.
-	 *
-	 * @since 3.9
-	 *
-	 * @return array
-	 */
-	public static function get_defaults(): array {
-		$properties = array_diff_key( get_class_vars( self::class ), array( 'increment' => 0 ) );
-
-		$properties['alignment'] = is_rtl() ? 'right' : 'left';
-
-		return $properties;
 	}
 
 	/**
@@ -221,13 +215,15 @@ class Settings extends Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function validate( array $settings ): array {
-		$validated = self::get_defaults();
 		$choices   = array(
 			'layout'                 => array( 'horizontal', 'vertical', 'dropdown', 'select' ),
 			'alignment'              => array( 'left', 'center', 'right', 'stretched' ),
 			'flag_aspect_ratio'      => array( '3:2', '1:1' ),
 			'show_labels'            => array( '', 'names', 'codes' ),
 		);
+		$validated = array_diff_key( get_class_vars( self::class ), array( 'increment' => 0 ) );
+
+		$validated['alignment'] = is_rtl() ? 'right' : 'left';
 
 		foreach ( $choices as $key => $setting_choices ) {
 			if ( isset( $settings[ $key ] ) && in_array( $settings[ $key ], $setting_choices, true ) ) {
