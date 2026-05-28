@@ -93,6 +93,7 @@ class Assets {
 		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 		// Array( 'sidebar-1' => Array( 'search-2', 'polylang-3', 'polylang-2' ), 'sidebar-2' => Array( 'polylang-5' ) ).
 		$active_widgets_by_sidebars = array_intersect_key( wp_get_sidebars_widgets(), $wp_registered_sidebars );
+		$active_widgets_by_sidebars = array_filter( $active_widgets_by_sidebars, 'is_array' );
 
 		if ( empty( $active_widgets_by_sidebars ) ) {
 			// No widgets in the registered sidebars.
