@@ -210,7 +210,7 @@ class Languages extends WP_Widget {
 	 * @return void
 	 */
 	private function print_select( string $key, array $labels_and_data, Settings $settings ): void {
-		$this->print_wrapper_start( $key, $labels_and_data, $settings );
+		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $labels_and_data, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf(
 			'<th><label for="%s">%s</label></th>',
 			esc_attr( $this->get_field_id( $key ) ),
@@ -244,7 +244,7 @@ class Languages extends WP_Widget {
 	 * @return void
 	 */
 	private function print_checkbox( string $key, array $labels_and_data, Settings $settings ): void {
-		$this->print_wrapper_start( $key, $labels_and_data, $settings );
+		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $labels_and_data, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf(
 			'<td colspan="2"><input type="checkbox" data-key="%1$s" class="checkbox" id="%2$s" name="%3$s"%4$s/><label for="%2$s">%5$s</label></td>',
 			esc_attr( $key ),
@@ -264,12 +264,11 @@ class Languages extends WP_Widget {
 	 * @param string   $key             Setting key.
 	 * @param array    $labels_and_data Setting labels and other data.
 	 * @param Settings $settings        Widget's settings.
-	 * @return void
+	 * @return string
 	 */
-	private function print_wrapper_start( string $key, array $labels_and_data, Settings $settings ): void {
+	private function get_wrapper_class_attr( string $key, array $labels_and_data, Settings $settings ): string {
 		if ( empty( $labels_and_data[ $key ]['hide_if'] ) ) {
-			echo '<tr>';
-			return;
+			return '';
 		}
 
 		$classes = array();
@@ -284,8 +283,8 @@ class Languages extends WP_Widget {
 			$classes[] = "pll-hidden-if-{$k}-{$value}";
 		}
 
-		printf(
-			'<tr class="%s">',
+		return sprintf(
+			' class="%s"',
 			esc_attr( implode( ' ', $classes ) )
 		);
 	}
