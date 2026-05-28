@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.8.4
+Stable tag: 3.8.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -58,10 +58,9 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Ability to use the WooCommerce REST API (available with Polylang Pro).
 * **Access to a Premium Support for personalized assistance.**
 
-= Our other free plugins =
+= Switching from WPML? =
 
-* [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/) allows migrating from WPML to Polylang.
-* [Site Editor Classic Features](https://wordpress.org/plugins/fse-classic/) allows to use classic widgets (including the Polylang language switcher) and menus in the site editor (FSE).
+* [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/) allows migrating from WPML to Polylang in a few clicks.
 
 = Credits =
 
@@ -104,6 +103,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.8.5 (2026-06-16) =
+
+* Pro: Fix language switcher block error in Widget screen #1905
+* Pro: Fix "edit" button wrongly disabled in the languages sidebar in the block editor #3011
+* Fix edited images files deleted when deleting the first media translation #1887
+* Fix error in AJAX context when the parameter `lang` is passed a locale instead of a language code #1896
 
 = 3.8.4 (2026-05-18) =
 
