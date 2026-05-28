@@ -202,9 +202,9 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
+				'pll_widgets-js',
 			),
 			'header' => array(
-				'pll_widgets-js',
 				'polylang_admin-css',
 			),
 		);
