@@ -26,7 +26,6 @@ class Assets {
 	 */
 	public static function init(): void {
 		add_action( 'wp_enqueue_scripts', array( self::class, 'maybe_enqueue_frontend_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( self::class, 'maybe_enqueue_admin_styles' ) );
 	}
 
 	/**
@@ -39,26 +38,6 @@ class Assets {
 	public static function maybe_enqueue_frontend_styles(): void {
 		if ( self::has_classic_widget() ) {
 			self::enqueue_frontend_styles();
-		}
-	}
-
-	/**
-	 * Maybe enqueues CSS in admin.
-	 *
-	 * @since 3.9
-	 *
-	 * @return void
-	 */
-	public static function maybe_enqueue_admin_styles(): void {
-		$screen = get_current_screen();
-
-		if ( empty( $screen ) ) {
-			return;
-		}
-
-		if ( 'widgets' === $screen->base || 'customize' === $screen->base ) {
-			wp_enqueue_style( 'polylang_admin' );
-			return;
 		}
 	}
 
