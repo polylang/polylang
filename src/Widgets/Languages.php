@@ -156,7 +156,7 @@ class Languages extends WP_Widget {
 		$labels_and_data = Fields::get();
 		$validated       = Fields::validate( $instance );
 
-		// Title
+		// Title.
 		printf(
 			'<p><label for="%1$s">%2$s</label><input class="widefat" id="%1$s" name="%3$s" type="text" value="%4$s" /></p>',
 			esc_attr( $this->get_field_id( 'title' ) ),
