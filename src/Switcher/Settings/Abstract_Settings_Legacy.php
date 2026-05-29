@@ -150,7 +150,7 @@ abstract class Abstract_Settings_Legacy {
 		}
 
 		if ( isset( $settings['layout'], $settings['dropdown'] ) ) {
-			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match, so we don't loose `layout`'s real value.
+			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match, so we don't lose `layout`'s real value.
 			if ( ! empty( $settings['dropdown'] ) && 'select' !== $settings['layout'] ) {
 				$settings['layout'] = 'select';
 			} elseif ( empty( $settings['dropdown'] ) && 'select' === $settings['layout'] ) {
