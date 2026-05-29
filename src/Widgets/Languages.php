@@ -152,8 +152,6 @@ class Languages extends WP_Widget {
 	 * @phpstan-param NewInstance|OldInstance $instance
 	 */
 	public function form( $instance ): void {
-		$labels_and_data = Fields::get();
-
 		if ( isset( $instance['layout'] ) ) {
 			// For backward compatibility, some legacy options are saved along the new ones (see the end of `Languages::update()`).
 			unset( $instance['dropdown'], $instance['show_names'] );
@@ -172,29 +170,13 @@ class Languages extends WP_Widget {
 
 		echo '<table role="presentation" class="polylang-language-switcher-widget-content"><tbody>';
 
-		// Layout.
-		$this->print_select( 'layout', $labels_and_data, $settings );
-
-		// Alignment.
-		$this->print_select( 'alignment', $labels_and_data, $settings );
-
-		// Display flags.
-		$this->print_checkbox( 'show_flags', $labels_and_data, $settings );
-
-		// Flag aspect ratio.
-		$this->print_select( 'flag_aspect_ratio', $labels_and_data, $settings );
-
-		// Display labels.
-		$this->print_select( 'show_labels', $labels_and_data, $settings );
-
-		// Force link to front page.
-		$this->print_checkbox( 'force_home', $labels_and_data, $settings );
-
-		// Hide current language.
-		$this->print_checkbox( 'hide_current', $labels_and_data, $settings );
-
-		// Hide languages when they don't have translations.
-		$this->print_checkbox( 'hide_if_no_translation', $labels_and_data, $settings );
+		foreach ( Fields::get() as $key => $field ) {
+			if ( ! empty( $field['choices'] ) ) {
+				$this->print_select( $key, $field, $settings );
+			} else {
+				$this->print_checkbox( $key, $field, $settings );
+			}
+		}
 
 		echo '</tbody></table>';
 	}
@@ -204,17 +186,17 @@ class Languages extends WP_Widget {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string   $key             Setting key.
-	 * @param array    $labels_and_data Setting labels and other data.
-	 * @param Settings $settings        Widget's settings.
+	 * @param string   $key      Setting key.
+	 * @param array    $field    Field labels and other data.
+	 * @param Settings $settings Widget's settings.
 	 * @return void
 	 */
-	private function print_select( string $key, array $labels_and_data, Settings $settings ): void {
-		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $labels_and_data, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	private function print_select( string $key, array $field, Settings $settings ): void {
+		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $field, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf(
 			'<th><label for="%s">%s</label></th>',
 			esc_attr( $this->get_field_id( $key ) ),
-			esc_html( $labels_and_data[ $key ]['label'] )
+			esc_html( $field['label'] )
 		);
 		printf(
 			'<td><select data-key="%1$s" id="%2$s" name="%3$s">',
@@ -222,7 +204,7 @@ class Languages extends WP_Widget {
 			esc_attr( $this->get_field_id( $key ) ),
 			esc_attr( $this->get_field_name( $key ) )
 		);
-		foreach ( $labels_and_data[ $key ]['choices'] as $value => $label ) {
+		foreach ( $field['choices'] as $value => $label ) {
 			printf(
 				'<option value="%s"%s>%s</option>',
 				esc_attr( $value ),
@@ -238,20 +220,20 @@ class Languages extends WP_Widget {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string   $key             Setting key.
-	 * @param array    $labels_and_data Setting labels and other data.
-	 * @param Settings $settings        Widget's settings.
+	 * @param string   $key      Setting key.
+	 * @param array    $field    Field labels and other data.
+	 * @param Settings $settings Widget's settings.
 	 * @return void
 	 */
-	private function print_checkbox( string $key, array $labels_and_data, Settings $settings ): void {
-		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $labels_and_data, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	private function print_checkbox( string $key, array $field, Settings $settings ): void {
+		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $field, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf(
 			'<td colspan="2"><input type="checkbox" data-key="%1$s" class="checkbox" id="%2$s" name="%3$s"%4$s/><label for="%2$s">%5$s</label></td>',
 			esc_attr( $key ),
 			esc_attr( $this->get_field_id( $key ) ),
 			esc_attr( $this->get_field_name( $key ) ),
 			checked( $settings->$key, true, false ),
-			esc_html( $labels_and_data[ $key ]['label'] )
+			esc_html( $field['label'] )
 		);
 		echo '</tr>';
 	}
@@ -261,19 +243,19 @@ class Languages extends WP_Widget {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string   $key             Setting key.
-	 * @param array    $labels_and_data Setting labels and other data.
-	 * @param Settings $settings        Widget's settings.
+	 * @param string   $key      Setting key.
+	 * @param array    $field    Field labels and other data.
+	 * @param Settings $settings Widget's settings.
 	 * @return string
 	 */
-	private function get_wrapper_class_attr( string $key, array $labels_and_data, Settings $settings ): string {
-		if ( empty( $labels_and_data[ $key ]['hide_if'] ) ) {
+	private function get_wrapper_class_attr( string $key, array $field, Settings $settings ): string {
+		if ( empty( $field['hide_if'] ) ) {
 			return '';
 		}
 
 		$classes = array();
 
-		foreach ( $labels_and_data[ $key ]['hide_if'] as $k => $value ) {
+		foreach ( $field['hide_if'] as $k => $value ) {
 			if ( $settings->$k === $value ) {
 				$classes[] = "pll-hidden-by-{$k}";
 			}
