@@ -76,10 +76,9 @@ class Assets {
 	 * @return bool
 	 */
 	private static function has_classic_widget(): bool {
-		global $wp_widget_factory, $wp_registered_sidebars;
+		global $wp_widget_factory;
 
-		if ( ! $wp_widget_factory instanceof WP_Widget_Factory || ! is_array( $wp_registered_sidebars ) ) {
-			// If this happens, the site owner has bigger problems.
+		if ( ! get_theme_support( 'widgets' ) ) {
 			return false;
 		}
 
@@ -88,23 +87,15 @@ class Assets {
 			return false;
 		}
 
-		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-		// Array( 'sidebar-1' => Array( 'search-2', 'polylang-3', 'polylang-2' ), 'sidebar-2' => Array( 'polylang-5' ) ).
-		$active_widgets_by_sidebars = array_intersect_key( wp_get_sidebars_widgets(), $wp_registered_sidebars );
-		$active_widgets_by_sidebars = array_filter( $active_widgets_by_sidebars, 'is_array' );
+		foreach ( wp_get_sidebars_widgets() as $sidebar => $widgets ) {
+			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
+				continue;
+			}
 
-		if ( empty( $active_widgets_by_sidebars ) ) {
-			// No widgets in the registered sidebars.
-			return false;
-		}
-
-		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-		// Array( 'search-2', 'polylang-3', 'polylang-2', 'polylang-5' ).
-		$active_widgets = array_merge( ...array_values( $active_widgets_by_sidebars ) );
-
-		foreach ( $active_widgets as $widget ) {
-			if ( is_string( $widget ) && preg_match( "/^polylang-\d+$/", $widget ) ) {
-				return true;
+			foreach ( $widgets as $widget ) {
+				if ( is_string( $widget ) && preg_match( '/^polylang-\d+$/', $widget ) ) {
+					return true;
+				}
 			}
 		}
 
