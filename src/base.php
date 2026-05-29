@@ -3,8 +3,10 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Widgets;
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
+use WP_Syntex\Polylang\Switcher\Assets as Switcher_Assets;
 
 /**
  * Base class for both admin and frontend
@@ -99,6 +101,7 @@ abstract class PLL_Base {
 		if ( $this->model->has_languages() ) {
 			$this->posts = new PLL_CRUD_Posts( $this );
 			$this->terms = new PLL_CRUD_Terms( $this );
+			Switcher_Assets::init();
 
 			// WordPress options.
 			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
@@ -116,12 +119,12 @@ abstract class PLL_Base {
 	 * @return void
 	 */
 	public function widgets_init() {
-		register_widget( 'PLL_Widget_Languages' );
+		register_widget( Widgets\Languages::class );
 
 		// Overwrites the calendar widget to filter posts by language
 		if ( ! defined( 'PLL_WIDGET_CALENDAR' ) || PLL_WIDGET_CALENDAR ) {
-			unregister_widget( 'WP_Widget_Calendar' );
-			register_widget( 'PLL_Widget_Calendar' );
+			unregister_widget( WP_Widget_Calendar::class );
+			register_widget( Widgets\Calendar::class );
 		}
 	}
 

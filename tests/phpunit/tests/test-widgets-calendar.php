@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Widgets\Calendar;
+
 class Widget_Calendar_Test extends PLL_UnitTestCase {
 
 	/**
@@ -38,7 +40,7 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 
 		$frontend->curlang = self::$model->get_language( 'fr' );
 		$this->go_to( home_url( '/?m=200709&lang=fr' ) );
-		$calendar = PLL_Widget_Calendar::get_calendar( true, false );
+		$calendar = Calendar::get_calendar( true, false );
 
 		$this->assertNotFalse( strpos( $calendar, '<td>4</td>' ) ); // no French post on 4th
 		$this->assertFalse( strpos( $calendar, home_url( '/?m=20070904&lang=fr' ) ) ); // no French post on 4th
@@ -46,7 +48,7 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 
 		$frontend->curlang = self::$model->get_language( 'en' );
 		$this->go_to( home_url( '/?m=200709&lang=en' ) );
-		$calendar = PLL_Widget_Calendar::get_calendar( true, false );
+		$calendar = Calendar::get_calendar( true, false );
 
 		$this->assertNotFalse( strpos( $calendar, '<td>5</td>' ) );
 		$this->assertFalse( strpos( $calendar, home_url( '/?m=20070905&lang=en' ) ) );

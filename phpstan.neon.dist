@@ -8,7 +8,6 @@ parameters:
 		- src/
 	excludePaths:
 		- **/load.php
-		- src/widget-calendar.php
 		- src/install/plugin-updater.php
 		- src/integrations/aqua-resizer/
 		- src/integrations/cache/
@@ -23,6 +22,7 @@ parameters:
 		- src/integrations/wp-sweep/
 		- src/integrations/wpseo/
 		- src/integrations/yarpp/
+		- src/Widgets/Calendar.php
 	treatPhpDocTypesAsCertain: false
 	stubFiles:
 		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php

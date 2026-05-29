@@ -1,151 +1,230 @@
 /**
- * Adds a flag to the widgets filtered by a language.
- *
- * @package Polylang
+ * Handles the options in the language switcher widget.
  */
-
-jQuery(
-	function ( $ ) {
-		var widgets_container,
-			widgets_selector,
-			flags,
-			isBlockEditor = 'undefined' !== typeof wp.blockEditor;
-
-		if ( 'undefined' !== typeof pll_widgets && pll_widgets.hasOwnProperty( 'flags' ) ) {
-			flags = pll_widgets.flags;
-		}
-
-		/**
-		 * Prepend widget titles with a flag once a language is selected.
-		 *
-		 * @param {object} widget The widget element.
-		 * @return {void} Nothing.
-		 */
-		function add_flag( widget ) {
-			if ( ! flags ) {
-				return;
-			}
-			widget = $( widget );
-			var title  = isBlockEditor ? widget.prev('h3') : $( '.widget-top .widget-title h3', widget ),
-				locale = $( '.pll-lang-choice option:selected', widget ).val(),
-				// Icon is HTML built and come from server side and is well escaped when necessary
-				icon = ( locale && flags.hasOwnProperty( locale ) ) ? flags[ locale ] : null;
-
-			if ( icon ) {
-				icon += ' &nbsp; ';
-				var current = $( '.pll-lang', title );
-				if ( current.length ) {
-					current.html( icon ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-				} else {
-					flag = $( '<span />' ).addClass( 'pll-lang' ).html( icon );  // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-					// See the comment above about the icon which is safe. So it is also safe to prepend flag which uses icon.
-					title.prepend( flag ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
-				}
-			} else {
-				$( '.pll-lang', title ).remove();
-			}
-		}
-
-		if ( isBlockEditor ) {
-
-			widgets_container = $( '.edit-widgets-main-block-list' );
-			widgets_selector  = '.widget';
-
-			// Update flags when we click on the legacy widget to display its form.
-			widgets_container.on(
-				'click',
-				'.wp-block-legacy-widget',
-				function () {
-					add_flag( $( this ).find( '.widget' ) );
-				}
-			);
-
+const pllWidget = {
+	/**
+	 * Init.
+	 */
+	init: () => {
+		if ( document.readyState !== 'loading' ) {
+			pllWidget.ready();
 		} else {
-			if ( 'undefined' !== typeof wp.customize ) {
+			document.addEventListener( 'DOMContentLoaded', pllWidget.ready );
+		}
+	},
 
-				widgets_container = $( '#customize-controls' );
-				widgets_selector  = '.customize-control .widget';
-
-				/**
-				 * WP Customizer add control listener.
-				 *
-				 * @link https://wordpress.stackexchange.com/questions/256536/callback-after-wordpress-customizer-complete-loading
-				 *
-				 * @param {object} control The control type.
-				 * @return {void} Nothing.
-				 */
-				function customize_add_flag( control ) {
-					if ( ! control.extended( wp.customize.Widgets.WidgetControl ) ) {
+	/**
+	 * Called when the DOM is ready. Attaches the events to the wrapper.
+	 */
+	ready: () => {
+		if ( window.pll_widgets?.flags ) {
+			pllWidget.displayFlags.flags = window.pll_widgets.flags;
+		}
+		document
+			.querySelectorAll(
+				// Widgets page without Classic Widgets, Widgets page with Classic Widgets, Customizer page.
+				'#widgets-editor, .widget-liquid-right #widgets-right, #customize-theme-controls'
+			)
+			.forEach( ( wrapper ) => {
+				wrapper.addEventListener( 'change', ( event ) => {
+					if (
+						event.target.closest(
+							'.polylang-language-switcher-widget-content select, .polylang-language-switcher-widget-content input'
+						)
+					) {
+						pllWidget.manageRowsAndValues.handleEvent( event );
 						return;
 					}
 
-					/*
-					* Make sure the widget's contents are embedded; normally this is done
-					* when the control is expanded, for DOM performance reasons.
-					*/
-					control.embedWidgetContent();
-
-					// Now we know for sure the widget is fully embedded.
-					add_flag( control.container.find( '.widget' ) );
-				}
-				wp.customize.control.each( customize_add_flag );
-				wp.customize.control.bind( 'add', customize_add_flag );
-
-			} else {
-
-				widgets_container = $( '#widgets-right' );
-				widgets_selector  = '.widget';
-
-			}
-
-			// Add flags on load.
-			$( widgets_selector, widgets_container ).each(
-				function () {
-					add_flag( this );
-				}
-			);
-		}
-
-		// Update flags.
-		widgets_container.on(
-			'change',
-			'.pll-lang-choice',
-			function () {
-				add_flag( $( this ).parents( '.widget' ) );
-			}
-		);
-
-		function pll_toggle( a, test ) {
-			test ? a.show() : a.hide();
-		}
-
-		// Remove all options if dropdown is checked.
-		$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
-			'change',
-			'.pll-dropdown',
-			function () {
-				var this_id = $( this ).parent().parent().parent().children( '.widget-id' ).attr( 'value' );
-				pll_toggle( $( '.no-dropdown-' + this_id ), true != $( this ).prop( 'checked' ) );
-			}
-		);
-
-		// Disallow unchecking both show names and show flags.
-		var options = ['-show_flags', '-show_names'];
-		$.each(
-			options,
-			function ( i, v ) {
-				$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
-					'change',
-					'.pll' + v,
-					function () {
-						var this_id = $( this ).parent().parent().parent().children( '.widget-id' ).attr( 'value' );
-						if ( true != $( this ).prop( 'checked' ) ) {
-							$( '#widget-' + this_id + options[ 1 - i ] ).prop( 'checked', true );
-						}
+					if (
+						! pllWidget.displayFlags.flags ||
+						'customize-theme-controls' === wrapper.id
+					) {
+						// No flags for the customizer.
+						return;
 					}
-				);
-			}
-		);
 
-	}
-);
+					if (
+						event.target.closest(
+							'.wp-block-legacy-widget__edit-form .pll-lang-choice'
+						)
+					) {
+						// Without Classic Widgets.
+						pllWidget.displayFlags.handleEvent(
+							event,
+							'.wp-block-legacy-widget__edit-form',
+							'.wp-block-legacy-widget__edit-form-title'
+						);
+					} else if (
+						event.target.closest( '.widget .pll-lang-choice' )
+					) {
+						// With Classic Widgets.
+						pllWidget.displayFlags.handleEvent(
+							event,
+							'.widget',
+							'.widget-top .widget-title h3'
+						);
+					}
+				} );
+
+				if ( 'customize-theme-controls' !== wrapper.id ) {
+					// No flags for the customizer.
+					if (
+						wrapper.classList.contains( 'blocks-widgets-container' )
+					) {
+						// Without Classic Widgets: wait a second that everything is inserted into the page by WP.
+						setTimeout( () => {
+							pllWidget.displayFlags.triggerChange( wrapper );
+						}, 1000 );
+					} else {
+						pllWidget.displayFlags.triggerChange( wrapper );
+					}
+				}
+			} );
+	},
+
+	/**
+	 * Display or hide rows, depending on the value of other settings.
+	 */
+	manageRowsAndValues: {
+		/**
+		 * Event callback that hides rows and forbids disabling both flag and name/code.
+		 *
+		 * @param {Event} event The event.
+		 */
+		handleEvent: ( event ) => {
+			let value = '';
+
+			if ( 'SELECT' === event.target.nodeName ) {
+				value = event.target.value;
+			} else if (
+				'INPUT' === event.target.nodeName &&
+				'checkbox' === event.target.type
+			) {
+				value = event.target.checked;
+			} else {
+				return;
+			}
+
+			const wrapper = event.target.closest(
+				'.polylang-language-switcher-widget-content'
+			);
+
+			if ( ! wrapper ) {
+				return;
+			}
+
+			const key = event.target.getAttribute( 'data-key' );
+
+			// Show/Hide rows.
+			wrapper
+				.querySelectorAll(
+					`:scope [class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })` // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed, PHPCS detects `-if-` like a `if(`.
+				)
+				.forEach( ( row ) => {
+					row.classList.remove( `pll-hidden-by-${ key }` );
+				} );
+			wrapper
+				.querySelectorAll( `:scope .pll-hidden-if-${ key }-${ value }` ) // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed, PHPCS detects `-if-` like a `if(`.
+				.forEach( ( row ) => {
+					row.classList.add( `pll-hidden-by-${ key }` );
+				} );
+
+			// Forbid disabling both flag and name/code.
+			if ( 'show_labels' === key && '' === value ) {
+				const otherInput = wrapper.querySelector(
+					'[data-key="show_flags"]'
+				);
+
+				if ( true !== otherInput.checked ) {
+					otherInput.checked = true;
+					otherInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			} else if ( 'show_flags' === key && false === value ) {
+				const otherInput = wrapper.querySelector(
+					'[data-key="show_labels"]'
+				);
+
+				if ( '' === otherInput.value ) {
+					otherInput.value = 'names';
+					otherInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			}
+		},
+	},
+
+	/**
+	 * Display a flag in front of a widget title, depending on the language the widget should be displayed for.
+	 */
+	displayFlags: {
+		/**
+		 * Flags (markup), with language slug as property names.
+		 *
+		 * @member {Object}
+		 */
+		flags: {},
+
+		/**
+		 * Event callback that adds or removes the flag.
+		 *
+		 * @param {Event}  event          The event.
+		 * @param {string} widgetSelector Selector for the widget wrapper, relative to the event target.
+		 * @param {string} titleSelector  Selector for the title, relative to the wrapper.
+		 */
+		handleEvent: ( event, widgetSelector, titleSelector ) => {
+			const wrapper = event.target.closest( widgetSelector );
+
+			if ( ! wrapper ) {
+				return;
+			}
+
+			const title = wrapper.querySelector( titleSelector );
+
+			if ( ! title ) {
+				return;
+			}
+
+			const langSlug = event.target.value;
+			const icon =
+				langSlug &&
+				pllWidget.displayFlags.flags.hasOwnProperty( langSlug )
+					? pllWidget.displayFlags.flags[ langSlug ]
+					: null;
+			const currentFlag = title.querySelector( '.pll-lang' );
+
+			if ( icon ) {
+				if ( currentFlag ) {
+					currentFlag.innerHTML = `${ icon } &nbsp; `; // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found, `icon` comes from `PLL_Admin_Base::add_inline_scripts()`.
+				} else {
+					const newFlag = document.createElement( 'span' );
+					newFlag.classList.add( 'pll-lang' );
+					newFlag.innerHTML = `${ icon } &nbsp; `; // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found, `icon` comes from `PLL_Admin_Base::add_inline_scripts()`.
+					title.prepend( newFlag ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend, `newFlag` is a new element we just created with safe data.
+				}
+			} else if ( currentFlag ) {
+				currentFlag.remove();
+			}
+		},
+
+		/**
+		 * Triggers a language selection.
+		 *
+		 * @param {HTMLElement} wrapper Wrapper.
+		 */
+		triggerChange: ( wrapper ) => {
+			wrapper
+				.querySelectorAll( ':scope .pll-lang-choice' )
+				.forEach( ( select ) => {
+					select.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				} );
+		},
+	},
+};
+
+pllWidget.init();

@@ -5,10 +5,12 @@
 
 namespace WP_Syntex\Polylang\Switcher\Fields;
 
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Interface to use to manage setting field data.
+ * Abstract class to use to manage setting field data.
  *
  * @since 3.9
  *
@@ -16,13 +18,12 @@ defined( 'ABSPATH' ) || exit;
  *     non-falsy-string,
  *     array{
  *         label: string,
- *         default: string|bool,
  *         choices?: array<string>,
  *         hide_if?: array<string, string|bool>
  *     }
  * >
  */
-interface Fields_Interface {
+abstract class Abstract_Fields {
 	/**
 	 * Returns setting field data available for the language switcher.
 	 *
@@ -32,15 +33,23 @@ interface Fields_Interface {
 	 *
 	 * @phpstan-return FieldsData
 	 */
-	public static function get(): array;
+	abstract public static function get(): array;
 
 	/**
-	 * Validates the given settings.
+	 * Returns an array containing only the values corresponding to the setting fields.
 	 *
 	 * @since 3.9
 	 *
-	 * @param array $settings Switcher settings.
+	 * @param Settings $settings Switcher settings.
 	 * @return array
 	 */
-	public static function validate( array $settings ): array;
+	public static function filter( Settings $settings ): array {
+		$validated = array();
+
+		foreach ( static::get() as $name => $data ) {
+			$validated[ $name ] = $settings->$name;
+		}
+
+		return $validated;
+	}
 }
