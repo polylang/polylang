@@ -83,9 +83,7 @@ class Assets {
 			return false;
 		}
 
-		$pll_widget_id = 'polylang';
-
-		if ( empty( $wp_widget_factory->get_widget_key( $pll_widget_id ) ) ) {
+		if ( empty( $wp_widget_factory->get_widget_key( 'polylang' ) ) ) {
 			// The widget has been unregistered.
 			return false;
 		}
@@ -105,7 +103,7 @@ class Assets {
 		$active_widgets = array_merge( ...array_values( $active_widgets_by_sidebars ) );
 
 		foreach ( $active_widgets as $widget ) {
-			if ( is_string( $widget ) && preg_match( "/^{$pll_widget_id}-\d+$/", $widget ) ) {
+			if ( is_string( $widget ) && preg_match( "/^polylang-\d+$/", $widget ) ) {
 				return true;
 			}
 		}
