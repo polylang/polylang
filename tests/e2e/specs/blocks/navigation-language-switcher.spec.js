@@ -77,7 +77,6 @@ test.describe.serial(
 
 			await page
 				.getByRole( 'button', { name: 'Add block' } )
-				.filter( { hasText: 'Add block' } )
 				.first()
 				.click();
 
