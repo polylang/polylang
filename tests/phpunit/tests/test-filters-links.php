@@ -217,7 +217,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 
 		// For home_url filter
 		$this->frontend->links = new PLL_Frontend_Links( $this->frontend );
-		$GLOBALS['wp_actions']['template_redirect'] = 1;
+		$GLOBALS['wp_actions']['parse_request'] = 1;
 
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 		$doc = new DomDocument();
@@ -228,6 +228,8 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'http://example.org/', $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		$this->assertEquals( 'http://example.org/', home_url( '/' ) );
+
 		$doc = new DomDocument();
 		$doc->loadHTML( get_custom_logo() );
 		$xpath = new DOMXpath( $doc );
@@ -236,6 +238,6 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'http://example.org/fr/', $a->item( 0 )->getAttribute( 'href' ) );
 
 		remove_theme_mod( 'custom_logo' );
-		unset( $GLOBALS['wp_actions']['template_redirect'] );
+		unset( $GLOBALS['wp_actions']['parse_request'] );
 	}
 }
