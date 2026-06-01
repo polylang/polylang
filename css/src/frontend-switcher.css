@@ -9,21 +9,22 @@
 /* Dropdown layout */
 .pll-layout-dropdown {
 	display: flex;
+	flex-flow: row nowrap;
 	align-items: center;
+	justify-content: flex-start;
+	width: fit-content;
+	gap: 0.25em;
 	position: relative;
+	background-color: inherit;
 }
-.pll-layout-dropdown > .current-item {
-	display: block;
-	z-index: 1;
-}
-.pll-layout-dropdown.pll-switcher button {
+.pll-layout-dropdown.pll-switcher > button {
 	display: inline-block;
+	flex: 0 0 auto;
 	width: 1.5em;
 	height: 1.5em;
 	padding: .35em;
 	border: none;
 	margin: 0;
-	align-self: center;
 	line-height: 0;
 	font-size: inherit;
 	background-color: inherit;
@@ -52,12 +53,14 @@
 	z-index: 2;
 	width: 0;
 	height: 0;
-	left: auto;
-	right: 0;
+	left: 0;
+	right: auto;
 	top: 100%;
 	padding: 0;
 	border: 1px solid rgba(0, 0, 0, .15);
 	margin: 0;
+	background-color: inherit;
+	color: inherit;
 	visibility: hidden;
 	overflow: hidden;
 	opacity: 0;
@@ -118,9 +121,19 @@
 }
 
 /* Links */
-.pll-switcher a {
+.pll-switcher:not( .pll-layout-dropdown ) a {
 	display: inline-block;
 	width: 100%;
+}
+
+/* Dropdown trigger: label and toggle on one row. */
+.pll-switcher.pll-layout-dropdown > a {
+	display: inline-flex;
+	align-items: center;
+	flex: 0 0 auto;
+	width: auto;
+	max-width: none;
+	z-index: 1;
 }
 .pll-alignment-center a {
 	text-align: center;
