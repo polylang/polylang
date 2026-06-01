@@ -5,53 +5,37 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { Disabled, PanelBody } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
+import { Disabled } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
-import { createLanguageSwitcherEdit } from '../language-switcher-edit';
-import { SwitcherContainer } from './components/switcher-container';
+import { RenderedSwitcher } from './components/rendered-switcher';
 import { LanguagesContext } from '../languages-context';
 import { useLanguagesList } from '@wpsyntex/polylang-react-library';
+import { SwitcherControls } from './components/switcher-controls';
 
 /**
  * Edit callback for language switcher block.
  *
- * @param {Object} props Block properties.
+ * @param {Object}   props               Block properties.
+ * @param {Object}   props.attributes    Block attributes.
+ * @param {Function} props.setAttributes Function to set block attributes.
  * @return {ReactElement} The block content and controls.
  */
-export const Edit = ( props ) => {
-	const { dropdown } = props.attributes;
+export const Edit = ( { attributes, setAttributes } ) => {
 	const languages = useLanguagesList();
-	const {
-		ToggleControlDropdown,
-		ToggleControlShowNames,
-		ToggleControlShowFlags,
-		ToggleControlForceHome,
-		ToggleControlHideCurrent,
-		ToggleControlHideIfNoTranslations,
-	} = createLanguageSwitcherEdit( props );
 
 	return (
 		<div { ...useBlockProps() }>
-			<InspectorControls>
-				<PanelBody
-					title={ __( 'Language switcher settings', 'polylang' ) }
-				>
-					<ToggleControlDropdown />
-					{ ! dropdown && <ToggleControlShowNames /> }
-					{ ! dropdown && <ToggleControlShowFlags /> }
-					<ToggleControlForceHome />
-					{ ! dropdown && <ToggleControlHideCurrent /> }
-					<ToggleControlHideIfNoTranslations />
-				</PanelBody>
-			</InspectorControls>
+			<SwitcherControls
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+			/>
 			<Disabled>
 				<LanguagesContext.Provider value={ { languages } }>
-					<SwitcherContainer attributes={ props.attributes } />
+					<RenderedSwitcher attributes={ attributes } />
 				</LanguagesContext.Provider>
 			</Disabled>
 		</div>

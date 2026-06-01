@@ -9,21 +9,22 @@
 /* Dropdown layout */
 .pll-layout-dropdown {
 	display: flex;
+	flex-flow: row nowrap;
 	align-items: center;
+	justify-content: flex-start;
+	width: fit-content;
+	gap: 0.25em;
 	position: relative;
+	background-color: inherit;
 }
-.pll-layout-dropdown > .current-item {
-	display: block;
-	z-index: 1;
-}
-.pll-layout-dropdown.pll-switcher button {
+.pll-layout-dropdown.pll-switcher > button {
 	display: inline-block;
+	flex: 0 0 auto;
 	width: 1.5em;
 	height: 1.5em;
 	padding: .35em;
 	border: none;
 	margin: 0;
-	align-self: center;
 	line-height: 0;
 	font-size: inherit;
 	background-color: inherit;
@@ -52,12 +53,14 @@
 	z-index: 2;
 	width: 0;
 	height: 0;
-	left: auto;
-	right: 0;
+	left: 0;
+	right: auto;
 	top: 100%;
 	padding: 0;
 	border: 1px solid rgba(0, 0, 0, .15);
 	margin: 0;
+	background-color: inherit;
+	color: inherit;
 	visibility: hidden;
 	overflow: hidden;
 	opacity: 0;
@@ -118,9 +121,19 @@
 }
 
 /* Links */
-.pll-switcher a {
+.pll-switcher:not( .pll-layout-dropdown ) a {
 	display: inline-block;
 	width: 100%;
+}
+
+/* Dropdown trigger: label and toggle on one row. */
+.pll-switcher.pll-layout-dropdown > a {
+	display: inline-flex;
+	align-items: center;
+	flex: 0 0 auto;
+	width: auto;
+	max-width: none;
+	z-index: 1;
 }
 .pll-alignment-center a {
 	text-align: center;
@@ -142,15 +155,68 @@
 }
 
 /* Flags */
+.pll-switcher-flag {
+	width: var( --pll-flag-width, 18px );
+	margin-inline-end: var( --pll-flag-margin-right, 0 );
+	overflow: hidden;
+	/*
+	 * Map the block control value (0–100) to a CSS percentage radius.
+	 * 50% is the maximum useful value (fully rounded); the 0.5 factor
+	 * converts 100 → 50%, keeping the slider responsive across the range.
+	 */
+	border-radius: calc( var( --pll-flag-border-radius, 0 ) * 0.5 * 1% );
+}
+
+.pll-switcher-flag[data-aspect-ratio="32"] {
+	aspect-ratio: 3 / 2;
+}
+
+.pll-switcher-flag[data-aspect-ratio="11"] {
+	aspect-ratio: 1 / 1;
+}
+
+.pll-switcher-flag[data-aspect-ratio] + span {
+	margin-inline-start: 0;
+}
+
 .pll-switcher-flag img {
-	width: 18px;
-	vertical-align: middle;
+	display: block;
 	object-fit: cover;
 	object-position: center;
 }
-.pll-aspect-ratio-11 .pll-switcher-flag img {
+
+.pll-switcher-flag[data-aspect-ratio] img {
+	width: 100%;
+	height: 100%;
+}
+
+/* Flags without labels (bare img, block-styled via the HTML API). */
+.pll-switcher a > img[data-aspect-ratio] {
+	display: block;
+	width: var( --pll-flag-width, 18px );
+	overflow: hidden;
+	border-radius: calc( var( --pll-flag-border-radius, 0 ) * 0.5 * 1% );
+	object-fit: cover;
+	object-position: center;
+}
+
+.pll-switcher a > img[data-aspect-ratio="32"] {
+	aspect-ratio: 3 / 2;
+	height: auto;
+}
+
+.pll-switcher a > img[data-aspect-ratio="11"] {
+	aspect-ratio: 1 / 1;
+	height: auto;
+}
+
+/* Legacy switchers without per-flag block attributes. */
+.pll-aspect-ratio-11 .pll-switcher-flag:not( [data-aspect-ratio] ) img {
+	width: 18px;
 	height: 18px;
 }
-.pll-aspect-ratio-32 .pll-switcher-flag img {
+
+.pll-aspect-ratio-32 .pll-switcher-flag:not( [data-aspect-ratio] ) img {
+	width: 18px;
 	height: 12px;
 }
