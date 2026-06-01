@@ -70,7 +70,7 @@ test.describe.serial(
 			const navInserter = navigationBlock
 				.getByRole( 'button', { name: 'Add page' } )
 				.or(
-					navigationBlock.getByRole( 'button', { name: 'Add block' } )
+					navigationBlock.getByRole( 'button', { name: 'Add block' } ) // Fallback for WP 6.9
 				);
 			await expect( navInserter ).toBeVisible();
 			await navInserter.click();
