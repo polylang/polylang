@@ -8,6 +8,7 @@ namespace WP_Syntex\Polylang\Widgets;
 use PLL_Base;
 use PLL_Links;
 use WP_Widget;
+use WP_Syntex\Polylang\Switcher\Assets;
 use WP_Syntex\Polylang\Switcher\Switcher;
 use WP_Syntex\Polylang\Switcher\Fields\Widget as Fields;
 use WP_Syntex\Polylang\Switcher\Settings\Settings;
@@ -66,6 +67,21 @@ class Languages extends WP_Widget {
 				'customize_selective_refresh' => true,
 			)
 		);
+
+		add_action( 'wp_enqueue_scripts', array( self::class, 'maybe_enqueue_frontend_styles' ) );
+	}
+
+	/**
+	 * Maybe enqueues CSS in frontend.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	public static function maybe_enqueue_frontend_styles(): void {
+		if ( self::has_classic_widget() ) {
+			Assets::enqueue_frontend_styles();
+		}
 	}
 
 	/**
@@ -268,5 +284,39 @@ class Languages extends WP_Widget {
 			' class="%s"',
 			esc_attr( implode( ' ', $classes ) )
 		);
+	}
+
+	/**
+	 * Tells if the site has an active Polylang classic widget.
+	 * Note that this doesn't tell if the said widget will be actually shown, because we can't know if the sidebar it's
+	 * in will be shown in the template.
+	 *
+	 * @since 3.9
+	 *
+	 * @return bool
+	 */
+	private static function has_classic_widget(): bool {
+		global $wp_widget_factory;
+
+		if ( ! get_theme_support( 'widgets' ) ) {
+			return false;
+		}
+
+		if ( empty( $wp_widget_factory->get_widget_key( 'polylang' ) ) ) {
+			// The widget has been unregistered.
+			return false;
+		}
+
+		$widgets = wp_get_sidebars_widgets();
+		unset( $widgets['wp_inactive_widgets'] );
+		$widgets = array_filter( $widgets, 'is_array' );
+		$widgets = array_merge( ...array_values( $widgets ) );
+
+		if ( empty( $widgets ) ) {
+			return false;
+		}
+
+		$widgets = (string) wp_json_encode( $widgets );
+		return (bool) preg_match( '/"polylang-\d+"/', $widgets );
 	}
 }
