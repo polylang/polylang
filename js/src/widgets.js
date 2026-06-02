@@ -17,7 +17,10 @@ const pllWidget = {
 	 * Called when the DOM is ready. Attaches the events to the wrapper.
 	 */
 	ready: () => {
-		if ( window.pll_widgets?.flags ) {
+		if (
+			window.pll_widgets?.flags &&
+			'object' === typeof window.pll_widgets.flags
+		) {
 			pllWidget.displayFlags.flags = window.pll_widgets.flags;
 		}
 		document
@@ -37,7 +40,7 @@ const pllWidget = {
 					}
 
 					if (
-						! pllWidget.displayFlags.flags ||
+						! pllWidget.displayFlags.flags.length ||
 						'customize-theme-controls' === wrapper.id
 					) {
 						// No flags for the customizer.
