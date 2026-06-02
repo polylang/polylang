@@ -5,6 +5,8 @@
 
 namespace WP_Syntex\Polylang\Widgets;
 
+use PLL_Base;
+use PLL_Links;
 use WP_Widget;
 use WP_Syntex\Polylang\Switcher\Switcher;
 use WP_Syntex\Polylang\Switcher\Fields\Widget as Fields;
@@ -42,11 +44,20 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  */
 class Languages extends WP_Widget {
 	/**
+	 * @var PLL_Links|null
+	 */
+	private ?PLL_Links $links;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.9
+	 *
+	 * @param PLL_Base $polylang The Polylang object.
 	 */
-	public function __construct() {
+	public function __construct( PLL_Base &$polylang ) {
+		$this->links = &$polylang->links;
+
 		parent::__construct(
 			'polylang',
 			__( 'Language switcher', 'polylang' ),
@@ -84,7 +95,7 @@ class Languages extends WP_Widget {
 	 * @phpstan-param NewInstance|OldInstance $instance
 	 */
 	public function widget( $args, $instance ): void {
-		if ( empty( PLL()->links ) ) {
+		if ( empty( $this->links ) ) {
 			return;
 		}
 
@@ -93,7 +104,7 @@ class Languages extends WP_Widget {
 
 		$instance = Fields::from_db( $instance );
 		$settings = new Settings( $instance );
-		$list     = ( new Switcher( $settings, PLL()->links ) )->get();
+		$list     = ( new Switcher( $settings, $this->links ) )->get();
 
 		if ( empty( $list ) ) {
 			return;
