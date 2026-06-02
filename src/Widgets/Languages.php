@@ -91,11 +91,7 @@ class Languages extends WP_Widget {
 		$instance['unique_id']    = "pll-switcher-widget-{$this->number}";
 		$instance['show_wrapper'] = true;
 
-		if ( isset( $instance['layout'] ) ) {
-			// For backward compatibility, some legacy options are saved along the new ones (see the end of `Languages::update()`).
-			unset( $instance['dropdown'], $instance['show_names'] );
-		}
-
+		$instance = Fields::from_db( $instance );
 		$settings = new Settings( $instance );
 		$list     = ( new Switcher( $settings, PLL()->links ) )->get();
 
@@ -130,13 +126,9 @@ class Languages extends WP_Widget {
 	 * @phpstan-param OldInstance $old_instance
 	 */
 	public function update( $new_instance, $old_instance ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$validated = Fields::filter( new Settings( $new_instance, array( 'filter_settings' => false ) ) );
+		$validated = Fields::to_db( new Settings( $new_instance, array( 'filter_settings' => false ) ) );
 
 		$validated['title'] = ! empty( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '';
-
-		// Keep the legacy keys in database for backward compatibility.
-		$validated['dropdown']   = 'select' === $validated['layout'] ? 1 : 0;
-		$validated['show_names'] = ! empty( $validated['show_labels'] ) ? 1 : 0;
 
 		return $validated;
 	}
@@ -152,11 +144,7 @@ class Languages extends WP_Widget {
 	 * @phpstan-param NewInstance|OldInstance $instance
 	 */
 	public function form( $instance ): void {
-		if ( isset( $instance['layout'] ) ) {
-			// For backward compatibility, some legacy options are saved along the new ones (see the end of `Languages::update()`).
-			unset( $instance['dropdown'], $instance['show_names'] );
-		}
-
+		$instance = Fields::from_db( $instance );
 		$settings = new Settings( $instance, array( 'filter_settings' => false ) );
 
 		// Title.

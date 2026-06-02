@@ -5,6 +5,8 @@
 
 namespace WP_Syntex\Polylang\Switcher\Fields;
 
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -85,5 +87,24 @@ class Widget extends Abstract_Fields {
 				'label' => __( 'Hide languages with no translation', 'polylang' ),
 			),
 		);
+	}
+
+	/**
+	 * Returns an array containing only the values corresponding to the setting fields, plus some legacy keys for
+	 * backward compatibility.
+	 *
+	 * @since 3.9
+	 *
+	 * @param Settings $settings Switcher settings.
+	 * @return array
+	 */
+	public static function to_db( Settings $settings ): array {
+		$validated = static::filter( $settings );
+
+		// Keep some legacy keys in database for backward compatibility.
+		$validated['dropdown']   = 'select' === $validated['layout'] ? 1 : 0;
+		$validated['show_names'] = ! empty( $validated['show_labels'] ) ? 1 : 0;
+
+		return $validated;
 	}
 }
