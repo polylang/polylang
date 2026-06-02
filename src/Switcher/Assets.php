@@ -87,18 +87,17 @@ class Assets {
 			return false;
 		}
 
-		foreach ( wp_get_sidebars_widgets() as $sidebar => $widgets ) {
-			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
-				continue;
-			}
+		$widgets = wp_get_sidebars_widgets();
+		unset( $widgets['wp_inactive_widgets'] );
+		$widgets = array_filter( $widgets, 'is_array' );
+		$widgets = array_merge( ...array_values( $widgets ) );
+		$widgets = array_filter( $widgets, 'is_string' );
 
-			foreach ( $widgets as $widget ) {
-				if ( is_string( $widget ) && preg_match( '/^polylang-\d+$/', $widget ) ) {
-					return true;
-				}
-			}
+		if ( empty( $widgets ) ) {
+			return false;
 		}
 
-		return false;
+		$widgets = (string) wp_json_encode( $widgets );
+		return (bool) preg_match( '/"polylang-\d+"/', $widgets );
 	}
 }
