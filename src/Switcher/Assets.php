@@ -91,7 +91,6 @@ class Assets {
 		unset( $widgets['wp_inactive_widgets'] );
 		$widgets = array_filter( $widgets, 'is_array' );
 		$widgets = array_merge( ...array_values( $widgets ) );
-		$widgets = array_filter( $widgets, 'is_string' );
 
 		if ( empty( $widgets ) ) {
 			return false;
