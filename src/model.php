@@ -321,7 +321,7 @@ class PLL_Model {
 	 * @param array        $q    {
 	 *   WP_Query arguments:
 	 *
-	 *   @type string|string[] $post_type   Post type or array of post types.
+	 *   @type string|string[] $post_type   Post type or array of post types, defaults to 'post'.
 	 *   @type int             $m           Combination YearMonth. Accepts any four-digit year and month.
 	 *   @type int             $year        Four-digit year.
 	 *   @type int             $monthnum    Two-digit month.
@@ -329,7 +329,7 @@ class PLL_Model {
 	 *   @type int             $author      Author id.
 	 *   @type string          $author_name User 'user_nicename'.
 	 *   @type string          $post_format Post format.
-	 *   @type string          $post_status Post status.
+	 *   @type string          $post_status Post status, defaults to 'publish'.
 	 * }
 	 * @return int
 	 *
@@ -344,7 +344,6 @@ class PLL_Model {
 	 *     author_name?: non-falsy-string,
 	 *     post_format?: non-falsy-string
 	 * } $q
-	 * @phpstan-return int<0, max>
 	 */
 	public function count_posts( $lang, $q = array() ): int {
 		global $wpdb;
@@ -370,12 +369,11 @@ class PLL_Model {
 
 		if ( ! is_array( $counts ) ) {
 			$counts  = array();
-			$select  = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
+			$select  = "SELECT pll_tr.term_taxonomy_id, post_status, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join    = $this->post->join_clause();
-			$where   = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
-			$where  .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
+			$where   = sprintf( " WHERE {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
 			$where  .= $this->post->where_clause( $this->languages->get_list() );
-			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
+			$groupby = ' GROUP BY pll_tr.term_taxonomy_id, post_status';
 
 			if ( ! empty( $q['m'] ) ) {
 				$q['m'] = '' . preg_replace( '|[^0-9]|', '', $q['m'] );
@@ -424,15 +422,21 @@ class PLL_Model {
 
 			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$res = $wpdb->get_results( $select . $join . $where . $groupby, ARRAY_A );
+
 			foreach ( (array) $res as $row ) {
-				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
+				$counts[ $row['term_taxonomy_id'] ][ $row['post_status'] ] = $row['num_posts'];
 			}
 
 			$this->set_counts_cache( $cache_key, $counts );
 		}
 
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
-		return empty( $counts[ $term_taxonomy_id ] ) ? 0 : $counts[ $term_taxonomy_id ];
+
+		if ( 'any' === $q['post_status'] ) {
+			return (int) array_sum( $counts[ $term_taxonomy_id ] );
+		}
+
+		return $counts[ $term_taxonomy_id ][ $q['post_status'] ] ?? 0;
 	}
 
 	/**
@@ -641,8 +645,8 @@ class PLL_Model {
 	 *
 	 * @since 3.9
 	 *
-	 * @param string $cache_key The cache key.
-	 * @param int[]  $counts    The number of posts grouped per language.
+	 * @param string  $cache_key The cache key.
+	 * @param int[][] $counts    The number of posts grouped per language and post status.
 	 * @return bool True if the value has been stored, false otherwise.
 	 */
 	private function set_counts_cache( $cache_key, array $counts ): bool {

@@ -90,6 +90,8 @@ class Model_Test extends PLL_UnitTestCase {
 
 		$language = self::$model->get_language( 'fr' );
 		$this->assertEquals( 2, self::$model->count_posts( $language ) );
+		$this->assertEquals( 3, self::$model->count_posts( $language, array( 'post_status' => 'any' ) ) );
+		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'post_status' => 'draft' ) ) );
 		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'post_format' => 'post-format-aside' ) ) );
 		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'year' => 2007 ) ) );
 		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'year' => 2007, 'monthnum' => 9 ) ) );
