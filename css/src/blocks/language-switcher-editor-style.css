@@ -1,0 +1,61 @@
+/*
+ * Block editor only. Base switcher styles are in frontend-switcher.css.
+ */
+
+/* Dropdown layout preview (flat list showing the current language only). */
+.pll-switcher.pll-layout-dropdown ul {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: nowrap;
+	gap: 0;
+	position: static;
+	z-index: auto;
+	width: auto;
+	height: auto;
+	min-width: unset;
+	visibility: visible;
+	overflow: visible;
+	opacity: 1;
+	border: none;
+}
+
+.pll-switcher.pll-layout-dropdown ul > li:not( :first-of-type ) {
+	display: none;
+}
+
+.pll-switcher.pll-layout-dropdown ul > li:first-of-type {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: nowrap;
+}
+
+.pll-switcher.pll-layout-dropdown ul > li:first-of-type a {
+	display: inline-flex;
+	align-items: center;
+	flex-grow: 0;
+	gap: 0.25em;
+	padding: 0;
+	text-decoration: none;
+}
+
+.pll-switcher.pll-layout-dropdown .wp-block-navigation__submenu-icon {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	line-height: 0;
+	margin-inline-start: 0.25em;
+}
+
+.pll-switcher.pll-layout-dropdown .wp-block-navigation__submenu-icon svg {
+	display: block;
+	width: 0.6em;
+	height: 0.6em;
+	stroke: currentColor;
+}
+
+/* Override Gutenberg core styles on flag images. */
+.pll-switcher-flag img {
+	width: 100% !important;
+	height: 100% !important;
+}

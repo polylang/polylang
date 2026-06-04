@@ -65,6 +65,8 @@ function configureWebpack( options ) {
 		'hooks',
 		'i18n',
 		'primitives',
+		'notices',
+		'core-data',
 	];
 
 	const reactifiedConfig = getReactifiedConfig( {
@@ -80,6 +82,10 @@ function configureWebpack( options ) {
 			path.resolve(
 				workingDirectory,
 				'./css/src/blocks/navigation-language-switcher-editor-style.css'
+			),
+			path.resolve(
+				workingDirectory,
+				'./css/src/blocks/language-switcher-editor-style.css'
 			),
 		],
 	} );

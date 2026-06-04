@@ -7,7 +7,9 @@
 			"@wordpress/components",
 			"@wordpress/element",
 			"@wordpress/hooks",
-			"@wordpress/i18n"
+			"@wordpress/i18n",
+			"@wordpress/notices",
+			"@wordpress/data"
 		]
 	},
 	"rules": {
@@ -20,7 +22,20 @@
 		"camelcase": [
 			2,
 			{
-				"allow": [ "pll_block_editor_blocks_settings", "show_flags", "show_names" ],
+				"allow": [
+					"pll_block_editor_blocks_settings",
+					"show_flags",
+					"show_names",
+					"flag_aspect_ratio",
+					"flag_border_radius",
+					"hide_if_no_translation",
+					"hide_current",
+					"force_home",
+					"layout",
+					"show_labels",
+					"flag_width",
+					"flag_margin_right"
+				],
 				"properties": "never",
 				"ignoreDestructuring": true
 			}
