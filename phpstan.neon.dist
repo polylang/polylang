@@ -8,7 +8,6 @@ parameters:
 		- src/
 	excludePaths:
 		- **/load.php
-		- src/widget-calendar.php
 		- src/install/plugin-updater.php
 		- src/integrations/aqua-resizer/
 		- src/integrations/cache/
@@ -23,6 +22,7 @@ parameters:
 		- src/integrations/wp-sweep/
 		- src/integrations/wpseo/
 		- src/integrations/yarpp/
+		- src/Widgets/Calendar.php
 	treatPhpDocTypesAsCertain: false
 	stubFiles:
 		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
@@ -86,6 +86,12 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/frontend/frontend-auto-translate.php
+
+		# Ignored because the property `WP_Widget::$id_base` is wrongly documented as `mixed|string` while it can only be a string.
+		-
+			message: "#^Parameter \\#3 \\$id_base of function is_active_widget expects string\\|false, mixed given\\.$#"
+			count: 1
+			path: src/Widgets/Languages.php
 
 		# Ignored globally
 		-

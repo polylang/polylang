@@ -249,7 +249,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * 3 => true if loaded in footer
 		 */
 		$scripts = array(
-			'widgets' => array( array( 'widgets' ), array( 'jquery' ), false, false ),
+			'widgets' => array( array( 'widgets' ), array(), false, true ),
 		);
 
 		$block_screens = array( 'widgets', 'site-editor' );

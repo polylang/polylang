@@ -372,6 +372,27 @@ td.column-default_lang .icon-default-lang:before,
 	margin-right: 10px;
 }
 
+/* Widgets, nav menus */
+.polylang-language-switcher-widget-content {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+.polylang-language-switcher-widget-content th {
+	width: 10em;
+	padding: 0 10px 10px 0;
+	text-align: start;
+}
+body.rtl .polylang-language-switcher-widget-content th {
+	padding: 0 0 10px 10px;
+}
+.polylang-language-switcher-widget-content td {
+	padding: 0 0 10px 0;
+}
+[class*="pll-hidden-by-"] {
+	display: none;
+}
+
 @media screen and ( max-width: 782px ) {
 	/* settings */
 	#wpbody-content .pll-settings .pll-configure > td {
