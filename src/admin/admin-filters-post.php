@@ -275,6 +275,7 @@ class PLL_Admin_Filters_Post {
 	 * @since 3.9
 	 *
 	 * @param string[] $views Array of available list table views.
+	 * @return string[]
 	 */
 	public function views_edit_post( $views ) {
 		global $typenow;
