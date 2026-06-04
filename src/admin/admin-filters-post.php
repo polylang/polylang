@@ -297,6 +297,9 @@ class PLL_Admin_Filters_Post {
 				(int) $this->model->count_posts( $language, $q )
 			);
 		}
+
+		$views['all'] = str_replace( 'edit.php?', 'edit.php?lang=all&', $views['all'] );
+
 		return $views;
 	}
 }
