@@ -5,6 +5,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Strings\Database_Repository;
+
 /**
  * Template tag: displays the language switcher.
  * The function does nothing if used outside the frontend.
@@ -178,17 +180,19 @@ function pll_home_url( $lang = '' ) {
  *
  * @api
  * @since 0.6
+ * @since 3.9 Parameter `$sanitize_callback` added.
  *
- * @param string $name      A unique name for the string.
- * @param string $string    The string to register.
- * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'.
- * @param bool   $multiline Optional, true if the string table should display a multiline textarea,
- *                          false if should display a single line input, defaults to false.
+ * @param string        $name              A unique name for the string.
+ * @param string        $string            The string to register.
+ * @param string        $context           Optional, the group in which the string is registered, defaults to 'polylang'.
+ * @param bool          $multiline         Optional, true if the string table should display a multiline textarea,
+ *                                         false if should display a single line input, defaults to false.
+ * @param callable|null $sanitize_callback Optional, the sanitization callback for the string, defaults to null.
  * @return void
  */
-function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
+function pll_register_string( $name, $string, $context = 'Polylang', $multiline = false, ?callable $sanitize_callback = null ) {
 	if ( PLL() instanceof PLL_Admin_Base ) {
-		PLL_Admin_Strings::register_string( $name, $string, $context, $multiline );
+		Database_Repository::register( $name, $string, $context, $sanitize_callback, $multiline );
 	}
 }
 
@@ -207,6 +211,36 @@ function pll__( $string ) {
 	}
 
 	return __( $string, 'pll_string' ); // PHPCS:ignore WordPress.WP.I18n
+}
+
+/**
+ * Translates a string ( previously registered with pll_register_string ) with a Polylang group as gettext context.
+ *
+ * Same role as WordPress `_x()` for the `pll_string` text domain. The internal `pll_string` group uses a
+ * singular-only MO key and falls back to {@see pll__()}; all other groups (including the default `Polylang`)
+ * use a contextual MO key (see {@see PLL_MO::uses_singular_only_storage_for_group()}).
+ *
+ * @api
+ * @since 3.9
+ *
+ * @param string $string  The string to translate.
+ * @param string $context The Polylang group / gettext context.
+ * @return string The string translated in the current language.
+ */
+function pll_x__( $string, $context ) {
+	if ( ! is_scalar( $string ) || '' === $string ) {
+		return $string;
+	}
+
+	if ( ! is_string( $context ) || '' === $context ) {
+		return pll__( $string );
+	}
+
+	if ( PLL_MO::is_builtin_strings_table_context( $context ) ) {
+		return pll__( (string) $string );
+	}
+
+	return _x( (string) $string, $context, 'pll_string' ); // PHPCS:ignore WordPress.WP.I18n
 }
 
 /**
@@ -233,6 +267,34 @@ function pll_esc_html__( $string ) {
  */
 function pll_esc_attr__( $string ) {
 	return esc_attr( pll__( $string ) );
+}
+
+/**
+ * Translates a string with context and escapes it for safe use in HTML output.
+ *
+ * @api
+ * @since 3.9
+ *
+ * @param string $string  The string to translate.
+ * @param string $context The Polylang group / gettext context.
+ * @return string The translated and escaped string.
+ */
+function pll_esc_html_x__( $string, $context ) {
+	return esc_html( pll_x__( $string, $context ) );
+}
+
+/**
+ * Translates a string with context and escapes it for safe use in HTML attributes.
+ *
+ * @api
+ * @since 3.9
+ *
+ * @param string $string  The string to translate.
+ * @param string $context The Polylang group / gettext context.
+ * @return string The translated and escaped string.
+ */
+function pll_esc_attr_x__( $string, $context ) {
+	return esc_attr( pll_x__( $string, $context ) );
 }
 
 /**
@@ -276,17 +338,64 @@ function pll_esc_attr_e( $string ) {
 }
 
 /**
+ * Echoes a translated string with context ( not escaped ).
+ *
+ * @api
+ * @since 3.9
+ *
+ * @param string $string  The string to translate.
+ * @param string $context The Polylang group / gettext context.
+ * @return void
+ */
+function pll_x_e( $string, $context ) {
+	echo pll_x__( $string, $context ); // phpcs:ignore WordPress.Security.EscapeOutput
+}
+
+/**
+ * Echoes a translated string with context, escaped for HTML output.
+ *
+ * @api
+ * @since 3.9
+ *
+ * @param string $string  The string to translate.
+ * @param string $context The Polylang group / gettext context.
+ * @return void
+ */
+function pll_esc_html_x_e( $string, $context ) {
+	echo pll_esc_html_x__( $string, $context ); // phpcs:ignore WordPress.Security.EscapeOutput
+}
+
+/**
+ * Echoes a translated string with context, escaped for HTML attributes.
+ *
+ * @api
+ * @since 3.9
+ *
+ * @param string $string  The string to translate.
+ * @param string $context The Polylang group / gettext context.
+ * @return void
+ */
+function pll_esc_attr_x_e( $string, $context ) {
+	echo pll_esc_attr_x__( $string, $context ); // phpcs:ignore WordPress.Security.EscapeOutput
+}
+
+/**
  * Translates a string ( previously registered with pll_register_string ).
  *
  * @api
  * @since 1.5.4
  *
- * @param string $string The string to translate.
- * @param string $lang   Language code.
+ * @param string      $string  The string to translate.
+ * @param string      $lang    Language code.
+ * @param string|null $context Optional. Polylang group / gettext context. When set, uses the same MO key as {@see pll_x__()}.
  * @return string The string translated in the requested language.
  */
-function pll_translate_string( $string, $lang ) {
+function pll_translate_string( $string, $lang, $context = null ) {
 	if ( PLL() instanceof PLL_Frontend && pll_current_language() === $lang ) {
+		if ( null !== $context && is_string( $context ) && '' !== $context ) {
+			return pll_x__( (string) $string, $context );
+		}
+
 		return pll__( $string );
 	}
 
@@ -303,7 +412,11 @@ function pll_translate_string( $string, $lang ) {
 	$mo = new PLL_MO();
 	$mo->import_from_db( $lang );
 
-	return $mo->translate( $string );
+	if ( null !== $context && is_string( $context ) && '' !== $context ) {
+		return $mo->translate( (string) $string, $context );
+	}
+
+	return $mo->translate( (string) $string );
 }
 
 /**

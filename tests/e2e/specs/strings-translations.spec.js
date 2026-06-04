@@ -159,14 +159,19 @@ test.describe.serial( 'Strings translations', () => {
 					) }`
 				);
 
-				const multilineRow = admin.page
-					.getByRole( 'row' )
-					.filter( { hasText: 'Line one' } )
-					.filter( { hasText: 'Line two' } );
+				// Anchor by the stable Name cell; source text can be rendered without both
+				// "Line one" / "Line two" substrings after save (formatting, wrapping).
+				const multilineRow = admin.page.getByRole( 'row' ).filter( {
+					has: admin.page.getByRole( 'cell', {
+						name: 'e2e_custom_multiline',
+						exact: true,
+					} ),
+				} );
 
 				await expect(
 					multilineRow.getByRole( 'cell', {
 						name: 'e2e_custom_multiline',
+						exact: true,
 					} )
 				).toBeVisible();
 
@@ -178,19 +183,22 @@ test.describe.serial( 'Strings translations', () => {
 				);
 
 				await frenchField.fill( 'Ligne un\nLigne deux' );
+
 				await admin.page
 					.getByRole( 'button', { name: 'Save Changes' } )
 					.click();
 
-				const frenchFieldAfterSave = admin.page
-					.getByRole( 'row' )
-					.filter( { hasText: 'Line one' } )
-					.filter( { hasText: 'Line two' } )
-					.getByLabel( 'Français' );
+				// URL often unchanged after save; waitForURL( /mlang_strings/ ) would resolve
+				// immediately. Wait for the success notice so the list table is rendered again.
+				await expect(
+					admin.page.getByText( 'Translations updated.', {
+						exact: true,
+					} )
+				).toBeVisible();
 
-				await expect( frenchFieldAfterSave ).toHaveValue(
-					'Ligne un\nLigne deux'
-				);
+				await expect(
+					multilineRow.getByLabel( 'Français' )
+				).toHaveValue( 'Ligne un\nLigne deux' );
 			} );
 		} );
 	} );
