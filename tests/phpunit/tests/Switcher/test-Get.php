@@ -79,7 +79,7 @@ class Get_Test extends TestCase {
 		$this->assertSame( 'screen-reader-text', $label->getAttribute( 'class' ) );
 		$label_for = $label->getAttribute( 'for' );
 		$this->assertMatchesRegularExpression( '/^pll-switcher-\d+$/', $label_for );
-		$this->assertSame( 'Choose a language', $label->nodeValue );
+		$this->assertSame( 'Choose a language', $label->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		$selects = $xpath->query( '//div/select' );
 		$this->assertSame( 1, $selects->count() );
@@ -101,7 +101,7 @@ class Get_Test extends TestCase {
 			array( 'lang-item', 'lang-item-' . $en_language->term_id, 'lang-item-en', 'current-lang', 'no-translation', 'lang-item-first' ),
 			explode( ' ', $en_option->getAttribute( 'class' ) )
 		);
-		$this->assertSame( 'English', $en_option->nodeValue );
+		$this->assertSame( 'English', $en_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		// The remaining language is fr.
 		$fr_language = $this->pll_model->get_language( 'fr' );
@@ -114,7 +114,7 @@ class Get_Test extends TestCase {
 			array( 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'no-translation' ),
 			explode( ' ', $fr_option->getAttribute( 'class' ) )
 		);
-		$this->assertSame( 'Français', $fr_option->nodeValue );
+		$this->assertSame( 'Français', $fr_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
 	public function test_layout_dropdown(): void {
@@ -142,12 +142,12 @@ class Get_Test extends TestCase {
 		$pll_env = $this->init_frontend();
 
 		foreach ( array( 'horizontal', 'vertical' ) as $layout ) {
-			$html    = $this->get_new_switcher( $pll_env, array( 'layout' => $layout ) )->get();
-			$xpath   = $this->get_domxpath( $html );
+			$html  = $this->get_new_switcher( $pll_env, array( 'layout' => $layout ) )->get();
+			$xpath = $this->get_domxpath( $html );
 
-		$wrappers = $xpath->query( '//div' );
-		$this->assertSame( 1, $wrappers->count() );
-		$wrapper = $wrappers->item( 0 );
+			$wrappers = $xpath->query( '//div' );
+			$this->assertSame( 1, $wrappers->count() );
+			$wrapper = $wrappers->item( 0 );
 			$classes = $wrapper->getAttribute( 'class' );
 			$this->assertStringContainsString( " pll-layout-$layout ", " $classes " );
 
