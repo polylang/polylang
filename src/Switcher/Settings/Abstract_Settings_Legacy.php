@@ -32,7 +32,6 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected const DEFAULTS = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
-		'echo'                   => 1, // Echoes the list.
 		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
 		'show_flags'             => 0, // Don't show flags.
 		'show_names'             => 1, // Show language names.
@@ -41,7 +40,6 @@ abstract class Abstract_Settings_Legacy {
 		'hide_if_no_translation' => 0, // Don't hide the link if there is no translation.
 		'hide_current'           => 0, // Don't hide the current language.
 		'post_id'                => null, // Link to the translations of the current page.
-		'raw'                    => 0, // Build the language switcher.
 		'item_spacing'           => 'preserve', // Preserve whitespace between list items.
 		'admin_render'           => 0, // Make the switcher in a frontend context.
 		'admin_current_lang'     => null, // Use the global current language.
