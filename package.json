@@ -33,7 +33,7 @@
     "@playwright/test": "^1.58.2",
     "@wordpress/babel-preset-default": "^8.41.0",
     "@wordpress/base-styles": "^6.17.0",
-    "@wordpress/e2e-test-utils-playwright": "^1.41.0",
+    "@wordpress/e2e-test-utils-playwright": "^1.41.0 <=1.44.0",
     "@wordpress/env": "^10.39.0",
     "@wordpress/scripts": "^31.6.0",
     "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
