@@ -55,16 +55,17 @@ abstract class Abstract_Fields {
 
 	/**
 	 * Adds some legacy keys that we want to keep in the database alongside the new ones in case of plugin rollback.
+	 * Must not be called before `Abstract_Fields::filter()`.
 	 *
 	 * This would be useful in case a user rollbacks to a version < 3.9.
 	 * Backward compatibility with Polylang < 3.9.
 	 *
 	 * @since 3.9
 	 *
-	 * @param Settings $settings Switcher settings.
+	 * @param array $settings Switcher settings.
 	 * @return array
 	 */
-	abstract public static function add_legacy_settings( Settings $settings ): array;
+	abstract public static function add_legacy_settings( array $settings ): array;
 
 	/**
 	 * Returns an array containing ONLY the values corresponding to the setting fields.

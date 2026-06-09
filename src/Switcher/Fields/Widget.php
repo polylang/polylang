@@ -5,8 +5,6 @@
 
 namespace WP_Syntex\Polylang\Switcher\Fields;
 
-use WP_Syntex\Polylang\Switcher\Settings\Settings;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -91,18 +89,19 @@ class Widget extends Abstract_Fields {
 
 	/**
 	 * Adds some legacy keys that we want to keep in the database alongside the new ones in case of plugin rollback.
+	 * Must not be called before `Abstract_Fields::filter()`.
 	 *
 	 * This would be useful in case a user rollbacks to a version < 3.9.
 	 * Backward compatibility with Polylang < 3.9.
 	 *
 	 * @since 3.9
 	 *
-	 * @param Settings $settings Switcher settings.
+	 * @param array $settings Switcher settings.
 	 * @return array
 	 */
-	public static function add_legacy_settings( Settings $settings ): array {
-		$validated['dropdown']   = 'select' === $validated['layout'] ? 1 : 0;
-		$validated['show_names'] = ! empty( $validated['show_labels'] ) ? 1 : 0;
-		return $validated;
+	public static function add_legacy_settings( array $settings ): array {
+		$settings['dropdown']   = isset( $settings['layout'] ) && 'select' === $settings['layout'] ? 1 : 0;
+		$settings['show_names'] = ! empty( $settings['show_labels'] ) ? 1 : 0;
+		return $settings;
 	}
 }
