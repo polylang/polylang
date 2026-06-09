@@ -36,7 +36,7 @@ abstract class Abstract_Fields {
 	abstract public static function get(): array;
 
 	/**
-	 * Removes the legacy keys that were stored in the database for backward compatibility.
+	 * Removes the legacy keys that were stored in the database alongside the new ones in case of plugin rollback.
 	 *
 	 * @since 3.9
 	 *
@@ -45,15 +45,14 @@ abstract class Abstract_Fields {
 	 */
 	public static function from_db( array $raw_settings ): array {
 		if ( isset( $raw_settings['layout'] ) ) {
-			// For backward compatibility, some legacy options are saved along the new ones.
 			unset( $raw_settings['dropdown'], $raw_settings['show_names'] );
 		}
 		return $raw_settings;
 	}
 
 	/**
-	 * Returns an array containing only the values corresponding to the setting fields, plus some legacy keys for
-	 * backward compatibility.
+	 * Returns an array containing ONLY the values corresponding to the setting fields. This also adds some legacy keys
+	 * that we want to keep in the database alongside the new ones in case of plugin rollback.
 	 *
 	 * @since 3.9
 	 *
@@ -63,7 +62,7 @@ abstract class Abstract_Fields {
 	abstract public static function to_db( Settings $settings ): array;
 
 	/**
-	 * Returns an array containing only the values corresponding to the setting fields.
+	 * Returns an array containing ONLY the values corresponding to the setting fields.
 	 *
 	 * @since 3.9
 	 *

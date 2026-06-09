@@ -147,27 +147,18 @@ class Settings extends Abstract_Settings_Legacy {
 	 *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
 	 *     @type string   $unique_id              A unique identifier. Default is an empty string.
 	 * }
-	 * @param array $args     {
-	 *     Optional arguments.
-	 *
-	 *     @type bool $filter_settings    Whether to allow the settings to be filtered or not. Default is `true`.
-	 *     @type bool $deprecate_settings Whether to mark legacy settings and filters as deprecated or not. Default is `false`.
-	 * }
 	 */
-	public function __construct( array $settings, array $args = array() ) {
-		$this->args = array_merge( $this->args, $args );
-		$settings   = $this->maybe_filter_legacy( $settings );
+	public function __construct( array $settings ) {
+		$settings = $this->maybe_filter_legacy( $settings );
 
-		if ( $this->args['filter_settings'] ) {
-			/**
-			 * Filter the language switcher settings.
-			 *
-			 * @since 3.9
-			 *
-			 * @param array $settings Settings.
-			 */
-			$settings = apply_filters( 'pll_language_switcher_settings', $settings );
-		}
+		/**
+		 * Filter the language switcher settings.
+		 *
+		 * @since 3.9
+		 *
+		 * @param array $settings Settings.
+		 */
+		$settings = apply_filters( 'pll_language_switcher_settings', $settings );
 
 		foreach ( $this->validate( $settings ) as $name => $value ) {
 			$this->$name = $value;

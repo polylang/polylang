@@ -50,12 +50,16 @@ abstract class Abstract_Settings_Legacy {
 	);
 
 	/**
-	 * @var bool[]
+	 * Tells if the given settings list contain legacy settings.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array $settings Settings.
+	 * @return bool
 	 */
-	protected array $args = array(
-		'filter_settings'    => true,
-		'deprecate_settings' => false,
-	);
+	public static function is_legacy( array $settings ): bool {
+		return ! empty( array_intersect_key( $settings, self::REMOVED_ENTRIES ) );
+	}
 
 	/**
 	 * Returns the values as an array after converting them to the legacy format.
@@ -79,15 +83,15 @@ abstract class Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function maybe_filter_legacy( array $settings ): array {
-		if ( ! $this->args['filter_settings'] || ! has_filter( 'pll_the_languages_args' ) ) {
-			if ( ! $this->is_legacy( $settings ) ) {
+		if ( ! has_filter( 'pll_the_languages_args' ) ) {
+			if ( ! self::is_legacy( $settings ) ) {
 				return $settings;
 			}
 
 			return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
 		}
 
-		if ( ! $this->is_legacy( $settings ) ) {
+		if ( ! self::is_legacy( $settings ) ) {
 			$settings = $this->convert_to_legacy( $settings );
 		}
 
@@ -111,18 +115,6 @@ abstract class Abstract_Settings_Legacy {
 	}
 
 	/**
-	 * Tells if the given settings list contain legacy settings.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $settings Settings.
-	 * @return bool
-	 */
-	protected function is_legacy( array $settings ): bool {
-		return ! empty( array_intersect_key( $settings, self::REMOVED_ENTRIES ) );
-	}
-
-	/**
 	 * Converts the legacy structure to the new one.
 	 * This preserves the legacy structure's keys.
 	 *
@@ -132,18 +124,6 @@ abstract class Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function convert_from_legacy( array $settings ): array {
-		if ( $this->args['deprecate_settings'] ) {
-			_deprecated_argument(
-				static::class . '::__construct()',
-				'3.9',
-				sprintf(
-					/* translators: %s is a function name. */
-					esc_html__( "See %s's documentation.", 'polylang' ),
-					'pll_the_languages()'
-				)
-			);
-		}
-
 		if ( ! isset( $settings['show_wrapper'] ) ) {
 			// `PLL_Walker_Dropdown` displays the wrapper (`<select>`) while `PLL_Walker_List` didn't.
 			$settings['show_wrapper'] = ! empty( $settings['dropdown'] );

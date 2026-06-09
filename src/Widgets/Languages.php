@@ -142,9 +142,9 @@ class Languages extends WP_Widget {
 	 * @phpstan-param OldInstance $old_instance
 	 */
 	public function update( $new_instance, $old_instance ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$validated = Fields::to_db( new Settings( $new_instance, array( 'filter_settings' => false ) ) );
+		$validated = Fields::to_db( new Settings( $new_instance ) );
 
-		$validated['title'] = ! empty( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '';
+		$validated['title'] = ! empty( $new_instance['title'] ) && is_string( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '';
 
 		return $validated;
 	}
@@ -160,8 +160,8 @@ class Languages extends WP_Widget {
 	 * @phpstan-param NewInstance|OldInstance $instance
 	 */
 	public function form( $instance ): void {
-		$instance = Fields::from_db( $instance );
-		$settings = new Settings( $instance, array( 'filter_settings' => false ) );
+		$settings = new Settings( Fields::from_db( $instance ) );
+		$title    = ! empty( $instance['title'] ) && is_string( $instance['title'] ) ? $instance['title'] : '';
 
 		// Title.
 		printf(
@@ -169,7 +169,7 @@ class Languages extends WP_Widget {
 			esc_attr( $this->get_field_id( 'title' ) ),
 			esc_html__( 'Title:', 'polylang' ),
 			esc_attr( $this->get_field_name( 'title' ) ),
-			esc_attr( $instance['title'] ?? '' )
+			esc_attr( $title )
 		);
 
 		echo '<table role="presentation" class="polylang-language-switcher-widget-content"><tbody>';

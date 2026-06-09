@@ -90,8 +90,8 @@ class Widget extends Abstract_Fields {
 	}
 
 	/**
-	 * Returns an array containing only the values corresponding to the setting fields, plus some legacy keys for
-	 * backward compatibility.
+	 * Returns an array containing ONLY the values corresponding to the setting fields. This also adds some legacy keys
+	 * that we want to keep in the database alongside the new ones in case of plugin rollback.
 	 *
 	 * @since 3.9
 	 *
@@ -101,7 +101,6 @@ class Widget extends Abstract_Fields {
 	public static function to_db( Settings $settings ): array {
 		$validated = static::filter( $settings );
 
-		// Keep some legacy keys in database for backward compatibility.
 		$validated['dropdown']   = 'select' === $validated['layout'] ? 1 : 0;
 		$validated['show_names'] = ! empty( $validated['show_labels'] ) ? 1 : 0;
 
