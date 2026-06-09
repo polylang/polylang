@@ -70,12 +70,6 @@ abstract class Abstract_Fields {
 	 * @return array
 	 */
 	public static function filter( Settings $settings ): array {
-		$validated = array();
-
-		foreach ( static::get() as $name => $data ) {
-			$validated[ $name ] = $settings->$name;
-		}
-
-		return $validated;
+		return array_intersect_key( get_object_vars( $settings ), static::get() );
 	}
 }
