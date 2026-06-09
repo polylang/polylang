@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Widgets;
+
 if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
 	require_once ABSPATH . '/wp-includes/default-widgets.php';
 }
@@ -17,7 +19,7 @@ if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
  *
  * @since 0.5
  */
-class PLL_Widget_Calendar extends WP_Widget_Calendar {
+class Calendar extends \WP_Widget_Calendar {
 	protected static $pll_instance = 0; // Can't use $instance of WP_Widget_Calendar as it's private :/.
 
 	/**

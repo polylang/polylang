@@ -18,10 +18,8 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected const REMOVED_ENTRIES = array(
 		'dropdown'           => 1,
-		'echo'               => 1,
 		'show_names'         => 1,
 		'display_names_as'   => 1,
-		'raw'                => 1,
 		'item_spacing'       => 1,
 		'admin_render'       => 1,
 		'admin_current_lang' => 1,
@@ -34,7 +32,6 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected const DEFAULTS = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
-		'echo'                   => 1, // Echoes the list.
 		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
 		'show_flags'             => 0, // Don't show flags.
 		'show_names'             => 1, // Show language names.
@@ -43,11 +40,22 @@ abstract class Abstract_Settings_Legacy {
 		'hide_if_no_translation' => 0, // Don't hide the link if there is no translation.
 		'hide_current'           => 0, // Don't hide the current language.
 		'post_id'                => null, // Link to the translations of the current page.
-		'raw'                    => 0, // Build the language switcher.
 		'item_spacing'           => 'preserve', // Preserve whitespace between list items.
 		'admin_render'           => 0, // Make the switcher in a frontend context.
 		'admin_current_lang'     => null, // Use the global current language.
 	);
+
+	/**
+	 * Tells if the given settings list contain legacy settings.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array $settings Settings.
+	 * @return bool
+	 */
+	public static function is_legacy( array $settings ): bool {
+		return ! empty( array_intersect_key( $settings, self::REMOVED_ENTRIES ) );
+	}
 
 	/**
 	 * Returns the values as an array after converting them to the legacy format.
@@ -72,14 +80,14 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected function maybe_filter_legacy( array $settings ): array {
 		if ( ! has_filter( 'pll_the_languages_args' ) ) {
-			if ( ! $this->is_legacy( $settings ) ) {
+			if ( ! self::is_legacy( $settings ) ) {
 				return $settings;
 			}
 
 			return array_diff_key( $this->convert_from_legacy( $settings ), self::REMOVED_ENTRIES );
 		}
 
-		if ( ! $this->is_legacy( $settings ) ) {
+		if ( ! self::is_legacy( $settings ) ) {
 			$settings = $this->convert_to_legacy( $settings );
 		}
 
@@ -103,18 +111,6 @@ abstract class Abstract_Settings_Legacy {
 	}
 
 	/**
-	 * Tells if the given settings list contain legacy settings.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $settings Settings.
-	 * @return bool
-	 */
-	protected function is_legacy( array $settings ): bool {
-		return ! empty( array_intersect_key( $settings, self::REMOVED_ENTRIES ) );
-	}
-
-	/**
 	 * Converts the legacy structure to the new one.
 	 * This preserves the legacy structure's keys.
 	 *
@@ -124,23 +120,13 @@ abstract class Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function convert_from_legacy( array $settings ): array {
-		_deprecated_argument(
-			static::class . '::__construct()',
-			'3.9',
-			sprintf(
-				/* translators: %s is a function name. */
-				esc_html__( "See %s's documentation.", 'polylang' ),
-				'pll_the_languages()'
-			)
-		);
-
 		if ( ! isset( $settings['show_wrapper'] ) ) {
 			// `PLL_Walker_Dropdown` displays the wrapper (`<select>`) while `PLL_Walker_List` didn't.
 			$settings['show_wrapper'] = ! empty( $settings['dropdown'] );
 		}
 
 		if ( isset( $settings['layout'], $settings['dropdown'] ) ) {
-			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match.
+			// Set a new value to `layout` only if the value of `layout` and `dropdown` don't match, so we don't lose `layout`'s real value.
 			if ( ! empty( $settings['dropdown'] ) && 'select' !== $settings['layout'] ) {
 				$settings['layout'] = 'select';
 			} elseif ( empty( $settings['dropdown'] ) && 'select' === $settings['layout'] ) {

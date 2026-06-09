@@ -23,7 +23,7 @@ class Settings extends Abstract_Settings_Legacy {
 	public string $layout = 'vertical';
 
 	/**
-	 * No default value here because it depends on `is_rtl()`. see `self::get_defaults()`.
+	 * No default value here because it depends on `is_rtl()`.
 	 *
 	 * @var string
 	 *
@@ -171,21 +171,6 @@ class Settings extends Abstract_Settings_Legacy {
 	}
 
 	/**
-	 * Returns the public default values.
-	 *
-	 * @since 3.9
-	 *
-	 * @return array
-	 */
-	public static function get_defaults(): array {
-		$properties = array_diff_key( get_class_vars( self::class ), array( 'increment' => 0 ) );
-
-		$properties['alignment'] = is_rtl() ? 'right' : 'left';
-
-		return $properties;
-	}
-
-	/**
 	 * Returns an instance of the switcher.
 	 *
 	 * @since 3.9
@@ -221,13 +206,15 @@ class Settings extends Abstract_Settings_Legacy {
 	 * @return array
 	 */
 	protected function validate( array $settings ): array {
-		$validated = self::get_defaults();
 		$choices   = array(
 			'layout'                 => array( 'horizontal', 'vertical', 'dropdown', 'select' ),
 			'alignment'              => array( 'left', 'center', 'right', 'stretched' ),
 			'flag_aspect_ratio'      => array( '3:2', '1:1' ),
 			'show_labels'            => array( '', 'names', 'codes' ),
 		);
+		$validated = array_diff_key( get_class_vars( self::class ), array( 'increment' => 0 ) );
+
+		$validated['alignment'] = is_rtl() ? 'right' : 'left';
 
 		foreach ( $choices as $key => $setting_choices ) {
 			if ( isset( $settings[ $key ] ) && in_array( $settings[ $key ], $setting_choices, true ) ) {
