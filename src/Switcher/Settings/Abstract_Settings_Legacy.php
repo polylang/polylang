@@ -18,10 +18,8 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected const REMOVED_ENTRIES = array(
 		'dropdown'           => 1,
-		'echo'               => 1,
 		'show_names'         => 1,
 		'display_names_as'   => 1,
-		'raw'                => 1,
 		'item_spacing'       => 1,
 		'admin_render'       => 1,
 		'admin_current_lang' => 1,
