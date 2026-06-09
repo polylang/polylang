@@ -90,20 +90,19 @@ class Widget extends Abstract_Fields {
 	}
 
 	/**
-	 * Returns an array containing ONLY the values corresponding to the setting fields. This also adds some legacy keys
-	 * that we want to keep in the database alongside the new ones in case of plugin rollback.
+	 * Adds some legacy keys that we want to keep in the database alongside the new ones in case of plugin rollback.
+	 *
+	 * This would be useful in case a user rollbacks to a version < 3.9.
+	 * Backward compatibility with Polylang < 3.9.
 	 *
 	 * @since 3.9
 	 *
 	 * @param Settings $settings Switcher settings.
 	 * @return array
 	 */
-	public static function to_db( Settings $settings ): array {
-		$validated = static::filter( $settings );
-
+	public static function add_legacy_settings( Settings $settings ): array {
 		$validated['dropdown']   = 'select' === $validated['layout'] ? 1 : 0;
 		$validated['show_names'] = ! empty( $validated['show_labels'] ) ? 1 : 0;
-
 		return $validated;
 	}
 }

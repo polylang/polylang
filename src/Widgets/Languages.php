@@ -142,7 +142,8 @@ class Languages extends WP_Widget {
 	 * @phpstan-param OldInstance $old_instance
 	 */
 	public function update( $new_instance, $old_instance ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$validated = Fields::to_db( new Settings( $new_instance ) );
+		$validated = Fields::filter( new Settings( $new_instance ) );
+		$validated = Fields::add_legacy_settings( $validated );
 
 		$validated['title'] = ! empty( $new_instance['title'] ) && is_string( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '';
 
