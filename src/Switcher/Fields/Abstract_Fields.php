@@ -38,12 +38,15 @@ abstract class Abstract_Fields {
 	/**
 	 * Removes the legacy keys that were stored in the database alongside the new ones in case of plugin rollback.
 	 *
+	 * This method is part of the plan to support rollbacks to versions < 3.9.
+	 * Backward compatibility with Polylang < 3.9.
+	 *
 	 * @since 3.9
 	 *
 	 * @param array $raw_settings Raw settings.
 	 * @return array
 	 */
-	public static function from_db( array $raw_settings ): array {
+	public static function remove_legacy_settings( array $raw_settings ): array {
 		if ( isset( $raw_settings['layout'] ) ) {
 			unset( $raw_settings['dropdown'], $raw_settings['show_names'] );
 		}

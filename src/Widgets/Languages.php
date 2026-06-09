@@ -107,7 +107,7 @@ class Languages extends WP_Widget {
 		$instance['unique_id']    = "pll-switcher-widget-{$this->number}";
 		$instance['show_wrapper'] = true;
 
-		$instance = Fields::from_db( $instance );
+		$instance = Fields::remove_legacy_settings( $instance );
 		$settings = new Settings( $instance );
 		$list     = ( new Switcher( $settings, $this->links ) )->get();
 
@@ -160,7 +160,7 @@ class Languages extends WP_Widget {
 	 * @phpstan-param NewInstance|OldInstance $instance
 	 */
 	public function form( $instance ): void {
-		$settings = new Settings( Fields::from_db( $instance ) );
+		$settings = new Settings( Fields::remove_legacy_settings( $instance ) );
 		$title    = ! empty( $instance['title'] ) && is_string( $instance['title'] ) ? $instance['title'] : '';
 
 		// Title.
