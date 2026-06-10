@@ -99,6 +99,9 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 
+		$filter = self::upload_dir_filter( '2026/04' );
+		add_filter( 'upload_dir', $filter );
+
 		$filename = __DIR__ . '/../data/big-image.jpg';
 		$en = self::factory()->attachment->create_upload_object( $filename );
 		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
@@ -112,7 +115,8 @@ class Media_Test extends PLL_UnitTestCase {
 
 		wp_save_image( $en );
 		$uploads_dir = wp_upload_dir();
-		$filenames   = glob( "{$uploads_dir['basedir']}/{$uploads_dir['subdir']}/big-image*" );
+		$filenames   = glob( "{$uploads_dir['basedir']}{$uploads_dir['subdir']}/big-image*" );
+		remove_filter( 'upload_dir', $filter );
 
 		wp_delete_attachment( $en );
 		foreach ( $filenames as $filename ) {
@@ -123,5 +127,45 @@ class Media_Test extends PLL_UnitTestCase {
 		foreach ( $filenames as $filename ) {
 			$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
 		}
+	}
+
+	public function test_delete_image_with_shared_filename() {
+		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+
+		$filename = __DIR__ . '/../data/big-image.jpg';
+
+		// Upload an image a long time ago.
+		$filter = self::upload_dir_filter( '2016/04' );
+		add_filter( 'upload_dir', $filter );
+		self::factory()->attachment->create_upload_object( $filename );
+		remove_filter( 'upload_dir', $filter );
+
+		// And a new one with the same name.
+		$en = self::factory()->attachment->create_upload_object( $filename );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
+
+		$uploads_dir = wp_upload_dir();
+		$filenames   = glob( "{$uploads_dir['basedir']}{$uploads_dir['subdir']}/big-image*" );
+
+		wp_delete_attachment( $en );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileExists( $filename, 'Deleting a translation must not delete the files' );
+		}
+
+		wp_delete_attachment( $fr );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
+		}
+	}
+
+	protected static function upload_dir_filter( $time ) {
+		return static function ( $upload ) use ( $time ) {
+			$time = '/' . trim( $time, '/' );
+
+			$upload['path']   = $upload['basedir'] . $time;
+			$upload['url']    = $upload['baseurl'] . $time;
+			$upload['subdir'] = $time;
+			return $upload;
+		};
 	}
 }
