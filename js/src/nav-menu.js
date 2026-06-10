@@ -1,7 +1,5 @@
 /**
  * Handles the options in the language switcher nav menu metabox.
- *
- * @package Polylang
  */
 
 const pllNavMenu = {
@@ -34,8 +32,10 @@ const pllNavMenu = {
 		}
 
 		pllNavMenu.wrapper.addEventListener( 'click', pllNavMenu.printMetabox );
-		pllNavMenu.wrapper.addEventListener( 'change', pllNavMenu.ensureContent );
-		pllNavMenu.wrapper.addEventListener( 'change', pllNavMenu.showHideRows );
+		pllNavMenu.wrapper.addEventListener(
+			'change',
+			pllNavMenu.manageRowsAndValues
+		);
 	},
 
 	printMetabox: {
@@ -50,71 +50,118 @@ const pllNavMenu = {
 				return;
 			}
 
-			const metabox = event.target.closest( '.menu-item' ).querySelector( '.menu-item-settings' );
+			const metabox = event.target
+				.closest( '.menu-item' )
+				.querySelector( '.menu-item-settings' );
 
 			if ( ! metabox?.id ) {
 				// Should not happen.
 				return;
 			}
 
-			if ( ! metabox.querySelectorAll( 'input[value="#pll_switcher"][type=text]' ).length ) {
+			if (
+				! metabox.querySelectorAll(
+					'input[value="#pll_switcher"][type=text]'
+				).length
+			) {
 				// Not our metabox, or already replaced.
 				return;
 			}
 
 			// Remove default fields we don't need.
 			[ ...metabox.children ].forEach( ( el ) => {
-				if ( 'P' === el.nodeName && ! el.classList.contains( 'field-move' ) ) {
+				if (
+					'P' === el.nodeName &&
+					! el.classList.contains( 'field-move' )
+				) {
 					el.remove();
 				}
 			} );
 
-			const t      = pllNavMenu.printMetabox;
-			const itemId = Number( metabox.id.replace( 'menu-item-settings-', '' ) );
+			const t = pllNavMenu.printMetabox;
+			const itemId = Number(
+				metabox.id.replace( 'menu-item-settings-', '' )
+			);
 
-			metabox.append( t.createHiddenInput( 'title', itemId, pll_data.title ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-			metabox.append( t.createHiddenInput( 'url', itemId, '#pll_switcher' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			// phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			metabox.append(
+				t.createHiddenInput( 'title', itemId, pll_data.title )
+			);
+			// phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			metabox.append(
+				t.createHiddenInput( 'url', itemId, '#pll_switcher' )
+			);
 			metabox.append( t.createHiddenInput( 'pll-detect', itemId, 1 ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
-			const ids          = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // Reverse order.
-			const isValDefined = typeof( pll_data.val[ itemId ] ) !== 'undefined';
+			const menuValues =
+				typeof pll_data.val[ itemId ] !== 'undefined'
+					? pll_data.val[ itemId ]
+					: {};
 
-			ids.forEach( ( optionName ) => {
-				// Create the checkbox's wrapper.
-				const inputWrapper = t.createElement( 'p', { class: 'description' } );
+			Object.keys( pll_data.data )
+				.reverse()
+				.forEach( ( optionName ) => {
+					const optionData = pll_data.data[ optionName ];
+					const optionValue =
+						typeof menuValues[ optionName ] !== 'undefined'
+							? menuValues[ optionName ]
+							: optionData.default;
+					// Create the wrapper.
+					const wrapperAtts = { class: 'description' };
 
-				if ( 'hide_current' === optionName && isValDefined && 1 === pll_data.val[ itemId ].dropdown ) {
-					// Hide the `hide_current` checkbox if `dropdown` is checked.
-					inputWrapper.classList.add( 'hidden' );
-				}
+					if ( optionData.hide_if ) {
+						Object.keys( optionData.hide_if ).forEach(
+							( conditionName ) => {
+								const conditionValue =
+									optionData.hide_if[ conditionName ];
+								wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`; // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
 
-				metabox.prepend( inputWrapper ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+								if (
+									typeof menuValues[ conditionName ] !==
+										'undefined' &&
+									conditionValue ===
+										menuValues[ conditionName ]
+								) {
+									wrapperAtts.class += ` pll-hidden-by-${ conditionName }`;
+								}
+							}
+						);
+					}
 
-				// Create the checkbox's label.
-				const inputId = `edit-menu-item-${ optionName }-${ itemId }`;
-				const label   = t.createElement( 'label', { 'for': inputId } );
-				label.innerText = ` ${ pll_data.strings[ optionName ] }`;
+					const inputWrapper = t.createElement( 'p', wrapperAtts );
 
-				inputWrapper.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+					metabox.prepend( inputWrapper ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 
-				// Create the checkbox.
-				const cb = t.createElement( 'input', {
-					type:  'checkbox',
-					id:    inputId,
-					name:  `menu-item-${ optionName }[${ itemId }]`,
-					value: 1,
+					// Create the label.
+					const label = t.createElement( 'label', {
+						for: `edit-menu-item-${ optionName }-${ itemId }`, // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword
+					} );
+					label.innerText = ` ${ optionData.label } `;
+
+					inputWrapper.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+
+					// Create the input.
+					if ( optionData.choices ) {
+						const input = t.createSelectInput(
+							optionName,
+							itemId,
+							optionValue,
+							optionData.choices
+						);
+						label.append( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+					} else {
+						const input = t.createCheckboxInput(
+							optionName,
+							itemId,
+							optionValue
+						);
+						label.prepend( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+					}
 				} );
-
-				if ( ( isValDefined && 1 === pll_data.val[ itemId ][ optionName ] ) || ( ! isValDefined && 'show_names' === optionName ) ) { // `show_names` as default value.
-					cb.checked = true;
-				}
-
-				label.prepend( cb ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
-			} );
 		},
 
 		/**
-		 * Creates and returns a `<input type=hidden"/>` element.
+		 * Creates and returns a `<input type="hidden"/>` element.
 		 *
 		 * @param {string}        id     An identifier for this input. It will be part of the final `id` attribute.
 		 * @param {number}        itemId The ID of the menu element (post ID).
@@ -122,11 +169,81 @@ const pllNavMenu = {
 		 * @return {HTMLElement} The input element.
 		 */
 		createHiddenInput: ( id, itemId, value ) => {
+			return pllNavMenu.printMetabox.createInput(
+				id,
+				itemId,
+				value,
+				'hidden'
+			);
+		},
+
+		/**
+		 * Creates and returns a `<input type="checkbox"/>` element.
+		 *
+		 * @param {string}         id     An identifier for this input. It will be part of the final `id` attribute.
+		 * @param {number}         itemId The ID of the menu element (post ID).
+		 * @param {boolean|number} value  The option value.
+		 * @return {HTMLElement} The input element.
+		 */
+		createCheckboxInput: ( id, itemId, value ) => {
+			const input = pllNavMenu.printMetabox.createInput(
+				id,
+				itemId,
+				1,
+				'checkbox'
+			);
+			input.setAttribute( 'data-key', id );
+			if ( value ) {
+				input.checked = true;
+			}
+			return input;
+		},
+
+		/**
+		 * Creates and returns a `<select/>` element.
+		 *
+		 * @param {string}        id      An identifier for this input. It will be part of the final `id` attribute.
+		 * @param {number}        itemId  The ID of the menu element (post ID).
+		 * @param {string|number} value   The option value.
+		 * @param {Object}        choices Choices.
+		 * @return {HTMLElement} The input element.
+		 */
+		createSelectInput: ( id, itemId, value, choices ) => {
+			const input = pllNavMenu.printMetabox.createElement( 'select', {
+				id: `edit-menu-item-${ id }-${ itemId }`,
+				name: `menu-item-${ id }[${ itemId }]`,
+				'data-key': id,
+			} );
+			Object.keys( choices ).forEach( ( optionValue ) => {
+				const atts = { value: optionValue };
+				if ( value === optionValue ) {
+					atts.selected = 'selected';
+				}
+				const option = pllNavMenu.printMetabox.createElement(
+					'option',
+					atts
+				);
+				option.innerText = choices[ optionValue ];
+				input.append( option ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			} );
+			return input;
+		},
+
+		/**
+		 * Creates and returns a `<input/>` element.
+		 *
+		 * @param {string}        id     An identifier for this input. It will be part of the final `id` attribute.
+		 * @param {number}        itemId The ID of the menu element (post ID).
+		 * @param {string|number} value  The input's value.
+		 * @param {string}        type   The type of input.
+		 * @return {HTMLElement} The input element.
+		 */
+		createInput: ( id, itemId, value, type ) => {
 			return pllNavMenu.printMetabox.createElement( 'input', {
-				type:  'hidden',
-				id:    `edit-menu-item-${ id }-${ itemId }`,
-				name:  `menu-item-${ id }[${ itemId }]`,
-				value: value,
+				type,
+				id: `edit-menu-item-${ id }-${ itemId }`,
+				name: `menu-item-${ id }[${ itemId }]`,
+				value,
 			} );
 		},
 
@@ -146,71 +263,71 @@ const pllNavMenu = {
 		},
 	},
 
-	ensureContent: {
-		regExpr: new RegExp( /^edit-menu-item-show_(names|flags)-(\d+)$/ ),
-
+	manageRowsAndValues: {
 		/**
-		 * Event callback that disallows unchecking both `show_names` and `show_flags`.
+		 * Event callback that hides rows and forbids disabling both flag and name/code.
 		 *
 		 * @param {Event} event The event.
 		 */
 		handleEvent: ( event ) => {
-			if ( ! event.target.id || event.target.checked ) {
-				// Now checked, nothing to do.
+			let value = '';
+
+			if ( 'SELECT' === event.target.nodeName ) {
+				value = event.target.value;
+			} else if (
+				'INPUT' === event.target.nodeName &&
+				'checkbox' === event.target.type
+			) {
+				value = event.target.checked;
+			} else {
 				return;
 			}
 
-			const matches = event.target.id.match( pllNavMenu.ensureContent.regExpr );
+			const wrapper = event.target.closest( '.menu-item-settings' );
 
-			if ( ! matches ) {
-				// Not the checkbox we want.
+			if ( ! wrapper ) {
 				return;
 			}
 
-			// Check the other checkbox.
-			const [ , type, id ] = matches;
-			const otherType = 'names' === type ? 'flags' : 'names';
-			document.getElementById( `edit-menu-item-show_${ otherType }-${ id }` ).checked = true;
-		},
-	},
+			// Hide rows.
+			const key = event.target.getAttribute( 'data-key' );
 
-	showHideRows: {
-		regExpr: new RegExp( /^edit-menu-item-dropdown-(\d+)$/ ),
+			wrapper
+				.querySelectorAll(
+					`[class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })` // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed
+				)
+				.forEach( ( input ) => {
+					input.classList.remove( `pll-hidden-by-${ key }` );
+				} );
+			wrapper
+				.querySelectorAll( `.pll-hidden-if-${ key }-${ value }` ) // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed
+				.forEach( ( input ) => {
+					input.classList.add( `pll-hidden-by-${ key }` );
+				} );
 
-		/**
-		 * Event callback that shows or hides the `hide_current` checkbox when `dropdown` is checked.
-		 *
-		 * @param {Event} event The event.
-		 */
-		handleEvent: ( event ) => {
-			if ( ! event.target.id ) {
-				// Not the checkbox we want.
-				return;
-			}
+			// Forbid disabling both flag and name/code.
+			if ( 'show_labels' === key && '' === value ) {
+				const otherInput = wrapper.querySelector(
+					'[data-key="show_flags"]'
+				);
 
-			const matches = event.target.id.match( pllNavMenu.showHideRows.regExpr );
+				if ( true !== otherInput.checked ) {
+					otherInput.checked = true;
+					otherInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			} else if ( 'show_flags' === key && false === value ) {
+				const otherInput = wrapper.querySelector(
+					'[data-key="show_labels"]'
+				);
 
-			if ( ! matches ) {
-				// Not the checkbox we want.
-				return;
-			}
-
-			const hideCb = document.getElementById( `edit-menu-item-hide_current-${ matches[1] }` );
-
-			if ( ! hideCb ) {
-				// Should not happen.
-				return;
-			}
-
-			const description = hideCb.closest( '.description' );
-
-			// Hide or show.
-			description.classList.toggle( 'hidden', event.target.checked );
-
-			if ( event.target.checked ) {
-				// Uncheck after hiding.
-				hideCb.checked = false;
-				hideCb.dispatchEvent( new Event( 'change' ) );
+				if ( '' === otherInput.value ) {
+					otherInput.value = 'names';
+					otherInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
 			}
 		},
 	},

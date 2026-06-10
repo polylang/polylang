@@ -3,6 +3,9 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
+use WP_Syntex\Polylang\Switcher\Fields\Menu as Fields;
+
 /**
  * Manages custom menus translations as well as the language switcher menu item on admin side
  *
@@ -111,10 +114,17 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_script( 'pll_nav_menu', plugins_url( "/js/build/nav-menu{$suffix}.js", POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION );
 
+		$fields   = Fields::get();
+		$defaults = new Settings( array() );
+
+		foreach ( $fields as $key => $field ) {
+			$fields[ $key ]['default'] = $defaults->$key;
+		}
+
 		$data = array(
-			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
-			'title'   => __( 'Languages', 'polylang' ), // The title
-			'val'     => array(),
+			'data'  => $fields,
+			'title' => __( 'Languages', 'polylang' ),
+			'val'   => array(),
 		);
 
 		// Get all language switcher menu items
@@ -130,7 +140,13 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 		// The options values for the language switcher
 		foreach ( $items as $item ) {
-			$data['val'][ $item ] = get_post_meta( $item, '_pll_menu_item', true );
+			$meta = get_post_meta( $item, '_pll_menu_item', true );
+
+			if ( ! is_array( $meta ) ) {
+				continue;
+			}
+
+			$data['val'][ $item ] = Fields::filter( new Settings( Fields::remove_legacy_settings( $meta ) ) );
 		}
 
 		// Send all these data to javascript
@@ -159,19 +175,23 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return;
 		}
 
-		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 0 ); // Default values.
-
-		// Our jQuery form has not been displayed.
+		// Our JS form has not been displayed.
 		if ( empty( $_POST['menu-item-pll-detect'][ $menu_item_db_id ] ) ) {
 			if ( ! get_post_meta( $menu_item_db_id, '_pll_menu_item', true ) ) { // Our options were never saved.
-				update_post_meta( $menu_item_db_id, '_pll_menu_item', $options );
+				$this->update_menu_meta( $menu_item_db_id, array() );
 			}
-		} else {
-			foreach ( array_keys( $options ) as $opt ) {
-				$options[ $opt ] = empty( $_POST[ 'menu-item-' . $opt ][ $menu_item_db_id ] ) ? 0 : 1;
-			}
-			update_post_meta( $menu_item_db_id, '_pll_menu_item', $options ); // Allow us to easily identify our nav menu item.
+			return;
 		}
+
+		$meta = array();
+
+		foreach ( Fields::get() as $name => $field ) {
+			if ( isset( $_POST[ "menu-item-{$name}" ][ $menu_item_db_id ] ) ) {
+				$meta[ $name ] = $_POST[ "menu-item-{$name}" ][ $menu_item_db_id ]; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			}
+		}
+
+		$this->update_menu_meta( $menu_item_db_id, $meta );
 	}
 
 	/**
@@ -311,5 +331,20 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		$this->options->set( 'nav_menus', $nav_menus );
+	}
+
+	/**
+	 * Stores the menu data into the database.
+	 *
+	 * @since 3.9
+	 *
+	 * @param int   $menu_id Menu ID.
+	 * @param array $data    Data to store.
+	 * @return void
+	 */
+	private function update_menu_meta( int $menu_id, array $data ): void {
+		$validated = Fields::filter( new Settings( $data ) );
+		$validated = Fields::add_legacy_settings( $validated );
+		update_post_meta( $menu_id, '_pll_menu_item', $validated );
 	}
 }
