@@ -36,7 +36,7 @@
     "@wordpress/e2e-test-utils-playwright": "^1.41.0",
     "@wordpress/env": "^10.39.0",
     "@wordpress/scripts": "^31.6.0",
-    "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils",
+    "@wpsyntex/e2e-test-utils": "^0.1.0",
     "@wpsyntex/polylang-build-scripts": "^2.1.0",
     "babel-loader": "^8.4.1",
     "clean-webpack-plugin": "^4.0.0",
