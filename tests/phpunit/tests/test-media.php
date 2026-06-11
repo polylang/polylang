@@ -37,6 +37,9 @@ class Media_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		$this->remove_added_uploads();
 
+		update_option( 'uploads_use_yearmonth_folders', 1 ); // Restore the default value.
+		wp_upload_dir( null, true, true ); // We need to refresh the cache to make the option change effective.
+
 		parent::tear_down();
 	}
 
@@ -141,6 +144,31 @@ class Media_Test extends PLL_UnitTestCase {
 		remove_filter( 'upload_dir', $filter );
 
 		// And a new one with the same name.
+		$en = self::factory()->attachment->create_upload_object( $filename );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
+
+		$uploads_dir = wp_upload_dir();
+		$filenames   = glob( "{$uploads_dir['path']}/big-image*" );
+
+		wp_delete_attachment( $en );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileExists( $filename, 'Deleting a translation must not delete the files' );
+		}
+
+		wp_delete_attachment( $fr );
+		foreach ( $filenames as $filename ) {
+			$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
+		}
+	}
+
+	public function test_delete_image_without_subdir() {
+		update_option( 'uploads_use_yearmonth_folders', 0 );
+		wp_upload_dir( null, true, true ); // We need to refresh the cache to make the option change effective.
+
+		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+
+		$filename = __DIR__ . '/../data/big-image.jpg';
+
 		$en = self::factory()->attachment->create_upload_object( $filename );
 		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
 
