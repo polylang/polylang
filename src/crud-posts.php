@@ -269,19 +269,25 @@ class PLL_CRUD_Posts {
 	public function wp_delete_file( $file ) {
 		global $wpdb;
 
-		$uploadpath = wp_upload_dir();
-		$basefile   = basename( $file );
+		$upload   = wp_upload_dir();
+		$basefile = basename( $file );
+		$subdir   = str_replace( $upload['basedir'], '', $file );
+		$subdir   = trim( str_replace( $basefile, '', $subdir ), '/' );
 
 		// Search in the serialized array of the attachment metadata.
-		$ids = $wpdb->get_col(
+		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT post_id FROM $wpdb->postmeta
-				WHERE meta_key IN ( '_wp_attachment_metadata', '_wp_attachment_backup_sizes' ) AND ( meta_value LIKE %s OR meta_value LIKE %s )",
+				"SELECT COUNT(*) FROM $wpdb->postmeta AS pm1
+				JOIN $wpdb->postmeta AS pm2 ON pm1.post_id = pm2.post_id
+				WHERE pm1.meta_key = '_wp_attached_file' AND pm1.meta_value LIKE %s
+				AND pm2.meta_key IN ( '_wp_attachment_metadata', '_wp_attachment_backup_sizes' )
+				AND ( pm2.meta_value LIKE %s OR pm2.meta_value LIKE %s )",
+				$wpdb->esc_like( $subdir ) . '/%', // The subdir is always present in '_wp_attached_file'.
 				'%"' . $wpdb->esc_like( $basefile ) . '"%', // Intermediate sizes in '_wp_attachment_metadata' + '_wp_attachment_backup_sizes'.
-				'%"' . $wpdb->esc_like( trailingslashit( ltrim( $uploadpath['subdir'], '/' ) ) . $basefile ) . '"%' // Main file in '_wp_attachment_metadata'.
+				'%"' . $wpdb->esc_like( "$subdir/$basefile" ) . '"%' // Main file in '_wp_attachment_metadata'.
 			)
 		);
-		if ( ! empty( $ids ) ) {
+		if ( $count > 0 ) {
 			return ''; // Prevent deleting the file.
 		}
 
