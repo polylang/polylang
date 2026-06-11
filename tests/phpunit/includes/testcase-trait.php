@@ -280,16 +280,16 @@ trait PLL_UnitTestCase_Trait {
 	}
 
 	/**
-	 * Asserts that translations are identical. Backward compatibility with PLL < 3.9.
+	 * Asserts that translations are identical. Backward compatibility with PLL < 3.8.3.
 	 *
-	 * Since PLL 3.9, translations is an object, not an array anymore.
+	 * Since PLL 3.8.3, translations is an object, not an array anymore.
 	 *
 	 * @param array        $expected     Expected value.
 	 * @param array|object $translations The value under test.
 	 * @return void
 	 */
 	protected function assertSameTranslations( array $expected, $translations ): void {
-		if ( version_compare( (string) preg_replace( '/-.*$/', '', POLYLANG_VERSION ), '3.9' ) >= 0 ) { // Strip -dev suffix out.
+		if ( version_compare( (string) preg_replace( '/-.*$/', '', POLYLANG_VERSION ), '3.8.3' ) >= 0 ) { // Strip -dev suffix out.
 			$this->assertInstanceOf( \stdClass::class, $translations );
 			$translations = (array) $translations;
 		}
