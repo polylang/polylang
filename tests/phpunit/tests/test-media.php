@@ -99,7 +99,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 
-		$filter = self::upload_dir_filter( '2026/04' );
+		$filter = self::set_upload_dir_time( '2026/04' );
 		add_filter( 'upload_dir', $filter );
 
 		$filename = __DIR__ . '/../data/big-image.jpg';
@@ -115,7 +115,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		wp_save_image( $en );
 		$uploads_dir = wp_upload_dir();
-		$filenames   = glob( "{$uploads_dir['basedir']}{$uploads_dir['subdir']}/big-image*" );
+		$filenames   = glob( "{$uploads_dir['path']}/big-image*" );
 		remove_filter( 'upload_dir', $filter );
 
 		wp_delete_attachment( $en );
@@ -135,7 +135,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$filename = __DIR__ . '/../data/big-image.jpg';
 
 		// Upload an image a long time ago.
-		$filter = self::upload_dir_filter( '2016/04' );
+		$filter = self::set_upload_dir_time( '2016/04' );
 		add_filter( 'upload_dir', $filter );
 		self::factory()->attachment->create_upload_object( $filename );
 		remove_filter( 'upload_dir', $filter );
@@ -145,7 +145,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
 
 		$uploads_dir = wp_upload_dir();
-		$filenames   = glob( "{$uploads_dir['basedir']}{$uploads_dir['subdir']}/big-image*" );
+		$filenames   = glob( "{$uploads_dir['path']}/big-image*" );
 
 		wp_delete_attachment( $en );
 		foreach ( $filenames as $filename ) {
@@ -158,7 +158,7 @@ class Media_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	protected static function upload_dir_filter( $time ) {
+	protected static function set_upload_dir_time( $time ) {
 		return static function ( $upload ) use ( $time ) {
 			$time = '/' . trim( $time, '/' );
 
