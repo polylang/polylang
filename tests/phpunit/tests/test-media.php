@@ -186,6 +186,24 @@ class Media_Test extends PLL_UnitTestCase {
 		}
 	}
 
+	public function test_delete_non_image_media() {
+		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
+
+		$filename = __DIR__ . '/../data/sample.txt';
+
+		$en = self::factory()->attachment->create_upload_object( $filename );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
+
+		$uploads_dir = wp_upload_dir();
+		$filename    = "{$uploads_dir['path']}/sample.txt";
+
+		wp_delete_attachment( $en );
+		$this->assertFileExists( $filename, 'Deleting a translation must not delete the files' );
+
+		wp_delete_attachment( $fr );
+		$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
+	}
+
 	protected static function set_upload_dir_time( $time ) {
 		return static function ( $upload ) use ( $time ) {
 			$time = '/' . trim( $time, '/' );

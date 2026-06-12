@@ -269,22 +269,34 @@ class PLL_CRUD_Posts {
 	public function wp_delete_file( $file ) {
 		global $wpdb;
 
-		$upload   = wp_upload_dir();
-		$basefile = basename( $file );
-		$subdir   = str_replace( $upload['basedir'], '', $file );
-		$subdir   = trim( str_replace( $basefile, '', $subdir ), '/' );
+		$basefile      = basename( $file );
+		$upload        = wp_upload_dir();
+		$attached_file = trim( str_replace( $upload['basedir'], '', $file ), '/' );
+		$subdir        = trim( str_replace( $basefile, '', $attached_file ), '/' );
+		$filetype      = wp_check_filetype( $file );
 
-		// Search in the serialized array of the attachment metadata.
-		if ( empty( $subdir ) ) {
+		if ( ! str_starts_with( $filetype['type'], 'image/' ) ) {
+			/*
+			 * For non-image files, we just have to check the '_wp_attached_file meta'.
+			 */
 			$count = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM $wpdb->postmeta
-					WHERE meta_key IN ( '_wp_attachment_metadata', '_wp_attachment_backup_sizes' )
-					AND meta_value LIKE %s",
-					'%"' . $wpdb->esc_like( $basefile ) . '"%'
+					WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
+					$attached_file
 				)
 			);
-		} else {
+		} elseif ( ! empty( $subdir ) ) {
+			/*
+			 * For images, we must take care to intermediate sizes and backup.
+			 * - '_wp_attachment_metadata' stores the base filename without subdir
+			 *   for intermediate sizes but includes the subdir for the main file.
+			 * - '_wp_attachment_backup_sizes' stores the base filename, without the subdir.
+			 * - '_wp_attached_file' stores the filename with the subdir.
+			 *
+			 * For filenames stored without subdir, we get it from '_wp_attached_file' to
+			 * avoid a conflict if a file has the same filename in a different subdir.
+			 */
 			$count = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM $wpdb->postmeta AS pm1
@@ -294,7 +306,20 @@ class PLL_CRUD_Posts {
 					AND ( pm2.meta_value LIKE %s OR pm2.meta_value LIKE %s )",
 					$wpdb->esc_like( $subdir ) . '/%', // The subdir is always present in '_wp_attached_file'.
 					'%"' . $wpdb->esc_like( $basefile ) . '"%', // Intermediate sizes in '_wp_attachment_metadata' + '_wp_attachment_backup_sizes'.
-					'%"' . $wpdb->esc_like( "$subdir/$basefile" ) . '"%' // Main file in '_wp_attachment_metadata'.
+					'%"' . $wpdb->esc_like( $attached_file ) . '"%' // Main file in '_wp_attachment_metadata'.
+				)
+			);
+		} else {
+			/*
+			 * The query above doesn't work if there's no subdir for uploads, so we must handle it
+			 * as a specific case.
+			 */
+			$count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM $wpdb->postmeta
+					WHERE meta_key IN ( '_wp_attachment_metadata', '_wp_attachment_backup_sizes' )
+					AND meta_value LIKE %s",
+					'%"' . $wpdb->esc_like( $basefile ) . '"%'
 				)
 			);
 		}
