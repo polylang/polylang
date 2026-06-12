@@ -120,6 +120,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$uploads_dir = wp_upload_dir();
 		$filenames   = glob( "{$uploads_dir['path']}/big-image*" );
 		remove_filter( 'upload_dir', $filter );
+		$this->assertNotEmpty( $filenames );
 
 		wp_delete_attachment( $en );
 		foreach ( $filenames as $filename ) {
@@ -149,6 +150,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$uploads_dir = wp_upload_dir();
 		$filenames   = glob( "{$uploads_dir['path']}/big-image*" );
+		$this->assertNotEmpty( $filenames );
 
 		wp_delete_attachment( $en );
 		foreach ( $filenames as $filename ) {
@@ -174,6 +176,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$uploads_dir = wp_upload_dir();
 		$filenames   = glob( "{$uploads_dir['path']}/big-image*" );
+		$this->assertNotEmpty( $filenames );
 
 		wp_delete_attachment( $en );
 		foreach ( $filenames as $filename ) {
