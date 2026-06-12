@@ -275,7 +275,7 @@ class PLL_CRUD_Posts {
 		$subdir        = trim( str_replace( $basefile, '', $attached_file ), '/' );
 		$filetype      = wp_check_filetype( $file );
 
-		if ( ! str_starts_with( $filetype['type'], 'image/' ) ) {
+		if ( empty( $filetype['type'] ) || ! str_starts_with( $filetype['type'], 'image/' ) ) {
 			/*
 			 * For non-image files, we just have to check the '_wp_attached_file meta'.
 			 */
