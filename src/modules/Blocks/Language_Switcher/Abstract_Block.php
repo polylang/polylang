@@ -162,11 +162,6 @@ abstract class Abstract_Block {
 		// Translated strings used in JS code
 		wp_set_script_translations( $script_handle, 'polylang' );
 
-		// No need to render the JS variable if Polylang Pro is installed, the editor will use `lang` REST field instead.
-		if ( class_exists( 'WP_Syntex\Polylang_Pro\REST\Translated\Post' ) ) {
-			return;
-		}
-
 		// Fallback to default language if current language is not set, usually happens in Site Editor.
 		$current_language = $this->current_language;
 
