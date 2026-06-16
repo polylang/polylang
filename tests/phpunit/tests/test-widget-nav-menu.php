@@ -1,6 +1,8 @@
 <?php
 
 class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
+	use PLL_Widgets_Trait;
+
 	/**
 	 * @var string
 	 */
@@ -46,19 +48,6 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 		parent::tear_down();
 
 		unset( $GLOBALS['polylang'] );
-	}
-
-	public function clean_up_global_scope() {
-		global $_wp_sidebars_widgets, $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
-
-		$_wp_sidebars_widgets = array();
-		$wp_registered_sidebars = array();
-		$wp_registered_widgets = array();
-		$wp_registered_widget_controls = array();
-		$wp_registered_widget_updates = array();
-		$wp_widget_factory->widgets = array();
-
-		parent::clean_up_global_scope();
 	}
 
 	/**
