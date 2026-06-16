@@ -86,8 +86,13 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_sitemaps_posts() {
 		$this->init();
 
-		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'en' ) );
-		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'fr' ) );
+		$post_en = self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'en' ) );
+		$cat_en  = self::factory()->category->create( array( 'lang' => 'en' ) );
+		wp_set_post_terms( $post_en, array( $cat_en ), 'category' );
+
+		$post_fr = self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'fr' ) );
+		$cat_fr  = self::factory()->category->create( array( 'lang' => 'fr' ) );
+		wp_set_post_terms( $post_fr, array( $cat_fr ), 'category' );
 
 		$providers = wp_get_sitemap_providers();
 
