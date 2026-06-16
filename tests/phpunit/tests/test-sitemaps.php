@@ -274,4 +274,25 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		);
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
+
+	public function test_users() {
+		self::$model->options['hide_default'] = 0;
+		self::$model->options['force_lang']   = 1;
+
+		$this->init();
+
+		$en = self::factory()->post->create( array( 'post_author' => 1 ) );
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create( array( 'post_author' => 1 ) );
+		self::$model->post->set_language( $fr, 'fr' );
+
+		$providers = wp_get_sitemap_providers();
+
+		$expected = array(
+			'http://example.org/en/wp-sitemap-users-1.xml',
+			'http://example.org/fr/wp-sitemap-users-1.xml',
+		);
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['users']->get_sitemap_entries(), 'loc' ) );
+	}
 }
