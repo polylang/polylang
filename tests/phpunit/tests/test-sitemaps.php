@@ -86,11 +86,8 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_sitemaps_posts() {
 		$this->init();
 
-		$en = self::factory()->post->create( array( 'post_author' => 1 ) );
-		self::$model->post->set_language( $en, 'en' );
-
-		$fr = self::factory()->post->create( array( 'post_author' => 1 ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'en' ) );
+		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'fr' ) );
 
 		$providers = wp_get_sitemap_providers();
 
@@ -167,19 +164,13 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->init();
 		$this->pll_env->terms = new PLL_CRUD_Terms( $this->pll_env );
 
-		$tag_en = self::factory()->tag->create( array( 'name' => 'tag-en' ) );
-		self::$model->term->set_language( $tag_en, 'en' );
+		$tag_en = self::factory()->tag->create( array( 'name' => 'tag-en', 'lang' => 'en' ) );
+		$tag_fr = self::factory()->tag->create( array( 'name' => 'tag-fr', 'lang' => 'fr' ) );
 
-		$tag_fr = self::factory()->tag->create( array( 'name' => 'tag-fr' ) );
-		self::$model->term->set_language( $tag_fr, 'fr' );
-
-		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_author' => 1 ) );
-		self::$model->post->set_language( $en, 'en' );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_author' => 1, 'lang' => 'en' ) );
 		wp_set_post_terms( $en, array( $tag_en ), 'post_tag' );
 
-
-		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_author' => 1 ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_author' => 1, 'lang' => 'fr' ) );
 		wp_set_post_terms( $fr, array( $tag_fr ), 'post_tag' );
 
 		$providers = wp_get_sitemap_providers();
@@ -281,11 +272,8 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 		$this->init();
 
-		$en = self::factory()->post->create( array( 'post_author' => 1 ) );
-		self::$model->post->set_language( $en, 'en' );
-
-		$fr = self::factory()->post->create( array( 'post_author' => 1 ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'en' ) );
+		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'fr' ) );
 
 		$providers = wp_get_sitemap_providers();
 
