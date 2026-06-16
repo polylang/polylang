@@ -23,8 +23,9 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		create_initial_taxonomies();
-		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
-		register_taxonomy( 'tax', 'cpt' ); // *Untranslated* custom tax.
+		// Use a custom post type and a taxonomy whose slug ends with a language slug. See https://github.com/polylang/polylang-pro/issues/3017.
+		register_post_type( 'cpten', array( 'public' => true ) ); // *Untranslated* custom post type.
+		register_taxonomy( 'taxen', 'cpten' ); // *Untranslated* custom tax.
 
 		$links_model = self::$model->get_links_model();
 		if ( method_exists( $links_model, 'init' ) ) {
@@ -54,8 +55,8 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
-		_unregister_post_type( 'cpt' );
-		_unregister_taxonomy( 'tax' );
+		_unregister_post_type( 'cpten' );
+		_unregister_taxonomy( 'taxen' );
 	}
 
 	public function test_sitemap_providers() {
@@ -117,21 +118,21 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_sitemaps_untranslated_cpt_and_tax() {
 		$this->init();
 
-		self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
-		$post_id = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
-		wp_set_post_terms( $post_id, 'test', 'tax' );
+		self::factory()->term->create( array( 'taxonomy' => 'taxen', 'name' => 'test' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'cpten' ) );
+		wp_set_post_terms( $post_id, 'test', 'taxen' );
 
 		$providers = wp_get_sitemap_providers();
 
 		$expected = array(
-			'http://example.org/wp-sitemap-posts-cpt-1.xml',
+			'http://example.org/wp-sitemap-posts-cpten-1.xml',
 			'http://example.org/en/wp-sitemap-posts-page-1.xml',
 			'http://example.org/fr/wp-sitemap-posts-page-1.xml',
 		);
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 
 		$expected = array(
-			'http://example.org/wp-sitemap-taxonomies-tax-1.xml',
+			'http://example.org/wp-sitemap-taxonomies-taxen-1.xml',
 		);
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
 	}
