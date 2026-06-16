@@ -22,6 +22,8 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+
+		self::require_api();
 	}
 
 	/**
