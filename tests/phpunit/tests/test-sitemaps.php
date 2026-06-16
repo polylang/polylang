@@ -80,7 +80,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			'http://example.org/en/wp-sitemap-posts-page-1.xml',
 			'http://example.org/fr/wp-sitemap-posts-page-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 
 	public function test_sitemaps_posts() {
@@ -100,19 +100,19 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			'http://example.org/en/wp-sitemap-posts-page-1.xml',
 			'http://example.org/fr/wp-sitemap-posts-page-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/en/wp-sitemap-users-1.xml',
 			'http://example.org/fr/wp-sitemap-users-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['users']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['users']->get_sitemap_entries(), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/en/wp-sitemap-taxonomies-category-1.xml',
 			'http://example.org/fr/wp-sitemap-taxonomies-category-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
 	}
 
 	public function test_sitemaps_untranslated_cpt_and_tax() {
@@ -129,12 +129,12 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			'http://example.org/en/wp-sitemap-posts-page-1.xml',
 			'http://example.org/fr/wp-sitemap-posts-page-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/wp-sitemap-taxonomies-taxen-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
 	}
 
 	public function test_home_urls() {
@@ -151,13 +151,13 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$expected = array(
 			'http://example.org/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
 
 		$this->pll_env->curlang = self::$model->get_language( 'fr' );
 		$expected = array(
 			'http://example.org/fr/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
 
 		unset( $GLOBALS['wp_actions']['template_redirect'] );
 	}
@@ -189,34 +189,34 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$expected = array(
 			'http://example.org/test/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'post' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'post' ), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/author/admin/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['users']->get_url_list( 1 ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['users']->get_url_list( 1 ), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/tag/tag-en/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
 
 		$this->pll_env->curlang = self::$model->get_language( 'fr' );
 
 		$expected = array(
 			'http://example.org/fr/essai/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'post' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'post' ), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/fr/author/admin/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['users']->get_url_list( 1 ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['users']->get_url_list( 1 ), 'loc' ) );
 
 		$expected = array(
 			'http://example.org/fr/tag/tag-fr/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
 	}
 
 	public function test_subdomains() {
@@ -231,7 +231,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$expected = array(
 			'http://fr.example.org/wp-sitemap-posts-page-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 
 	public function test_subdomains_home_url() {
@@ -251,7 +251,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$expected = array(
 			'http://fr.example.org/',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
 
 		unset( $GLOBALS['wp_actions']['template_redirect'] );
 	}
@@ -272,7 +272,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$expected = array(
 			'http://example.fr/wp-sitemap-posts-page-1.xml',
 		);
-		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
+		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 
 	public function test_users() {
