@@ -1,18 +1,16 @@
 <?php
 
 class Sitemaps_Test extends PLL_UnitTestCase {
-	/**
-	 * @param WP_UnitTest_Factory $factory
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		$factory->language->create_many( 2 );
 	}
 
-	protected function init( $sitemap_class = 'PLL_Sitemaps' ) {
+	protected function init( $sitemap_class = 'PLL_Sitemaps', array $options = array() ): void {
 		global $wp_rewrite, $wp_sitemaps;
+
+		// To avoid a redirect due to the 'hide_default' option during the context setup.
+		add_filter( 'pll_redirect_home', '__return_false' );
+		add_filter( 'pll_check_canonical_url', '__return_false' );
 
 		// Initialize sitemaps.
 		$wp_sitemaps = null;
@@ -27,20 +25,25 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpten', array( 'public' => true ) ); // *Untranslated* custom post type.
 		register_taxonomy( 'taxen', 'cpten' ); // *Untranslated* custom tax.
 
-		$links_model = self::$model->get_links_model();
-		if ( method_exists( $links_model, 'init' ) ) {
-			$links_model->init();
-		}
+		$options = array_merge(
+			array(
+				'default_lang' => 'en',
+				'hide_default' => false,
+				'force_lang'   => 1,
+			),
+			$options
+		);
+		$this->pll_env = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
+		$this->pll_env->links_model->init();
 
-		$this->pll_env = new PLL_Frontend( $links_model );
 		$this->pll_env->sitemaps = new $sitemap_class( $this->pll_env );
 		$this->pll_env->sitemaps->init();
 
 		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
 
 		// Refresh languages.
-		self::$model->clean_languages_cache();
-		self::$model->get_languages_list();
+		$this->pll_env->model->clean_languages_cache();
+		$this->pll_env->model->get_languages_list();
 
 		// Flush rules.
 		$wp_rewrite->flush_rules();
@@ -140,8 +143,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_home_urls() {
-		self::$model->options['hide_default'] = 1;
-		$this->init();
+		$this->init( 'PLL_Sitemaps', array( 'hide_default' => true ) );
 
 		// For the home_url filter.
 		$this->pll_env->links = new PLL_Frontend_Links( $this->pll_env );
@@ -149,13 +151,13 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 		$providers = wp_get_sitemap_providers();
 
-		$this->pll_env->curlang = self::$model->get_language( 'en' );
+		$this->pll_env->curlang = $this->pll_env->model->get_language( 'en' );
 		$expected = array(
 			'http://example.org/',
 		);
 		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
 
-		$this->pll_env->curlang = self::$model->get_language( 'fr' );
+		$this->pll_env->curlang = $this->pll_env->model->get_language( 'fr' );
 		$expected = array(
 			'http://example.org/fr/',
 		);
@@ -165,8 +167,8 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_url_list_posts() {
-		self::$model->options['hide_default'] = 1;
-		$this->init();
+		$this->init( 'PLL_Sitemaps', array( 'hide_default' => true ) );
+
 		$this->pll_env->terms = new PLL_CRUD_Terms( $this->pll_env );
 
 		$tag_en = self::factory()->tag->create( array( 'name' => 'tag-en', 'lang' => 'en' ) );
@@ -180,7 +182,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 		$providers = wp_get_sitemap_providers();
 
-		$this->pll_env->curlang = self::$model->get_language( 'en' );
+		$this->pll_env->curlang = $this->pll_env->model->get_language( 'en' );
 
 		$expected = array(
 			'http://example.org/test/',
@@ -197,7 +199,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		);
 		$this->assertSameSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
 
-		$this->pll_env->curlang = self::$model->get_language( 'fr' );
+		$this->pll_env->curlang = $this->pll_env->model->get_language( 'fr' );
 
 		$expected = array(
 			'http://example.org/fr/essai/',
@@ -216,8 +218,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_subdomains() {
-		self::$model->options['force_lang'] = 2;
-		$this->init( 'PLL_Sitemaps_Domain' );
+		$this->init( 'PLL_Sitemaps_Domain', array( 'force_lang' => 2 ) );
 
 		$_SERVER['HTTP_HOST'] = 'fr.example.org';
 		$_SERVER['REQUEST_URI'] = '/wp-sitemap.xml';
@@ -231,8 +232,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_subdomains_home_url() {
-		self::$model->options['force_lang'] = 2;
-		$this->init( 'PLL_Sitemaps_Domain' );
+		$this->init( 'PLL_Sitemaps_Domain', array( 'force_lang' => 2 ) );
 
 		$_SERVER['HTTP_HOST'] = 'fr.example.org';
 		$_SERVER['REQUEST_URI'] = '/wp-sitemap-posts-page-1.xml';
@@ -243,7 +243,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 		$providers = wp_get_sitemap_providers();
 
-		$this->pll_env->curlang = self::$model->get_language( 'fr' );
+		$this->pll_env->curlang = $this->pll_env->model->get_language( 'fr' );
 		$expected = array(
 			'http://fr.example.org/',
 		);
@@ -253,15 +253,19 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_domains() {
-		self::$model->options['force_lang'] = 3;
-		self::$model->options['domains'] = array(
-			'en' => 'http://example.org',
-			'fr' => 'http://example.fr',
-		);
-		$this->init( 'PLL_Sitemaps_Domain' );
-
 		$_SERVER['HTTP_HOST'] = 'example.fr';
 		$_SERVER['REQUEST_URI'] = '/wp-sitemap.xml';
+
+		$this->init(
+			'PLL_Sitemaps_Domain',
+			array(
+				'force_lang' => 3,
+				'domains'    => array(
+					'en' => 'http://example.org',
+					'fr' => 'http://example.fr',
+				),
+			)
+		);
 
 		$providers = wp_get_sitemap_providers();
 
@@ -272,9 +276,6 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_users() {
-		self::$model->options['hide_default'] = 0;
-		self::$model->options['force_lang']   = 1;
-
 		$this->init();
 
 		self::factory()->post->create( array( 'post_author' => 1, 'lang' => 'en' ) );
