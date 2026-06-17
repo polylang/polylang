@@ -15,10 +15,9 @@ class Maybe_Filter_Legacy_Test extends PLL_UnitTestCase {
 	/**
 	 * Tests that the filter `pll_the_languages_args` receives the right legacy values, converted from non-legacy values (see `Switcher\Settings\Menu::convert_to_legacy()`).
 	 * Tests that the final values are converted back to their original values (see `Switcher\Settings\Menu::convert_from_legacy()`).
-	 *
-	 * @expectedDeprecated pll_the_languages_args
 	 */
 	public function test_filtered_menu_new_args(): void {
+		$this->setExpectedDeprecated( 'pll_the_languages_args' );
 		$fired = false;
 		$args  = array(
 			'layout'       => 'dropdown',
@@ -47,10 +46,9 @@ class Maybe_Filter_Legacy_Test extends PLL_UnitTestCase {
 	/**
 	 * Tests that the filter `pll_the_languages_args` receives the right legacy values, converted from non-legacy values.
 	 * Tests that the final values are converted into the right values after being changed in the filter.
-	 *
-	 * @expectedDeprecated pll_the_languages_args
 	 */
 	public function test_changed_menu_new_args(): void {
+		$this->setExpectedDeprecated( 'pll_the_languages_args' );
 		$fired = false;
 		$args  = array(
 			'layout' => 'dropdown',
@@ -74,10 +72,9 @@ class Maybe_Filter_Legacy_Test extends PLL_UnitTestCase {
 	/**
 	 * Tests that the filter `pll_the_languages_args` receives the right legacy values.
 	 * Tests that the final values are converted to the right non-legacy values.
-	 *
-	 * @expectedDeprecated pll_the_languages_args
 	 */
 	public function test_filtered_menu_legacy_args(): void {
+		$this->setExpectedDeprecated( 'pll_the_languages_args' );
 		$fired = false;
 		$args  = array(
 			'dropdown'     => 1,
