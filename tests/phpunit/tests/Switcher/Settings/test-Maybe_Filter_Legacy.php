@@ -143,6 +143,10 @@ class Maybe_Filter_Legacy_Test extends PLL_UnitTestCase {
 				'layout'   => 'vertical',
 				'expected' => 'horizontal',
 			),
+			'unknown layout'  => array(
+				'layout'   => 'trucmuche',
+				'expected' => 'horizontal',
+			),
 		);
 	}
 }
