@@ -77,6 +77,14 @@
 		</properties>
 	</rule>
 
+	<rule ref="WordPress.NamingConventions.ValidVariableName">
+		<properties>
+			<property name="allowed_custom_properties" type="array">
+				<element value="nodeValue"/>
+			</property>
+		</properties>
+	</rule>
+
 	<!--
 	#############################################################################
 	Global exclusions for tests.
