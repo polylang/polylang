@@ -104,6 +104,10 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			$settings = new Settings( Fields::remove_legacy_settings( $options ) );
 			$elements = ( new Switcher( $settings, $this->links ) )->get_elements();
 
+			if ( empty ( $elements ) ) {
+				continue;
+			}
+
 			if ( 'dropdown' === $settings->layout ) {
 				// Parent item for dropdown.
 				$element = new Nav( $this->curlang, $settings, $this->links );
