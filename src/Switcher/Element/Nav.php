@@ -73,8 +73,7 @@ class Nav extends Abstract_Element {
 		$label = '';
 
 		if ( ! empty( $this->flag ) ) {
-			$flag   = (string) preg_replace( '/ style="[^"]*"/', '', $this->flag );
-			$label .= sprintf( '<span class="pll-switcher-flag">%s</span>', $flag );
+			$label .= sprintf( '<span class="pll-switcher-flag">%s</span>', $this->flag );
 		}
 
 		if ( ! empty( $this->label ) ) {
