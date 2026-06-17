@@ -30,13 +30,16 @@ class Menu extends Settings {
 	 * @return array
 	 */
 	protected function validate( array $settings ): array {
-		if ( isset( $settings['layout'] ) ) {
-			if ( 'select' === $settings['layout'] ) {
-				$settings['layout'] = 'dropdown';
-			} elseif ( 'vertical' === $settings['layout'] ) {
-				$settings['layout'] = 'horizontal';
-			}
+		if ( ! isset( $settings['layout'] ) || in_array( $settings['layout'], array( 'horizontal', 'dropdown' ), true ) ) {
+			return parent::validate( $settings );
 		}
+
+		if ( 'select' === $settings['layout'] ) {
+			$settings['layout'] = 'dropdown';
+		} else {
+			$settings['layout'] = 'horizontal';
+		}
+
 		return parent::validate( $settings );
 	}
 
