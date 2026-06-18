@@ -52,7 +52,7 @@ const pllNavMenu = {
 
 			const metabox = event.target
 				.closest( '.menu-item' )
-				.querySelector( '.menu-item-settings' );
+				?.querySelector( '.menu-item-settings' );
 
 			if ( ! metabox?.id ) {
 				// Should not happen.
@@ -292,6 +292,10 @@ const pllNavMenu = {
 			// Hide rows.
 			const key = event.target.getAttribute( 'data-key' );
 
+			if ( ! key ) {
+				return;
+			}
+
 			wrapper
 				.querySelectorAll(
 					`[class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })` // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed
@@ -311,7 +315,7 @@ const pllNavMenu = {
 					'[data-key="show_flags"]'
 				);
 
-				if ( true !== otherInput.checked ) {
+				if ( otherInput && true !== otherInput.checked ) {
 					otherInput.checked = true;
 					otherInput.dispatchEvent(
 						new Event( 'change', { bubbles: true } )
@@ -322,7 +326,7 @@ const pllNavMenu = {
 					'[data-key="show_labels"]'
 				);
 
-				if ( '' === otherInput.value ) {
+				if ( otherInput && '' === otherInput.value ) {
 					otherInput.value = 'names';
 					otherInput.dispatchEvent(
 						new Event( 'change', { bubbles: true } )
