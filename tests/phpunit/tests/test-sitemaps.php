@@ -23,7 +23,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		create_initial_taxonomies();
 		// Use a custom post type and a taxonomy whose slug ends with a language slug. See https://github.com/polylang/polylang-pro/issues/3017.
 		register_post_type( 'cpten', array( 'public' => true ) ); // *Untranslated* custom post type.
-		register_taxonomy( 'taxen', 'cpten' ); // *Untranslated* custom tax.
+		register_taxonomy( 'tax-en', 'cpten' ); // *Untranslated* custom tax.
 
 		$options = array_merge(
 			array(
@@ -59,7 +59,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		parent::tear_down();
 
 		_unregister_post_type( 'cpten' );
-		_unregister_taxonomy( 'taxen' );
+		_unregister_taxonomy( 'tax-en' );
 	}
 
 	public function test_sitemap_providers() {
@@ -123,9 +123,9 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_sitemaps_untranslated_cpt_and_tax() {
 		$this->init();
 
-		self::factory()->term->create( array( 'taxonomy' => 'taxen', 'name' => 'test' ) );
+		self::factory()->term->create( array( 'taxonomy' => 'tax-en', 'name' => 'test' ) );
 		$post_id = self::factory()->post->create( array( 'post_type' => 'cpten' ) );
-		wp_set_post_terms( $post_id, 'test', 'taxen' );
+		wp_set_post_terms( $post_id, 'test', 'tax-en' );
 
 		$providers = wp_get_sitemap_providers();
 
@@ -137,7 +137,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertSameSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 
 		$expected = array(
-			'http://example.org/wp-sitemap-taxonomies-taxen-1.xml',
+			'http://example.org/wp-sitemap-taxonomies-tax-en-1.xml',
 		);
 		$this->assertSameSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
 	}
