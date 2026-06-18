@@ -98,66 +98,64 @@ const pllNavMenu = {
 					? pll_data.val[ itemId ]
 					: {};
 
-			Object.keys( pll_data.data )
-				.reverse()
-				.forEach( ( optionName ) => {
-					const optionData = pll_data.data[ optionName ];
-					const optionValue =
-						typeof menuValues[ optionName ] !== 'undefined'
-							? menuValues[ optionName ]
-							: optionData.default;
-					// Create the wrapper.
-					const wrapperAtts = { class: 'description' };
+			for ( const [ optionName, optionData ] of Object.entries(
+				pll_data.data
+			).reverse() ) {
+				const optionValue =
+					typeof menuValues[ optionName ] !== 'undefined'
+						? menuValues[ optionName ]
+						: optionData.default;
+				// Create the wrapper.
+				const wrapperAtts = { class: 'description' };
 
-					if ( optionData.hide_if ) {
-						Object.keys( optionData.hide_if ).forEach(
-							( conditionName ) => {
-								const conditionValue =
-									optionData.hide_if[ conditionName ];
-								wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`; // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+				if ( optionData.hide_if ) {
+					Object.keys( optionData.hide_if ).forEach(
+						( conditionName ) => {
+							const conditionValue =
+								optionData.hide_if[ conditionName ];
+							wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`; // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
 
-								if (
-									typeof menuValues[ conditionName ] !==
-										'undefined' &&
-									conditionValue ===
-										menuValues[ conditionName ]
-								) {
-									wrapperAtts.class += ` pll-hidden-by-${ conditionName }`;
-								}
+							if (
+								typeof menuValues[ conditionName ] !==
+									'undefined' &&
+								conditionValue === menuValues[ conditionName ]
+							) {
+								wrapperAtts.class += ` pll-hidden-by-${ conditionName }`;
 							}
-						);
-					}
+						}
+					);
+				}
 
-					const inputWrapper = t.createElement( 'p', wrapperAtts );
+				const inputWrapper = t.createElement( 'p', wrapperAtts );
 
-					metabox.prepend( inputWrapper ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+				metabox.prepend( inputWrapper ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 
-					// Create the label.
-					const label = t.createElement( 'label', {
-						for: `edit-menu-item-${ optionName }-${ itemId }`, // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword
-					} );
-					label.innerText = ` ${ optionData.label } `;
-
-					inputWrapper.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-
-					// Create the input.
-					if ( optionData.choices ) {
-						const input = t.createSelectInput(
-							optionName,
-							itemId,
-							optionValue,
-							optionData.choices
-						);
-						label.append( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-					} else {
-						const input = t.createCheckboxInput(
-							optionName,
-							itemId,
-							optionValue
-						);
-						label.prepend( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
-					}
+				// Create the label.
+				const label = t.createElement( 'label', {
+					for: `edit-menu-item-${ optionName }-${ itemId }`, // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword
 				} );
+				label.innerText = ` ${ optionData.label } `;
+
+				inputWrapper.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+
+				// Create the input.
+				if ( optionData.choices ) {
+					const input = t.createSelectInput(
+						optionName,
+						itemId,
+						optionValue,
+						optionData.choices
+					);
+					label.append( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				} else {
+					const input = t.createCheckboxInput(
+						optionName,
+						itemId,
+						optionValue
+					);
+					label.prepend( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+				}
+			}
 		},
 
 		/**
