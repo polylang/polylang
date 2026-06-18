@@ -197,7 +197,6 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 			'polylang/language-switcher',
 			array( 'dropdown' => 0 )
 		);
-		$rendered = rtrim( ltrim( $rendered ) ); // Normalize the output.
 
 		$processor = new WP_HTML_Tag_Processor( $rendered );
 
@@ -209,14 +208,9 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 		$this->assertIsString( $id, 'The nav tag should have an id attribute.' );
 		$this->assertStringStartsWith( 'pll-switcher-', $id, 'The nav id should start with pll-switcher-.' );
 
-		$classes = array();
-		foreach ( $processor->class_list() as $class_name ) {
-			$classes[] = $class_name;
-		}
-
 		$this->assertEqualSets(
 			array( 'pll-switcher', 'pll-layout-vertical', 'pll-alignment-none', 'wp-block-polylang-language-switcher' ),
-			$classes,
+			iterator_to_array( $processor->class_list() ),
 			'The nav class list should match the expected values.'
 		);
 
