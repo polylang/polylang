@@ -9,7 +9,7 @@
  * @since 2.8
  */
 class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
-	public const PLL_SEPARATOR = '---pll-sep---';
+	public const SEPARATOR = '---pll-sep---';
 
 	/**
 	 * The decorated sitemaps provider.
@@ -68,7 +68,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		$this->links_model = &$links_model;
 		$this->model       = &$links_model->model;
 
-		self::$pattern = sprintf( '#^(?<SUBTYPE>.*)%s(?<LANG>.+)$#', self::PLL_SEPARATOR ); // `.*` because users don't have sub-types. See `get_sitemap_data()`.
+		self::$pattern = sprintf( '#^(?<SUBTYPE>.*)%s(?<LANG>.+)$#', self::SEPARATOR ); // `.*` because users don't have sub-types. See `get_sitemap_data()`.
 	}
 
 	/**
@@ -135,7 +135,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		self::$filter_lang = $lang;
 
 		$return = array(
-			'name'  => sprintf( "{$object_subtype_name}%s{$lang}", self::PLL_SEPARATOR ),
+			'name'  => sprintf( "{$object_subtype_name}%s{$lang}", self::SEPARATOR ),
 			'pages' => $this->get_max_num_pages( $object_subtype_name ),
 		);
 
