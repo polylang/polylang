@@ -37,8 +37,6 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  *                                            Default is `false`.
  *     @type int      $post_id                Build the links according to the translations of the given post ID.
  *                                            Default is `0`.
- *     @type bool     $preserve_spacing       Preserve or discard white space characters between tags.
- *                                            Default is `true` (preserve).
  *     @type string[] $wrapper_classes        HTML classes to add to the wrapper. Default is an empty array.
  *     @type string[] $item_classes           HTML classes to add to each item. Default is an empty array.
  *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
@@ -47,7 +45,7 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  *     @type bool     $echo                   Whether to print the HTML markup or return it. Default is `true`.
  *     @type bool     $raw                    Whether to return a raw array instead of HTML markup. Default is `false`.
  * }
- * @return string|array Either the html markup of the switcher or the raw elements to build a custom language switcher.
+ * @return string|array|void Either the html markup of the switcher or the raw elements to build a custom language switcher.
  */
 function pll_the_languages( $args = array() ) {
 	if ( empty( PLL()->links ) ) {
@@ -118,7 +116,6 @@ function pll_the_languages( $args = array() ) {
 	}
 
 	$switcher->print();
-	return '';
 }
 
 /**
