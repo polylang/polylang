@@ -24,11 +24,9 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 		$this->pll_model = new PLL_Model( $options );
 		$links_model     = $this->pll_model->get_links_model();
 		$this->frontend  = new PLL_Frontend( $links_model );
-		$this->frontend->init();
 
-		// De-activate cache for links
-		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		$this->frontend->links->cache->method( 'get' )->willReturn( false );
+		$this->frontend->init();
+		$this->frontend->links->cache->clean();
 
 		$GLOBALS['polylang'] = $this->frontend;
 	}
