@@ -16,6 +16,7 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  * @since 0.5
  * @since 3.9 When the layout `select` is used, the value of each `option` is now always a URL, and the `data-lang`
  *            attributes are not added anymore.
+ *            Returns `void` when printing the markup directly.
  *
  * @param array $args {
  *     Optional switcher settings.
