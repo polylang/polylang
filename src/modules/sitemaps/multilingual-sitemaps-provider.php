@@ -48,6 +48,11 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	private static $filter_lang = '';
 
 	/**
+	 * @var string
+	 */
+	private static string $pattern;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 2.8
@@ -62,6 +67,8 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		$this->provider    = $provider;
 		$this->links_model = &$links_model;
 		$this->model       = &$links_model->model;
+
+		self::$pattern = sprintf( '#^(?<SUBTYPE>.*)%s(?<LANG>.+)$#', self::PLL_SEPARATOR ); // `.*` because users don't have sub-types. See `get_sitemap_data()`.
 	}
 
 	/**
@@ -196,9 +203,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 */
 	public function get_sitemap_url( $name, $page ) {
 		// Check if a language was added in `$name`.
-		$pattern = sprintf( '#^(?<SUBTYPE>.*)%s(?<LANG>.+)$#', self::PLL_SEPARATOR ); // `.*` because users don't have sub-types. See `get_sitemap_data()`.
-
-		if ( preg_match( $pattern, $name, $matches ) ) {
+		if ( preg_match( self::$pattern, $name, $matches ) ) {
 			$lang = $this->model->get_language( $matches['LANG'] );
 
 			if ( ! empty( $lang ) ) {
