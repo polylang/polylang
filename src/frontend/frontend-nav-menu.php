@@ -104,7 +104,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			$settings = new Settings( Fields::remove_legacy_settings( $options ) );
 			$elements = ( new Switcher( $settings, $this->links ) )->get_elements();
 
-			if ( empty ( $elements ) ) {
+			if ( empty( $elements ) ) {
 				continue;
 			}
 
