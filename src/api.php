@@ -73,17 +73,16 @@ function pll_the_languages( $args = array() ) {
 	$switcher = new Switcher( $settings, PLL()->links );
 
 	if ( ! empty( $args['raw'] ) ) {
-		$languages       = PLL()->links->model->languages->get_list();
-		$keyed_languages = array_combine( array_column( $languages, 'slug' ), $languages );
-		$elements        = array();
+		$elements = array();
 
 		foreach ( $switcher->get_elements() as $slug => $element ) {
-			if ( ! isset( $keyed_languages[ $element->slug ] ) ) {
+			$language = PLL()->links->model->languages->get( $element->slug );
+
+			if ( empty( $language ) ) {
 				// Should not happen.
 				continue;
 			}
 
-			$language          = $keyed_languages[ $element->slug ];
 			$elements[ $slug ] = array(
 				'id'             => $element->id,
 				'order'          => $element->order,
