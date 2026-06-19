@@ -1,3 +1,7 @@
+/**
+ * Deprecated language switcher block.
+ */
+
 const V2Attributes = {
 	layout: 'vertical',
 	show_labels: 'names',
