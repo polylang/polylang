@@ -85,7 +85,7 @@ function pll_the_languages( $args = array() ) {
 
 			$element = get_object_vars( $element );
 
-			$element['is_rtl']         = 'rtl'   === $element['direction'];
+			$element['is_rtl']         = 'rtl' === $element['direction'];
 			$element['name']           = 'codes' === $settings->show_labels ? $element['slug'] : $language->name;
 			$element['flag']           = ! empty( $settings->show_flags ) ? $element['flag'] : $language->get_display_flag_url();
 			$element['current_lang']   = $element['is_current'];
