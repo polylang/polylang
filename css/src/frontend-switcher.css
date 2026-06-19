@@ -132,11 +132,10 @@
 	text-align: right;
 }
 .pll-switcher-flag,
-.pll-switcher-flag + span {
+.pll-switcher-label {
 	display: inline-block;
-	vertical-align: middle;
 }
-.pll-switcher-flag + span {
+.pll-switcher-flag + .pll-switcher-label {
 	margin-inline-start: .3em;
 	writing-mode: horizontal-tb;
 }
@@ -144,7 +143,7 @@
 /* Flags */
 .pll-switcher-flag img {
 	width: 18px;
-	vertical-align: middle;
+	vertical-align: baseline;
 	object-fit: cover;
 	object-position: center;
 }

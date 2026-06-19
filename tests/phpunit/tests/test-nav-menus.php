@@ -246,9 +246,16 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 				'menu-item-status' => 'publish',
 			)
 		);
-
-		$options['hide_if_empty'] = 0; // FIXME for some reason the languages counts are 0 even if I manually call clean_languages_cache()
 		update_post_meta( $item_id, '_pll_menu_item', $options );
+
+		// Force displaying empty languages (de).
+		add_filter(
+			'pll_language_switcher_settings',
+			static function ( $settings ) {
+				$settings['hide_if_empty'] = false;
+				return $settings;
+			}
+		);
 
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
@@ -396,8 +403,18 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		wp_update_nav_menu_item( $menu_en, $item_id, $args );
 
-		$expected = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1, 'dropdown' => 0 );
-		$this->assertEqualSets( $expected, get_post_meta( $item_id, '_pll_menu_item', true ) );
+		$expected = array(
+			'layout'                 => 'vertical',
+			'show_flags'             => true,
+			'flag_aspect_ratio'      => '3:2',
+			'show_labels'            => 'names',
+			'force_home'             => false,
+			'hide_current'           => false,
+			'hide_if_no_translation' => false,
+			'dropdown'               => 0, // Backward compatibility.
+			'show_names'             => 1, // Backward compatibility.
+		);
+		$this->assertSameSetsWithIndex( $expected, get_post_meta( $item_id, '_pll_menu_item', true ) );
 	}
 
 	public function test_language_switcher_metabox() {

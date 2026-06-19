@@ -20,7 +20,7 @@
 		"camelcase": [
 			2,
 			{
-				"allow": [ "pll_block_editor_blocks_settings", "show_flags", "show_names" ],
+				"allow": [ "pll_block_editor_blocks_settings", "show_flags", "show_names", "pll_data" ],
 				"properties": "never",
 				"ignoreDestructuring": true
 			}
@@ -28,6 +28,7 @@
 	},
 	"globals": {
 		"pll_block_editor_blocks_settings": true,
+		"pll_data": true,
 		"pllDefaultLanguage": true
 	},
 	"env": {

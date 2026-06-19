@@ -637,12 +637,6 @@ parameters:
 			path: src/frontend/frontend-nav-menu.php
 
 		-
-			message: '#^Parameter \#1 \$links of method PLL_Switcher\:\:the_languages\(\) expects PLL_Links, PLL_Admin_Links\|PLL_Frontend_Links\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/frontend/frontend-nav-menu.php
-
-		-
 			message: '#^Parameter \#1 \$post_id of function get_post_meta expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1

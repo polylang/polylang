@@ -10,6 +10,7 @@ use PLL_Links;
 use PLL_Language;
 use PLL_Frontend_Links;
 use PLL_Translated_Post;
+use WP_HTML_Tag_Processor;
 use WP_Syntex\Polylang\Switcher\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -172,10 +173,8 @@ abstract class Abstract_Element {
 		if ( $this->settings->show_labels ) {
 			$this->label = 'codes' === $this->settings->show_labels ? strtoupper( $this->language->slug ) : $this->language->name;
 		}
-		if ( $this->settings->show_flags ) {
-			$this->flag = $this->language->get_display_flag( $this->settings->show_labels ? 'no-alt' : 'alt' );
-		}
 
+		$this->set_flag();
 		$this->set_url();
 	}
 
@@ -215,7 +214,38 @@ abstract class Abstract_Element {
 	}
 
 	/**
-	 * Sets the URL of the given element.
+	 * Sets the flag of the element.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	private function set_flag(): void {
+		if ( ! $this->settings->show_flags ) {
+			return;
+		}
+
+		$this->flag = $this->language->get_display_flag( $this->settings->show_labels ? 'no-alt' : 'alt' );
+
+		if ( empty( $this->flag ) ) {
+			return;
+		}
+
+		$flag = new WP_HTML_Tag_Processor( $this->flag );
+
+		if ( ! $flag->next_tag( array( 'tag_name' => 'img' ) ) ) {
+			return;
+		}
+
+		if ( ! $flag->remove_attribute( 'style' ) ) {
+			return;
+		}
+
+		$this->flag = $flag->get_updated_html();
+	}
+
+	/**
+	 * Sets the URL of the element.
 	 *
 	 * @since 3.9
 	 *

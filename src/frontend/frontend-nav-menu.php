@@ -3,6 +3,11 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Switcher\Switcher;
+use WP_Syntex\Polylang\Switcher\Element\Nav;
+use WP_Syntex\Polylang\Switcher\Fields\Menu as Fields;
+use WP_Syntex\Polylang\Switcher\Settings\Menu as Settings;
+
 /**
  * Manages custom menus translations as well as the language switcher menu item on frontend
  *
@@ -17,6 +22,11 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	public $curlang;
 
 	/**
+	 * @var PLL_Links|null
+	 */
+	private ?PLL_Links $links;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.2
@@ -27,6 +37,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		parent::__construct( $polylang );
 
 		$this->curlang = &$polylang->curlang;
+		$this->links   = &$polylang->links;
 
 		// Split the language switcher menu item in several language menu items
 		add_filter( 'wp_get_nav_menu_items', array( $this, 'wp_get_nav_menu_items' ), 20 ); // after the customizer menus
@@ -58,29 +69,6 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Format a language switcher menu item title based on options
-	 *
-	 * @since 2.2.6
-	 *
-	 * @param string $flag    Formatted flag
-	 * @param string $name    Language name
-	 * @param array  $options Language switcher options
-	 * @return string Formatted menu item title
-	 */
-	protected function get_item_title( $flag, $name, $options ) {
-		if ( $options['show_flags'] ) {
-			if ( $options['show_names'] ) {
-				$title = sprintf( '%1$s<span style="margin-%2$s:0.3em;">%3$s</span>', $flag, is_rtl() ? 'right' : 'left', esc_html( $name ) );
-			} else {
-				$title = $flag;
-			}
-		} else {
-			$title = esc_html( $name );
-		}
-		return $title;
-	}
-
-	/**
 	 * Splits the one language switcher menu item of backend in several menu items on frontend.
 	 * Takes care to menu_order as it is used later in wp_nav_menu().
 	 *
@@ -90,7 +78,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 * @return stdClass[] Modified menu items.
 	 */
 	public function wp_get_nav_menu_items( $items ) {
-		if ( empty( $this->curlang ) ) {
+		if ( empty( $this->curlang ) || empty( $this->links ) ) {
 			return $items;
 		}
 
@@ -102,57 +90,71 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		usort( $items, array( $this, 'usort_menu_items' ) );
 
 		$new_items = array();
-
-		$offset = 0;
+		$offset    = 0;
 
 		foreach ( $items as $item ) {
-			if ( $options = get_post_meta( $item->ID, '_pll_menu_item', true ) ) {
-				/** This filter is documented in src/switcher.php */
-				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
+			$options = get_post_meta( $item->ID, '_pll_menu_item', true );
 
-				$switcher = new PLL_Switcher();
-				$args = array_merge( array( 'raw' => 1 ), $options );
-
-				/** @var array */
-				$the_languages = $switcher->the_languages( PLL()->links, $args );
-
-				// parent item for dropdown
-				if ( ! empty( $options['dropdown'] ) ) {
-					$name = isset( $options['display_names_as'] ) && 'slug' === $options['display_names_as'] ? $this->curlang->slug : $this->curlang->name;
-					$item->title = $this->get_item_title( $this->curlang->get_display_flag( empty( $options['show_names'] ) ? 'alt' : 'no-alt' ), $name, $options );
-					$item->attr_title = '';
-					$item->classes = array( 'pll-parent-menu-item' );
-					$item->menu_order += $offset;
-					$new_items[] = $item;
-					++$offset;
-				}
-
-				$i = 0; // for incrementation of menu order only in case of dropdown
-				foreach ( $the_languages as $lang ) {
-					++$i;
-					$lang_item = clone $item;
-					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
-					$lang_item->title = $this->get_item_title( $lang['flag'], $lang['name'], $options );
-					$lang_item->attr_title = '';
-					$lang_item->url = $lang['url'];
-					$lang_item->lang = $lang['locale']; // Save this for use in nav_menu_link_attributes
-					$lang_item->classes = $lang['classes'];
-					if ( ! empty( $options['dropdown'] ) ) {
-						$lang_item->menu_order = $item->menu_order + $i;
-						$lang_item->menu_item_parent = $item->db_id;
-						$lang_item->db_id = 0; // to avoid recursion
-					} else {
-						$lang_item->menu_order += $offset;
-					}
-					$new_items[] = $lang_item;
-					++$offset;
-				}
-				--$offset;
-			} else {
+			if ( empty( $options ) || ! is_array( $options ) ) {
 				$item->menu_order += $offset;
-				$new_items[] = $item;
+				$new_items[]       = $item;
+				continue;
 			}
+
+			$settings = new Settings( Fields::remove_legacy_settings( $options ) );
+			$elements = ( new Switcher( $settings, $this->links ) )->get_elements();
+
+			if ( empty( $elements ) ) {
+				continue;
+			}
+
+			if ( 'dropdown' === $settings->layout ) {
+				// Parent item for dropdown.
+				$element = new Nav( $this->curlang, $settings, $this->links );
+
+				$item->title       = $element->get_label();
+				$item->attr_title  = '';
+				$item->url         = $element->url;
+				$item->classes     = array_merge( $element->item_classes, array( 'pll-parent-menu-item' ) );
+				$item->menu_order += $offset;
+
+				if ( $settings->show_flags ) {
+					// Since it is added to the parent `<li>`, no need to add it to the child elements too.
+					$item->classes[] = 'pll-aspect-ratio-' . str_replace( ':', '', $settings->flag_aspect_ratio );
+				}
+
+				$new_items[] = $item;
+				++$offset;
+			}
+
+			$i = 0; // For incrementation of menu order only in case of dropdown.
+			foreach ( $elements as $element ) {
+				++$i;
+				$lang_item = clone $item;
+
+				$lang_item->ID         = "{$lang_item->ID}-{$element->slug}"; // A unique ID.
+				$lang_item->title      = $element->get_label();
+				$lang_item->attr_title = '';
+				$lang_item->url        = $element->url;
+				$lang_item->lang       = $element->locale; // Save this for use in nav_menu_link_attributes.
+				$lang_item->classes    = $element->item_classes;
+
+				if ( 'dropdown' === $settings->layout ) {
+					$lang_item->menu_order       = $item->menu_order + $i;
+					$lang_item->menu_item_parent = $item->db_id;
+					$lang_item->db_id            = 0; // To avoid recursion.
+				} else {
+					$lang_item->classes     = array_diff( $lang_item->classes, array( 'lang-item-first' ) ); // Doesn't mean anything here.
+					$lang_item->classes[]   = 'pll-aspect-ratio-' . str_replace( ':', '', $settings->flag_aspect_ratio );
+					$lang_item->menu_order += $offset;
+				}
+
+				$new_items[] = $lang_item;
+				++$offset;
+			}
+			--$offset;
 		}
+
 		return $new_items;
 	}
 
