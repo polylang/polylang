@@ -271,35 +271,6 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'fr-FR', $lang_attributes->item( 1 )->value );
 	}
 
-	public function test_with_hide_if_no_translation_option_in_admin_context() {
-		$links_model = $this->pll_model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
-		$this->pll_admin->init();
-
-		$GLOBALS['polylang'] = $this->pll_admin;
-
-		$en = self::factory()->post->create();
-		$this->pll_model->post->set_language( $en, 'en' );
-
-		$fr = self::factory()->post->create();
-		$this->pll_model->post->set_language( $fr, 'fr' );
-
-		$args = array(
-			'hide_if_no_translation' => 1,
-			'echo'                   => 0,
-		);
-		$switcher = pll_the_languages( $args );
-		$xpath    = $this->get_domxpath( $switcher );
-
-		$a = $xpath->query( '//li/a[@lang="en-US"]' )->item( 0 );
-		$this->assertNotEmpty( $a, 'There should be a link.' );
-		$this->assertSame( $this->pll_model->get_language( 'en' )->get_home_url(), $a->getAttribute( 'href' ) );
-
-		$a = $xpath->query( '//li/a[@lang="fr-FR"]' )->item( 0 );
-		$this->assertNotEmpty( $a, 'There should be a link.' );
-		$this->assertSame( $this->pll_model->get_language( 'fr' )->get_home_url(), $a->getAttribute( 'href' ) );
-	}
-
 	/**
 	 * @ticket #1890
 	 * @see https://github.com/polylang/polylang-pro/issues/1890.

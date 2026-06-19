@@ -53,11 +53,6 @@ function pll_the_languages( $args = array() ) {
 		return empty( $args['raw'] ) ? '' : array();
 	}
 
-	if ( PLL()->links instanceof PLL_Admin_Links ) {
-		// Backward compatibility. See https://github.com/polylang/polylang/blob/bb2f55cb322f657a73d006d5c064c74b98c65a55/src/switcher.php#L237-L240.
-		$args['hide_if_no_translation'] = false;
-	}
-
 	$return_raw  = ! empty( $args['raw'] );
 	$return_html = isset( $args['echo'] ) && empty( $args['echo'] );
 	unset( $args['raw'], $args['echo'] );
