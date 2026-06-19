@@ -18,7 +18,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * Pattern to match a name with language.
 	 *  `.*` in `(?<SUBTYPE>.*)` because users don't have sub-types. See `get_sitemap_data()`.
 	 */
-	private const PATTERN = '#^(?<SUBTYPE>.*)---pll-sep---(?<LANG>.+)$#';
+	private const PATTERN = '#^(?<SUBTYPE>.*)' . self::SEPARATOR . '(?<LANG>.+)$#';
 
 	/**
 	 * The decorated sitemaps provider.
