@@ -43,7 +43,7 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 
 		global $wp_rewrite;
 
-		// Mordern theme support for HTML5, allow to render `<nav>` tags.
+		// Modern theme support for HTML5, allow to render `<nav>` tags.
 		add_theme_support( 'html5', array( 'navigation-widgets' ) );
 
 		self::$model->options['hide_default'] = 1;
