@@ -53,10 +53,6 @@ function pll_the_languages( $args = array() ) {
 		return empty( $args['raw'] ) ? '' : array();
 	}
 
-	$return_raw  = ! empty( $args['raw'] );
-	$return_html = isset( $args['echo'] ) && empty( $args['echo'] );
-	unset( $args['raw'], $args['echo'] );
-
 	if ( Settings::is_legacy( $args ) ) {
 		_deprecated_argument(
 			'pll_the_languages()',
@@ -72,11 +68,11 @@ function pll_the_languages( $args = array() ) {
 	$settings = new Settings( $args );
 
 	// Backward compatibility. See https://github.com/polylang/polylang/blob/bb2f55cb322f657a73d006d5c064c74b98c65a55/src/switcher.php#L141-L143.
-	$settings->hide_current = ! empty( $args['hide_current'] ) && ! ( ! empty( $args['dropdown'] ) && ! $return_raw );
+	$settings->hide_current = ! empty( $args['hide_current'] ) && ! ( ! empty( $args['dropdown'] ) && empty( $args['raw'] ) );
 
 	$switcher = new Switcher( $settings, PLL()->links );
 
-	if ( $return_raw ) {
+	if ( ! empty( $args['raw'] ) ) {
 		$languages       = PLL()->links->model->languages->get_list();
 		$keyed_languages = array_combine( array_column( $languages, 'slug' ), $languages );
 		$elements        = array();
@@ -107,7 +103,7 @@ function pll_the_languages( $args = array() ) {
 		return $elements;
 	}
 
-	if ( $return_html ) {
+	if ( isset( $args['echo'] ) && empty( $args['echo'] ) ) {
 		return $switcher->get();
 	}
 
