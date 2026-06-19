@@ -510,7 +510,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 		return sprintf(
 			'<img src="%s"%s%s%s%s />',
-			$flag['src'],
+			esc_url( $flag['src'] ),
 			$alt_attr,
 			$width_attr,
 			$height_attr,

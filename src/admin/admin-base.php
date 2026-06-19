@@ -331,7 +331,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 */
 	private function add_inline_scripts() {
 		if ( wp_script_is( 'pll_block-editor', 'enqueued' ) ) {
-			$default_lang_script = 'const pllDefaultLanguage = "' . $this->options['default_lang'] . '";';
+			$default_lang_script = sprintf( 'const pllDefaultLanguage = %s;', wp_json_encode( $this->options['default_lang'] ) );
 			wp_add_inline_script(
 				'pll_block-editor',
 				$default_lang_script,
