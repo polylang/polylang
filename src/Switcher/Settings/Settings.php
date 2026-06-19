@@ -27,7 +27,7 @@ class Settings extends Abstract_Settings_Legacy {
 	 *
 	 * @var string
 	 *
-	 * @phpstan-var 'left'|'center'|'right'|'stretched'
+	 * @phpstan-var 'left'|'center'|'right'|'stretched'|'none'
 	 */
 	public string $alignment;
 
@@ -127,7 +127,8 @@ class Settings extends Abstract_Settings_Legacy {
 	 *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
 	 *                                            `dropdown`, and `select`. Default is `vertical`.
 	 *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
-	 *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
+	 *                                            `stretched`, and `none`. Default is `left` or `right`, depending on
+	 *                                            `is_rtl()`.
 	 *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true`.
 	 *     @type bool     $show_flags             Display the flags or not. Default is `false`.
 	 *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
@@ -208,7 +209,7 @@ class Settings extends Abstract_Settings_Legacy {
 	protected function validate( array $settings ): array {
 		$choices   = array(
 			'layout'                 => array( 'horizontal', 'vertical', 'dropdown', 'select' ),
-			'alignment'              => array( 'left', 'center', 'right', 'stretched' ),
+			'alignment'              => array( 'left', 'center', 'right', 'stretched', 'none' ),
 			'flag_aspect_ratio'      => array( '3:2', '1:1' ),
 			'show_labels'            => array( '', 'names', 'codes' ),
 		);
