@@ -76,27 +76,23 @@ function pll_the_languages( $args = array() ) {
 		$elements = array();
 
 		foreach ( $switcher->get_elements() as $slug => $element ) {
-			$language = PLL()->links->model->languages->get( $element->slug );
+			$language = PLL()->links->model->languages->get( $slug );
 
 			if ( empty( $language ) ) {
 				// Should not happen.
 				continue;
 			}
 
-			$elements[ $slug ] = array(
-				'id'             => $element->id,
-				'order'          => $element->order,
-				'slug'           => $element->slug,
-				'locale'         => $element->locale,
-				'is_rtl'         => 'rtl' === $element->direction,
-				'name'           => 'codes' === $settings->show_labels ? $element->slug : $language->name,
-				'url'            => $element->url,
-				'flag'           => ! empty( $settings->show_flags ) ? $element->flag : $language->get_display_flag_url(),
-				'current_lang'   => $element->is_current,
-				'no_translation' => ! $element->has_translations,
-				'classes'        => $element->item_classes,
-				'link_classes'   => $element->link_classes,
-			);
+			$element = get_object_vars( $element );
+
+			$element['is_rtl']         = 'rtl'   === $element['direction'];
+			$element['name']           = 'codes' === $settings->show_labels ? $element['slug'] : $language->name;
+			$element['flag']           = ! empty( $settings->show_flags ) ? $element['flag'] : $language->get_display_flag_url();
+			$element['current_lang']   = $element['is_current'];
+			$element['no_translation'] = ! $element['has_translations'];
+			$element['classes']        = $element['item_classes'];
+
+			$elements[ $slug ] = $element;
 		}
 
 		return $elements;

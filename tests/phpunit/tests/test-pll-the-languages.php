@@ -69,7 +69,20 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 				'current-lang',
 				'lang-item-first',
 			),
-			'link_classes'   => array(),
+			'link_classes'     => array(),
+			// New values.
+			'label'            => 'English',
+			'direction'        => 'ltr',
+			'has_translations' => true,
+			'is_current'       => true,
+			'is_empty'         => false,
+			'item_classes'     => array(
+				'lang-item',
+				'lang-item-' . $language_en->term_id,
+				'lang-item-en',
+				'current-lang',
+				'lang-item-first',
+			),
 		);
 
 		$this->assertSameSetsWithIndex( $expected_en, $elements['en'] );
@@ -92,6 +105,17 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 				'lang-item-fr',
 			),
 			'link_classes'   => array(),
+			// New values.
+			'label'            => 'Français',
+			'direction'        => 'ltr',
+			'has_translations' => true,
+			'is_current'       => false,
+			'is_empty'         => false,
+			'item_classes'     => array(
+				'lang-item',
+				'lang-item-' . $language_fr->term_id,
+				'lang-item-fr',
+			),
 		);
 
 		$this->assertSameSetsWithIndex( $expected_fr, $elements['fr'] );
@@ -115,6 +139,18 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 				'no-translation',
 			),
 			'link_classes'   => array(),
+			// New values.
+			'label'            => 'Deutsch',
+			'direction'        => 'ltr',
+			'has_translations' => false,
+			'is_current'       => false,
+			'is_empty'         => false,
+			'item_classes'     => array(
+				'lang-item',
+				'lang-item-' . $language_de->term_id,
+				'lang-item-de',
+				'no-translation',
+			),
 		);
 
 		$this->assertSameSetsWithIndex( $expected_de, $elements['de'] );
