@@ -5,38 +5,104 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Switcher\Switcher;
+use WP_Syntex\Polylang\Switcher\Settings\Settings;
+
 /**
  * Template tag: displays the language switcher.
  * The function does nothing if used outside the frontend.
  *
  * @api
  * @since 0.5
+ * @since 3.9 When the layout `select` is used, the value of each `option` is now always a URL, and the `data-lang`
+ *            attributes are not added anymore.
+ *            Returns `void` when printing the markup directly.
  *
  * @param array $args {
- *   Optional array of arguments.
+ *     Optional switcher settings.
  *
- *   @type int    $dropdown               The list is displayed as dropdown if set to 1, defaults to 0.
- *   @type int    $echo                   Echoes the list if set to 1, defaults to 1.
- *   @type int    $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
- *   @type int    $show_flags             Displays flags if set to 1, defaults to 0.
- *   @type int    $show_names             Shows language names if set to 1, defaults to 1.
- *   @type string $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
- *   @type int    $force_home             Will always link to the homepage in the translated language if set to 1, defaults to 0.
- *   @type int    $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
- *   @type int    $hide_current           Hides the current language if set to 1, defaults to 0.
- *   @type int    $post_id                Returns links to the translations of the post defined by post_id if set, defaults to not set.
- *   @type int    $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
- *   @type string $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
+ *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
+ *                                            `dropdown`, and `select`. Default is `vertical`.
+ *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
+ *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
+ *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true` when the layout is `select`,
+ *                                            and `false` otherwise.
+ *     @type bool     $show_flags             Display the flags or not. Default is `false`.
+ *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
+ *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
+ *                                            `names` (language names), `codes` (languages codes). Default is `names`.
+ *     @type bool     $hide_if_empty          Hide languages that don't have any posts. Default is `true`.
+ *     @type bool     $hide_if_no_translation Hide languages that don't have translations. Default is `false`.
+ *     @type bool     $hide_current           Hide the current language. Default is `false`.
+ *     @type bool     $force_home             Force elements to link to the home pages instead of the translations.
+ *                                            Default is `false`.
+ *     @type int      $post_id                Build the links according to the translations of the given post ID.
+ *                                            Default is `0`.
+ *     @type string[] $wrapper_classes        HTML classes to add to the wrapper. Default is an empty array.
+ *     @type string[] $item_classes           HTML classes to add to each item. Default is an empty array.
+ *     @type string[] $link_classes           HTML classes to add to each link. Default is an empty array.
+ *     @type string   $unique_id              A unique identifier. Default is an empty string: a default unique
+ *                                            identifier will be automatically generated.
+ *     @type bool     $echo                   Whether to print the HTML markup or return it. Default is `true`.
+ *     @type bool     $raw                    Whether to return a raw array instead of HTML markup. Default is `false`.
  * }
- * @return string|array Either the html markup of the switcher or the raw elements to build a custom language switcher.
+ * @return string|array|void Either the html markup of the switcher or the raw elements to build a custom language switcher.
  */
 function pll_the_languages( $args = array() ) {
 	if ( empty( PLL()->links ) ) {
 		return empty( $args['raw'] ) ? '' : array();
 	}
 
-	$switcher = new PLL_Switcher();
-	return $switcher->the_languages( PLL()->links, $args );
+	if ( Settings::is_legacy( $args ) ) {
+		_deprecated_argument(
+			'pll_the_languages()',
+			'3.9',
+			sprintf(
+				/* translators: %s is a function name. */
+				esc_html__( "See %s's documentation.", 'polylang' ),
+				'pll_the_languages()'
+			)
+		);
+	}
+
+	$settings = new Settings( $args );
+
+	// Backward compatibility. See https://github.com/polylang/polylang/blob/bb2f55cb322f657a73d006d5c064c74b98c65a55/src/switcher.php#L141-L143.
+	$settings->hide_current = ! empty( $args['hide_current'] ) && ! ( ! empty( $args['dropdown'] ) && empty( $args['raw'] ) );
+
+	$switcher = new Switcher( $settings, PLL()->links );
+
+	if ( ! empty( $args['raw'] ) ) {
+		$elements = array();
+
+		foreach ( $switcher->get_elements() as $slug => $element ) {
+			$language = PLL()->links->model->languages->get( $slug );
+
+			if ( empty( $language ) ) {
+				// Should not happen.
+				continue;
+			}
+
+			$element = get_object_vars( $element );
+
+			$element['is_rtl']         = 'rtl' === $element['direction'];
+			$element['name']           = 'codes' === $settings->show_labels ? $element['slug'] : $language->name;
+			$element['flag']           = ! empty( $settings->show_flags ) ? $element['flag'] : $language->get_display_flag_url();
+			$element['current_lang']   = $element['is_current'];
+			$element['no_translation'] = ! $element['has_translations'];
+			$element['classes']        = $element['item_classes'];
+
+			$elements[ $slug ] = $element;
+		}
+
+		return $elements;
+	}
+
+	if ( isset( $args['echo'] ) && empty( $args['echo'] ) ) {
+		return $switcher->get();
+	}
+
+	$switcher->print();
 }
 
 /**
