@@ -23,6 +23,7 @@ class Functions_Test extends PHPUnit_Framework_TestCase {
 		$this->assertSame( 0, pll_sanitize_id( 'false' ) );
 		$this->assertSame( 0, pll_sanitize_id( true ) );
 		$this->assertSame( 0, pll_sanitize_id( false ) );
+		$this->assertSame( 0, pll_sanitize_id( fn( $x ) => $x ) );
 	}
 
 	public function test_sanitize_ids() {
@@ -44,6 +45,7 @@ class Functions_Test extends PHPUnit_Framework_TestCase {
 			'false',
 			true,
 			false,
+			fn( $x ) => $x,
 		);
 
 		$expected = array(
