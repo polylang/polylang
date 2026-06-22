@@ -34,16 +34,11 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			$options
 		);
 		$this->pll_env = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
-		$this->pll_env->links_model->init();
 
 		$this->pll_env->sitemaps = new $sitemap_class( $this->pll_env );
 		$this->pll_env->sitemaps->init();
 
 		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
-
-		// Refresh languages.
-		$this->pll_env->model->clean_languages_cache();
-		$this->pll_env->model->get_languages_list();
 
 		// Flush rules.
 		$wp_rewrite->flush_rules();
