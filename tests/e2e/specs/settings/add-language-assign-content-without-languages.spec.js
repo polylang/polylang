@@ -1,18 +1,13 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
-import { deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
+import { deleteAllLanguages, createLanguage } from '@wpsyntex/e2e-test-utils';
 
 test.describe( 'create language and test the bulk assignment of content without languages', () => {
 	/**
 	 * Before all tests:
 	 * - Create post without languages
 	 */
-	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.createPost( {
-			title: 'Test Post',
-			content: 'This is a test post without languages.',
-		} );
-	} );
+	test.beforeAll( async ( { requestUtils } ) => {} );
 
 	/**
 	 * Reset after all tests.
@@ -20,6 +15,11 @@ test.describe( 'create language and test the bulk assignment of content without 
 	test.afterAll( async ( { requestUtils } ) => {
 		await requestUtils.deleteAllPosts();
 		await deleteAllLanguages( requestUtils );
+	} );
+
+	test.afterEach( async ( { requestUtils } ) => {
+		await deleteAllLanguages( requestUtils );
+
 	} );
 
 	/**
@@ -62,6 +62,48 @@ test.describe( 'create language and test the bulk assignment of content without 
 		// Target the <span class="screen-reader-text">Default language</span>
 		await expect(
 			englishRow.getByText( 'Default language', { exact: true } )
+		).toBeVisible();
+	} );
+
+	/**
+	 * Assign in bulk the default language to all content without languages.
+	 *
+	 * Steps:
+	 * - visit language setting page
+	 * - create a language (English en_US)
+	 * - Click on the "Assign" button in the "Content without languages" section
+	 *
+	 * Expected Behavior
+	 * - The already created post without a language should be assigned to the default language (English en_US)
+	 */
+
+	test( 'Bulk assign default language to content without languages', async ( {
+		page,
+		admin,
+		requestUtils,
+	} ) => {
+		// Create a post without a language.
+		let noLanguagePost;
+		noLanguagePost = await requestUtils.createPost( {
+			title: 'Test Post',
+			content: 'This is a test post without languages.',
+		} );
+		// create English en_US as the default language.
+		await createLanguage( requestUtils, 'en_US' );
+		// visit the language settings page and click on the "Assign" link in the "Content without languages" section.
+		await admin.visitAdminPage( 'admin.php', 'page=mlang' );
+		await page
+			.getByRole( 'link', {
+				name: 'You can set them all to the default language',
+			} )
+			.click();
+		// After clicking the "Assign" link, the previously created post should now be assigned to the default language (English en_US).
+		await admin.visitAdminPage( 'edit.php' );
+		const NoLanguagePostRow = page.locator(
+			`#post-${ noLanguagePost.id }`
+		);
+		await expect(
+			NoLanguagePostRow.getByAltText( 'English' )
 		).toBeVisible();
 	} );
 } );
