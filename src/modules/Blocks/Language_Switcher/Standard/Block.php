@@ -28,8 +28,8 @@ class Block extends Abstract_Block {
 	public function init() {
 		parent::init();
 
-		add_action( 'init', array( Assets:class, 'register_styles' ) );
-		add_action( 'init', array( Assets:class, 'register_scripts' ) );
+		add_action( 'init', array( Assets::class, 'register_styles' ) );
+		add_action( 'init', array( Assets::class, 'register_scripts' ) );
 	}
 
 	/**
