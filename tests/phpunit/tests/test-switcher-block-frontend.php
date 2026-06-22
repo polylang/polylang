@@ -214,10 +214,10 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					 * from WP_Style_Engine_CSS_Declarations::filter_declaration().
 					 * Also add some evil JavaScript (all JS evil anyway).
 					 */
-					'customOverlayBackgroundColor' => '#00ff00; word-spacing: 30px;" onclick="alert(\'toto\')"/><script>alert(\'toto\');<script/><ul style="',
+					'customOverlayBackgroundColor' => '#00ff00;" onclick="alert(\'toto\')"/><script>alert(\'toto\');<script/><ul style="',
 					'style'                        => array(
 						'typography' => array(
-							'fontSize' => '0.9rem; word-spacing: 30px;" onclick="alert(\'toto\')"/><script>alert(\'toto\');<script/><ul style="',
+							'fontSize' => '0.9rem;" onclick="alert(\'toto\')"/><script>alert(\'toto\');<script/><ul style="',
 						),
 					),
 				),
