@@ -28,21 +28,8 @@ class Block extends Abstract_Block {
 	public function init() {
 		parent::init();
 
-		add_action( 'init', array( $this, 'register_editor_style' ) );
-
-		return $this;
-	}
-
-	/**
-	 * Registers the editor style for the language switcher block.
-	 *
-	 * @since 3.9
-	 *
-	 * @return void
-	 */
-	public function register_editor_style(): void {
-		Assets::register_styles();
-		Assets::register_scripts();
+		add_action( 'init', array( Assets:class, 'register_styles' ) );
+		add_action( 'init', array( Assets:class, 'register_scripts' ) );
 	}
 
 	/**
