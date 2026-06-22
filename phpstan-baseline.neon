@@ -1075,12 +1075,6 @@ parameters:
 			path: src/modules/site-health/admin-site-health.php
 
 		-
-			message: '#^Parameter \#1 \$name of method WP_Sitemaps_Provider\:\:get_sitemap_url\(\) expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/modules/sitemaps/multilingual-sitemaps-provider.php
-
-		-
 			message: '#^Offset ''file'' might not exist on array\{function\: string, line\?\: int, file\?\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: list\<mixed\>, object\?\: object\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 2
