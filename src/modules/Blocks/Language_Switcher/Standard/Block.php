@@ -63,7 +63,7 @@ class Block extends Abstract_Block {
 
 		$attributes['unique_id']    = 'select' === $attributes['layout'] ? 'lang_choice_' . $dropdown_id : '';
 		$attributes['show_wrapper'] = true;
-		$attributes['alignment']    = 'none';
+		$attributes['alignment']    = 'inherit';
 
 		$settings        = new Settings( $attributes );
 		$switcher_output = ( new Switcher( $settings, $this->links ) )->get();
