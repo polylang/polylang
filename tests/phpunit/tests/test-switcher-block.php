@@ -208,7 +208,7 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 		$this->assertStringStartsWith( 'pll-switcher-', $id, 'The nav id should start with pll-switcher-.' );
 
 		$this->assertSameSets(
-			array( 'pll-switcher', 'pll-layout-vertical', 'pll-alignment-none', 'wp-block-polylang-language-switcher' ),
+			array( 'pll-switcher', 'pll-layout-vertical', 'pll-alignment-inherit', 'wp-block-polylang-language-switcher' ),
 			iterator_to_array( $processor->class_list() ),
 			'The nav class list should match the expected values.'
 		);
@@ -260,7 +260,7 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 		$node = $xpath->query( '//div[@class]' );
 
 		$this->assertSameSets(
-			array( 'pll-switcher', 'test-class', 'pll-layout-select', 'pll-alignment-none', 'wp-block-polylang-language-switcher' ),
+			array( 'pll-switcher', 'test-class', 'pll-layout-select', 'pll-alignment-inherit', 'wp-block-polylang-language-switcher' ),
 			explode( ' ', $node->item( 0 )->getAttribute( 'class' ) ),
 			'The class list should be the same.'
 		);
