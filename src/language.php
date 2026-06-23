@@ -510,7 +510,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 
 		return sprintf(
 			'<img src="%s"%s%s%s%s />',
-			self::esc_flag_src( $flag['src'] ),
+			$flag['src'],
 			$alt_attr,
 			$width_attr,
 			$height_attr,
@@ -722,26 +722,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 		}
 
 		return $this->$property ?? false;
-	}
-
-	/**
-	 * Escapes a flag image source URL for use in HTML.
-	 *
-	 * @since 3.9
-	 *
-	 * @param string $src Flag source URL.
-	 * @return string Escaped source URL, or empty string if invalid.
-	 */
-	protected static function esc_flag_src( string $src ): string {
-		if ( str_starts_with( $src, 'data:image/' ) ) {
-			if ( '' === esc_url_raw( $src, array( 'data' ) ) || false !== strpos( $src, '"' ) ) {
-				return '';
-			}
-
-			return $src;
-		}
-
-		return esc_url( $src );
 	}
 
 	/**
