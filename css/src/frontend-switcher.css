@@ -22,6 +22,9 @@
 }
 .pll-layout-dropdown.wp-block-polylang-language-switcher {
 	box-sizing: border-box;
+}
+.pll-layout-dropdown.wp-block-polylang-language-switcher.alignwide,
+.pll-layout-dropdown.wp-block-polylang-language-switcher.alignfull {
 	width: 100%;
 }
 .pll-layout-dropdown.pll-switcher .pll-submenu-toggle {
