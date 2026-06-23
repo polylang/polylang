@@ -296,6 +296,13 @@ class Columns_Test extends PLL_UnitTestCase {
 		$columns = $list_table->get_column_info()[0];
 		$columns = array_intersect_key( $columns, array_flip( array( 'comments' ) ) ); // Keep only the Comments column.
 		$columns = apply_filters( 'manage_edit-post_columns', $columns );
+
+		// Make sure the columns contain an image, and a language name wrapped in a tag.
+		$this->assertArrayHasKey( 'language_en', $columns );
+		$this->assertStringContainsString( '<img ', $columns['language_en'] );
+		$this->assertStringContainsString( '<span class="hidden">English</span>', $columns['language_en'] );
+
+		// Assert the position in the list.
 		$columns = array_keys( $columns );
 		$en = array_search( 'language_en', $columns );
 
@@ -323,6 +330,13 @@ class Columns_Test extends PLL_UnitTestCase {
 		$columns = $list_table->get_column_info()[0];
 		$columns = array_intersect_key( $columns, array_flip( array( 'posts' ) ) ); // Keep only the Count column.
 		$columns = apply_filters( 'manage_edit-post_tag_columns', $columns );
+
+		// Make sure the columns contain an image, and a language name wrapped in a tag.
+		$this->assertArrayHasKey( 'language_en', $columns );
+		$this->assertStringContainsString( '<img ', $columns['language_en'] );
+		$this->assertStringContainsString( '<span class="hidden">English</span>', $columns['language_en'] );
+
+		// Assert the position in the list.
 		$columns = array_keys( $columns );
 		$en = array_search( 'language_en', $columns );
 
