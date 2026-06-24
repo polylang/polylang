@@ -138,14 +138,8 @@ test.describe( 'create language and test the bulk assignment of content without 
 
 		const postsCell = englishRow.getByRole( 'cell' ).last();
 
-		await expect
-			.poll(
-				async () => {
-					await page.reload();
-					return ( await postsCell.innerText() ).trim();
-				},
-				{ timeout: 10_000 }
-			)
-			.toBe( '1' );
+		await page.reload();
+
+		await expect( postsCell ).toHaveText( '1', { timeout: 10_000 } );
 	} );
 } );
