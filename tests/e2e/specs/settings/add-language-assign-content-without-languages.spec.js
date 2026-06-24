@@ -4,12 +4,6 @@ import { deleteAllLanguages, createLanguage } from '@wpsyntex/e2e-test-utils';
 
 test.describe( 'create language and test the bulk assignment of content without languages', () => {
 	/**
-	 * Before all tests:
-	 * - Create post without languages
-	 */
-	test.beforeAll( async ( { requestUtils } ) => {} );
-
-	/**
 	 * Reset after all tests.
 	 */
 	test.afterAll( async ( { requestUtils } ) => {
@@ -82,8 +76,7 @@ test.describe( 'create language and test the bulk assignment of content without 
 		requestUtils,
 	} ) => {
 		// Create a post without a language.
-		let noLanguagePost;
-		noLanguagePost = await requestUtils.createPost( {
+		const noLanguagePost = await requestUtils.createPost( {
 			title: 'Test Post',
 			content: 'This is a test post without languages.',
 		} );
