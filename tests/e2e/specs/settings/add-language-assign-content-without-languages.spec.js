@@ -19,7 +19,6 @@ test.describe( 'create language and test the bulk assignment of content without 
 
 	test.afterEach( async ( { requestUtils } ) => {
 		await deleteAllLanguages( requestUtils );
-
 	} );
 
 	/**
@@ -105,5 +104,47 @@ test.describe( 'create language and test the bulk assignment of content without 
 		await expect(
 			NoLanguagePostRow.getByAltText( 'English' )
 		).toBeVisible();
+		await admin.visitAdminPage( 'admin.php', 'page=mlang' );
+	} );
+
+	/**
+	 * Check the post count are correctly updated in languages table.
+	 *
+	 * Steps:
+	 * - Create a post without a language.
+	 * - Create a language (English en_US)
+	 * - Assign the language to the post.
+	 *
+	 * Expected Behavior
+	 * - The post count in the language table should be incremented.
+	 */
+
+	test( 'Check the post count', async ( { page, admin, requestUtils } ) => {
+		// create English en_US as the default language.
+		await createLanguage( requestUtils, 'en_US' );
+		// Create a post for English language.
+		await requestUtils.createPost( {
+			title: 'Test Post',
+			content: 'This is a test post in English.',
+			lang: 'en',
+		} );
+
+		// visit the language settings page and click on the "Assign" link in the "Content without languages" section.
+		await admin.visitAdminPage( 'admin.php', 'page=mlang' );
+
+		const englishRow = page.getByRole( 'row', { name: /English/ } ).first();
+		// The "Posts" column cell contains a link with the post count as its text.
+
+		const postsCell = englishRow.getByRole( 'cell' ).last();
+
+		await expect
+			.poll(
+				async () => {
+					await page.reload();
+					return ( await postsCell.innerText() ).trim();
+				},
+				{ timeout: 10_000 }
+			)
+			.toBe( '1' );
 	} );
 } );
