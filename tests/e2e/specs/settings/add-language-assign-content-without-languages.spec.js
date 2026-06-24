@@ -126,6 +126,7 @@ test.describe( 'create language and test the bulk assignment of content without 
 		await requestUtils.createPost( {
 			title: 'Test Post',
 			content: 'This is a test post in English.',
+			status: 'publish',
 			lang: 'en',
 		} );
 
