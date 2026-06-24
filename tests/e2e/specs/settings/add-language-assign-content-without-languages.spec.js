@@ -46,10 +46,6 @@ test.describe( 'create language and test the bulk assignment of content without 
 		// Submit the form to add the new language.
 		await page.getByRole( 'button', { name: 'Add new language' } ).click();
 
-		// Search for the English row in the languages list table by its row role
-		// then check the visually-hidden span that contains the text "Default language".
-		// We avoid using page.locator() and instead use getByRole/getByText chaining.
-		//	const englishRow = page.locator( '#the-list tr', { hasText: 'English' } ).first();
 		const englishRow = page.getByRole( 'row', { name: /English/ } ).first();
 
 		// Target the <span class="screen-reader-text">Default language</span>
