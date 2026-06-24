@@ -41,7 +41,7 @@ test.describe( 'create language and test the bulk assignment of content without 
 			.getByRole( 'textbox', { name: 'Language code' } )
 			.fill( 'en' );
 		await page.getByRole( 'radio', { name: 'left to right' } ).check();
-		//		await page.getByLabel( 'Flag' ).selectOption( 'us' );
+		// await page.getByLabel( 'Flag' ).selectOption( 'us' );
 
 		// Submit the form to add the new language.
 		await page.getByRole( 'button', { name: 'Add new language' } ).click();
