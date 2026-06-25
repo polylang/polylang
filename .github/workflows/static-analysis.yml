@@ -2,9 +2,9 @@ name: Static Analysis
 
 on:
   push:
-    branches: [ 'master', 'new-language-switcher-block' ]
+    branches: master
   pull_request:
-    branches: [ 'master', 'new-language-switcher-block' ]
+    branches: master
   workflow_dispatch:
 
 jobs:

@@ -2,7 +2,7 @@ name: Integration and Unit Tests
 
 on:
   push:
-    branches: [ 'master', 'new-language-switcher-block' ]
+    branches: master
     paths:
       - '**.php'
       - 'phpunit.xml'
@@ -10,7 +10,7 @@ on:
       - '**.yml'
       - '**.sh'
   pull_request:
-    branches: [ 'master', 'new-language-switcher-block' ]
+    branches: master
     paths:
       - '**.php'
       - 'phpunit.xml'

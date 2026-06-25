@@ -2,7 +2,7 @@ name: End To End Tests
 
 on:
   push:
-    branches: [ 'master', 'new-language-switcher-block' ]
+    branches: master
     paths:
       - '**.php'
       - '!tests/**.php'
@@ -19,7 +19,7 @@ on:
       - '.wp-env.json'
 
   pull_request:
-    branches: [ 'master', 'new-language-switcher-block' ]
+    branches: master
     paths:
       - '**.php'
       - '!tests/**.php'
