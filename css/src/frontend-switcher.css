@@ -5,46 +5,59 @@
 	list-style: none;
 	line-height: normal;
 }
+.pll-switcher li {
+	margin: 0;
+}
 
 /* Dropdown layout */
 .pll-layout-dropdown {
 	display: flex;
+	flex-flow: row nowrap;
 	align-items: center;
+	justify-content: flex-start;
+	width: fit-content;
+	gap: .25em;
 	position: relative;
+	background-color: inherit;
 }
-.pll-layout-dropdown > .current-item {
-	display: block;
-	z-index: 1;
+.pll-layout-dropdown.wp-block-polylang-language-switcher {
+	box-sizing: border-box;
 }
-.pll-layout-dropdown.pll-switcher button {
-	display: inline-block;
-	width: 1.5em;
-	height: 1.5em;
-	padding: .35em;
+.pll-layout-dropdown.wp-block-polylang-language-switcher.alignwide,
+.pll-layout-dropdown.wp-block-polylang-language-switcher.alignfull {
+	width: 100%;
+}
+.pll-layout-dropdown.pll-switcher .pll-submenu-toggle {
+	display: inline-flex;
+	align-items: center;
+	flex: 0 0 auto;
+	width: auto;
+	height: auto;
+	padding: 0;
 	border: none;
 	margin: 0;
-	align-self: center;
 	line-height: 0;
 	font-size: inherit;
-	background-color: inherit;
-	color: currentColor;
+	background-color: transparent !important; /* !important to overwrite some themes. */
+	color: currentColor !important;
 }
-.pll-layout-dropdown.pll-switcher button:focus {
+.pll-layout-dropdown.pll-switcher .pll-submenu-toggle:focus {
 	outline: auto;
 }
-.pll-layout-dropdown button svg {
-	display: inline-block;
-	width: 100%;
-	height: 100%;
+.pll-layout-dropdown.pll-switcher .pll-submenu-toggle svg {
+	display: block;
+	width: .6em;
+	height: .6em;
 	margin: 0;
+}
+.pll-layout-dropdown.pll-switcher .pll-submenu-toggle svg path {
 	stroke: currentColor;
 }
-.pll-layout-dropdown:hover > button:not([aria-expanded]) svg,
-.pll-layout-dropdown > [aria-expanded="true"] svg {
+.pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) svg,
+.pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] svg {
 	transform: rotate(180deg);
 }
-.pll-layout-dropdown > ul {
-	list-style: none;
+.pll-layout-dropdown ul {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -52,29 +65,27 @@
 	z-index: 2;
 	width: 0;
 	height: 0;
-	left: auto;
-	right: 0;
+	left: 0;
+	right: auto;
 	top: 100%;
-	padding: 0;
 	border: 1px solid rgba(0, 0, 0, .15);
-	margin: 0;
+	background-color: #fff;
+	color: inherit;
 	visibility: hidden;
 	overflow: hidden;
 	opacity: 0;
 }
-.pll-layout-dropdown:hover > button:not([aria-expanded]) + ul,
-.pll-layout-dropdown > [aria-expanded="true"] + ul {
+.pll-layout-dropdown.wp-block-polylang-language-switcher ul {
+	background-color: inherit;
+}
+.pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
+.pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] + ul {
 	width: auto;
 	height: auto;
 	min-width: 200px;
 	visibility: visible;
 	overflow: visible;
 	opacity: 1;
-}
-.pll-layout-dropdown ul a {
-	display: flex;
-	flex-grow: 1;
-	padding: .5em 1em;
 }
 
 /* Horizontal and Select layouts */
@@ -108,19 +119,13 @@
 	flex-grow: 1;
 }
 
-/* Rows */
-.pll-layout-horizontal li:not(:last-child) {
-	margin-inline-end: 20px;
-	writing-mode: horizontal-tb;
-}
-.pll-layout-vertical li {
-	margin: 0;
-}
-
 /* Links */
 .pll-switcher a {
-	display: inline-block;
+	display: flex;
+	align-items: center;
 	width: 100%;
+	height: 100%;
+	padding: 0.25em .5em;
 }
 .pll-alignment-center a {
 	text-align: center;
@@ -131,25 +136,46 @@
 .pll-alignment-right a {
 	text-align: right;
 }
-.pll-switcher-flag,
-.pll-switcher-label {
-	display: inline-block;
-}
 .pll-switcher-flag + .pll-switcher-label {
-	margin-inline-start: .3em;
+	margin-inline-start: var( --pll-flag-label-spacing, 0.3em );
 	writing-mode: horizontal-tb;
 }
 
+/* Dropdown trigger: label and toggle on one row. */
+.pll-switcher.pll-layout-dropdown > a {
+	display: inline-flex;
+	align-items: center;
+	flex: 0 0 auto;
+	flex-shrink: 0;
+	width: auto;
+	max-width: none;
+	padding: 0;
+	color: inherit;
+	text-decoration: none;
+	z-index: 1;
+}
+
 /* Flags */
+.pll-switcher-flag {
+	width: var( --pll-flag-width, 18px );
+	overflow: hidden;
+	/*
+	 * Map the block control value (0–100) to a CSS percentage radius.
+	 * 50% is the maximum useful value (fully rounded); the 0.5 factor
+	 * converts 100 → 50%, keeping the slider responsive across the range.
+	 */
+	border-radius: calc( var( --pll-flag-border-radius, 0 ) * 0.5 * 1% );
+}
+.pll-aspect-ratio-32 .pll-switcher-flag {
+	aspect-ratio: 3 / 2;
+}
+.pll-aspect-ratio-11 .pll-switcher-flag {
+	aspect-ratio: 1 / 1;
+}
 .pll-switcher-flag img {
-	width: 18px;
-	vertical-align: baseline;
+	display: block;
 	object-fit: cover;
 	object-position: center;
-}
-.pll-aspect-ratio-11 .pll-switcher-flag img {
-	height: 18px;
-}
-.pll-aspect-ratio-32 .pll-switcher-flag img {
-	height: 12px;
+	width: 100%;
+	height: 100%;
 }

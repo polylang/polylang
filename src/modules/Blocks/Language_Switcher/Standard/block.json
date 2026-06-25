@@ -8,35 +8,73 @@
     "description": "Language switcher to insert in content or as a widget.",
     "example": {},
 	"attributes": {
-		"dropdown": {
-			"type": "boolean",
-			"default": 0
+		"layout": {
+			"type": "string",
+			"enum": ["vertical", "horizontal", "dropdown", "select"],
+			"default": "vertical"
 		},
-		"show_names": {
-			"type": "boolean",
-			"default": 1
+		"show_labels": {
+			"type": "string",
+			"enum": ["names", "codes", ""],
+			"default": "names"
 		},
 		"show_flags": {
 			"type": "boolean",
-			"default": 0
+			"default": false
 		},
 		"force_home": {
 			"type": "boolean",
-			"default": 0
+			"default": false
 		},
 		"hide_current": {
 			"type": "boolean",
-			"default": 0
+			"default": false
 		},
 		"hide_if_no_translation": {
 			"type": "boolean",
+			"default": false
+		},
+		"flag_aspect_ratio": {
+			"type": "string",
+			"enum": ["3:2", "1:1"],
+			"default": "3:2"
+		},
+		"flag_border_radius": {
+			"type": "number",
 			"default": 0
+		},
+		"flag_width": {
+			"type": "string",
+			"default": "18px"
+		},
+		"flag_label_spacing": {
+			"type": "string",
+			"default": "0.3em"
 		},
 		"className": {
 			"type": "string",
 			"default": ""
 		}
 	},
-    "textdomain": "polylang",
-    "editorScript": "pll_blocks"
+	"supports": {
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		},
+		"align": true,
+		"color": {
+			"background": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"textAlign": true
+		}
+	},
+	"textdomain": "polylang",
+	"style": "pll-language-switcher",
+	"editorScript": "pll_blocks",
+	"editorStyle": "pll-language-switcher-editor-style",
+	"viewScript": "pll-language-switcher"
 }

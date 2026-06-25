@@ -65,6 +65,8 @@ function configureWebpack( options ) {
 		'hooks',
 		'i18n',
 		'primitives',
+		'notices',
+		'core-data',
 	];
 
 	const reactifiedConfig = getReactifiedConfig( {
