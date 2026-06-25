@@ -38,4 +38,32 @@ test.describe
 
 		expect( selectedValue ).toContain( 'en' );
 	} );
+
+	/**
+	 * Check the default language is assigned to a new published post.
+	 *
+	 * Steps:
+	 * - Visit the "Add New Post" page in the admin.
+	 * - Fill in the post title and publish the post.
+	 * - Check the selected value of the language dropdown.
+	 *
+	 * Expected behavior:
+	 * Assert that the selected value contains 'en' (the default language).
+	 */
+	test( 'Check default language assigment on published post', async ( {
+		page,
+		admin,
+		editor,
+	} ) => {
+		await admin.createNewPost();
+		await editor.canvas
+			.getByRole( 'textbox', { name: /add title/i } )
+			.fill( 'Test Post Title' );
+		await editor.publishPost();
+		const selectedValue = await page
+			.getByRole( 'combobox', { name: /language/i } )
+			.inputValue();
+
+		expect( selectedValue ).toContain( 'en' );
+	} );
 } );
