@@ -26,7 +26,7 @@ function pll_is_cache_active() {
 }
 
 /**
- * Get the the current requested url
+ * Get the current requested url.
  *
  * @since 2.6
  *
