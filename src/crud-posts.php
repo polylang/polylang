@@ -73,6 +73,11 @@ class PLL_CRUD_Posts {
 			add_action( 'delete_attachment', array( $this, 'delete_post' ) );
 			add_filter( 'wp_delete_file', array( $this, 'wp_delete_file' ) );
 		}
+
+		// Filter query.
+		add_filter( 'query_vars', array( $this, 'add_query_vars' ) );
+		add_action( 'parse_query', array( $this, 'parse_query' ) );
+		add_filter( 'posts_clauses', array( $this, 'posts_clauses' ), 10, 2 );
 	}
 
 	/**
@@ -482,5 +487,76 @@ class PLL_CRUD_Posts {
 		$this->model->term->save_translations( $term->term_id, $trs );
 
 		return $tr_term_id;
+	}
+
+	/**
+	 * Add public query vars. Currently only 'untranslated in'.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string[] $qvars The array of allowed query variable names.
+	 * @return string[]
+	 */
+	public function add_query_vars( $qvars ) {
+		$qvars[] = 'untranslated_in';
+		return $qvars;
+	}
+
+	/**
+	 * Ensures filters are not suppressed when querying untranslated posts.
+	 *
+	 * @since 3.9
+	 *
+	 * @param WP_Query $query The WP_Query instance (passed by reference).
+	 * @return void
+	 */
+	public function parse_query( $query ) {
+		if ( ! empty( $query->query['untranslated_in'] ) ) {
+			unset( $query->query['suppress_filters'] );
+			unset( $query->query_vars['suppress_filters'] );
+		}
+	}
+
+	/**
+	 * Filters the WP_Query SQL clauses to remove posts:
+	 * - translated in the language queried by `unstranslated_in`.
+	 * - in the language queried by `unstranslated_in`.
+	 *
+	 * This second condition is necessary as a post not translated in any language
+	 * has no translation group.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string[] $clauses The clauses for the query.
+	 * @param WP_Query $query   The WP_Query instance (passed by reference).
+	 * @return string[]
+	 */
+	public function posts_clauses( $clauses, $query ) {
+		global $wpdb;
+
+		if ( empty( $query->query['untranslated_in'] ) ) {
+			return $clauses;
+		}
+
+		$untranslated_in = PLL()->model->languages->get( $query->query['untranslated_in'] );
+
+		if ( empty( $untranslated_in ) ) {
+			return $clauses;
+		}
+
+		$clauses['where'] .= $wpdb->prepare(
+			" AND {$wpdb->posts}.ID NOT IN (
+				SELECT {$wpdb->posts}.ID FROM {$wpdb->posts}
+					LEFT JOIN {$wpdb->term_relationships} AS pllutr ON {$wpdb->posts}.ID = pllutr.object_id
+					INNER JOIN {$wpdb->term_taxonomy} AS pllutt ON pllutt.term_taxonomy_id = pllutr.term_taxonomy_id
+					WHERE ( pllutr.term_taxonomy_id IN (%d) )
+					OR ( pllutt.taxonomy = 'post_translations' AND pllutt.description LIKE %s )
+			)",
+			$untranslated_in->term_id,
+			'%' . $wpdb->esc_like( $untranslated_in->slug ) . '%'
+		);
+
+
+		return $clauses;
 	}
 }

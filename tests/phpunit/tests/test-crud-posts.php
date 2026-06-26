@@ -254,8 +254,6 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang-pro/issues/2249.
 	 */
 	public function test_save_post_when_no_default_category_set() {
-		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-
 		// Create an english category.
 		$en_cat = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'English category' ) );
 		$this->pll_admin->model->term->set_language( $en_cat, 'en' );
@@ -276,5 +274,21 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		edit_post();
 
 		$this->assertEmpty( wp_get_post_categories( $post->ID ) );
+	}
+
+	public function test_untranslated_in_query() {
+		$only_en    = self::factory()->post->create( array( 'lang' => 'en' ) );
+		$translated = self::factory()->post->create_translated( array( 'lang' => 'en' ), array( 'lang' => 'fr' ) );
+
+		self::factory()->post->create( array( 'lang' => 'fr' ) ); // Add a post only in French.
+
+		$post_ids = wp_list_pluck( get_posts( array( 'untranslated_in' => 'fr' ) ), 'ID' );
+		$this->assertSameSets( array( $only_en ), $post_ids );
+
+		$post_ids = wp_list_pluck( get_posts( array( 'lang' => 'en', 'untranslated_in' => 'de' ) ), 'ID' );
+		$this->assertSameSets( array( $only_en, $translated['en'] ), $post_ids );
+
+		$post_ids = wp_list_pluck( get_posts( array( 'lang' => 'en', 'untranslated_in' => 'en' ) ), 'ID' );
+		$this->assertEmpty( $post_ids );
 	}
 }
