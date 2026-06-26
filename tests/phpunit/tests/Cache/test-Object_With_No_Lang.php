@@ -87,13 +87,13 @@ class Test_Object_With_No_Lang extends PLL_Object_Cache_TestCase {
 			$key          = md5( maybe_serialize( $lang_ids ) . maybe_serialize( array() ) . $limit );
 			$last_changed = wp_cache_get_last_changed( $cache_type );
 			$cache_key    = "{$cache_type}_no_lang:{$key}:{$last_changed}";
-			$object_ids   = $this->pll_env->model->$type->sanitize_int_ids_list(
+			$object_ids   = pll_sanitize_ids(
 				wp_cache_get( $cache_key, $cache_type )
 			);
 		} else {
 			$key          = "{$cache_type}_no_lang:" . md5( maybe_serialize( $lang_ids ) . maybe_serialize( array() ) . $limit );
 			$last_changed = wp_cache_get_last_changed( $cache_type );
-			$object_ids   = $this->pll_env->model->$type->sanitize_int_ids_list(
+			$object_ids   = pll_sanitize_ids(
 				wp_cache_get_salted( $key, $cache_type, $last_changed )
 			);
 		}
