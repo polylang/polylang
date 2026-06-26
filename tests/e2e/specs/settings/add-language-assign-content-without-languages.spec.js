@@ -16,16 +16,16 @@ test.describe( 'create language and test the bulk assignment of content without 
 	} );
 
 	/**
-	 * Create English en_US as the default language
+	 * Create English en_US as the default language.
 	 *
 	 * Steps:
-	 * - visit language setting page
-	 * - click on language select
-	 * - select English (en_US)
-	 * - save
+	 * - Visit language setting page.
+	 * - Click on the language select.
+	 * - Select English (en_US).
+	 * - Save.
 	 *
-	 * Behaviour expected
-	 * - As this is the 1st language, it should be set as the default language
+	 * Behaviour expected:
+	 * - As this is the 1st language, it should be set as the default language.
 	 */
 	test( 'create English en_US as the default language', async ( {
 		page,
@@ -41,7 +41,6 @@ test.describe( 'create language and test the bulk assignment of content without 
 			.getByRole( 'textbox', { name: 'Language code' } )
 			.fill( 'en' );
 		await page.getByRole( 'radio', { name: 'left to right' } ).check();
-		// await page.getByLabel( 'Flag' ).selectOption( 'us' );
 
 		// Submit the form to add the new language.
 		await page.getByRole( 'button', { name: 'Add new language' } ).click();
@@ -58,12 +57,12 @@ test.describe( 'create language and test the bulk assignment of content without 
 	 * Assign in bulk the default language to all content without languages.
 	 *
 	 * Steps:
-	 * - visit language setting page
-	 * - create a language (English en_US)
-	 * - Click on the "Assign" button in the "Content without languages" section
+	 * - Visit language setting page.
+	 * - Create a language (English en_US).
+	 * - Click on the "Assign" button in the "Content without languages" section.
 	 *
-	 * Expected Behavior
-	 * - The already created post without a language should be assigned to the default language (English en_US)
+	 * Expected Behavior:
+	 * - The already created post without a language should be assigned to the default language (English en_US).
 	 */
 
 	test( 'Bulk assign default language to content without languages', async ( {
@@ -97,19 +96,19 @@ test.describe( 'create language and test the bulk assignment of content without 
 	} );
 
 	/**
-	 * Check the post count are correctly updated in languages table.
+	 * Check the post-count are correctly updated in the languages table.
 	 *
 	 * Steps:
 	 * - Create a post without a language.
-	 * - Create a language (English en_US)
+	 * - Create a language (English en_US).
 	 * - Assign the language to the post.
 	 *
-	 * Expected Behavior
-	 * - The post count in the language table should be incremented.
+	 * Expected Behavior;
+	 * - The post-count in the language table should be incremented.
 	 */
 
 	test( 'Check the post count', async ( { page, admin, requestUtils } ) => {
-		// create English en_US as the default language.
+		// Create English en_US as the default language.
 		await createLanguage( requestUtils, 'en_US' );
 		// Create a post for English language.
 		await requestUtils.createPost( {
@@ -119,11 +118,11 @@ test.describe( 'create language and test the bulk assignment of content without 
 			lang: 'en',
 		} );
 
-		// visit the language settings page and click on the "Assign" link in the "Content without languages" section.
+		// Visit the language settings page and click on the "Assign" link in the "Content without languages" section.
 		await admin.visitAdminPage( 'admin.php', 'page=mlang' );
 
 		const englishRow = page.getByRole( 'row', { name: /English/ } ).first();
-		// The "Posts" column cell contains a link with the post count as its text.
+		// The "Posts" column cell contains a link with the post-count as its text.
 
 		const postsCell = englishRow.getByRole( 'cell' ).last();
 
