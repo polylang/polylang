@@ -76,10 +76,7 @@ class Widget extends Abstract_Fields {
 				'label' => __( 'Force link to front page', 'polylang' ),
 			),
 			'hide_current'           => array(
-				'label'   => __( 'Hide the current language', 'polylang' ),
-				'hide_if' => array(
-					'layout' => 'select',
-				),
+				'label' => __( 'Hide the current language', 'polylang' ),
 			),
 			'hide_if_no_translation' => array(
 				'label' => __( 'Hide languages with no translation', 'polylang' ),

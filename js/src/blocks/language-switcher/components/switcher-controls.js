@@ -269,15 +269,13 @@ export const SwitcherControls = ( { attributes, setAttributes } ) => {
 							setAttributes( { force_home: value } )
 						}
 					/>
-					{ 'select' !== layout && (
-						<ToggleControl
-							label={ __( 'Hide current', 'polylang' ) }
-							checked={ hide_current }
-							onChange={ ( value ) =>
-								setAttributes( { hide_current: value } )
-							}
-						/>
-					) }
+					<ToggleControl
+						label={ __( 'Hide current', 'polylang' ) }
+						checked={ hide_current }
+						onChange={ ( value ) =>
+							setAttributes( { hide_current: value } )
+						}
+					/>
 					<ToggleControl
 						label={ __( 'Hide if no translation', 'polylang' ) }
 						checked={ hide_if_no_translation }
