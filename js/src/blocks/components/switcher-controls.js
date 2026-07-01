@@ -69,7 +69,6 @@ const ALL_LAYOUT_TOOLBAR_CONTROLS = [
  * @param {Object}        props.attributes            The block attributes.
  * @param {Function}      props.setAttributes         The function to set the block attributes.
  * @param {Array<string>} props.layoutOptions         Optional layout values to expose.
- * @param {boolean}       props.showToolbar           Whether to render block toolbar controls.
  * @param {boolean}       props.hideCurrentInDropdown Whether to hide the hide-current control in dropdown layout.
  * @return {React.ReactNode} The switcher controls component.
  */
@@ -77,7 +76,6 @@ export const SwitcherControls = ( {
 	attributes,
 	setAttributes,
 	layoutOptions = [ 'horizontal', 'vertical', 'dropdown', 'select' ],
-	showToolbar = true,
 	hideCurrentInDropdown = false,
 } ) => {
 	const {
@@ -328,53 +326,51 @@ export const SwitcherControls = ( {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			{ showToolbar && (
-				<BlockControls>
-					<ToolbarGroup>
-						<ToolbarDropdownMenu
-							label={ __( 'Layout', 'polylang' ) }
-							controls={ layoutToolbarControls }
+			<BlockControls>
+				<ToolbarGroup>
+					<ToolbarDropdownMenu
+						label={ __( 'Layout', 'polylang' ) }
+						controls={ layoutToolbarControls }
+					/>
+					{ 'select' !== layout && (
+						<ToolbarButton
+							icon={
+								<span className="dashicons dashicons-flag"></span>
+							}
+							label={
+								show_flags
+									? __( 'Hide flags', 'polylang' )
+									: __( 'Show flags', 'polylang' )
+							}
+							onClick={ () => {
+								if ( show_flags && '' === show_labels ) {
+									createWarningNotice(
+										__(
+											'Flags cannot be hidden if labels are not displayed.',
+											'polylang'
+										)
+									);
+
+									return;
+								}
+
+								setAttributes( {
+									show_flags: ! show_flags,
+								} );
+							} }
 						/>
-						{ 'select' !== layout && (
-							<ToolbarButton
-								icon={
-									<span className="dashicons dashicons-flag"></span>
-								}
-								label={
-									show_flags
-										? __( 'Hide flags', 'polylang' )
-										: __( 'Show flags', 'polylang' )
-								}
-								onClick={ () => {
-									if ( show_flags && '' === show_labels ) {
-										createWarningNotice(
-											__(
-												'Flags cannot be hidden if labels are not displayed.',
-												'polylang'
-											)
-										);
-
-										return;
-									}
-
-									setAttributes( {
-										show_flags: ! show_flags,
-									} );
-								} }
-							/>
-						) }
-						{ 'select' !== layout && (
-							<ToolbarDropdownMenu
-								icon={
-									<span className="dashicons dashicons-editor-textcolor"></span>
-								}
-								label={ __( 'Labels', 'polylang' ) }
-								controls={ toolbarLabelControls }
-							/>
-						) }
-					</ToolbarGroup>
-				</BlockControls>
-			) }
+					) }
+					{ 'select' !== layout && (
+						<ToolbarDropdownMenu
+							icon={
+								<span className="dashicons dashicons-editor-textcolor"></span>
+							}
+							label={ __( 'Labels', 'polylang' ) }
+							controls={ toolbarLabelControls }
+						/>
+					) }
+				</ToolbarGroup>
+			</BlockControls>
 		</>
 	);
 };
