@@ -284,4 +284,26 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		);
 		$this->assertSameSets( $expected, wp_list_pluck( $providers['users']->get_sitemap_entries(), 'loc' ) );
 	}
+
+	public function test_set_language_from_query() {
+		// Arrange
+		$this->init();
+		$query = array(
+			'query' => 'sitemap',
+		);
+		$lang = 'en';
+
+		// Act :
+		$expected = 'en';
+		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
+
+		// Assert
+		$this->assertSame( $expected, $actual );
+	}
+	// public function set_language_from_query( $lang, $query ) {
+	// if ( isset( $query->query['sitemap'] ) && empty( $query->query['lang'] ) ) {
+	// return $this->model->languages->get_default();
+	// }
+	// return $lang;
+	// }
 }
