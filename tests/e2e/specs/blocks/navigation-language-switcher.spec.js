@@ -127,11 +127,7 @@ test.describe.serial(
 			await navigateToNavigationEditor( admin, page, navigation );
 
 			// Edit the Navigation Language Switcher block settings to dropdown and add language names and flags.
-			await page
-				.locator( 'iframe[name="editor-canvas"]' )
-				.contentFrame()
-				.getByRole( 'document', { name: 'Block: Navigation Language' } )
-				.click();
+			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Dropdown' );
 			await setSwitcherLabels( page, 'Names' );
 			await page.getByRole( 'checkbox', { name: 'Show flags' } ).check();
@@ -160,7 +156,8 @@ test.describe.serial(
 				}
 			);
 
-			// Remove the flags and ensure names are toggled on automatically.
+			// Remove the flags: labels must be shown before flags can be hidden.
+			await setSwitcherLabels( page, 'Names' );
 			await page
 				.getByRole( 'checkbox', { name: 'Show flags' } )
 				.uncheck();
@@ -226,7 +223,8 @@ test.describe.serial(
 				}
 			);
 
-			// Remove the flags and ensure names are toggled on automatically.
+			// Remove the flags: labels must be shown before flags can be hidden.
+			await setSwitcherLabels( page, 'Names' );
 			await page
 				.getByRole( 'checkbox', { name: 'Show flags' } )
 				.uncheck();
@@ -308,6 +306,16 @@ test.describe.serial(
 );
 
 /**
+ * Returns the editor canvas frame locator.
+ *
+ * @param {Page} page The page object.
+ * @return {import('@playwright/test').FrameLocator} The canvas frame locator.
+ */
+const getEditorCanvas = ( page ) => {
+	return page.frameLocator( 'iframe[name="editor-canvas"]' );
+};
+
+/**
  * Selects the Navigation Language Switcher block in the editor iframe.
  *
  * @param {Page} page The page object.
@@ -317,7 +325,9 @@ const selectNavigationLanguageSwitcherBlock = async ( page ) => {
 	return page
 		.locator( 'iframe[name="editor-canvas"]' )
 		.contentFrame()
-		.getByRole( 'document', { name: 'Block: Navigation Language' } )
+		.getByRole( 'document', {
+			name: 'Block: Navigation Language Switcher',
+		} )
 		.click();
 };
 
@@ -325,13 +335,12 @@ const selectNavigationLanguageSwitcherBlock = async ( page ) => {
  * Gets the Navigation Language Switcher block element in the editor iframe.
  *
  * @param {Page} page The page object.
- * @return {Promise<Locator>} The locator of the Navigation Language Switcher block element.
+ * @return {Locator} The locator of the Navigation Language Switcher block element.
  */
-const getNavigationLanguageSwitcherBlockLocator = async ( page ) => {
-	return page
-		.locator( 'iframe[name="editor-canvas"]' )
-		.contentFrame()
-		.getByRole( 'document', { name: 'Block: Navigation Language' } );
+const getNavigationLanguageSwitcherBlockLocator = ( page ) => {
+	return getEditorCanvas( page ).getByRole( 'document', {
+		name: 'Block: Navigation Language Switcher',
+	} );
 };
 
 /**
