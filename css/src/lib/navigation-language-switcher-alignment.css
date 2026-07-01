@@ -11,15 +11,19 @@
 	align-items: center;
 	width: auto;
 	max-width: none;
-	line-height: 0;
 	vertical-align: middle;
 }
 
+.wp-block-polylang-navigation-language-switcher :is( a, .wp-block-navigation-item__content ):has( .pll-switcher-flag ) {
+	line-height: 0;
+}
+
+.wp-block-polylang-navigation-language-switcher .pll-switcher-label,
 .wp-block-polylang-navigation-language-switcher .wp-block-navigation-item__label {
 	display: inline-flex;
 	align-items: center;
 	width: auto;
-	line-height: 0;
+	line-height: normal;
 }
 
 .wp-block-polylang-navigation-language-switcher .pll-switcher-flag {
