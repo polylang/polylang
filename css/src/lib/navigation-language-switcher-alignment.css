@@ -1,0 +1,28 @@
+/**
+ * Shared vertical alignment for navigation language switcher.
+ */
+
+.wp-block-navigation .wp-block-polylang-navigation-language-switcher {
+	align-self: center;
+}
+
+.wp-block-polylang-navigation-language-switcher :is( a, .wp-block-navigation-item__content ) {
+	display: inline-flex;
+	align-items: center;
+	width: auto;
+	max-width: none;
+	line-height: 0;
+	vertical-align: middle;
+}
+
+.wp-block-polylang-navigation-language-switcher .wp-block-navigation-item__label {
+	display: inline-flex;
+	align-items: center;
+	width: auto;
+	line-height: 0;
+}
+
+.wp-block-polylang-navigation-language-switcher .pll-switcher-flag {
+	display: flex;
+	align-items: center;
+}

@@ -1,0 +1,18 @@
+/**
+ * Navigation language switcher block (editor).
+ */
+
+@import './lib/switcher-flags.css';
+@import './lib/navigation-language-switcher-alignment.css';
+
+.wp-block-polylang-navigation-language-switcher {
+	display: inline-flex;
+	align-items: center;
+}
+
+.wp-block-polylang-navigation-language-switcher .components-disabled {
+	display: inline-flex;
+	align-items: center;
+	gap: var( --wp--style--block-gap, 2em );
+	line-height: 0;
+}
