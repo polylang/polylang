@@ -14,5 +14,4 @@
 	display: inline-flex;
 	align-items: center;
 	gap: var( --wp--style--block-gap, 2em );
-	line-height: 0;
 }
