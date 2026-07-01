@@ -14,6 +14,7 @@ import { addFilter } from '@wordpress/hooks';
 import { translation as translationIcon } from '@wpsyntex/polylang-react-library';
 import { Edit } from './edit';
 import { menuItemsToBlocksFilter } from './menu-items-converter';
+import deprecated from './deprecated';
 import metadata from '../../../../src/modules/Blocks/Language_Switcher/Navigation/block.json';
 
 registerBlockType( metadata.name, {
@@ -28,6 +29,7 @@ registerBlockType( metadata.name, {
 		],
 	},
 	edit: Edit,
+	deprecated,
 } );
 
 /**

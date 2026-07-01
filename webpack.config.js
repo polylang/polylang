@@ -3,10 +3,62 @@
  * External dependencies
  */
 const path = require( 'path' );
+const CopyPlugin = require( 'copy-webpack-plugin' );
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const {
 	getVanillaConfig,
 	getReactifiedConfig,
 } = require( '@wpsyntex/polylang-build-scripts' );
+
+/**
+ * Gets the configuration for the CSS library copy.
+ * Required for development mode to resolve the CSS library in files with @import statements.
+ *
+ * @param {string}  workingDirectory  The working directory.
+ * @param {string}  cssBuildDirectory The directory to build the CSS library.
+ * @param {boolean} isProduction      Whether the build is in production mode.
+ * @return {Object} The configuration for the CSS library copy.
+ */
+function getCssLibCopyConfig(
+	workingDirectory,
+	cssBuildDirectory,
+	isProduction
+) {
+	return {
+		mode: isProduction ? 'production' : 'development',
+		entry: path.join( workingDirectory, 'css/src/lib/switcher-flags.css' ),
+		output: {
+			path: cssBuildDirectory,
+			filename: '[name].work',
+		},
+		plugins: [
+			new CopyPlugin( {
+				patterns: [
+					{
+						from: path.join( workingDirectory, 'css/src/lib' ),
+						to: path.join( cssBuildDirectory, 'lib' ),
+					},
+				],
+			} ),
+			new CleanWebpackPlugin( {
+				dry: false,
+				verbose: false,
+				cleanOnceBeforeBuildPatterns: [],
+				cleanAfterEveryBuildPatterns: [
+					path.join( cssBuildDirectory, '**/*.work' ),
+				],
+			} ),
+		],
+		module: {
+			rules: [
+				{
+					test: /\.css$/i,
+					use: [ 'css-loader' ],
+				},
+			],
+		},
+	};
+}
 
 function configureWebpack( options ) {
 	const mode = options.mode;
@@ -40,12 +92,17 @@ function configureWebpack( options ) {
 		'**/*.min.js',
 	];
 
+	const cssFileNamesToIgnore = [ 'css/src/lib/**', '**/*.min.css' ];
+
 	const vanillaConfig = getVanillaConfig( {
 		workingDirectory,
 		jsPatterns: [ '**/*.js' ],
 		jsIgnorePatterns: [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ],
 		cssPatterns: [ '**/*.css' ],
-		cssIgnorePatterns: [ ...commonFoldersToIgnore, '**/*.min.css' ],
+		cssIgnorePatterns: [
+			...commonFoldersToIgnore,
+			...cssFileNamesToIgnore,
+		],
 		jsBuildDirectory,
 		cssBuildDirectory,
 		isProduction,
@@ -81,12 +138,20 @@ function configureWebpack( options ) {
 		sassLoadPaths: [
 			path.resolve(
 				workingDirectory,
-				'./css/src/blocks/navigation-language-switcher-editor-style.css'
+				'./css/src/navigation-language-switcher-editor.css'
 			),
 		],
 	} );
 
-	return [ ...vanillaConfig, ...reactifiedConfig ];
+	return [
+		...vanillaConfig,
+		getCssLibCopyConfig(
+			workingDirectory,
+			cssBuildDirectory,
+			isProduction
+		),
+		...reactifiedConfig,
+	];
 }
 
 module.exports = ( env, options ) => {

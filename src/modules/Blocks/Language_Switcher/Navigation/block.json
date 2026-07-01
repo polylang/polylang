@@ -9,29 +9,48 @@
     "description": "Language switcher suitable for navigation.",
     "example": {},
 	"attributes": {
-		"dropdown": {
-			"type": "boolean",
-			"default": 0
+		"layout": {
+			"type": "string",
+			"enum": ["vertical", "horizontal", "dropdown", "select"],
+			"default": "horizontal"
 		},
-		"show_names": {
-			"type": "boolean",
-			"default": 1
+		"show_labels": {
+			"type": "string",
+			"enum": ["names", "codes", ""],
+			"default": "names"
 		},
 		"show_flags": {
 			"type": "boolean",
-			"default": 0
+			"default": false
 		},
 		"force_home": {
 			"type": "boolean",
-			"default": 0
+			"default": false
 		},
 		"hide_current": {
 			"type": "boolean",
-			"default": 0
+			"default": false
 		},
 		"hide_if_no_translation": {
 			"type": "boolean",
+			"default": false
+		},
+		"flag_aspect_ratio": {
+			"type": "string",
+			"enum": ["3:2", "1:1"],
+			"default": "3:2"
+		},
+		"flag_border_radius": {
+			"type": "number",
 			"default": 0
+		},
+		"flag_width": {
+			"type": "string",
+			"default": "18px"
+		},
+		"flag_label_spacing": {
+			"type": "string",
+			"default": "0.3em"
 		},
 		"className": {
 			"type": "string",
@@ -60,6 +79,7 @@
 		"contentRole": true
 	},
     "textdomain": "polylang",
-    "editorScript": "pll_blocks",
-    "editorStyle": "pll-navigation-language-switcher-editor-style"
+    "style": "pll-navigation-language-switcher",
+    "editorStyle": "pll-navigation-language-switcher-editor",
+    "editorScript": "pll_blocks"
 }

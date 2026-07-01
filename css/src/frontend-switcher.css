@@ -1,3 +1,5 @@
+@import './lib/switcher-flags.css';
+
 /* List layouts */
 .pll-switcher ul {
 	padding: 0;
@@ -136,10 +138,6 @@
 .pll-alignment-right a {
 	text-align: right;
 }
-.pll-switcher-flag + .pll-switcher-label {
-	margin-inline-start: var( --pll-flag-label-spacing, 0.3em );
-	writing-mode: horizontal-tb;
-}
 
 /* Dropdown trigger: label and toggle on one row. */
 .pll-switcher.pll-layout-dropdown > a {
@@ -153,29 +151,4 @@
 	color: inherit;
 	text-decoration: none;
 	z-index: 1;
-}
-
-/* Flags */
-.pll-switcher-flag {
-	width: var( --pll-flag-width, 18px );
-	overflow: hidden;
-	/*
-	 * Map the block control value (0–100) to a CSS percentage radius.
-	 * 50% is the maximum useful value (fully rounded); the 0.5 factor
-	 * converts 100 → 50%, keeping the slider responsive across the range.
-	 */
-	border-radius: calc( var( --pll-flag-border-radius, 0 ) * 0.5 * 1% );
-}
-.pll-aspect-ratio-32 .pll-switcher-flag {
-	aspect-ratio: 3 / 2;
-}
-.pll-aspect-ratio-11 .pll-switcher-flag {
-	aspect-ratio: 1 / 1;
-}
-.pll-switcher-flag img {
-	display: block;
-	object-fit: cover;
-	object-position: center;
-	width: 100%;
-	height: 100%;
 }

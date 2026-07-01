@@ -5,55 +5,51 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { Disabled, PanelBody } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
+import { Disabled } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
-import { createLanguageSwitcherEdit } from '../language-switcher-edit';
+import { SwitcherControls } from '../components/switcher-controls';
 import { LanguagesContext } from '../languages-context';
-import { NavigationSwitcherContainer } from './components/navigation-switcher-container';
+import { RenderedSwitcher } from './rendered-switcher';
 import { useLanguagesList } from '@wpsyntex/polylang-react-library';
 
 /**
  * Edit callback for navigation language switcher block.
  *
- * @param {Object} props Block properties.
+ * @param {Object}   props               Block properties.
+ * @param {Object}   props.attributes    Block attributes.
+ * @param {Object}   props.context       Block context.
+ * @param {Function} props.setAttributes Function to set block attributes.
  * @return {ReactElement} The block content and controls.
  */
-export const Edit = ( props ) => {
-	const { dropdown } = props.attributes;
+export const Edit = ( { attributes, context, setAttributes } ) => {
 	const languages = useLanguagesList();
-	const {
-		ToggleControlDropdown,
-		ToggleControlShowNames,
-		ToggleControlShowFlags,
-		ToggleControlForceHome,
-		ToggleControlHideCurrent,
-		ToggleControlHideIfNoTranslations,
-	} = createLanguageSwitcherEdit( props );
+	const { show_flags, flag_aspect_ratio } = attributes;
+	const aspectRatioClass =
+		show_flags && flag_aspect_ratio
+			? `pll-aspect-ratio-${ flag_aspect_ratio.replace( ':', '' ) }`
+			: '';
 
 	return (
-		<div { ...useBlockProps() }>
-			<InspectorControls>
-				<PanelBody
-					title={ __( 'Language switcher settings', 'polylang' ) }
-				>
-					<ToggleControlDropdown />
-					<ToggleControlShowNames />
-					<ToggleControlShowFlags />
-					<ToggleControlForceHome />
-					{ ! dropdown && <ToggleControlHideCurrent /> }
-					<ToggleControlHideIfNoTranslations />
-				</PanelBody>
-			</InspectorControls>
+		<div
+			{ ...useBlockProps( {
+				className: aspectRatioClass || undefined,
+			} ) }
+		>
+			<SwitcherControls
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+				layoutOptions={ [ 'horizontal', 'dropdown' ] }
+				hideCurrentInDropdown={ true }
+			/>
 			<Disabled>
 				<LanguagesContext.Provider value={ { languages } }>
-					<NavigationSwitcherContainer
-						attributes={ props.attributes }
-						context={ props.context }
+					<RenderedSwitcher
+						attributes={ attributes }
+						context={ context }
 					/>
 				</LanguagesContext.Provider>
 			</Disabled>
