@@ -161,7 +161,9 @@ test.describe.serial(
 			);
 
 			// Remove the flags and ensure names are toggled on automatically.
-			await page.getByRole( 'checkbox', { name: 'Show flags' } ).uncheck();
+			await page
+				.getByRole( 'checkbox', { name: 'Show flags' } )
+				.uncheck();
 			await expect(
 				page.getByRole( 'combobox', { name: 'Labels' } )
 			).toHaveValue( 'names' );
@@ -225,7 +227,9 @@ test.describe.serial(
 			);
 
 			// Remove the flags and ensure names are toggled on automatically.
-			await page.getByRole( 'checkbox', { name: 'Show flags' } ).uncheck();
+			await page
+				.getByRole( 'checkbox', { name: 'Show flags' } )
+				.uncheck();
 			await expect(
 				page.getByRole( 'combobox', { name: 'Labels' } )
 			).toHaveValue( 'names' );
@@ -277,7 +281,9 @@ test.describe.serial(
 			).toBeTruthy();
 
 			// Edit the Navigation Language Switcher block settings to hides the current language.
-			await page.getByRole( 'checkbox', { name: 'Hide current' } ).check();
+			await page
+				.getByRole( 'checkbox', { name: 'Hide current' } )
+				.check();
 			expect(
 				await page
 					.getByRole( 'checkbox', { name: 'Hide current' } )
