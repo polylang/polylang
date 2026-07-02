@@ -781,18 +781,6 @@ parameters:
 			path: src/install/upgrade.php
 
 		-
-			message: '#^Offset ''flag_code'' might not exist on array\{name\: string, slug\: string, term_group\: int, term_props\: non\-empty\-array\<string, array\{term_id\: int, term_taxonomy_id\: int, count\: int\}\>, is_default\: bool, locale\?\: mixed, flag_code\?\: mixed, active\?\: mixed, \.\.\.\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: src/language-factory.php
-
-		-
-			message: '#^Offset ''locale'' might not exist on array\{name\: string, slug\: string, term_group\: int, term_props\: non\-empty\-array\<string, array\{term_id\: int, term_taxonomy_id\: int, count\: int\}\>, is_default\: bool, locale\?\: mixed, flag_code\?\: mixed, active\?\: mixed, \.\.\.\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: src/language-factory.php
-
-		-
 			message: '#^Parameter \#1 \$flag_code of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1

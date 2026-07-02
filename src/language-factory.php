@@ -82,6 +82,8 @@ class PLL_Language_Factory {
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
 			'is_default' => $this->options['default_lang'] === $terms['language']->slug,
+			'flag_code'  => '',
+			'locale'     => '',
 		);
 
 		foreach ( $terms as $term ) {
