@@ -288,25 +288,35 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_set_language_from_query() {
 		// Arrange
 		$this->init();
-		$query = (object) array(
+		$query_without_lang = (object) array(
 			'query' => array(
 				'sitemap' => 'posts',
 				'lang'    => '',
 			),
 		);
+		$query_with_lang = (object) array(
+			'query' => array(
+				'sitemap' => 'posts',
+				'lang'    => 'fr',
+			),
+		);
+		$empty_query = (object) array(
+			'query' => array(),
+		);
 		$lang = $this->pll_env->model->get_language( 'fr' );
-		$expected_lang = $this->pll_env->model->get_language( 'en' );
+		$lang_false = false;
+		$expected_default_lang = $this->pll_env->model->get_language( 'en' );
 
 		// Act
-		$actual_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
+		$actual_default_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query_without_lang );
+		$actual_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query_with_lang );
+		$actual_empty = $this->pll_env->sitemaps->set_language_from_query( $lang, $empty_query );
+		$actual_false = $this->pll_env->sitemaps->set_language_from_query( $lang_false, $query_without_lang );
 
 		// Assert
-		$this->assertSame( $expected_lang->slug, $actual_lang->slug );
+		$this->assertSame( $expected_default_lang->slug, $actual_default_lang->slug );
+		$this->assertSame( $lang->slug, $actual_lang->slug );
+		$this->assertSame( $lang->slug, $actual_empty->slug );
+		$this->assertSame( $expected_default_lang->slug, $actual_false->slug );
 	}
-	// public function set_language_from_query( $lang, $query ) {
-	// if ( isset( $query->query['sitemap'] ) && empty( $query->query['lang'] ) ) {
-	// return $this->model->languages->get_default();
-	// }
-	// return $lang;
-	// }
 }
