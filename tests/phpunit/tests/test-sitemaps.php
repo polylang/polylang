@@ -288,24 +288,23 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_set_language_from_query() {
 		// Arrange
 		$this->init();
-		$query_without_lang = (object) array(
-			'query' => array(
+		$query_without_lang = new WP_Query(
+			array(
 				'sitemap' => 'posts',
 				'lang'    => '',
-			),
+			)
 		);
-		$query_with_lang = (object) array(
-			'query' => array(
+		$query_with_lang = new WP_Query(
+			array(
 				'sitemap' => 'posts',
 				'lang'    => 'fr',
-			),
+			)
 		);
-		$empty_query = (object) array(
-			'query' => array(),
-		);
+		$empty_query = new WP_Query();
 		$lang = $this->pll_env->model->get_language( 'fr' );
 		$lang_false = false;
 		$expected_default_lang = $this->pll_env->model->get_language( 'en' );
+		// remplacer par $this->pll_env->model->get_default_language()
 
 		// Act
 		$actual_default_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query_without_lang );
