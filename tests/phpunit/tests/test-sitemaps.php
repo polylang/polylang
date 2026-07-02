@@ -285,37 +285,74 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertSameSets( $expected, wp_list_pluck( $providers['users']->get_sitemap_entries(), 'loc' ) );
 	}
 
-	public function test_set_language_from_query() {
-		// Arrange
+	/**
+	 * @dataProvider lang_query_values_provider
+	 * @param string $lang_slug
+	 * @param array  $query_args
+	 */
+	public function test_it_should_return_a_lang_slug( $lang_slug, $query_args ) {
 		$this->init();
-		$query_without_lang = new WP_Query(
-			array(
-				'sitemap' => 'posts',
-				'lang'    => '',
-			)
-		);
-		$query_with_lang = new WP_Query(
-			array(
-				'sitemap' => 'posts',
-				'lang'    => 'fr',
-			)
-		);
-		$empty_query = new WP_Query();
-		$lang = $this->pll_env->model->get_language( 'fr' );
-		$lang_false = false;
-		$expected_default_lang = $this->pll_env->model->get_language( 'en' );
-		// remplacer par $this->pll_env->model->get_default_language()
+		$lang = $this->pll_env->model->get_language( $lang_slug );
+		$query = new WP_Query( $query_args );
 
-		// Act
-		$actual_default_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query_without_lang );
-		$actual_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query_with_lang );
-		$actual_empty = $this->pll_env->sitemaps->set_language_from_query( $lang, $empty_query );
-		$actual_false = $this->pll_env->sitemaps->set_language_from_query( $lang_false, $query_without_lang );
+		$expected = $this->pll_env->model->get_language( 'fr' );
+		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
 
 		// Assert
-		$this->assertSame( $expected_default_lang->slug, $actual_default_lang->slug );
-		$this->assertSame( $lang->slug, $actual_lang->slug );
-		$this->assertSame( $lang->slug, $actual_empty->slug );
-		$this->assertSame( $expected_default_lang->slug, $actual_false->slug );
+		$this->assertSame( $expected->slug, $actual->slug );
+	}
+
+	public function lang_query_values_provider() {
+		return array(
+			array(
+				'fr',
+				array(
+					'sitemap' => 'posts',
+					'lang'    => 'fr',
+				),
+			),
+			array(
+				'fr',
+				array(),
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider default_lang_query_values_provider
+	 * @param string $lang_slug
+	 * @param array  $query_args
+	 */
+	public function test_it_should_return_default_lang_slug( $lang_slug, $query_args ) {
+		$this->init();
+
+		$lang = $this->pll_env->model->get_language( $lang_slug );
+		$query = new WP_Query( $query_args );
+
+		$expected = $this->pll_env->model->get_default_language();
+		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
+
+		// Assert
+		$this->assertSame( $expected->slug, $actual->slug );
+	}
+
+
+	public function default_lang_query_values_provider() {
+		return array(
+			array(
+				'fr',
+				array(
+					'sitemap' => 'posts',
+					'lang'    => '',
+				),
+			),
+			array(
+				false,
+				array(
+					'sitemap' => 'posts',
+					'lang'    => '',
+				),
+			),
+		);
 	}
 }
