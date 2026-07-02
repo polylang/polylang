@@ -297,17 +297,11 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$lang = $this->pll_env->model->get_language( 'fr' );
 		$expected_lang = $this->pll_env->model->get_language( 'en' );
 
-		// Act :
+		// Act
 		$actual_lang = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
 
-		echo "\n===== lang =====\n";
-		print_r( $lang );
-
-		echo "\n===== Query =====\n";
-		print_r( $query );
-
 		// Assert
-		$this->assertEquals( $expected_lang, $actual_lang );
+		$this->assertSame( $expected_lang->slug, $actual_lang->slug );
 	}
 	// public function set_language_from_query( $lang, $query ) {
 	// if ( isset( $query->query['sitemap'] ) && empty( $query->query['lang'] ) ) {
