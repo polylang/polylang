@@ -320,8 +320,8 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @dataProvider default_lang_query_values_provider
-	 * @param string $lang_slug
-	 * @param array  $query_args
+	 * @param string|false $lang_slug
+	 * @param array        $query_args
 	 */
 	public function test_it_should_return_default_lang_slug( $lang_slug, $query_args ) {
 		$this->init();
