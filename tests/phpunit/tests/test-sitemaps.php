@@ -287,15 +287,20 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @dataProvider lang_query_values_provider
-	 * @param string $lang_slug
-	 * @param array  $query_args
+	 * @param string|false $lang_slug
+	 * @param array        $query_args
+	 * @param string       $expected_slug_or_default
 	 */
-	public function test_it_should_return_a_lang_slug( $lang_slug, $query_args ) {
+	public function test_it_should_return_expected_lang_slug( $lang_slug, $query_args, $expected_slug_or_default ) {
 		$this->init();
 		$lang = $this->pll_env->model->get_language( $lang_slug );
 		$query = new WP_Query( $query_args );
 
-		$expected = $this->pll_env->model->get_language( 'fr' );
+		if ( $expected_slug_or_default === 'default_lang' ) {
+			$expected = $this->pll_env->model->get_default_language();
+		} else {
+			$expected = $this->pll_env->model->get_language( $expected_slug_or_default );
+		}
 		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
 
 		// Assert
@@ -306,52 +311,23 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		return array(
 			array(
 				'fr',
-				array(
-					'sitemap' => 'posts',
-					'lang'    => 'fr',
-				),
+				array( 'sitemap' => 'posts', 'lang' => 'fr' ),
+				'fr',
 			),
 			array(
 				'fr',
 				array(),
+				'fr',
 			),
-		);
-	}
-
-	/**
-	 * @dataProvider default_lang_query_values_provider
-	 * @param string|false $lang_slug
-	 * @param array        $query_args
-	 */
-	public function test_it_should_return_default_lang_slug( $lang_slug, $query_args ) {
-		$this->init();
-
-		$lang = $this->pll_env->model->get_language( $lang_slug );
-		$query = new WP_Query( $query_args );
-
-		$expected = $this->pll_env->model->get_default_language();
-		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
-
-		// Assert
-		$this->assertSame( $expected->slug, $actual->slug );
-	}
-
-
-	public function default_lang_query_values_provider() {
-		return array(
 			array(
 				'fr',
-				array(
-					'sitemap' => 'posts',
-					'lang'    => '',
-				),
+				array( 'sitemap' => 'posts', 'lang' => '' ),
+				'default_lang',
 			),
 			array(
 				false,
-				array(
-					'sitemap' => 'posts',
-					'lang'    => '',
-				),
+				array( 'sitemap' => 'posts', 'lang' => '' ),
+				'default_lang',
 			),
 		);
 	}
