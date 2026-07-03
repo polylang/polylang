@@ -43,7 +43,7 @@ test.describe( 'Check Post language', async () => {
 	 * Expected behaviour:
 	 * - The French translation is correctly created.
 	 */
-	test( 'The French translation is correctly created', async ( {
+	test( 'The block editor opens for the FR translation', async ( {
 		admin,
 		page,
 	} ) => {
