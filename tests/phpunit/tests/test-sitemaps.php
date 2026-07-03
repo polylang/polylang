@@ -341,6 +341,24 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 					array( 'sitemap' => 'posts', 'lang' => '' ),
 					'default_lang',
 				),
+			'Unknown sitemap value with lang set, return Lang set' =>
+			array(
+				'fr',
+				array( 'sitemap' => 'foo', 'lang' => 'fr' ),
+				'fr',
+			),
+			'Sitemap set with unknown language value, return Lang set' =>
+			array(
+				'fr',
+				array( 'sitemap' => 'posts', 'lang' => 'foo' ),
+				'fr',
+			),
+			'Query without sitemap or lang keys, return Lang set' =>
+			array(
+				'fr',
+				array( 'foo' => 'bar' ),
+				'fr',
+			),
 		);
 	}
 }
