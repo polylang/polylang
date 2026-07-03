@@ -296,39 +296,51 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$lang = $this->pll_env->model->get_language( $lang_slug );
 		$query = new WP_Query( $query_args );
 
-		if ( $expected_slug_or_default === 'default_lang' ) {
+		if ( 'default_lang' === $expected_slug_or_default ) {
 			$expected = $this->pll_env->model->get_default_language();
 		} else {
 			$expected = $this->pll_env->model->get_language( $expected_slug_or_default );
 		}
 		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
 
-		// Assert
 		$this->assertSame( $expected->slug, $actual->slug );
 	}
 
+	/**
+	 * Provides data about queries, lang and expected values.
+	 *
+	 * @return array $data {
+	 *     @type string|false $lang_slug                Current language code.
+	 *     @type array        $query_args                Arguments for WP query object creation.
+	 *     @type string       $expected_slug_or_default  A language code or 'default_lang' to call the get_default_language() method.
+	 * }
+	 */
 	public function lang_query_values_provider() {
 		return array(
-			array(
-				'fr',
-				array( 'sitemap' => 'posts', 'lang' => 'fr' ),
-				'fr',
-			),
-			array(
-				'fr',
-				array(),
-				'fr',
-			),
-			array(
-				'fr',
-				array( 'sitemap' => 'posts', 'lang' => '' ),
-				'default_lang',
-			),
-			array(
-				false,
-				array( 'sitemap' => 'posts', 'lang' => '' ),
-				'default_lang',
-			),
+			'All params are well set, return Lang set' =>
+				array(
+					'fr',
+					array( 'sitemap' => 'posts', 'lang' => 'fr' ),
+					'fr',
+				),
+			'Lang is set but query is empty, return Lang set' =>
+				array(
+					'fr',
+					array(),
+					'fr',
+				),
+			'Lang is set but query lang is empty, return Default Lang' =>
+				array(
+					'fr',
+					array( 'sitemap' => 'posts', 'lang' => '' ),
+					'default_lang',
+				),
+			'Lang is false and query lang is empty, return Default Lang' =>
+				array(
+					false,
+					array( 'sitemap' => 'posts', 'lang' => '' ),
+					'default_lang',
+				),
 		);
 	}
 }
