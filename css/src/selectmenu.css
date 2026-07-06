@@ -25,13 +25,16 @@
 }
 .pll-selectmenu-button:hover {
 	color: #1e1e1e;
+	background: #fff;
 	border-color: #1e1e1e;
 }
 .pll-selectmenu-button:active {
+	background: #fff;
 	border-color: #949494;
 	box-shadow: none;
 }
 .pll-selectmenu-button:focus {
+	background: #fff;
 	border-color: var(--wp-admin-theme-color, #2271b1);
 	box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--wp-admin-theme-color, #2271b1);
 	outline: 2px solid transparent;
