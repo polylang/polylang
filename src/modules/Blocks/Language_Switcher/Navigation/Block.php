@@ -11,8 +11,8 @@ use WP_HTML_Tag_Processor;
 use WP_Syntex\Polylang\Switcher\Assets;
 use WP_Syntex\Polylang\Switcher\Switcher;
 use WP_Syntex\Polylang\Switcher\Element\Abstract_Element;
-use WP_Syntex\Polylang\Switcher\Element\Nav as NavElement;
-use WP_Syntex\Polylang\Switcher\Settings\Menu as MenuSettings;
+use WP_Syntex\Polylang\Switcher\Element\Nav as Element;
+use WP_Syntex\Polylang\Switcher\Settings\Menu as Settings;
 use WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block;
 
 /**
@@ -97,7 +97,7 @@ class Block extends Abstract_Block {
 	 */
 	public function render( $attributes, $content, $block ) {
 		$attributes = $this->set_attributes_for_block( $attributes );
-		$settings   = new MenuSettings( $attributes );
+		$settings   = new Settings( $attributes );
 		$elements   = ( new Switcher( $settings, $this->links ) )->get_elements();
 
 		if ( empty( $elements ) ) {
@@ -277,17 +277,17 @@ class Block extends Abstract_Block {
 	 *
 	 * @since 3.9
 	 *
-	 * @param MenuSettings $settings Switcher settings.
-	 * @return NavElement|null
+	 * @param Settings $settings Switcher settings.
+	 * @return Element|null
 	 */
-	private function get_top_level_element( MenuSettings $settings ): ?NavElement {
+	private function get_top_level_element( Settings $settings ): ?Element {
 		$curlang = $this->links->curlang ?? $this->model->get_default_language();
 
 		if ( ! $curlang instanceof PLL_Language ) {
 			return null;
 		}
 
-		return new NavElement( $curlang, $settings, $this->links );
+		return new Element( $curlang, $settings, $this->links );
 	}
 
 	/**
