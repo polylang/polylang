@@ -59,7 +59,7 @@ export const RenderedSwitcher = ( { attributes, context } ) => {
 
 	return (
 		<>
-			{ languagesToRender?.map( ( language ) => {
+			{ languagesToRender.map( ( language ) => {
 				return (
 					<Fragment key={ language.slug }>
 						<SwitcherLanguageLink
