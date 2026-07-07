@@ -40,15 +40,11 @@ export const RenderedSwitcher = ( { attributes, context } ) => {
 	const { languages } = useContext( LanguagesContext );
 	const currentLanguage = useCurrentLanguage( languages );
 	const isDropdown = layout === 'dropdown';
-	const curatedLanguages = useCuratedLanguages(
+	const languagesToRender = useCuratedLanguages(
 		languages,
 		currentLanguage,
-		false
+		isDropdown
 	);
-	const languagesToRender =
-		isDropdown && curatedLanguages?.length
-			? [ curatedLanguages[ 0 ] ]
-			: curatedLanguages;
 	const labelSpacing = getLabelSpacing( show_labels, flag_label_spacing );
 	const withSubmenuIcon = Boolean(
 		( showSubmenuIcon || openSubmenusOnClick ) && isDropdown
