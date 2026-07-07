@@ -96,9 +96,11 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	public function switcher_options_provider() {
 		global $wp_version;
 
-		$suffix              = version_compare( $wp_version, '7.0-alpha', '<' ) ? '-wp69' : '';
-		$wp71_suffix         = version_compare( $wp_version, '7.1-alpha', '>=' ) ? '-wp71' : '';
-		$wp69_or_wp71_suffix = $wp71_suffix ?: $suffix;
+		$suffix_70     = version_compare( $wp_version, '7.0-alpha', '<' ) ? '-wp69' : '';
+		$suffix_71     = version_compare( $wp_version, '7.1-alpha', '<' ) ? '-wp71' : '';
+		$suffix        = $suffix_70;
+		$suffix_wp71   = empty( $suffix_71 ) ? '-wp71' : '';
+		$suffix_or_wp71 = $suffix_wp71 ?: $suffix;
 
 		$data = array(
 			'Display as list'                                        => array(
@@ -115,7 +117,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-list-with-font-and-color' . $wp71_suffix . '.html',
+				'expected' => 'navigation-language-switcher-list-with-font-and-color' . $suffix_wp71 . '.html',
 			),
 			'Display as list with custom font and custom colors' => array(
 				'options'  => array(
@@ -135,7 +137,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-list-with-custom-font-and-color' . $wp69_or_wp71_suffix . '.html',
+				'expected' => 'navigation-language-switcher-list-with-custom-font-and-color' . $suffix_or_wp71 . '.html',
 			),
 			'Display as dropdown'                                    => array(
 				'options'  => array( 'layout' => 'dropdown' ),
@@ -184,7 +186,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color' . $wp71_suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color' . $suffix_wp71 . '.html',
 			),
 			'Display as dropdown with custom font and custom colors' => array(
 				'options'  => array(
@@ -204,7 +206,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-custom-font-and-color' . $wp69_or_wp71_suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-custom-font-and-color' . $suffix_or_wp71 . '.html',
 			),
 			'Displayed as dropdown with unauthorized CSS'            => array(
 				'options'  => array(
@@ -223,7 +225,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-dropdown-bad-css' . $wp69_or_wp71_suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-bad-css' . $suffix_or_wp71 . '.html',
 			),
 		);
 
