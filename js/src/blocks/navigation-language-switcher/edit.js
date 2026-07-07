@@ -43,7 +43,6 @@ export const Edit = ( { attributes, context, setAttributes } ) => {
 				attributes={ attributes }
 				setAttributes={ setAttributes }
 				layoutOptions={ [ 'horizontal', 'dropdown' ] }
-				hideCurrentInDropdown={ true }
 			/>
 			<Disabled>
 				<LanguagesContext.Provider value={ { languages } }>

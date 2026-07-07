@@ -65,18 +65,16 @@ const ALL_LAYOUT_TOOLBAR_CONTROLS = [
 /**
  * Switcher controls component for toolbar and inspector controls.
  *
- * @param {Object}        props                       The component props.
- * @param {Object}        props.attributes            The block attributes.
- * @param {Function}      props.setAttributes         The function to set the block attributes.
- * @param {Array<string>} props.layoutOptions         Optional layout values to expose.
- * @param {boolean}       props.hideCurrentInDropdown Whether to hide the hide-current control in dropdown layout.
+ * @param {Object}        props               The component props.
+ * @param {Object}        props.attributes    The block attributes.
+ * @param {Function}      props.setAttributes The function to set the block attributes.
+ * @param {Array<string>} props.layoutOptions Optional layout values to expose.
  * @return {React.ReactNode} The switcher controls component.
  */
 export const SwitcherControls = ( {
 	attributes,
 	setAttributes,
 	layoutOptions = [ 'horizontal', 'vertical', 'dropdown', 'select' ],
-	hideCurrentInDropdown = false,
 } ) => {
 	const {
 		layout,
@@ -155,10 +153,6 @@ export const SwitcherControls = ( {
 			},
 		} );
 	}
-
-	const hideCurrentVisible =
-		'select' !== layout &&
-		( ! hideCurrentInDropdown || 'dropdown' !== layout );
 
 	return (
 		<>
@@ -308,15 +302,13 @@ export const SwitcherControls = ( {
 							setAttributes( { force_home: value } )
 						}
 					/>
-					{ hideCurrentVisible && (
-						<ToggleControl
-							label={ __( 'Hide current', 'polylang' ) }
-							checked={ hide_current }
-							onChange={ ( value ) =>
-								setAttributes( { hide_current: value } )
-							}
-						/>
-					) }
+					<ToggleControl
+						label={ __( 'Hide current', 'polylang' ) }
+						checked={ hide_current }
+						onChange={ ( value ) =>
+							setAttributes( { hide_current: value } )
+						}
+					/>
 					<ToggleControl
 						label={ __( 'Hide if no translation', 'polylang' ) }
 						checked={ hide_if_no_translation }
