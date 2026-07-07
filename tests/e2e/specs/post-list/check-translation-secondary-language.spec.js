@@ -51,11 +51,30 @@ test.describe( 'Check Post language', async () => {
 			'post.php',
 			`post=${ englishPost.id }&action=edit`
 		);
+
+		// Trigger navigation and wait for it to settle.
 		await page
 			.getByRole( 'link', { name: 'Add a translation in Français' } )
 			.click();
+
+		await page.waitForURL(
+			new RegExp(
+				`/wp-admin/post-new\\.php\\?post_type=post&from_post=${ englishPost.id }&new_lang=fr&_wpnonce=\\w+`
+			)
+		);
+
+		// Wait for the block editor to be fully loaded before interacting.
+		await expect(
+			page.getByRole( 'region', { name: 'Editor content' } )
+		).toBeVisible();
+
 		await expect(
 			page.getByRole( 'combobox', { name: 'Language' } )
 		).toHaveValue( 'fr' );
+
+		/*const title = page.getByRole( 'textbox', { name: 'Add title' } );
+		await expect( title ).toBeVisible();
+		await title.fill( 'Un article en français' );
+		await expect( title ).toHaveValue( 'Un article en français' );*/
 	} );
 } );
