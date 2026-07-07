@@ -46,9 +46,8 @@ export const RenderedSwitcher = ( { attributes, context } ) => {
 		isDropdown
 	);
 	const labelSpacing = getLabelSpacing( show_labels, flag_label_spacing );
-	const withSubmenuIcon = Boolean(
-		( showSubmenuIcon || openSubmenusOnClick ) && isDropdown
-	);
+	const withSubmenuIcon =
+		isDropdown && ( showSubmenuIcon || openSubmenusOnClick );
 	const linkProps = {
 		showLabels: show_labels,
 		showFlags: show_flags,
