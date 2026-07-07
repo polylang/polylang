@@ -105,6 +105,12 @@ class Block extends Abstract_Block {
 		}
 
 		if ( 'dropdown' === $settings->layout ) {
+			$top_level_element = $this->get_top_level_element( $settings );
+
+			if ( empty( $top_level_element ) ) {
+				return '';
+			}
+
 			$inner_nav_link_blocks = array();
 
 			foreach ( $elements as $element ) {
@@ -114,12 +120,6 @@ class Block extends Abstract_Block {
 				);
 
 				$inner_nav_link_blocks[] = new WP_Block( $nav_link_block_args, $block->context );
-			}
-
-			$top_level_element = $this->get_top_level_element( $settings );
-
-			if ( empty( $top_level_element ) ) {
-				return '';
 			}
 
 			$submenu_attributes               = $this->get_core_block_attributes( $attributes, $top_level_element );
