@@ -45,6 +45,7 @@ test.describe( 'Check Post language', async () => {
 	 */
 	test( 'The block editor opens for the FR translation', async ( {
 		admin,
+		editor,
 		page,
 	} ) => {
 		await admin.visitAdminPage(
@@ -63,18 +64,21 @@ test.describe( 'Check Post language', async () => {
 			)
 		);
 
-		// Wait for the block editor to be fully loaded before interacting.
-		await expect(
-			page.getByRole( 'region', { name: 'Editor content' } )
-		).toBeVisible();
+		const title = editor.canvas.getByRole( 'textbox', {
+			name: 'Add title',
+		} );
+		await expect( title ).toBeVisible();
 
 		await expect(
 			page.getByRole( 'combobox', { name: 'Language' } )
 		).toHaveValue( 'fr' );
 
-		/*const title = page.getByRole( 'textbox', { name: 'Add title' } );
-		await expect( title ).toBeVisible();
 		await title.fill( 'Un article en français' );
-		await expect( title ).toHaveValue( 'Un article en français' );*/
+		await page.waitForURL(
+			new RegExp(
+				`/wp-admin/post-new\\.php\\?post_type=post&from_post=${ englishPost.id }&new_lang=fr&_wpnonce=\\w+`
+			)
+		);
+		await expect( title ).toHaveValue( 'Un article en français' );
 	} );
 } );
