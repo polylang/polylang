@@ -3,7 +3,7 @@
 import { test, expect } from '@wordpress/e2e-test-utils-playwright';
 import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
 
-test.describe( 'Check Post language', async () => {
+test.describe( 'Check Post language', { tag: [ '@pre-release' ] }, async () => {
 	let englishPost;
 	/**
 	 * Before all tests:
@@ -30,7 +30,7 @@ test.describe( 'Check Post language', async () => {
 	} );
 
 	/**
-	 * Tests that the French translation is correctly created by cicking on the "+" sign.
+	 * Tests that the block editor opens for the FR translation when clicking the "+" sign.
 	 *
 	 * Prerequisite:
 	 * - 2 languages (EN, FR).
@@ -38,14 +38,14 @@ test.describe( 'Check Post language', async () => {
 	 *
 	 * Steps:
 	 * - Edit your English post.
-	 * - Click on the "+" sign in the Polylang metabox.
+	 * - Click on the "+" sign in the Polylang metabox ("Add a translation in Français").
 	 *
 	 * Expected behaviour:
-	 * - The French translation is correctly created.
+	 * - The block editor opens with the language set to Français.
+	 * - The title field is visible and can be edited.
 	 */
 	test( 'The block editor opens for the FR translation', async ( {
 		admin,
-		editor,
 		page,
 	} ) => {
 		await admin.visitAdminPage(
@@ -64,21 +64,37 @@ test.describe( 'Check Post language', async () => {
 			)
 		);
 
-		const title = editor.canvas.getByRole( 'textbox', {
-			name: 'Add title',
-		} );
-		await expect( title ).toBeVisible();
-
+		// Verify that the language of this new post is indeed FR: FR should be selected in the pll_post_lang_choice field of the language metabox
 		await expect(
 			page.getByRole( 'combobox', { name: 'Language' } )
 		).toHaveValue( 'fr' );
 
-		await title.fill( 'Un article en français' );
-		await page.waitForURL(
-			new RegExp(
-				`/wp-admin/post-new\\.php\\?post_type=post&from_post=${ englishPost.id }&new_lang=fr&_wpnonce=\\w+`
-			)
+		await page
+			.locator( 'iframe[name="editor-canvas"]' )
+			.contentFrame()
+			.getByRole( 'textbox', { name: 'Add title' } )
+			.fill( 'My FR Post' );
+
+		await page.evaluate( () => {
+			return window.wp.data.dispatch( 'core/editor' ).savePost();
+		} );
+
+		// The French post is correctly linked to the English post
+		await expect(
+			page.getByRole( 'textbox', { name: 'Translation' } )
+		).toHaveValue( 'An English Post' );
+
+		// Check the slug is correctly calculated
+		await expect(
+			page.getByText( 'my-fr-post', { exact: true } ).nth( 1 )
 		);
-		await expect( title ).toHaveValue( 'Un article en français' );
+
+		// No content is “orphaned” after the translation is created. The English and French posts are properly linked via the translation.
+		await admin.visitAdminPage( 'edit.php' );
+		await expect(
+			page.getByRole( 'link', {
+				name: 'Edit the translation in Français',
+			} )
+		).toBeVisible();
 	} );
 } );
