@@ -781,18 +781,6 @@ parameters:
 			path: src/install/upgrade.php
 
 		-
-			message: '#^Offset ''flag_code'' might not exist on array\{name\: string, slug\: string, term_group\: int, term_props\: non\-empty\-array\<string, array\{term_id\: int, term_taxonomy_id\: int, count\: int\}\>, is_default\: bool, active\?\: mixed, fallbacks\?\: mixed, flag_code\?\: mixed, \.\.\.\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: src/language-factory.php
-
-		-
-			message: '#^Offset ''locale'' might not exist on array\{name\: string, slug\: string, term_group\: int, term_props\: non\-empty\-array\<string, array\{term_id\: int, term_taxonomy_id\: int, count\: int\}\>, is_default\: bool, active\?\: mixed, fallbacks\?\: mixed, flag_code\?\: mixed, \.\.\.\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: src/language-factory.php
-
-		-
 			message: '#^Parameter \#1 \$flag_code of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1075,12 +1063,6 @@ parameters:
 			path: src/modules/wizard/wizard.php
 
 		-
-			message: '#^Method PLL_Wizard\:\:wizard_notice\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: src/modules/wizard/wizard.php
-
-		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''sanitize_locale_name'' given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1161,12 +1143,6 @@ parameters:
 		-
 			message: '#^Cannot access offset string on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/settings/settings-licenses.php
-
-		-
-			message: '#^Parameter \#1 \$args of method WP_Ajax_Response\:\:add\(\) expects array\{what\?\: string, action\?\: string\|false, id\?\: int\|WP_Error, old_id\?\: int\|false, position\?\: string, data\?\: string\|WP_Error, supplemental\?\: array\}, array\{what\: ''success'', data\: string\|false\} given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/settings/settings-licenses.php
 
