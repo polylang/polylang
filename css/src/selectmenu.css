@@ -1,239 +1,142 @@
-/* Greatly modified version of the jquery-ui.css */
-
-.ui-widget-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-}
-
-.ui-menu {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: block;
-	outline: none;
-}
-
-.ui-menu .ui-menu {
-	position: absolute;
-}
-
-.ui-menu .ui-menu-item {
-	position: relative;
-	margin: 0;
-	padding: 3px 1em 3px .4em;
+/* Main wrapper */
+.pll-selectmenu-button,
+.pll-selectmenu-menu .ui-menu {
+	font-size: 14px;
+	font-family: inherit;
+	color: #1e1e1e;
+	background: #fff;
+	border-radius: 2px;
 	cursor: pointer;
-	min-height: 0; /* support: IE7 */
-	/* support: IE10, see #8844 */
-	list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 }
-
-/* for jQuery UI 1.12 which introduces a wrapper */
-.ui-menu .ui-menu-item:not([role]) {
-	padding: 0;
-}
-
-.ui-menu-item-wrapper {
-	padding: 3px 1em 3px 2em;
-}
-.rtl .ui-menu .ui-menu-item {
-	text-align: right;
-}
-
-/* icon support */
-.ui-menu-icons {
+.pll-selectmenu-button {
 	position: relative;
-}
-
-.ui-menu-icons .ui-menu-item[role] {
-	padding-left: 2em;
-}
-
-.rtl .ui-menu-item-wrapper, /* for jQuery UI 1.12 which introduces a wrapper */
-.rtl .ui-menu-icons .ui-menu-item[role] {
-	padding-left: 1em;
-	padding-right: 2em;
-}
-
-/* left-aligned */
-.ui-selectmenu-text .ui-icon,
-.ui-menu .ui-icon {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: .3em;
-	margin: auto 0;
-}
-
-.rtl .ui-selectmenu-text .ui-icon,
-.rtl .ui-menu .ui-icon {
-	right: .3em;
-	left: auto;
-}
-
-/* right-aligned */
-.ui-menu .ui-menu-icon {
-	left: auto;
-	right: 0;
-}
-
-.ui-selectmenu-menu {
-	padding: 0;
-	margin: 0;
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: none;
-}
-
-.ui-selectmenu-menu .ui-menu {
-	overflow: auto;
-	/* Support: IE7 */
-	overflow-x: hidden;
-	padding-bottom: 1px;
-}
-
-.ui-selectmenu-menu .ui-menu .ui-selectmenu-optgroup {
-	font-size: 1em;
-	font-weight: bold;
-	line-height: 23px;
-	padding: 2px 0.4em;
-	margin: 0.5em 0 0 0;
-	height: auto;
-	border: 0;
-}
-
-.ui-selectmenu-open {
-	display: block;
-}
-
-.ui-selectmenu-button, /* jQuery UI 1.11.4 - WP < 5.6 */
-.ui-selectmenu-button.ui-button {
 	display: inline-block;
 	overflow: hidden;
-	position: relative;
-	text-decoration: none;
-	box-sizing: border-box; /* To keep width calculation in percent since WP 5.6 */
-	text-align: left;
-	white-space: nowrap;
-	vertical-align: top;
+	box-sizing: border-box;
+	max-width: 95%;
+	min-height: 40px;
 	padding: 0;
-	line-height: normal; /* Override WC Bookings styles with WP < 5.6 */
-	height: 28px; /* Override WC Bookings styles with WP < 5.6 */
+	border: 1px solid #949494;
+	box-shadow: none;
+	text-decoration: none;
+	white-space: nowrap;
+	line-height: 2.71428571; /* 38px for 40px min-height */
+	vertical-align: top;
 }
-
-.ui-selectmenu-button span.ui-icon {
-	right: 0.5em;
-	left: auto;
+.pll-selectmenu-button:hover {
+	color: #1e1e1e;
+	background: #fff;
+	border-color: #1e1e1e;
+}
+.pll-selectmenu-button:active {
+	background: #fff;
+	border-color: #949494;
+	box-shadow: none;
+}
+.pll-selectmenu-button:focus {
+	background: #fff;
+	border-color: var(--wp-admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--wp-admin-theme-color, #2271b1);
+	outline: 2px solid transparent;
+}
+.pll-selectmenu-button[aria-disabled="true"] {
+	cursor: default;
+}
+/* Arrow */
+.pll-selectmenu-button span.ui-icon {
 	position: absolute;
-	top: 26%;
+	right: 8px;
+	left: auto;
+	top: 50%;
 	width: 16px;
 	height: 16px;
-	text-indent: 0; /* due to text-indent for jquery ui-dialog in wizard */
+	margin: -8px 0 0 0;
+	text-indent: 0;
 	background: none;
 }
-
-.rtl .ui-selectmenu-button span.ui-icon {
-	left: 0.5em;
+.rtl .pll-selectmenu-button span.ui-icon {
+	left: 8px;
 	right: auto;
 }
-
-
-.ui-selectmenu-button.ui-widget span.ui-selectmenu-text, /* Override WC Bookings styles with WP < 5.6 */
-.ui-selectmenu-button span.ui-selectmenu-text {
-	text-align: left;
-	padding: 0.1em 2.1em 0.2em 2em;
-	display: block;
-	line-height: 23px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	margin: 0;
-}
-
-.rtl .ui-selectmenu-button span.ui-selectmenu-text {
-	text-align: right;
-	padding: 0.2em 2em 0.2em 2.1em;
-}
-
-.ui-widget-content,
-.ui-state-default,
-.ui-selectmenu-button.ui-state-default, /* Override WC Bookings styles with WP < 5.6 */
-.ui-button.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-.ui-button.ui-selectmenu-button-open, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-.ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default {
-	background: #fff;
-	border: 1px solid #ddd;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07) inset;
-	color: #32373c;
-}
-/* Override to have same styles as WP form styles since WordPress 5.4 */
-.languages_page_mlang .ui-selectmenu-button.ui-state-default,
-.languages_page_mlang .ui-selectmenu-button.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-.languages_page_mlang .ui-selectmenu-button.ui-selectmenu-button-open{ /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-	box-shadow: 0 0 0 transparent;
-	border-radius: 4px;
-	border: 1px solid #7e8993;
-}
-
-/* From this line and below: override WooCommerce bookings plugin styles which overrides default WordPress styles */
-.pll-selectmenu-menu .ui-widget,
-.pll-selectmenu-button.ui-widget {
-	font-size: 13px;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-}
-
-.languages_page_mlang .ui-button.ui-selectmenu-button:focus{
-	color: #016087; /* Same color as WordPress focused select HTML tag */
-	border-color: #007cba;
-	box-shadow: 0 0 0 1px #007cba;
-	outline: 2px solid transparent;
-	background: #fff; /* Override bookings plugin styles which overrides default WordPress styles */
-}
-
-.languages_page_mlang .ui-menu-item,
-.languages_page_mlang .ui-widget-content .ui-state-hover,
-.languages_page_mlang .ui-widget-content .ui-state-focus,
-.languages_page_mlang .ui-widget-content .ui-state-active {
-	color: #016087; /* Same color as option in a WordPress focused select HTML tag */
-	margin: 0;
-}
-
-.ui-selectmenu-open .ui-widget-content .ui-state-hover, /* Override WC Bookings styles with WP < 5.6 */
-.ui-selectmenu-open .ui-widget-content .ui-state-focus, /* Override WC Bookings styles with WP < 5.6 */
-.ui-selectmenu-open .ui-widget-content .ui-state-active, /* Override WC Bookings styles with WP < 5.6 */
-.pll-selectmenu-menu .ui-widget-content .ui-state-hover,
-.pll-selectmenu-menu .ui-widget-content .ui-state-focus,
-.pll-selectmenu-menu .ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-	background: #d5d5d5;
-	border: 0;
-}
-
-.ui-selectmenu-button.ui-state-focus {
-	border: 1px solid #5b9dd9;
-	box-shadow: 0 0 2px rgba(30, 140, 190, 0.8);
-}
-
 .ui-icon-triangle-1-s:before {
 	content: "";
-	background: #fff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 0px top 55%;
+	background: #fff url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%231e1e1e%22%2F%3E%3C%2Fsvg%3E') no-repeat right 0 top 55%;
 	background-size: 16px 16px;
 	box-sizing: border-box;
 	position: absolute;
 	width: 16px;
 	height: 16px;
 }
-
-.pll-selectmenu-button.ui-button:hover,
-.pll-wizard .ui-button:hover,
-.pll-wizard .ui-button:focus {
-	background: #fff; /* To override jQuery ui-dialog styles provided by WordPress */
+.pll-selectmenu-button.ui-selectmenu-button-open .ui-icon-triangle-1-s:before {
+	transform: rotate(180deg);
 }
-
-.ui-widget-content {
+/* Flags */
+.pll-selectmenu-button img.ui-icon,
+.pll-selectmenu-menu img.ui-icon {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: auto;
+	margin: auto 0;
+}
+.pll-selectmenu-button img.ui-icon {
+	left: 12px;
+}
+.rtl .pll-selectmenu-button img.ui-icon {
+	left: auto;
+	right: 12px;
+}
+.pll-selectmenu-menu img.ui-icon {
+	left: .3em;
+}
+.rtl .pll-selectmenu-menu img.ui-icon {
+	right: .3em;
+	left: auto;
+}
+/* Text box */
+.pll-selectmenu-button span.ui-selectmenu-text {
+	display: block;
+	padding: 0 24px 0 42px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 0;
+}
+.rtl .pll-selectmenu-button span.ui-selectmenu-text {
+	padding: 0 42px 0 24px;
+}
+/* Menu */
+.pll-selectmenu-menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+	padding: 0;
+	margin: 0;
+}
+.pll-selectmenu-menu.ui-selectmenu-open {
+	display: block;
+}
+.pll-selectmenu-menu .ui-menu {
+	list-style: none;
 	max-height: 231px;
-	box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	border: 1px solid #ddd;
+	margin: 0;
+	box-shadow: 0 2px 6px rgba(100, 100, 100, .3);
+	overflow: auto;
+	outline: none;
+}
+.pll-selectmenu-menu .ui-menu-item {
+	margin: 0;
+}
+.pll-selectmenu-menu .ui-menu-item-wrapper {
+	position: relative;
+	padding: 3px 1em 3px 2em;
+}
+.rtl .pll-selectmenu-menu .ui-menu-item-wrapper {
+	padding: 3px 2em 3px 1em;
+}
+.pll-selectmenu-menu .ui-menu-item .ui-state-hover,
+.pll-selectmenu-menu .ui-menu-item .ui-state-focus,
+.pll-selectmenu-menu .ui-menu-item .ui-state-active {
+	background: #d5d5d5;
 }
