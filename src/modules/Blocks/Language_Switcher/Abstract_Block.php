@@ -253,17 +253,21 @@ abstract class Abstract_Block {
 
 		$border_radius = max( 0, min( 100, (int) ( $attributes['flag_border_radius'] ?? 0 ) ) );
 		$flag_width    = $attributes['flag_width'] ?? '18px';
-		$flag_style    = sprintf(
-			'--pll-flag-border-radius:%1$d;--pll-flag-width:%2$s',
-			$border_radius,
-			$flag_width
+		$flag_style    = safecss_filter_attr(
+			sprintf(
+				'--pll-flag-border-radius:%1$d;--pll-flag-width:%2$s',
+				$border_radius,
+				$flag_width
+			)
 		);
 
 		$label_style = '';
 		if ( ! empty( $attributes['show_labels'] ) ) {
-			$label_style = sprintf(
-				'--pll-flag-label-spacing:%1$s',
-				$attributes['flag_label_spacing'] ?? '0.3em'
+			$label_style = safecss_filter_attr(
+				sprintf(
+					'--pll-flag-label-spacing:%1$s',
+					$attributes['flag_label_spacing'] ?? '0.3em'
+				)
 			);
 		}
 
