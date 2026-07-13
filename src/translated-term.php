@@ -107,7 +107,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return false;
 		}
 
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		// Add translation group for correct WXR export.
 		$translations = $this->get_translations( $id );
@@ -155,7 +155,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	public function delete_translation( $id ) {
 		global $wpdb;
 
-		$id = $this->sanitize_int_id( $id );
+		$id = pll_sanitize_id( $id );
 
 		if ( empty( $id ) ) {
 			return;
@@ -263,7 +263,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-param array<positive-int> $ids
 	 */
 	public function clean_term_cache( $ids ) {
-		clean_object_term_cache( $this->sanitize_int_ids_list( $ids ), 'term' );
+		clean_object_term_cache( pll_sanitize_ids( $ids ), 'term' );
 	}
 
 	/**
