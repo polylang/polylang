@@ -300,7 +300,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		// Make sure the columns contain an image, and a language name wrapped in a tag.
 		$this->assertArrayHasKey( 'language_en', $columns );
 		$this->assertStringContainsString( '<img ', $columns['language_en'] );
-		$this->assertStringContainsString( '<span class="hidden">English</span>', $columns['language_en'] );
+		$this->assertStringContainsString( '<span class="screen-reader-text">English</span>', $columns['language_en'] );
 
 		// Assert the position in the list.
 		$columns = array_keys( $columns );
@@ -334,7 +334,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		// Make sure the columns contain an image, and a language name wrapped in a tag.
 		$this->assertArrayHasKey( 'language_en', $columns );
 		$this->assertStringContainsString( '<img ', $columns['language_en'] );
-		$this->assertStringContainsString( '<span class="hidden">English</span>', $columns['language_en'] );
+		$this->assertStringContainsString( '<span class="screen-reader-text">English</span>', $columns['language_en'] );
 
 		// Assert the position in the list.
 		$columns = array_keys( $columns );
