@@ -728,7 +728,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * Prepares a SVG image for use in data uri.
 	 *
 	 * @see https://codepen.io/tigt/post/optimizing-svgs-in-data-uris.
-	 * @since 3.8
+	 * @since 3.9
 	 *
 	 * @param string $svg A string representing an SVG image.
 	 * @return string Encode SVG.
