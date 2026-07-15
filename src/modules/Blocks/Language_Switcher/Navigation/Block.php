@@ -6,8 +6,13 @@
 namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation;
 
 use WP_Block;
-use PLL_Switcher;
+use PLL_Language;
 use WP_HTML_Tag_Processor;
+use WP_Syntex\Polylang\Switcher\Assets;
+use WP_Syntex\Polylang\Switcher\Switcher;
+use WP_Syntex\Polylang\Switcher\Element\Abstract_Element;
+use WP_Syntex\Polylang\Switcher\Element\Nav as Element;
+use WP_Syntex\Polylang\Switcher\Settings\Menu as Settings;
 use WP_Syntex\Polylang\Blocks\Language_Switcher\Abstract_Block;
 
 /**
@@ -38,28 +43,36 @@ class Block extends Abstract_Block {
 		add_filter( 'block_type_metadata', array( $this, 'register_custom_attributes' ) );
 		add_filter( 'render_block_core/navigation-link', array( $this, 'render_custom_attributes' ), 10, 3 );
 		add_filter( 'render_block_core/navigation-submenu', array( $this, 'render_custom_attributes' ), 10, 3 );
-		add_action( 'init', array( $this, 'register_editor_style' ) );
+		add_action( 'init', array( $this, 'register_styles' ) );
 
 		return $this;
 	}
 
 	/**
-	 * Registers the editor style for the navigation language switcher block.
+	 * Registers the styles for the navigation language switcher block.
 	 *
 	 * @since 3.8
 	 *
 	 * @return void
 	 */
-	public function register_editor_style(): void {
+	public function register_styles(): void {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_register_style(
-			'pll-navigation-language-switcher-editor-style',
-			plugins_url( 'css/build/navigation-language-switcher-editor-style' . $suffix . '.css', POLYLANG_ROOT_FILE ),
+			'pll-navigation-language-switcher',
+			plugins_url( 'css/build/navigation-language-switcher' . $suffix . '.css', POLYLANG_ROOT_FILE ),
+			array(),
+			POLYLANG_VERSION
+		);
+
+		wp_register_style(
+			'pll-navigation-language-switcher-editor',
+			plugins_url( 'css/build/navigation-language-switcher-editor' . $suffix . '.css', POLYLANG_ROOT_FILE ),
 			array(),
 			POLYLANG_VERSION
 		);
 	}
+
 	/**
 	 * Returns the navigation language switcher block name with the Polylang's namespace.
 	 *
@@ -83,35 +96,37 @@ class Block extends Abstract_Block {
 	 * @return string The HTML string output to serve.
 	 */
 	public function render( $attributes, $content, $block ) {
-		$attributes        = $this->set_attributes_for_block( $attributes );
-		$switcher          = new PLL_Switcher();
-		$switcher_elements = (array) $switcher->the_languages( $this->links, array_merge( $attributes, array( 'raw' => true ) ) );
+		$attributes = $this->set_attributes_for_block( $attributes );
+		$settings   = new Settings( $attributes );
+		$elements   = ( new Switcher( $settings, $this->links ) )->get_elements();
 
-		if ( empty( $switcher_elements ) ) {
+		if ( empty( $elements ) ) {
 			return '';
 		}
 
-		if ( $attributes['dropdown'] ) {
+		if ( 'dropdown' === $settings->layout ) {
+			$top_level_element = $this->get_top_level_element( $settings );
+
+			if ( empty( $top_level_element ) ) {
+				return '';
+			}
+
 			$inner_nav_link_blocks = array();
-			$top_level_lang        = reset( $switcher_elements );
-			foreach ( $switcher_elements as $switcher_element ) {
+
+			foreach ( $elements as $element ) {
 				$nav_link_block_args = array(
 					'blockName' => 'core/navigation-link',
-					'attrs'     => $this->get_core_block_attributes( $attributes, $switcher_element ),
+					'attrs'     => $this->get_core_block_attributes( $attributes, $element ),
 				);
 
 				$inner_nav_link_blocks[] = new WP_Block( $nav_link_block_args, $block->context );
-
-				if ( $switcher_element['current_lang'] && ! $attributes['hide_current'] ) {
-					$top_level_lang = $switcher_element;
-				}
 			}
 
-			$attributes               = $this->get_core_block_attributes( $attributes, $top_level_lang );
-			$attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
-			$submenu_block_args       = array(
+			$submenu_attributes               = $this->get_core_block_attributes( $attributes, $top_level_element );
+			$submenu_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
+			$submenu_block_args               = array(
 				'blockName'   => 'core/navigation-submenu',
-				'attrs'       => $attributes,
+				'attrs'       => $submenu_attributes,
 				'innerBlocks' => $inner_nav_link_blocks,
 			);
 
@@ -120,10 +135,10 @@ class Block extends Abstract_Block {
 		} else {
 			$output = '';
 
-			foreach ( $switcher_elements as $switcher_element ) {
-				$link_attributes               = $this->get_core_block_attributes( $attributes, $switcher_element );
+			foreach ( $elements as $element ) {
+				$link_attributes               = $this->get_core_block_attributes( $attributes, $element );
 				$link_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
-				$nav_link_block_args = array(
+				$nav_link_block_args           = array(
 					'blockName' => 'core/navigation-link',
 					'attrs'     => $link_attributes,
 				);
@@ -175,22 +190,13 @@ class Block extends Abstract_Block {
 	public function register_custom_attributes( $metadata ) {
 		if ( 'core/navigation-link' === $metadata['name'] || 'core/navigation-submenu' === $metadata['name'] ) {
 			$pll_attributes = array(
-				'hreflang'       => array(
+				'hreflang'         => array(
 					'type' => 'string',
 				),
-				'lang'           => array(
+				'lang'             => array(
 					'type' => 'string',
 				),
-				'pll_show_flags' => array(
-					'type' => 'boolean',
-				),
-				'pll_show_names' => array(
-					'type' => 'boolean',
-				),
-				'pll_flag'       => array(
-					'type' => 'string',
-				),
-				'pll_name'       => array(
+				'pll_label_markup' => array(
 					'type' => 'string',
 				),
 			);
@@ -214,10 +220,7 @@ class Block extends Abstract_Block {
 	 */
 	public function render_custom_attributes( $block_content, $block, $instance ) {
 		if ( ! isset(
-			$instance->attributes['pll_show_flags'],
-			$instance->attributes['pll_show_names'],
-			$instance->attributes['pll_flag'],
-			$instance->attributes['pll_name'],
+			$instance->attributes['pll_label_markup'],
 			$instance->attributes['lang'],
 			$instance->attributes['hreflang']
 		)
@@ -250,19 +253,9 @@ class Block extends Abstract_Block {
 
 		$overridden_block_content = $content_tags->get_updated_html();
 
-		$link_label = '';
-
-		if ( $instance->attributes['pll_show_flags'] ) {
-			$link_label .= $instance->attributes['pll_flag'];
-		}
-
-		if ( $instance->attributes['pll_show_names'] ) {
-			$link_label .= $instance->attributes['pll_show_flags'] ? ' ' . $instance->attributes['pll_name'] : $instance->attributes['pll_name'];
-		}
-
 		return str_replace(
 			static::PLACEHOLDER,
-			$link_label,
+			$instance->attributes['pll_label_markup'],
 			$overridden_block_content
 		);
 	}
@@ -280,25 +273,47 @@ class Block extends Abstract_Block {
 	}
 
 	/**
+	 * Returns the top-level language element for a dropdown layout.
+	 *
+	 * @since 3.9
+	 *
+	 * @param Settings $settings Switcher settings.
+	 * @return Element|null
+	 */
+	private function get_top_level_element( Settings $settings ): ?Element {
+		$curlang = $this->links->curlang ?? $this->model->get_default_language();
+
+		if ( ! $curlang instanceof PLL_Language ) {
+			return null;
+		}
+
+		return new Element( $curlang, $settings, $this->links );
+	}
+
+	/**
 	 * Returns attributes that fit for core/navigation-link or core/navigation-submenu and specific to polylang/navigation-language-switcher.
 	 *
 	 * @since 3.6
 	 *
-	 * @param array $attributes    Array of polylang/navigation-language-switcher attributes.
-	 * @param array $switcher_item Array of a switcher item data.
+	 * @param array            $attributes Array of polylang/navigation-language-switcher attributes.
+	 * @param Abstract_Element $element    Switcher element.
 	 * @return array Attributes to be rendered by core.
 	 */
-	private function get_core_block_attributes( $attributes, $switcher_item ) {
+	private function get_core_block_attributes( array $attributes, Abstract_Element $element ): array {
+		$class_name = trim( implode( ' ', $element->item_classes ) );
+
+		if ( ! empty( $attributes['show_flags'] ) ) {
+			$aspect_ratio = $attributes['flag_aspect_ratio'] ?? '3:2';
+			$class_name  .= ' pll-aspect-ratio-' . str_replace( ':', '', $aspect_ratio );
+		}
+
 		return array(
-			'label'          => static::PLACEHOLDER,
-			'url'            => $switcher_item['url'],
-			'pll_show_flags' => $attributes['show_flags'],
-			'pll_show_names' => $attributes['show_names'],
-			'lang'           => $switcher_item['locale'],
-			'hreflang'       => $switcher_item['locale'],
-			'pll_flag'       => $switcher_item['flag'],
-			'pll_name'       => $switcher_item['name'],
-			'className'      => trim( implode( ' ', (array) $switcher_item['classes'] ) ),
+			'label'            => static::PLACEHOLDER,
+			'url'              => $element->url,
+			'lang'             => $element->locale,
+			'hreflang'         => $element->locale,
+			'pll_label_markup' => $this->apply_flag_styles_to_markup( $element->get_label(), $attributes ),
+			'className'        => $class_name,
 		);
 	}
 }

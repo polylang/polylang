@@ -11,10 +11,10 @@ import { Disabled } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { RenderedSwitcher } from './components/rendered-switcher';
+import { RenderedSwitcher } from './rendered-switcher';
 import { LanguagesContext } from '../languages-context';
 import { useLanguagesList } from '@wpsyntex/polylang-react-library';
-import { SwitcherControls } from './components/switcher-controls';
+import { SwitcherControls } from '../components/switcher-controls';
 
 /**
  * Edit callback for language switcher block.

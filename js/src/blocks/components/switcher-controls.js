@@ -28,15 +28,54 @@ const CSS_LENGTH_UNITS = [
 
 const LABEL_SPACING_DEFAULT_VALUE = '0.3em';
 
+const ALL_LAYOUT_OPTIONS = [
+	{
+		label: __( 'Horizontal', 'polylang' ),
+		value: 'horizontal',
+	},
+	{
+		label: __( 'Vertical', 'polylang' ),
+		value: 'vertical',
+	},
+	{
+		label: __( 'Dropdown', 'polylang' ),
+		value: 'dropdown',
+	},
+	{
+		label: __( 'Select', 'polylang' ),
+		value: 'select',
+	},
+];
+
+const ALL_LAYOUT_TOOLBAR_CONTROLS = [
+	{
+		title: __( 'Horizontal', 'polylang' ),
+		layout: 'horizontal',
+	},
+	{
+		title: __( 'Vertical', 'polylang' ),
+		layout: 'vertical',
+	},
+	{
+		title: __( 'Dropdown', 'polylang' ),
+		layout: 'dropdown',
+	},
+];
+
 /**
  * Switcher controls component for toolbar and inspector controls.
  *
- * @param {Object}   props               The component props.
- * @param {Object}   props.attributes    The block attributes.
- * @param {Function} props.setAttributes The function to set the block attributes.
+ * @param {Object}        props               The component props.
+ * @param {Object}        props.attributes    The block attributes.
+ * @param {Function}      props.setAttributes The function to set the block attributes.
+ * @param {Array<string>} props.layoutOptions Optional layout values to expose.
  * @return {React.ReactNode} The switcher controls component.
  */
-export const SwitcherControls = ( { attributes, setAttributes } ) => {
+export const SwitcherControls = ( {
+	attributes,
+	setAttributes,
+	layoutOptions = [ 'horizontal', 'vertical', 'dropdown', 'select' ],
+} ) => {
 	const {
 		layout,
 		show_labels,
@@ -51,6 +90,17 @@ export const SwitcherControls = ( { attributes, setAttributes } ) => {
 	} = attributes;
 
 	const { createWarningNotice } = useDispatch( noticesStore );
+
+	const layoutSelectOptions = ALL_LAYOUT_OPTIONS.filter( ( option ) =>
+		layoutOptions.includes( option.value )
+	);
+
+	const layoutToolbarControls = ALL_LAYOUT_TOOLBAR_CONTROLS.filter(
+		( control ) => layoutOptions.includes( control.layout )
+	).map( ( control ) => ( {
+		title: control.title,
+		onClick: () => setAttributes( { layout: control.layout } ),
+	} ) );
 
 	const labelOptions = [
 		{
@@ -111,24 +161,7 @@ export const SwitcherControls = ( { attributes, setAttributes } ) => {
 					<SelectControl
 						label={ __( 'Layout', 'polylang' ) }
 						value={ layout }
-						options={ [
-							{
-								label: __( 'Horizontal', 'polylang' ),
-								value: 'horizontal',
-							},
-							{
-								label: __( 'Vertical', 'polylang' ),
-								value: 'vertical',
-							},
-							{
-								label: __( 'Dropdown', 'polylang' ),
-								value: 'dropdown',
-							},
-							{
-								label: __( 'Select', 'polylang' ),
-								value: 'select',
-							},
-						] }
+						options={ layoutSelectOptions }
 						onChange={ ( value ) => {
 							setAttributes( { layout: value } );
 
@@ -269,15 +302,13 @@ export const SwitcherControls = ( { attributes, setAttributes } ) => {
 							setAttributes( { force_home: value } )
 						}
 					/>
-					{ 'select' !== layout && (
-						<ToggleControl
-							label={ __( 'Hide current', 'polylang' ) }
-							checked={ hide_current }
-							onChange={ ( value ) =>
-								setAttributes( { hide_current: value } )
-							}
-						/>
-					) }
+					<ToggleControl
+						label={ __( 'Hide current', 'polylang' ) }
+						checked={ hide_current }
+						onChange={ ( value ) =>
+							setAttributes( { hide_current: value } )
+						}
+					/>
 					<ToggleControl
 						label={ __( 'Hide if no translation', 'polylang' ) }
 						checked={ hide_if_no_translation }
@@ -291,23 +322,7 @@ export const SwitcherControls = ( { attributes, setAttributes } ) => {
 				<ToolbarGroup>
 					<ToolbarDropdownMenu
 						label={ __( 'Layout', 'polylang' ) }
-						controls={ [
-							{
-								title: __( 'Horizontal', 'polylang' ),
-								onClick: () =>
-									setAttributes( { layout: 'horizontal' } ),
-							},
-							{
-								title: __( 'Vertical', 'polylang' ),
-								onClick: () =>
-									setAttributes( { layout: 'vertical' } ),
-							},
-							{
-								title: __( 'Dropdown', 'polylang' ),
-								onClick: () =>
-									setAttributes( { layout: 'dropdown' } ),
-							},
-						] }
+						controls={ layoutToolbarControls }
 					/>
 					{ 'select' !== layout && (
 						<ToolbarButton

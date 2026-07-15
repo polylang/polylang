@@ -8,6 +8,7 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher;
 use PLL_Language;
 use PLL_Switcher;
 use WP_Block_Type_Registry;
+use WP_HTML_Tag_Processor;
 
 /**
  * Abstract class for language switcher block.
@@ -231,5 +232,55 @@ abstract class Abstract_Block {
 			$attributes['hide_if_no_translation'] = 0; // Force not to hide the language for the block preview even if the option is checked.
 		}
 		return $attributes;
+	}
+
+	/**
+	 * Applies flag block attributes to switcher markup.
+	 *
+	 * Uses WP_HTML_Tag_Processor so the dropdown SVG toggle can stay in the markup
+	 * (WP_HTML_Processor aborts on foreign content).
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $html       Switcher HTML.
+	 * @param array  $attributes Block attributes.
+	 * @return string
+	 */
+	protected function apply_flag_styles_to_markup( string $html, array $attributes ): string {
+		if ( empty( $attributes['show_flags'] ) ) {
+			return $html;
+		}
+
+		$border_radius = max( 0, min( 100, (int) ( $attributes['flag_border_radius'] ?? 0 ) ) );
+		$flag_width    = $attributes['flag_width'] ?? '18px';
+		$flag_style    = safecss_filter_attr(
+			sprintf(
+				'--pll-flag-border-radius:%1$d;--pll-flag-width:%2$s',
+				$border_radius,
+				$flag_width
+			)
+		);
+
+		$label_style = '';
+		if ( ! empty( $attributes['show_labels'] ) ) {
+			$label_style = safecss_filter_attr(
+				sprintf(
+					'--pll-flag-label-spacing:%1$s',
+					$attributes['flag_label_spacing'] ?? '0.3em'
+				)
+			);
+		}
+
+		$processor = new WP_HTML_Tag_Processor( $html );
+
+		while ( $processor->next_tag( array( 'tag_name' => 'SPAN', 'class_name' => 'pll-switcher-flag' ) ) ) {
+			$processor->set_attribute( 'style', $flag_style );
+
+			if ( '' !== $label_style && $processor->next_tag( array( 'tag_name' => 'SPAN', 'class_name' => 'pll-switcher-label' ) ) ) {
+				$processor->set_attribute( 'style', $label_style );
+			}
+		}
+
+		return $processor->get_updated_html();
 	}
 }

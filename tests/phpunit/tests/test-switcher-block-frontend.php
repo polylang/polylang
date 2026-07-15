@@ -96,16 +96,26 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	public function switcher_options_provider() {
 		global $wp_version;
 
-		$suffix = version_compare( $wp_version, '7.0-alpha', '<' ) ? '-wp69' : '';
+		// Backward compatibility with WordPress 6.9.
+		$suffix_69 = version_compare( $wp_version, '7.0-alpha', '<' ) ? '-wp69' : '';
+		// Backward compatibility with WordPress 7.0.
+		$suffix_70 = version_compare( $wp_version, '7.1-alpha', '<' ) ? '-wp70' : '';
+		if ( empty( $suffix_70 ) ) {
+			$suffix = '';
+		} elseif ( empty( $suffix_69 ) ) {
+			$suffix = $suffix_70;
+		} else {
+			$suffix = $suffix_69;
+		}
 
 		$data = array(
 			'Display as list'                                        => array(
 				'options'  => array(),
 				'context'  => array(),
-				'expected' => 'navigation-language-switcher-list' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-list' . $suffix_69 . '.html',
 			),
 			'Display as list with font and colors'                   => array(
-				'options'  => array( 'dropdown' => 0 ),
+				'options'  => array( 'layout' => 'horizontal' ),
 				'context'  => array(
 					'textColor'              => 'primary',
 					'backgroundColor'        => 'secondary',
@@ -113,11 +123,11 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-list-with-font-and-color.html',
+				'expected' => 'navigation-language-switcher-list-with-font-and-color' . $suffix_70 . '.html',
 			),
 			'Display as list with custom font and custom colors' => array(
 				'options'  => array(
-					'dropdown'  => 0,
+					'layout'    => 'horizontal',
 					'className' => 'test-class',
 				),
 				'context'  => array(
@@ -136,20 +146,20 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 				'expected' => 'navigation-language-switcher-list-with-custom-font-and-color' . $suffix . '.html',
 			),
 			'Display as dropdown'                                    => array(
-				'options'  => array( 'dropdown' => 1 ),
+				'options'  => array( 'layout' => 'dropdown' ),
 				'context'  => array(),
-				'expected' => 'navigation-language-switcher-dropdown' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown' . $suffix_69 . '.html',
 			),
 			'Display as dropdown with flags'                         => array(
 				'options'  => array(
-					'dropdown'   => 1,
-					'show_flags' => 1,
+					'layout'     => 'dropdown',
+					'show_flags' => true,
 				),
 				'context'  => array(),
-				'expected' => 'navigation-language-switcher-dropdown-with-flags' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-flags' . $suffix_69 . '.html',
 			),
 			'Display as dropdown with submenu icon before WP 7.0' => array(
-				'options'          => array( 'dropdown' => 1 ),
+				'options'          => array( 'layout' => 'dropdown' ),
 				'context'          => array(
 					'showSubmenuIcon' => true,
 				),
@@ -157,7 +167,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 				'core_max_version' => '6.9',
 			),
 			'Display as dropdown with submenu icon after WP 7.0' => array(
-				'options'  => array( 'dropdown' => 1 ),
+				'options'  => array( 'layout' => 'dropdown' ),
 				'context'  => array(
 					'showSubmenuIcon'     => true,
 					'openSubmenusOnClick' => false,
@@ -167,14 +177,14 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 				'core_min_version' => '7.0-alpha',
 			),
 			'Display as dropdown with open on click'                 => array(
-				'options'  => array( 'dropdown' => 1 ),
+				'options'  => array( 'layout' => 'dropdown' ),
 				'context'  => array(
 					'openSubmenusOnClick' => true,
 				),
-				'expected' => 'navigation-language-switcher-dropdown-on-click' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-on-click' . $suffix_69 . '.html',
 			),
 			'Display as dropdown with font and colors'               => array(
-				'options'  => array( 'dropdown' => 1 ),
+				'options'  => array( 'layout' => 'dropdown' ),
 				'context'  => array(
 					'textColor'              => 'primary',
 					'backgroundColor'        => 'secondary',
@@ -182,11 +192,11 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 					'overlayBackgroundColor' => 'vivid-red',
 					'fontSize'               => 'x-large',
 				),
-				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color.html',
+				'expected' => 'navigation-language-switcher-dropdown-with-font-and-color' . $suffix_70 . '.html',
 			),
 			'Display as dropdown with custom font and custom colors' => array(
 				'options'  => array(
-					'dropdown'  => 1,
+					'layout'    => 'dropdown',
 					'className' => 'test-class',
 				),
 				'context'  => array(
@@ -206,7 +216,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 			),
 			'Displayed as dropdown with unauthorized CSS'            => array(
 				'options'  => array(
-					'dropdown' => 1,
+					'layout' => 'dropdown',
 				),
 				'context'  => array(
 					/**
