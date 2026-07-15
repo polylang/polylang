@@ -24,6 +24,7 @@ test.describe( 'Content Creation and Automatic Default Language Assignment', () 
 	/**
 	 * Check the default language is assigned to a new draft post.
 	 *
+	 * Prerequisites:
 	 * Steps:
 	 * - Visit the "Add New Post" page in the admin.
 	 * - Check the selected value of the language dropdown.
@@ -46,6 +47,7 @@ test.describe( 'Content Creation and Automatic Default Language Assignment', () 
 	/**
 	 * Check the default language is assigned to a new published post.
 	 *
+	 * Prerequisites:
 	 * Steps:
 	 * - Visit the "Add New Post" page in the admin.
 	 * - Fill in the post title and publish the post.
