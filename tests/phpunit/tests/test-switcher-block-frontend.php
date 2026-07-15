@@ -96,9 +96,9 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	public function switcher_options_provider() {
 		global $wp_version;
 
-		// Backward compatibiliti with WordPress 6.9
+		// Backward compatibility with WordPress 6.9.
 		$suffix_69 = version_compare( $wp_version, '7.0-alpha', '<' ) ? '-wp69' : '';
-		// Backward compatibiliti with WordPress 7.0
+		// Backward compatibility with WordPress 7.0.
 		$suffix_70 = version_compare( $wp_version, '7.1-alpha', '<' ) ? '-wp70' : '';
 		if ( empty( $suffix_70 ) ) {
 			$suffix = '';
