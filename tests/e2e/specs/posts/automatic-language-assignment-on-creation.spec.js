@@ -1,12 +1,15 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
-import { createLanguage, deleteAllLanguages } from '@wpsyntex/e2e-test-utils';
+import {
+	createLanguage,
+	deleteAllLanguages,
+	resetAllSettings,
+} from '@wpsyntex/e2e-test-utils';
 
 /**
  * Covers content creation and automatic default language assignment.
  */
-test.describe
-	.serial( 'Content Creation and Automatic Default Language Assignment', () => {
+test.describe( 'Content Creation and Automatic Default Language Assignment', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
 		await createLanguage( requestUtils, 'en_US' );
 		await createLanguage( requestUtils, 'fr_FR' );
@@ -14,6 +17,7 @@ test.describe
 
 	test.afterAll( async ( { requestUtils } ) => {
 		await deleteAllLanguages( requestUtils );
+		await resetAllSettings( requestUtils );
 		await requestUtils.deleteAllPosts();
 	} );
 
