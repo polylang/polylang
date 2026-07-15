@@ -90,9 +90,13 @@ class PLL_Admin_Filters_Columns {
 			 * - `WP_Screen::render_list_table_columns_preferences()` applies `wp_strip_all_tags()` in the screen options:
 			 *   this will remove the flag, and reveal the language name (that looses its `<span>`).
 			 * - `WP_List_Table::print_column_headers()` doesn't apply any escaping function in the column headers:
-			 *   the flag will be displayed, and the language name will still be present but hidden.
+			 *   the flag will be displayed, and the language name will still be present but visually hidden.
 			 */
-			$columns[ 'language_' . $language->slug ] = sprintf( '%s<span class="hidden">%s</span>', $language->get_admin_flag(), esc_html( $language->name ) );
+			$columns[ "language_{$language->slug}" ] = sprintf(
+				'%s<span class="screen-reader-text">%s</span>',
+				$language->get_admin_flag( 'aria-hidden' ),
+				esc_html( $language->name )
+			);
 		}
 
 		return isset( $end ) ? array_merge( $columns, $end ) : $columns;
