@@ -26,6 +26,7 @@ js/src/
 node_modules/
 tests/
 tmp/
+dist/
 
 # Playwright
 

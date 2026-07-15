@@ -6,6 +6,7 @@ js/build/
 node_modules/
 tmp
 vendor/
+dist/
 
 # Files
 src/integrations/integration-build.php
