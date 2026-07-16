@@ -28,27 +28,33 @@ class Block extends Abstract_Block {
 	public function init() {
 		parent::init();
 
-		add_action( 'init', array( Assets::class, 'register_styles' ) );
 		add_action( 'init', array( Assets::class, 'register_scripts' ) );
-		add_action( 'init', array( $this, 'register_editor_styles' ) );
+		add_action( 'init', array( $this, 'register_styles' ) );
 
 		return $this;
 	}
 
 	/**
-	 * Registers the editor styles for the language switcher block.
+	 * Registers the styles for the language switcher block.
 	 *
 	 * @since 3.9
 	 *
 	 * @return void
 	 */
-	public function register_editor_styles(): void {
+	public function register_styles(): void {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_register_style(
-			'pll-language-switcher-editor',
+			'pll-language-switcher', // Matches `block.json`'s `style` handle.
+			plugins_url( "/css/build/language-switcher{$suffix}.css", POLYLANG_ROOT_FILE ),
+			array(),
+			POLYLANG_VERSION
+		);
+
+		wp_register_style(
+			'pll-language-switcher-editor', // Matches `block.json`'s `editorStyle` handle.
 			plugins_url( "/css/build/language-switcher-editor{$suffix}.css", POLYLANG_ROOT_FILE ),
-			array( Assets::FRONTEND_ASSET_HANDLE ),
+			array( 'pll-language-switcher' ),
 			POLYLANG_VERSION
 		);
 	}

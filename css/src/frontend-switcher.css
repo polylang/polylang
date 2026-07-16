@@ -22,13 +22,6 @@
 	position: relative;
 	background-color: inherit;
 }
-.pll-switcher.wp-block-polylang-language-switcher {
-	box-sizing: border-box;
-}
-.pll-layout-dropdown.wp-block-polylang-language-switcher.alignwide,
-.pll-layout-dropdown.wp-block-polylang-language-switcher.alignfull {
-	width: 100%;
-}
 .pll-layout-dropdown.pll-switcher .pll-submenu-toggle {
 	display: inline-flex;
 	align-items: center;
@@ -77,9 +70,6 @@
 	overflow: hidden;
 	opacity: 0;
 }
-.pll-layout-dropdown.wp-block-polylang-language-switcher ul {
-	background-color: inherit;
-}
 .pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
 .pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] + ul {
 	width: auto;
@@ -100,15 +90,6 @@
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-}
-
-/*
- * Alignment (shared by all layouts).
- * Block wrappers may set inline margin:0, so center/right use width:100% + flex.
- */
-.pll-alignment-center.wp-block-polylang-language-switcher,
-.pll-alignment-right.wp-block-polylang-language-switcher {
-	width: 100%;
 }
 
 /*
