@@ -140,7 +140,7 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 		$spans = $xpath->query( '//span', $link );
 		$this->assertSame( 2, $spans->count() );
 		$this->assertSame( 'pll-switcher-flag', $spans->item( 0 )->getAttribute( 'class' ) );
-		$this->assertSame( '', $spans->item( 1 )->getAttribute( 'class' ) );
+		$this->assertSame( 'pll-switcher-label', $spans->item( 1 )->getAttribute( 'class' ) );
 
 		$flags = $xpath->query( '//img', $spans->item( 0 ) );
 		$this->assertSame( 1, $flags->count() );
