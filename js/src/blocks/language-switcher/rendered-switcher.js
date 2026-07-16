@@ -88,7 +88,10 @@ export const RenderedSwitcher = ( { attributes } ) => {
 				<select className="pll-switcher-select">
 					{ curatedLanguages.map( ( language ) => {
 						return (
-							<option key={ language.slug } value={ language.slug }>
+							<option
+								key={ language.slug }
+								value={ language.slug }
+							>
 								{ getLabel( language, show_labels ) }
 							</option>
 						);
