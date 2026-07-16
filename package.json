@@ -24,9 +24,7 @@
   },
   "overrides": {
     "minimatch": "^9.0.9",
-    "serialize-javascript": "^7.0.4",
-    "typescript": "~5.9.3",
-    "zod": "^4.0.0"
+    "serialize-javascript": "^7.0.4"
   },
   "dependencies": {
     "@wpsyntex/polylang-react-library": "github:polylang/polylang-react-library"
