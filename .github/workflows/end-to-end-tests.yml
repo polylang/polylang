@@ -50,4 +50,4 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run Playwright tests
-      uses: polylang/actions/e2e@main
+      uses: polylang/actions/e2e@e2e-action-cache
