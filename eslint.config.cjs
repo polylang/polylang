@@ -72,9 +72,6 @@ module.exports = [
 				pll_data: 'readonly',
 				pllDefaultLanguage: 'readonly',
 			},
-			parserOptions: {
-				requireConfigFile: false,
-			},
 		},
 	},
 ];
