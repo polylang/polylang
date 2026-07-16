@@ -67,6 +67,7 @@ module.exports = [
 		languageOptions: {
 			globals: {
 				...globals.browser,
+				ajaxurl: 'readonly',
 				pll_block_editor_blocks_settings: 'readonly',
 				pll_data: 'readonly',
 				pllDefaultLanguage: 'readonly',
