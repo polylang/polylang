@@ -22,7 +22,7 @@
 	position: relative;
 	background-color: inherit;
 }
-.pll-layout-dropdown.wp-block-polylang-language-switcher {
+.pll-switcher.wp-block-polylang-language-switcher {
 	box-sizing: border-box;
 }
 .pll-layout-dropdown.wp-block-polylang-language-switcher.alignwide,
@@ -90,26 +90,48 @@
 	opacity: 1;
 }
 
-/* Horizontal and Select layouts */
+/* Horizontal, vertical and Select layouts */
+.pll-layout-vertical ul {
+	display: flex;
+	flex-direction: column;
+}
 .pll-layout-horizontal ul,
 .pll-layout-select {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+
+/*
+ * Alignment (shared by all layouts).
+ * Block wrappers may set inline margin:0, so center/right use width:100% + flex.
+ */
+.pll-alignment-center.wp-block-polylang-language-switcher,
+.pll-alignment-right.wp-block-polylang-language-switcher {
+	width: 100%;
+}
+
+/*
+ * Main-axis alignment for horizontal, select, and dropdown.
+ * Selectors differ because the flex container is not always the root:
+ * - horizontal: the inner `ul` is flex → target `ul`
+ * - select / dropdown: the root is flex → target the root
+ * Vertical is omitted here: rows stay full width; alignment is done on
+ * the links via justify-content (see below).
+ */
 .pll-alignment-left.pll-layout-horizontal ul,
-.pll-alignment-left.pll-layout-select {
-	align-items: flex-start;
-	justify-content: flex-start;
+.pll-alignment-left.pll-layout-select,
+.pll-alignment-left.pll-layout-dropdown {
+	justify-content: flex-start; /* Default value, but safety check. */
 }
 .pll-alignment-center.pll-layout-horizontal ul,
-.pll-alignment-center.pll-layout-select {
-	align-items: center;
+.pll-alignment-center.pll-layout-select,
+.pll-alignment-center.pll-layout-dropdown {
 	justify-content: center;
 }
 .pll-alignment-right.pll-layout-horizontal ul,
-.pll-alignment-right.pll-layout-select {
-	align-items: flex-end;
+.pll-alignment-right.pll-layout-select,
+.pll-alignment-right.pll-layout-dropdown {
 	justify-content: flex-end;
 }
 .pll-alignment-stretched.pll-layout-horizontal ul,
@@ -121,22 +143,35 @@
 	flex-grow: 1;
 }
 
+/* Dropdown submenu panel position */
+.pll-alignment-center.pll-layout-dropdown ul {
+	left: 50%;
+	right: auto;
+	transform: translateX(-50%);
+}
+.pll-alignment-right.pll-layout-dropdown ul {
+	left: auto;
+	right: 0;
+}
+
 /* Links */
 .pll-switcher a {
 	display: flex;
 	align-items: center;
+	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
 	padding: 0.25em .5em;
 }
+/* Links are flex containers — use justify-content, not text-align. */
 .pll-alignment-center a {
-	text-align: center;
+	justify-content: center;
 }
 .pll-alignment-left a {
-	text-align: left;
+	justify-content: flex-start;
 }
 .pll-alignment-right a {
-	text-align: right;
+	justify-content: flex-end;
 }
 
 /* Dropdown trigger: label and toggle on one row. */
@@ -144,7 +179,6 @@
 	display: inline-flex;
 	align-items: center;
 	flex: 0 0 auto;
-	flex-shrink: 0;
 	width: auto;
 	max-width: none;
 	padding: 0;

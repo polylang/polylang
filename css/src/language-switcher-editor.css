@@ -1,0 +1,17 @@
+/**
+ * Language switcher block (editor).
+ *
+ * Block supports wrap an outer `.wp-block-polylang-language-switcher` around the
+ * switcher preview. On the frontend those classes are merged onto the switcher root.
+ */
+
+.wp-block-polylang-language-switcher .components-disabled {
+	display: block;
+	width: 100%;
+}
+
+.wp-block-polylang-language-switcher .pll-alignment-center,
+.wp-block-polylang-language-switcher .pll-alignment-right {
+	box-sizing: border-box;
+	width: 100%;
+}
