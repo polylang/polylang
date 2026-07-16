@@ -30,8 +30,27 @@ class Block extends Abstract_Block {
 
 		add_action( 'init', array( Assets::class, 'register_styles' ) );
 		add_action( 'init', array( Assets::class, 'register_scripts' ) );
+		add_action( 'init', array( $this, 'register_editor_styles' ) );
 
 		return $this;
+	}
+
+	/**
+	 * Registers the editor styles for the language switcher block.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	public function register_editor_styles(): void {
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_register_style(
+			'pll-language-switcher-editor',
+			plugins_url( "/css/build/language-switcher-editor{$suffix}.css", POLYLANG_ROOT_FILE ),
+			array( Assets::FRONTEND_ASSET_HANDLE ),
+			POLYLANG_VERSION
+		);
 	}
 
 	/**
@@ -63,7 +82,7 @@ class Block extends Abstract_Block {
 
 		$attributes['unique_id']    = 'select' === $attributes['layout'] ? 'lang_choice_' . $dropdown_id : '';
 		$attributes['show_wrapper'] = true;
-		$attributes['alignment']    = 'inherit';
+		$attributes['alignment']    = $attributes['style']['typography']['textAlign'] ?? 'inherit'; // Intentional fallback to 'inherit' in case the alignment is inherited from the parent block.
 
 		$settings        = new Settings( $attributes );
 		$switcher_output = ( new Switcher( $settings, $this->links ) )->get();
