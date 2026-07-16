@@ -49,7 +49,7 @@ class Get_Test extends TestCase {
 		$this->assertSame( $fr_language->get_home_url(), $links->item( 1 )->getAttribute( 'href' ) );
 		$this->assertSame( 'Français', $links->item( 1 )->nodeValue );
 
-		$spans = $xpath->query( '//div/ul/li/a/span' );
+		$spans = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-flag"]' );
 		$this->assertSame( 0, $spans->count() ); // No flags.
 	}
 

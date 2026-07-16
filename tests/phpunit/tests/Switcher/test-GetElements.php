@@ -93,7 +93,7 @@ class GetElements_Test extends TestCase {
 			'locale'           => 'fr-FR',
 			'url'              => $language_fr->get_home_url(),
 			'label'            => 'FR',
-			'flag'             => $language_fr->get_display_flag( 'no-alt' ),
+			'flag'             => $this->remove_style_attributes( $language_fr->get_display_flag( 'no-alt' ) ),
 			'direction'        => 'ltr',
 			'order'            => 0,
 			'has_translations' => false,
@@ -123,7 +123,7 @@ class GetElements_Test extends TestCase {
 			'locale'           => 'de-DE',
 			'url'              => $language_de->get_home_url(),
 			'label'            => 'DE',
-			'flag'             => $language_de->get_display_flag( 'no-alt' ),
+			'flag'             => $this->remove_style_attributes( $language_de->get_display_flag( 'no-alt' ) ),
 			'direction'        => 'ltr',
 			'order'            => 0,
 			'has_translations' => false,
@@ -218,7 +218,7 @@ class GetElements_Test extends TestCase {
 		$label = $elements['en']->get_label();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span>English<\/span>$/', // Empty alt.
+			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label">English<\/span>$/', // Empty alt.
 			$label
 		);
 		$this->assertStringNotContainsString( ' style="', $label );
@@ -232,7 +232,7 @@ class GetElements_Test extends TestCase {
 		);
 		$elements = $switcher->get_elements();
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span>EN<\/span>$/', // Empty alt.
+			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label">EN<\/span>$/', // Empty alt.
 			$elements['en']->get_label()
 		);
 
@@ -245,7 +245,7 @@ class GetElements_Test extends TestCase {
 		);
 		$elements = $switcher->get_elements();
 		$this->assertMatchesRegularExpression(
-			'/^<img[^>]* alt="[^"]+"[^>]*>$/', // Non empty alt.
+			'/^<span class="pll-switcher-flag"><img[^>]* alt="[^"]+"[^>]*><\/span>$/', // Non empty alt.
 			$elements['en']->get_label()
 		);
 
@@ -257,7 +257,7 @@ class GetElements_Test extends TestCase {
 			)
 		);
 		$elements = $switcher->get_elements();
-		$this->assertSame( 'English', $elements['en']->get_label() );
+		$this->assertSame( '<span class="pll-switcher-label">English</span>', $elements['en']->get_label() );
 
 		$switcher = $this->get_new_switcher(
 			$pll_env,
@@ -353,5 +353,15 @@ class GetElements_Test extends TestCase {
 
 		$this->assertArrayHasKey( 'en', $elements );
 		$this->assertInstanceOf( Element\Select::class, $elements['en'] );
+	}
+
+	/**
+	 * Removes `style` attributes from the given markup.
+	 *
+	 * @param string $string Markup.
+	 * @return string
+	 */
+	private function remove_style_attributes( string $string ): string {
+		return preg_replace( '/style=(["\']).*\1/', '', $string );
 	}
 }
