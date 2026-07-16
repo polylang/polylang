@@ -4,10 +4,20 @@
  * @param {string}  layout          The switcher layout.
  * @param {boolean} showFlags       Whether flags are displayed.
  * @param {string}  flagAspectRatio The flag aspect ratio.
+ * @param {string}  [alignment]     The items alignment. Omitted when unset.
  * @return {string} The switcher class names.
  */
-export const getSwitcherClassName = ( layout, showFlags, flagAspectRatio ) => {
+export const getSwitcherClassName = (
+	layout,
+	showFlags,
+	flagAspectRatio,
+	alignment
+) => {
 	const classes = [ 'pll-switcher', `pll-layout-${ layout }` ];
+
+	if ( alignment ) {
+		classes.push( `pll-alignment-${ alignment }` );
+	}
 
 	if ( showFlags ) {
 		classes.push(
