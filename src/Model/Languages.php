@@ -111,7 +111,7 @@ class Languages {
 	 *                     `term_id` and `term_taxonomy_id` can be fetched for any language taxonomy.
 	 *                     /!\ For the `term_taxonomy_id`, prefix the ID by `tt:` (ex: `"tt:{$tt_id}"`),
 	 *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
-	 * @return PLL_Language|false Language object, false if no language found.
+	 * @return \PLL_Language|false Language object, false if no language found.
 	 *
 	 * @phpstan-param PLL_Language|WP_Term|int|string $value
 	 */
@@ -166,7 +166,7 @@ class Languages {
 	 *   @type string $flag_code      Optional. Country code, {@see src/settings/flags.php}. Will be converted to flag.
 	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language. Default is false.
 	 * }
-	 * @return PLL_Language|WP_Error The object language on success, a `WP_Error` otherwise.
+	 * @return \PLL_Language|\WP_Error The object language on success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
 	 *     name?: string,
@@ -297,7 +297,7 @@ class Languages {
 	 *   @type string $flag       Optional, country code, {@see src/settings/flags.php}.
 	 *   @type string $flag_code  Optional. Country code, {@see src/settings/flags.php}. Will be converted to flag.
 	 * }
-	 * @return PLL_Language|WP_Error The updated object language on success, a `WP_Error` otherwise.
+	 * @return \PLL_Language|\WP_Error The updated object language on success, a `WP_Error` otherwise.
 	 *
 	 * @phpstan-param array{
 	 *     lang_id: int|numeric-string,
@@ -453,7 +453,7 @@ class Languages {
 		 *   @type string $no_default_cat Optional, if set, no default category has been created for this language.
 		 *   @type string $flag           Optional, country code, @see src/settings/flags.php.
 		 * }
-		 * @param PLL_Language $lang Previous value of the language being edited.
+		 * @param \PLL_Language $lang Previous value of the language being edited.
 		 */
 		do_action( 'pll_update_language', $args, $lang );
 
@@ -720,7 +720,7 @@ class Languages {
 	 * @since 3.4
 	 * @since 3.7 Moved from `PLL_Model::get_default_language()` to `WP_Syntex\Polylang\Model\Languages::get_default()`.
 	 *
-	 * @return PLL_Language|false Default language object, `false` if no language found.
+	 * @return \PLL_Language|false Default language object, `false` if no language found.
 	 */
 	public function get_default() {
 		if ( ! empty( $this->options['default_lang'] ) ) {
@@ -880,8 +880,8 @@ class Languages {
 	 *
 	 * @since 3.8
 	 *
-	 * @param PLL_Language[] $languages The list of language objects.
-	 * @param array          $args {
+	 * @param \PLL_Language[] $languages The list of language objects.
+	 * @param array           $args {
 	 *   @type string $fields Optional. Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 * }
 	 * @return array List of `PLL_Language` objects or `PLL_Language` object properties.
@@ -1300,7 +1300,7 @@ class Languages {
 	 * @since 3.4
 	 * @since 3.7 Moved from `PLL_Model::get_languages_from_taxonomies()` to `WP_Syntex\Polylang\Model\Languages::get_from_taxonomies()`.
 	 *
-	 * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
+	 * @return \PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
 	 *
 	 * @phpstan-return list<PLL_Language>
 	 */
@@ -1338,7 +1338,7 @@ class Languages {
 		 * @deprecated
 		 *
 		 * @param PLL_Language[]       $languages The list of language objects.
-		 * @param Language $model     `Language` object.
+		 * @param Languages $model     `Language` object.
 		 */
 		$languages = apply_filters_deprecated( 'pll_languages_list', array( $languages, $this ), '3.4', 'pll_additional_language_data' );
 
@@ -1375,7 +1375,7 @@ class Languages {
 	 * @since 3.2.3
 	 * @since 3.7 Moved from `PLL_Model::get_language_terms()` to `WP_Syntex\Polylang\Model\Languages::get_terms()`.
 	 *
-	 * @return WP_Term[]
+	 * @return \WP_Term[]
 	 */
 	protected function get_terms(): array {
 		$terms = get_terms(
