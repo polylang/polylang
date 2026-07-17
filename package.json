@@ -27,7 +27,7 @@
     "serialize-javascript": "^7.0.4"
   },
   "dependencies": {
-    "@wpsyntex/polylang-react-library": "github:polylang/polylang-react-library"
+    "@wpsyntex/polylang-react-library": "^1.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
