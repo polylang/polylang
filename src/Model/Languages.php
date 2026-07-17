@@ -35,35 +35,37 @@ class Languages {
 	 *
 	 * @var Options
 	 */
-	private $options;
+	private Options $options;
 
 	/**
 	 * Translatable objects registry.
 	 *
 	 * @var PLL_Translatable_Objects
 	 */
-	private $translatable_objects;
+	private PLL_Translatable_Objects $translatable_objects;
 
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache<mixed>
+	 * @var PLL_Cache
+	 *
+	 * @phpstan-var PLL_Cache<mixed>
 	 */
-	private $cache;
+	private PLL_Cache $cache;
 
 	/**
 	 * Flag set to true during the language objects creation.
 	 *
 	 * @var bool
 	 */
-	private $is_creating_list = false;
+	private bool $is_creating_list = false;
 
 	/**
 	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
 	 *
 	 * @var bool
 	 */
-	private $languages_ready = false;
+	private bool $languages_ready = false;
 
 	/**
 	 * List of automatic language proxies.
@@ -72,7 +74,7 @@ class Languages {
 	 *
 	 * @phpstan-var array<non-falsy-string, Languages_Proxy_Interface>
 	 */
-	private $automatic_proxies = array();
+	private array $automatic_proxies = array();
 
 	/**
 	 * List of language proxies.
@@ -81,7 +83,7 @@ class Languages {
 	 *
 	 * @phpstan-var array<non-falsy-string, Languages_Proxy_Interface>
 	 */
-	private $proxies = array();
+	private array $proxies = array();
 
 	/**
 	 * Constructor.
