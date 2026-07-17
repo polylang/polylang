@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.8.5
+Stable tag: 3.8.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.8.6 (2026-07-20) =
+
+* Pro: Security: Ensure the user has the required capability for ACF fields when switching language in the editor #3029
+* Security: Fix exposure of some private posts metadata to non-authorized users. Props Patchstack.
+* Security: Fix server side default language encoding for the block editor
+* Fix 404 for post type or taxonomy sitemap when its name ends with a language code #1909
 
 = 3.8.5 (2026-06-16) =
 
