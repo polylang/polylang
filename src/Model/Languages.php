@@ -5,12 +5,12 @@
 
 namespace WP_Syntex\Polylang\Model;
 
+use WP_Term;
+use WP_Error;
 use PLL_Cache;
 use PLL_Language;
 use PLL_Language_Factory;
 use PLL_Translatable_Objects;
-use WP_Error;
-use WP_Term;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
