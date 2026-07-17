@@ -115,7 +115,7 @@ class Languages {
 	 *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
 	 * @return \PLL_Language|false Language object, false if no language found.
 	 *
-	 * @phpstan-param PLL_Language|WP_Term|int|string $value
+	 * @phpstan-param \PLL_Language|\WP_Term|int|string $value
 	 */
 	public function get( $value ) {
 		if ( $value instanceof PLL_Language ) {
@@ -143,7 +143,7 @@ class Languages {
 			$this->cache->set( 'language:' . $lang->w3c, $lang );
 		}
 
-		/** @var PLL_Language|false */
+		/** @var \PLL_Language|false */
 		return $this->cache->get( 'language:' . $value );
 	}
 
@@ -663,7 +663,7 @@ class Languages {
 			 * @since 3.4 Deprecated. If you used this hook to filter URLs, you may hook `'site_url'` instead.
 			 * @deprecated
 			 *
-			 * @param PLL_Language[] $languages The list of language objects.
+			 * @param \PLL_Language[] $languages The list of language objects.
 			 */
 			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4' );
 
@@ -1025,7 +1025,7 @@ class Languages {
 		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
 		$new_data = array_merge( $old_data, $add_data, $new_data );
 
-		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when fed by an array. */
+		/** @phpstan-var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when fed by an array. */
 		$serialized = maybe_serialize( $new_data );
 		return $serialized;
 	}
@@ -1136,7 +1136,7 @@ class Languages {
 				 * }
 				 * @param string           $old_slug The old language slug.
 				 * @param string           $new_slug The new language slug.
-				 * @param WP_Term          $term     The term containing the post or term translation group.
+				 * @param \WP_Term         $term     The term containing the post or term translation group.
 				 */
 				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
 
@@ -1304,7 +1304,7 @@ class Languages {
 	 *
 	 * @return \PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
 	 *
-	 * @phpstan-return list<PLL_Language>
+	 * @phpstan-return list<\PLL_Language>
 	 */
 	protected function get_from_taxonomies(): array {
 		$terms_by_slug = array();
@@ -1316,11 +1316,11 @@ class Languages {
 		}
 
 		/**
-		 * @var (
+		 * @phpstan-var (
 		 *     array{
 		 *         string: array{
-		 *             language: WP_Term,
-		 *         }&array<non-empty-string, WP_Term>
+		 *             language: \WP_Term,
+		 *         }&array<non-empty-string, \WP_Term>
 		 *     }
 		 * ) $terms_by_slug
 		 */
@@ -1339,14 +1339,14 @@ class Languages {
 		 * @since 3.4 Deprecated.
 		 * @deprecated
 		 *
-		 * @param PLL_Language[]       $languages The list of language objects.
-		 * @param Languages $model     `Language` object.
+		 * @param \PLL_Language[] $languages The list of language objects.
+		 * @param \Languages      $model     `Languages` object.
 		 */
 		$languages = apply_filters_deprecated( 'pll_languages_list', array( $languages, $this ), '3.4', 'pll_additional_language_data' );
 
 		if ( ! $this->are_ready() ) {
 			// Do not cache an incomplete list.
-			/** @var list<PLL_Language> $languages */
+			/** @phpstan-var list<\PLL_Language> $languages */
 			return $languages;
 		}
 
@@ -1365,7 +1365,7 @@ class Languages {
 
 		set_transient( self::TRANSIENT_NAME, $languages_data );
 
-		/** @var list<PLL_Language> $languages */
+		/** @phpstan-var list<\PLL_Language> $languages */
 		return $languages;
 	}
 
