@@ -33,23 +33,23 @@ class Languages {
 	/**
 	 * Polylang's options.
 	 *
-	 * @var Options
+	 * @var \WP_Syntex\Polylang\Options\Options
 	 */
 	private Options $options;
 
 	/**
 	 * Translatable objects registry.
 	 *
-	 * @var PLL_Translatable_Objects
+	 * @var \PLL_Translatable_Objects
 	 */
 	private PLL_Translatable_Objects $translatable_objects;
 
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache
+	 * @var \PLL_Cache
 	 *
-	 * @phpstan-var PLL_Cache<mixed>
+	 * @phpstan-var \PLL_Cache<mixed>
 	 */
 	private PLL_Cache $cache;
 
@@ -90,11 +90,11 @@ class Languages {
 	 *
 	 * @since 3.7
 	 *
-	 * @param Options                  $options              Polylang's options.
-	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
-	 * @param PLL_Cache                $cache                Internal non persistent cache object.
+	 * @param \WP_Syntex\Polylang\Options\Options $options              Polylang's options.
+	 * @param \PLL_Translatable_Objects           $translatable_objects Translatable objects registry.
+	 * @param \PLL_Cache                          $cache                Internal non persistent cache object.
 	 *
-	 * @phpstan-param PLL_Cache<mixed> $cache
+	 * @phpstan-param \PLL_Cache<mixed> $cache
 	 */
 	public function __construct( Options $options, PLL_Translatable_Objects $translatable_objects, PLL_Cache $cache ) {
 		$this->options              = $options;
@@ -750,7 +750,7 @@ class Languages {
 	 *            Returns a `WP_Error` object.
 	 *
 	 * @param string $slug New language slug.
-	 * @return WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
+	 * @return \WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
 	 */
 	public function update_default( string $slug ): WP_Error {
 		$prev_default_lang = $this->options->get( 'default_lang' );
@@ -1036,9 +1036,9 @@ class Languages {
 	 * @since 0.4
 	 * @since 3.7 Moved from `PLL_Admin_Model::validate_lang()` to `WP_Syntex\Polylang\Model\Languages::validate_lang()`.
 	 *
-	 * @param array             $args Parameters of {@see WP_Syntex\Polylang\Model\Languages::add() or @see WP_Syntex\Polylang\Model\Languages::update()}.
-	 * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
-	 * @return WP_Error
+	 * @param array              $args Parameters of {@see WP_Syntex\Polylang\Model\Languages::add() or @see WP_Syntex\Polylang\Model\Languages::update()}.
+	 * @param \PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
+	 * @return \WP_Error
 	 *
 	 * @phpstan-param array{
 	 *     locale?: string,
@@ -1100,7 +1100,7 @@ class Languages {
 	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
-	 * @return WP_Error
+	 * @return \WP_Error
 	 *
 	 * @phpstan-param non-empty-string $old_slug
 	 */
@@ -1238,12 +1238,12 @@ class Languages {
 	 * @since 3.4
 	 * @since 3.7 Moved from `PLL_Model::update_secondary_language_terms()` to `WP_Syntex\Polylang\Model\Languages::update_secondary_language_terms()`.
 	 *
-	 * @param string            $slug       Language term slug (with or without the `pll_` prefix).
-	 * @param string            $name       Language name (label).
-	 * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
-	 * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
-	 *                                      all of them. Defaults to all taxonomies.
-	 * @return WP_Error
+	 * @param string             $slug       Language term slug (with or without the `pll_` prefix).
+	 * @param string             $name       Language name (label).
+	 * @param \PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
+	 * @param string[]           $taxonomies Optional. List of language taxonomies to deal with. An empty value means
+	 *                                       all of them. Defaults to all taxonomies.
+	 * @return \WP_Error
 	 *
 	 * @phpstan-param non-empty-string $slug
 	 * @phpstan-param non-empty-string $name
