@@ -182,7 +182,7 @@ class Languages {
 	 *     no_default_cat?: bool
 	 * } $args
 	 */
-	public function add( array $args ) {
+	public function add( $args ) {
 		$args['rtl']        = $args['rtl'] ?? $args['is_rtl'] ?? null;
 		$args['flag']       = $args['flag'] ?? $args['flag_code'] ?? null;
 		$args['term_group'] = $args['term_group'] ?? 0;
@@ -313,7 +313,7 @@ class Languages {
 	 *     flag_code?: string
 	 * } $args
 	 */
-	public function update( array $args ) {
+	public function update( $args ) {
 		$id   = (int) $args['lang_id'];
 		$lang = $this->get( $id );
 
@@ -471,8 +471,8 @@ class Languages {
 	 * @param int $lang_id Language term_id.
 	 * @return bool
 	 */
-	public function delete( int $lang_id ): bool {
-		$lang = $this->get( $lang_id );
+	public function delete( $lang_id ): bool {
+		$lang = $this->get( (int) $lang_id );
 
 		if ( empty( $lang ) ) {
 			return false;
@@ -586,7 +586,7 @@ class Languages {
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
-	public function get_list( array $args = array() ): array {
+	public function get_list( $args = array() ): array {
 		if ( ! $this->are_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
@@ -752,7 +752,7 @@ class Languages {
 	 * @param string $slug New language slug.
 	 * @return WP_Error A `WP_Error` object containing possible errors during slug validation/sanitization.
 	 */
-	public function update_default( string $slug ): WP_Error {
+	public function update_default( $slug ): WP_Error {
 		$prev_default_lang = $this->options->get( 'default_lang' );
 
 		if ( $prev_default_lang === $slug ) {
@@ -1047,7 +1047,7 @@ class Languages {
 	 *     flag?: string
 	 * } $args
 	 */
-	protected function validate_lang( array $args, ?PLL_Language $lang = null ): WP_Error {
+	protected function validate_lang( $args, ?PLL_Language $lang = null ): WP_Error {
 		$errors = new WP_Error();
 
 		// Validate locale with the same pattern as WP 4.3. See #28303.
@@ -1104,7 +1104,7 @@ class Languages {
 	 *
 	 * @phpstan-param non-empty-string $old_slug
 	 */
-	protected function update_translations( string $old_slug, string $new_slug = '' ): WP_Error {
+	protected function update_translations( $old_slug, $new_slug = '' ): WP_Error {
 		global $wpdb;
 
 		$term_ids = array();
@@ -1249,7 +1249,7 @@ class Languages {
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	protected function update_secondary_language_terms( string $slug, string $name, ?PLL_Language $language = null, array $taxonomies = array() ): WP_Error {
+	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): WP_Error {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 		$errors = new WP_Error();
 
