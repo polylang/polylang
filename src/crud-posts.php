@@ -503,18 +503,29 @@ class PLL_CRUD_Posts {
 			return $clauses;
 		}
 
+		$tt_id = $untranslated_in->get_tax_prop( 'language', 'term_taxonomy_id' );
+
 		$clauses['where'] .= $wpdb->prepare(
 			" AND {$wpdb->posts}.ID NOT IN (
-				SELECT {$wpdb->posts}.ID FROM {$wpdb->posts}
-					LEFT JOIN {$wpdb->term_relationships} AS pllutr ON {$wpdb->posts}.ID = pllutr.object_id
-					INNER JOIN {$wpdb->term_taxonomy} AS pllutt ON pllutt.term_taxonomy_id = pllutr.term_taxonomy_id
-					WHERE ( pllutr.term_taxonomy_id IN (%d) )
-					OR ( pllutt.taxonomy = 'post_translations' AND pllutt.description LIKE %s )
+				SELECT pllutr.object_id
+				FROM {$wpdb->term_relationships} AS pllutr
+				WHERE pllutr.term_taxonomy_id = %d
 			)",
-			$untranslated_in->term_id,
-			'%' . $wpdb->esc_like( $untranslated_in->slug ) . '%'
+			$tt_id
 		);
 
+		$clauses['where'] .= $wpdb->prepare(
+			" AND {$wpdb->posts}.ID NOT IN (
+				SELECT pllutr1.object_id
+				FROM {$wpdb->term_relationships} AS pllutr1
+				JOIN {$wpdb->term_taxonomy} AS pllutt ON pllutt.term_taxonomy_id = pllutr1.term_taxonomy_id
+				JOIN {$wpdb->term_relationships} AS pllutr2 ON pllutr2.term_taxonomy_id = pllutt.term_taxonomy_id
+				JOIN {$wpdb->term_relationships} AS pllutr3 ON pllutr3.object_id = pllutr2.object_id
+				WHERE pllutt.taxonomy = 'post_translations'
+				AND pllutr3.term_taxonomy_id = %d
+			)",
+			$tt_id
+		);
 
 		return $clauses;
 	}
