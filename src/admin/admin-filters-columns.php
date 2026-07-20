@@ -455,7 +455,7 @@ class PLL_Admin_Filters_Columns {
 		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) );
 		$translations = array_unique( $translations );
 
-		if ( empty( $translations ) ) { // May occur if the modfied term has no language.
+		if ( empty( $translations ) ) { // May occur if the modified term has no language.
 			$response->send();
 		}
 
