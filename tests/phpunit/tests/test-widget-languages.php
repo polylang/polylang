@@ -262,13 +262,13 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 		$found = false;
 
 		foreach ( $array as $obj ) {
-			if ( get_class( $obj ) === $type ) {
+			if ( $obj instanceof $type ) {
 				$found = true;
 				break;
 			}
 		}
 
-		$this->assertTrue( $found, $message );
+		$this->assertTrue( $found, $message, "The given array does not contain any instance of {$type}." );
 	}
 
 	/**
@@ -278,7 +278,7 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 	 * @return DOMXpath
 	 */
 	private function get_domxpath( string $html ): DOMXpath {
-		$this->assertNotSame( '', $html );
+		$this->assertNotSame( '', $html, 'The HTML output is empty.' );
 		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $html, LIBXML_NOERROR );
 		return new DOMXpath( $doc );
