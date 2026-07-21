@@ -429,7 +429,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		$args = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
 
 		/** @var WP_Post[] */
-		$posts = new WP_Query()->query( $args );
+		$posts = ( new WP_Query() )->query( $args );
 
 		foreach ( $posts as $i => $post ) {
 			if ( ! $this->current_user_can_read( $post->ID, 'edit' ) ) {
