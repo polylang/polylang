@@ -12,7 +12,7 @@
 	width: 100%;
 }
 .pll-layout-dropdown.wp-block-polylang-language-switcher ul {
-	background-color: inherit;
+	background-color: var(--pll-dropdown-background-color, inherit);
 }
 
 /*
