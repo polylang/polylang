@@ -45,7 +45,7 @@ class Dropdown extends Abstract_Layout {
 
 		$cr  = $this->settings->preserve_spacing ? "\n" : '';
 		$out = sprintf(
-			"{$cr}%s{$cr}%s{$cr}<ul>{$cr}%s</ul>",
+			"{$cr}<div class=\"pll-switcher-inner\">{$cr}%s{$cr}%s{$cr}<ul>{$cr}%s</ul>{$cr}</div>",
 			$current_item,
 			$this->get_button(),
 			$out

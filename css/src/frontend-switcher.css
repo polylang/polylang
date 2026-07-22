@@ -12,17 +12,21 @@
 }
 
 /* Dropdown layout */
-.pll-layout-dropdown {
+.pll-layout-dropdown,
+.pll-switcher-inner {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: flex-start;
+	background-color: inherit;
+}
+.pll-switcher-inner {
+	box-sizing: border-box;
 	width: fit-content;
 	gap: .25em;
 	position: relative;
-	background-color: inherit;
 }
-.pll-layout-dropdown.pll-switcher > a {
+.pll-switcher .pll-switcher-inner > a {
 	width: auto;
 	max-width: none;
 	padding: 0;
@@ -30,7 +34,7 @@
 	text-decoration: none;
 	z-index: 1;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle {
+.pll-switcher-inner .pll-submenu-toggle {
 	width: auto;
 	height: auto;
 	padding: 0 .4em 0 .2em;
@@ -41,23 +45,23 @@
 	background-color: transparent !important; /* !important to overwrite some themes. */
 	color: currentColor !important;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle:focus {
+.pll-switcher-inner .pll-submenu-toggle:focus {
 	outline: auto;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle svg {
+.pll-switcher-inner .pll-submenu-toggle svg {
 	display: block;
 	width: .6em;
 	height: .6em;
 	margin: 0;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle svg path {
+.pll-switcher-inner .pll-submenu-toggle svg path {
 	stroke: currentColor;
 }
-.pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) svg,
-.pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] svg {
+.pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) svg,
+.pll-switcher-inner .pll-submenu-toggle[aria-expanded="true"] svg {
 	transform: rotate(180deg);
 }
-.pll-layout-dropdown ul {
+.pll-switcher-inner ul {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -75,8 +79,8 @@
 	overflow: hidden;
 	opacity: 0;
 }
-.pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
-.pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] + ul {
+.pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
+.pll-switcher-inner .pll-submenu-toggle[aria-expanded="true"] + ul {
 	width: auto;
 	height: auto;
 	min-width: 200px;
@@ -120,6 +124,9 @@
 .pll-alignment-right.pll-layout-dropdown {
 	justify-content: flex-end;
 }
+.pll-alignment-stretched .pll-switcher-inner {
+	width: 100%;
+}
 .pll-alignment-stretched.pll-layout-horizontal ul,
 .pll-alignment-stretched.pll-layout-select {
 	align-items: stretch;
@@ -131,7 +138,7 @@
 }
 .pll-alignment-stretched.pll-layout-horizontal li,
 .pll-alignment-stretched.pll-layout-select select,
-.pll-alignment-stretched.pll-layout-dropdown > a {
+.pll-alignment-stretched .pll-switcher-inner > a {
 	flex-grow: 1;
 }
 
@@ -172,9 +179,4 @@
 }
 .pll-alignment-right a {
 	justify-content: flex-end;
-}
-
-/* Widgets */
-.widget_polylang .pll-switcher {
-	width: 100%;
 }

@@ -69,15 +69,17 @@ export const RenderedSwitcher = ( { attributes } ) => {
 
 		return (
 			<nav className={ switcherClassName }>
-				{ currentLanguageItem && (
-					<SwitcherLanguageLink
-						language={ currentLanguageItem }
-						{ ...linkProps }
-					/>
-				) }
-				<button className="pll-submenu-toggle">
-					<SubmenuIcon />
-				</button>
+				<div className="pll-switcher-inner">
+					{ currentLanguageItem && (
+						<SwitcherLanguageLink
+							language={ currentLanguageItem }
+							{ ...linkProps }
+						/>
+					) }
+					<button className="pll-submenu-toggle">
+						<SubmenuIcon />
+					</button>
+				</div>
 			</nav>
 		);
 	}
