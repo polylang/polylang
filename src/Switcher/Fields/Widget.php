@@ -53,8 +53,8 @@ class Widget extends Abstract_Fields {
 			'flag_aspect_ratio'      => array(
 				'label'   => __( 'Flags aspect:', 'polylang' ),
 				'choices' => array(
-					'3:2' => __( 'Landscape', 'polylang' ),
-					'1:1' => __( 'Square', 'polylang' ),
+					'3:2' => __( 'Landscape (3:2)', 'polylang' ),
+					'1:1' => __( 'Square (1:1)', 'polylang' ),
 				),
 				'hide_if' => array(
 					'layout'     => 'select',
