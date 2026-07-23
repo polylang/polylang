@@ -3,6 +3,7 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Switcher\Assets;
 use WP_Syntex\Polylang\Switcher\Switcher;
 use WP_Syntex\Polylang\Switcher\Element\Nav;
 use WP_Syntex\Polylang\Switcher\Fields\Menu as Fields;
@@ -27,6 +28,11 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	private ?PLL_Links $links;
 
 	/**
+	 * @var bool
+	 */
+	private bool $show_flags = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.2
@@ -40,6 +46,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		$this->links   = &$polylang->links;
 
 		// Split the language switcher menu item in several language menu items
+		add_action( 'wp_enqueue_scripts', array( $this, 'maybe_enqueue_styles' ), 20 ); // After `\WP_Syntex\Polylang\Widgets\Languages::enqueue_frontend_styles()`.
 		add_filter( 'wp_get_nav_menu_items', array( $this, 'wp_get_nav_menu_items' ), 20 ); // after the customizer menus
 		add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
 		add_filter( 'nav_menu_link_attributes', array( $this, 'nav_menu_link_attributes' ), 10, 2 );
@@ -66,6 +73,50 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	protected function usort_menu_items( $a, $b ) {
 		return ( $a->menu_order < $b->menu_order ) ? -1 : 1;
+	}
+
+	/**
+	 * Enqueue switcher styles if an item requires to display a language flag.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	public function maybe_enqueue_styles(): void {
+		if ( empty( $this->curlang ) || empty( $this->links ) ) {
+			return;
+		}
+
+		if ( wp_style_is( Assets::FRONTEND_ASSET_HANDLE, 'enqueued' ) ) {
+			return;
+		}
+
+		if ( ! taxonomy_exists( 'nav_menu' ) ) {
+			return;
+		}
+
+		$registered_nav_menus = get_registered_nav_menus();
+
+		if ( empty( $registered_nav_menus ) ) {
+			return;
+		}
+
+		$locations = array_filter( get_nav_menu_locations() );
+		$locations = array_intersect_key( $locations, $registered_nav_menus );
+
+		if ( empty( $locations ) ) {
+			return;
+		}
+
+		foreach ( $locations as $term_id ) {
+			// This will call `$this->wp_get_nav_menu_items()` and set (or not) `$this->show_flags`.
+			wp_get_nav_menu_items( $term_id, array( 'update_post_term_cache' => false ) );
+
+			if ( $this->show_flags ) {
+				Assets::enqueue_frontend_styles();
+				break;
+			}
+		}
 	}
 
 	/**
@@ -120,7 +171,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 
 				if ( $settings->show_flags ) {
 					// Since it is added to the parent `<li>`, no need to add it to the child elements too.
-					$item->classes[] = 'pll-aspect-ratio-' . str_replace( ':', '', $settings->flag_aspect_ratio );
+					$item->classes[]  = 'pll-aspect-ratio-' . str_replace( ':', '', $settings->flag_aspect_ratio );
+					$this->show_flags = true;
 				}
 
 				$new_items[] = $item;
@@ -146,6 +198,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				} else {
 					$lang_item->classes     = array_diff( $lang_item->classes, array( 'lang-item-first' ) ); // Doesn't mean anything here.
 					$lang_item->classes[]   = 'pll-aspect-ratio-' . str_replace( ':', '', $settings->flag_aspect_ratio );
+					$this->show_flags       = true;
 					$lang_item->menu_order += $offset;
 				}
 
