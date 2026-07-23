@@ -109,6 +109,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		foreach ( $locations as $term_id ) {
+			// PHPCS:ignore Squiz.PHP.CommentedOutCode.Found
 			// This will call `$this->wp_get_nav_menu_items()` and set (or not) `$this->show_flags`.
 			wp_get_nav_menu_items( $term_id, array( 'update_post_term_cache' => false ) );
 
