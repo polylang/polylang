@@ -82,7 +82,10 @@ class Block extends Abstract_Block {
 
 		$attributes['unique_id']    = 'select' === $attributes['layout'] ? 'lang_choice_' . $dropdown_id : '';
 		$attributes['show_wrapper'] = true;
-		$attributes['alignment']    = $attributes['style']['typography']['textAlign'] ?? 'inherit'; // Intentional fallback to 'inherit' in case the alignment is inherited from the parent block.
+
+		if ( ! empty( $attributes['style']['typography']['textAlign'] ) ) {
+			$attributes['alignment'] = $attributes['style']['typography']['textAlign'];
+		}
 
 		$settings        = new Settings( $attributes );
 		$switcher_output = ( new Switcher( $settings, $this->links ) )->get();
