@@ -50,6 +50,14 @@ class Term extends Abstract_Object {
 			// Sets language from term parent if exists thanks to Scott Kingsley Clark.
 			return $parent_lang;
 		}
+		if ( ! empty( $_POST['pll_post_id'] ) && is_numeric( $_POST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_POST['pll_post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// AJAX request triggered while editing a post (e.g., a plugin creating a term on the fly).
+			return $lang;
+		}
+		if ( ! empty( $_POST['pll_term_id'] ) && is_numeric( $_POST['pll_term_id'] ) && $lang = $this->model->term->get_language( (int) $_POST['pll_term_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// AJAX request triggered while editing a term (e.g., a plugin creating a term on the fly).
+			return $lang;
+		}
 		if ( isset( $this->pref_lang ) && $user->can_translate( $this->pref_lang ) ) {
 			// Always defined on admin, never defined on frontend.
 			return $this->pref_lang;
