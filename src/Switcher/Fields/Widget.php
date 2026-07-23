@@ -29,8 +29,8 @@ class Widget extends Abstract_Fields {
 			'layout'                 => array(
 				'label'   => __( 'Layout:', 'polylang' ),
 				'choices' => array(
-					'horizontal' => __( 'Horizontal', 'polylang' ),
-					'vertical'   => __( 'Vertical', 'polylang' ),
+					'horizontal' => _x( 'Horizontal', 'layout', 'polylang' ),
+					'vertical'   => _x( 'Vertical', 'layout', 'polylang' ),
 					'dropdown'   => __( 'Dropdown', 'polylang' ),
 					'select'     => __( 'Selector', 'polylang' ),
 				),
@@ -53,8 +53,8 @@ class Widget extends Abstract_Fields {
 			'flag_aspect_ratio'      => array(
 				'label'   => __( 'Flags aspect:', 'polylang' ),
 				'choices' => array(
-					'3:2' => __( 'Landscape', 'polylang' ),
-					'1:1' => __( 'Square', 'polylang' ),
+					'3:2' => __( 'Landscape (3:2)', 'polylang' ),
+					'1:1' => __( 'Square (1:1)', 'polylang' ),
 				),
 				'hide_if' => array(
 					'layout'     => 'select',
@@ -64,7 +64,7 @@ class Widget extends Abstract_Fields {
 			'show_labels'            => array(
 				'label'   => __( 'Display labels:', 'polylang' ),
 				'choices' => array(
-					''      => __( 'No', 'polylang' ),
+					''      => __( 'None', 'polylang' ),
 					'names' => __( 'Language names', 'polylang' ),
 					'codes' => __( 'Language codes', 'polylang' ),
 				),

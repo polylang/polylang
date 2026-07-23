@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 import { InspectorControls, BlockControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -30,11 +30,11 @@ const LABEL_SPACING_DEFAULT_VALUE = '0.3em';
 
 const ALL_LAYOUT_OPTIONS = [
 	{
-		label: __( 'Horizontal', 'polylang' ),
+		label: _x( 'Horizontal', 'layout', 'polylang' ),
 		value: 'horizontal',
 	},
 	{
-		label: __( 'Vertical', 'polylang' ),
+		label: _x( 'Vertical', 'layout', 'polylang' ),
 		value: 'vertical',
 	},
 	{
@@ -42,18 +42,18 @@ const ALL_LAYOUT_OPTIONS = [
 		value: 'dropdown',
 	},
 	{
-		label: __( 'Select', 'polylang' ),
+		label: __( 'Selector', 'polylang' ),
 		value: 'select',
 	},
 ];
 
 const ALL_LAYOUT_TOOLBAR_CONTROLS = [
 	{
-		title: __( 'Horizontal', 'polylang' ),
+		title: _x( 'Horizontal', 'layout', 'polylang' ),
 		layout: 'horizontal',
 	},
 	{
-		title: __( 'Vertical', 'polylang' ),
+		title: _x( 'Vertical', 'layout', 'polylang' ),
 		layout: 'vertical',
 	},
 	{
@@ -234,10 +234,7 @@ export const SwitcherControls = ( {
 								selected={ flag_aspect_ratio }
 								options={ [
 									{
-										label: __(
-											'Landscape (3:2)',
-											'polylang'
-										),
+										label: __( 'Landscape (3:2)', 'polylang' ),
 										value: '3:2',
 									},
 									{
@@ -296,21 +293,21 @@ export const SwitcherControls = ( {
 				</PanelBody>
 				<PanelBody title={ __( 'Behavior', 'polylang' ) }>
 					<ToggleControl
-						label={ __( 'Force home', 'polylang' ) }
+						label={ __( 'Force link to front page', 'polylang' ) }
 						checked={ force_home }
 						onChange={ ( value ) =>
 							setAttributes( { force_home: value } )
 						}
 					/>
 					<ToggleControl
-						label={ __( 'Hide current', 'polylang' ) }
+						label={ __( 'Hide the current language', 'polylang' ) }
 						checked={ hide_current }
 						onChange={ ( value ) =>
 							setAttributes( { hide_current: value } )
 						}
 					/>
 					<ToggleControl
-						label={ __( 'Hide if no translation', 'polylang' ) }
+						label={ __( 'Hide languages with no translation', 'polylang' ) }
 						checked={ hide_if_no_translation }
 						onChange={ ( value ) =>
 							setAttributes( { hide_if_no_translation: value } )
@@ -332,7 +329,7 @@ export const SwitcherControls = ( {
 							label={
 								show_flags
 									? __( 'Hide flags', 'polylang' )
-									: __( 'Show flags', 'polylang' )
+									: __( 'Display flags', 'polylang' )
 							}
 							onClick={ () => {
 								if ( show_flags && '' === show_labels ) {

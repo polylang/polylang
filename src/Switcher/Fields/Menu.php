@@ -41,8 +41,8 @@ class Menu extends Abstract_Fields {
 			'flag_aspect_ratio'      => array(
 				'label'   => __( 'Flags aspect:', 'polylang' ),
 				'choices' => array(
-					'3:2' => __( 'Landscape', 'polylang' ),
-					'1:1' => __( 'Square', 'polylang' ),
+					'3:2' => __( 'Landscape (3:2)', 'polylang' ),
+					'1:1' => __( 'Square (1:1)', 'polylang' ),
 				),
 				'hide_if' => array(
 					'show_flags' => false,
@@ -51,7 +51,7 @@ class Menu extends Abstract_Fields {
 			'show_labels'            => array(
 				'label'   => __( 'Display labels:', 'polylang' ),
 				'choices' => array(
-					''      => __( 'No', 'polylang' ),
+					''      => __( 'None', 'polylang' ),
 					'names' => __( 'Language names', 'polylang' ),
 					'codes' => __( 'Language codes', 'polylang' ),
 				),
