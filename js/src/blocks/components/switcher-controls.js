@@ -30,11 +30,11 @@ const LABEL_SPACING_DEFAULT_VALUE = '0.3em';
 
 const ALL_LAYOUT_OPTIONS = [
 	{
-		label: __( 'Horizontal', 'polylang' ),
+		label: _x( 'Horizontal', 'layout', 'polylang' ),
 		value: 'horizontal',
 	},
 	{
-		label: __( 'Vertical', 'polylang' ),
+		label: _x( 'Vertical', 'layout', 'polylang' ),
 		value: 'vertical',
 	},
 	{
@@ -42,18 +42,18 @@ const ALL_LAYOUT_OPTIONS = [
 		value: 'dropdown',
 	},
 	{
-		label: __( 'Select', 'polylang' ),
+		label: __( 'Selector', 'polylang' ),
 		value: 'select',
 	},
 ];
 
 const ALL_LAYOUT_TOOLBAR_CONTROLS = [
 	{
-		title: __( 'Horizontal', 'polylang' ),
+		title: _x( 'Horizontal', 'layout', 'polylang' ),
 		layout: 'horizontal',
 	},
 	{
-		title: __( 'Vertical', 'polylang' ),
+		title: _x( 'Vertical', 'layout', 'polylang' ),
 		layout: 'vertical',
 	},
 	{
