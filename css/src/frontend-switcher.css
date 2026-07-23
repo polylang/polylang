@@ -35,7 +35,7 @@
 .pll-switcher .pll-switcher-inner > a {
 	width: auto;
 	max-width: none;
-	padding: 0;
+	padding: .25em 0 .25em .5em;
 	color: inherit;
 	text-decoration: none;
 	z-index: 1;
