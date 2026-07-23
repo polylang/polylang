@@ -1,5 +1,11 @@
 @import './lib/switcher-flags.css';
 
+.pll-switcher {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+}
+
 /* List layouts */
 .pll-switcher ul {
 	padding: 0;
@@ -12,30 +18,32 @@
 }
 
 /* Dropdown layout */
-.pll-layout-dropdown {
+.pll-layout-dropdown,
+.pll-switcher-inner {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: flex-start;
+	background-color: inherit;
+}
+.pll-switcher-inner {
+	box-sizing: border-box;
 	width: fit-content;
 	gap: .25em;
 	position: relative;
-	background-color: inherit;
 }
-.pll-layout-dropdown.wp-block-polylang-language-switcher {
-	box-sizing: border-box;
+.pll-switcher .pll-switcher-inner > a {
+	width: auto;
+	max-width: none;
+	padding: .25em 0 .25em .5em;
+	color: inherit;
+	text-decoration: none;
+	z-index: 1;
 }
-.pll-layout-dropdown.wp-block-polylang-language-switcher.alignwide,
-.pll-layout-dropdown.wp-block-polylang-language-switcher.alignfull {
-	width: 100%;
-}
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle {
-	display: inline-flex;
-	align-items: center;
-	flex: 0 0 auto;
+.pll-switcher-inner .pll-submenu-toggle {
 	width: auto;
 	height: auto;
-	padding: 0;
+	padding: 0 .4em 0 .2em;
 	border: none;
 	margin: 0;
 	line-height: 0;
@@ -43,23 +51,23 @@
 	background-color: transparent !important; /* !important to overwrite some themes. */
 	color: currentColor !important;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle:focus {
+.pll-switcher-inner .pll-submenu-toggle:focus {
 	outline: auto;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle svg {
+.pll-switcher-inner .pll-submenu-toggle svg {
 	display: block;
 	width: .6em;
 	height: .6em;
 	margin: 0;
 }
-.pll-layout-dropdown.pll-switcher .pll-submenu-toggle svg path {
+.pll-switcher-inner .pll-submenu-toggle svg path {
 	stroke: currentColor;
 }
-.pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) svg,
-.pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] svg {
+.pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) svg,
+.pll-switcher-inner .pll-submenu-toggle[aria-expanded="true"] svg {
 	transform: rotate(180deg);
 }
-.pll-layout-dropdown ul {
+.pll-switcher-inner ul {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -71,17 +79,17 @@
 	right: auto;
 	top: 100%;
 	border: 1px solid rgba(0, 0, 0, .15);
-	background-color: #fff;
+	background-color: var(--pll-dropdown-background-color, #fff);
 	color: inherit;
 	visibility: hidden;
 	overflow: hidden;
 	opacity: 0;
 }
-.pll-layout-dropdown.wp-block-polylang-language-switcher ul {
-	background-color: inherit;
+.wp-block-polylang-language-switcher .pll-switcher-inner ul {
+	background-color: var(--pll-dropdown-background-color, inherit); /* Allow to change the color via the UI. */
 }
-.pll-layout-dropdown:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
-.pll-layout-dropdown .pll-submenu-toggle[aria-expanded="true"] + ul {
+.pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
+.pll-switcher-inner .pll-submenu-toggle[aria-expanded="true"] + ul {
 	width: auto;
 	height: auto;
 	min-width: 200px;
@@ -90,65 +98,94 @@
 	opacity: 1;
 }
 
-/* Horizontal and Select layouts */
+/* Horizontal, vertical and Select layouts */
+.pll-layout-vertical ul {
+	display: flex;
+	flex-direction: column;
+}
 .pll-layout-horizontal ul,
 .pll-layout-select {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+
+/*
+ * Main-axis alignment for horizontal, select, and dropdown.
+ * Selectors differ because the flex container is not always the root:
+ * - horizontal: the inner `ul` is flex → target `ul`
+ * - select / dropdown: the root is flex → target the root
+ * Vertical is omitted here: rows stay full width; alignment is done on
+ * the links via justify-content (see below).
+ */
 .pll-alignment-left.pll-layout-horizontal ul,
-.pll-alignment-left.pll-layout-select {
-	align-items: flex-start;
-	justify-content: flex-start;
+.pll-alignment-left.pll-layout-select,
+.pll-alignment-left.pll-layout-dropdown {
+	justify-content: flex-start; /* Default value, but safety check. */
 }
 .pll-alignment-center.pll-layout-horizontal ul,
-.pll-alignment-center.pll-layout-select {
-	align-items: center;
+.pll-alignment-center.pll-layout-select,
+.pll-alignment-center.pll-layout-dropdown {
 	justify-content: center;
 }
 .pll-alignment-right.pll-layout-horizontal ul,
-.pll-alignment-right.pll-layout-select {
-	align-items: flex-end;
+.pll-alignment-right.pll-layout-select,
+.pll-alignment-right.pll-layout-dropdown {
 	justify-content: flex-end;
+}
+.pll-alignment-stretched .pll-switcher-inner {
+	width: 100%;
 }
 .pll-alignment-stretched.pll-layout-horizontal ul,
 .pll-alignment-stretched.pll-layout-select {
 	align-items: stretch;
 }
+.pll-alignment-stretched.pll-layout-dropdown {
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: stretch;
+}
 .pll-alignment-stretched.pll-layout-horizontal li,
-.pll-alignment-stretched.pll-layout-select select {
+.pll-alignment-stretched.pll-layout-select select,
+.pll-alignment-stretched .pll-switcher-inner > a {
 	flex-grow: 1;
+}
+
+/* Dropdown submenu panel position */
+.pll-alignment-center.pll-layout-dropdown ul {
+	left: 50%;
+	right: auto;
+	transform: translateX(-50%);
+}
+.pll-alignment-right.pll-layout-dropdown ul {
+	left: auto;
+	right: 0;
+}
+.pll-alignment-stretched.pll-layout-dropdown ul {
+	left: 0;
+	right: 0;
 }
 
 /* Links */
 .pll-switcher a {
 	display: flex;
 	align-items: center;
+	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
 	padding: 0.25em .5em;
 }
-.pll-alignment-center a {
-	text-align: center;
+:root .pll-layout-dropdown ul a span {
+	color: var(--pll-dropdown-text-color, inherit);
+}
+/* Links are flex containers — use justify-content, not text-align. */
+.pll-alignment-center a,
+.pll-alignment-stretched.pll-layout-horizontal a {
+	justify-content: center;
 }
 .pll-alignment-left a {
-	text-align: left;
+	justify-content: flex-start;
 }
 .pll-alignment-right a {
-	text-align: right;
-}
-
-/* Dropdown trigger: label and toggle on one row. */
-.pll-switcher.pll-layout-dropdown > a {
-	display: inline-flex;
-	align-items: center;
-	flex: 0 0 auto;
-	flex-shrink: 0;
-	width: auto;
-	max-width: none;
-	padding: 0;
-	color: inherit;
-	text-decoration: none;
-	z-index: 1;
+	justify-content: flex-end;
 }

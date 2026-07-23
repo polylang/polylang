@@ -39,6 +39,7 @@ export const RenderedSwitcher = ( { attributes } ) => {
 		flag_border_radius,
 		flag_width,
 		flag_label_spacing,
+		style,
 	} = attributes;
 	const { languages } = useContext( LanguagesContext );
 	const currentLanguage = useCurrentLanguage( languages );
@@ -47,10 +48,12 @@ export const RenderedSwitcher = ( { attributes } ) => {
 		currentLanguage,
 		false
 	);
+	const alignment = style?.typography?.textAlign;
 	const switcherClassName = getSwitcherClassName(
 		layout,
 		show_flags,
-		flag_aspect_ratio
+		flag_aspect_ratio,
+		alignment
 	);
 	const labelSpacing = getLabelSpacing( show_labels, flag_label_spacing );
 	const linkProps = {
@@ -66,30 +69,37 @@ export const RenderedSwitcher = ( { attributes } ) => {
 
 		return (
 			<nav className={ switcherClassName }>
-				{ currentLanguageItem && (
-					<SwitcherLanguageLink
-						language={ currentLanguageItem }
-						{ ...linkProps }
-					/>
-				) }
-				<button className="pll-submenu-toggle">
-					<SubmenuIcon />
-				</button>
+				<div className="pll-switcher-inner">
+					{ currentLanguageItem && (
+						<SwitcherLanguageLink
+							language={ currentLanguageItem }
+							{ ...linkProps }
+						/>
+					) }
+					<button className="pll-submenu-toggle">
+						<SubmenuIcon />
+					</button>
+				</div>
 			</nav>
 		);
 	}
 
 	if ( layout === 'select' ) {
 		return (
-			<select className={ switcherClassName }>
-				{ curatedLanguages.map( ( language ) => {
-					return (
-						<option key={ language.slug } value={ language.slug }>
-							{ getLabel( language, show_labels ) }
-						</option>
-					);
-				} ) }
-			</select>
+			<div className={ switcherClassName }>
+				<select className="pll-switcher-select">
+					{ curatedLanguages.map( ( language ) => {
+						return (
+							<option
+								key={ language.slug }
+								value={ language.slug }
+							>
+								{ getLabel( language, show_labels ) }
+							</option>
+						);
+					} ) }
+				</select>
+			</div>
 		);
 	}
 

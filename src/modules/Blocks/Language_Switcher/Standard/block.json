@@ -74,6 +74,7 @@
 	},
 	"textdomain": "polylang",
 	"style": "pll-language-switcher",
+	"editorStyle": "pll-language-switcher-editor",
 	"editorScript": "pll_blocks",
 	"viewScript": "pll-language-switcher"
 }
