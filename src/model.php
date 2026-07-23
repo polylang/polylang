@@ -71,21 +71,21 @@ class PLL_Model {
 	/**
 	 * Model for the languages.
 	 *
-	 * @var Model\Languages
+	 * @var \WP_Syntex\Polylang\Model\Languages
 	 */
 	public $languages;
 
 	/**
 	 * Model for taxonomies translated by Polylang.
 	 *
-	 * @var Model\Post_Types
+	 * @var \WP_Syntex\Polylang\Model\Post_Types
 	 */
 	public $post_types;
 
 	/**
 	 * Model for taxonomies filtered/translated by Polylang.
 	 *
-	 * @var Model\Taxonomies
+	 * @var \WP_Syntex\Polylang\Model\Taxonomies
 	 */
 	public $taxonomies;
 
