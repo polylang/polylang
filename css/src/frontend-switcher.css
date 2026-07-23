@@ -1,5 +1,11 @@
 @import './lib/switcher-flags.css';
 
+.pll-switcher {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+}
+
 /* List layouts */
 .pll-switcher ul {
 	padding: 0;
@@ -78,6 +84,9 @@
 	visibility: hidden;
 	overflow: hidden;
 	opacity: 0;
+}
+.wp-block-polylang-language-switcher .pll-switcher-inner ul {
+	background-color: var(--pll-dropdown-background-color, inherit); /* Allow to change the color via the UI. */
 }
 .pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
 .pll-switcher-inner .pll-submenu-toggle[aria-expanded="true"] + ul {
