@@ -6,7 +6,6 @@
 use WP_Syntex\Polylang\Widgets;
 use WP_Syntex\Polylang\REST\Request;
 use WP_Syntex\Polylang\Capabilities\Capabilities;
-use WP_Syntex\Polylang\Switcher\Assets as Switcher_Assets;
 
 /**
  * Base class for both admin and frontend
