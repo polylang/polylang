@@ -271,10 +271,14 @@ test.describe.serial(
 
 			// Edit the Navigation Language Switcher block settings to forces link to front page.
 			await selectNavigationLanguageSwitcherBlock( page );
-			await page.getByRole( 'checkbox', { name: 'Force home' } ).check();
+			await page
+				.getByRole( 'checkbox', { name: 'Force link to front page' } )
+				.check();
 			expect(
 				await page
-					.getByRole( 'checkbox', { name: 'Force home' } )
+					.getByRole( 'checkbox', {
+						name: 'Force link to front page',
+					} )
 					.isChecked()
 			).toBeTruthy();
 
