@@ -19,29 +19,31 @@ class PLL_Updater_Registry {
 	/**
 	 * Registered updaters, keyed by product id. On equal versions, the first registered wins.
 	 *
-	 * @var array<string, array{version: string, boot: callable}>
+	 * @var PLL_Updater_Interface[]
 	 */
 	private static $candidates = array();
+
+	/**
+	 * The elected updater, once the election has run.
+	 *
+	 * @var PLL_Updater_Interface|null
+	 */
+	private static $elected = null;
 
 	/**
 	 * Announces an updater to the registry. Called from each add-on's Updater constructor.
 	 *
 	 * @since 3.9
 	 *
-	 * @param string   $id      Product id, also the storage key in the `polylang_licenses` option.
-	 * @param string   $version Updater package version, from Updater::get_version().
-	 * @param callable $boot    Leader-only setup: registers the shared licenses tab, wizard, AJAX and cron. Run once.
+	 * @param PLL_Updater_Interface $updater The add-on's updater.
 	 * @return void
 	 */
-	public static function register( string $id, string $version, callable $boot ): void {
+	public static function register( PLL_Updater_Interface $updater ): void {
 		if ( empty( self::$candidates ) ) {
 			add_action( 'pll_init', array( self::class, 'elect' ), 0 );
 		}
 
-		self::$candidates[ $id ] = array(
-			'version' => $version,
-			'boot'    => $boot,
-		);
+		self::$candidates[ $updater->get_id() ] = $updater;
 	}
 
 	/**
@@ -49,20 +51,35 @@ class PLL_Updater_Registry {
 	 *
 	 * @since 3.9
 	 *
+	 * @param PLL_Base $polylang Polylang object.
 	 * @return void
 	 */
-	public static function elect(): void {
-		if ( empty( self::$candidates ) ) {
-			return;
-		}
+	public static function elect( PLL_Base $polylang ): void {
+		$elected = null;
 
-		$leader = null;
 		foreach ( self::$candidates as $candidate ) {
-			if ( null === $leader || version_compare( $candidate['version'], $leader['version'], '>' ) ) {
-				$leader = $candidate;
+			if ( null === $elected || version_compare( $candidate::get_version(), $elected::get_version(), '>' ) ) {
+				$elected = $candidate;
 			}
 		}
 
-		call_user_func( $leader['boot'] );
+		if ( null === $elected ) {
+			return;
+		}
+
+		self::$elected = $elected;
+
+		$elected->boot_leader( $polylang );
+	}
+
+	/**
+	 * Returns the elected updater, or null before the election has run.
+	 *
+	 * @since 3.9
+	 *
+	 * @return PLL_Updater_Interface|null
+	 */
+	public static function get_elected(): ?PLL_Updater_Interface {
+		return self::$elected;
 	}
 }
