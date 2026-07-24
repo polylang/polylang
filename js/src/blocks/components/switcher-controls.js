@@ -234,7 +234,10 @@ export const SwitcherControls = ( {
 								selected={ flag_aspect_ratio }
 								options={ [
 									{
-										label: __( 'Landscape (3:2)', 'polylang' ),
+										label: __(
+											'Landscape (3:2)',
+											'polylang'
+										),
 										value: '3:2',
 									},
 									{
@@ -307,7 +310,10 @@ export const SwitcherControls = ( {
 						}
 					/>
 					<ToggleControl
-						label={ __( 'Hide languages with no translation', 'polylang' ) }
+						label={ __(
+							'Hide languages with no translation',
+							'polylang'
+						) }
 						checked={ hide_if_no_translation }
 						onChange={ ( value ) =>
 							setAttributes( { hide_if_no_translation: value } )
