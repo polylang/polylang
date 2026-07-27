@@ -61,8 +61,8 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 		// The rows ( 1 per language ).
 		$this->assertSame( 2, $xpath->query( '//tbody/tr' )->length );
 
-		// Just check 1 language name.
-		$td = $xpath->query( '//tbody/tr/td/a' );
+		// Just check 1 language name. Use * because td is replaced by th in WP 7.1.
+		$td = $xpath->query( '//tbody/tr/*[@class="name column-name has-row-actions column-primary"]/a' );
 		$this->assertSame( 'English', $td->item( 0 )->nodeValue );
 	}
 

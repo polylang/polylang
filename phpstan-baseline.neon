@@ -117,11 +117,17 @@ parameters:
 		-
 			message: '#^Cannot access offset ''polylang'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
+			count: 2
 			path: src/Options/Business/Sync.php
 
 		-
 			message: '#^Parameter \#1 \$array of function array_unique expects an array of values castable to string, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Options/Primitive/Abstract_List.php
+
+		-
+			message: '#^Parameter \#2 \$arrays of function array_diff expects an array of values castable to string, array\<int, mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Options/Primitive/Abstract_List.php
@@ -169,6 +175,18 @@ parameters:
 			path: src/admin/admin-base.php
 
 		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: src/admin/admin-classic-editor.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/admin/admin-classic-editor.php
+
+		-
 			message: '#^Parameter \#2 \$lang of method PLL_Translated_Object\:\:get_translation\(\) expects PLL_Language\|string, PLL_Language\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -187,10 +205,40 @@ parameters:
 			path: src/admin/admin-classic-editor.php
 
 		-
+			message: '#^Parameter \#4 \$search of method PLL_Translated_Post\:\:get_untranslated\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/admin/admin-classic-editor.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: src/admin/admin-filters-columns.php
+
+		-
 			message: '#^Parameter \#1 \$location of function wp_safe_redirect expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/admin/admin-filters-media.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: src/admin/admin-filters-post.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''absint'' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/admin/admin-filters-post.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''intval'' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/admin/admin-filters-post.php
 
 		-
 			message: '#^Parameter \#1 \$lang of method PLL_Query\:\:filter_query\(\) expects PLL_Language\|false, PLL_Language\|null given\.$#'
@@ -200,6 +248,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$posts of function update_post_caches expects array\<WP_Post\>, array\<WP_Post\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/admin/admin-filters-post.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/admin/admin-filters-post.php
@@ -231,7 +285,7 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 5
+			count: 8
 			path: src/admin/admin-filters-term.php
 
 		-
@@ -273,7 +327,7 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 1
+			count: 2
 			path: src/admin/admin-links.php
 
 		-
@@ -501,6 +555,18 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$query of method PLL_Choose_Lang\:\:set_curlang_in_query\(\) expects WP_Query, mixed given\.$#'
 			identifier: argument.type
+			count: 1
+			path: src/frontend/choose-lang.php
+
+		-
+			message: '#^Parameter \#1 \$value of method WP_Syntex\\Polylang\\Model\\Languages\:\:get\(\) expects int\|PLL_Language\|string\|WP_Term, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/frontend/choose-lang.php
+
+		-
+			message: '#^Property WP_Styles\:\:\$text_direction \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/frontend/choose-lang.php
 
@@ -1059,6 +1125,12 @@ parameters:
 		-
 			message: '#^Cannot access property \$name on PLL_Language\|false\.$#'
 			identifier: property.nonObject
+			count: 1
+			path: src/modules/wizard/wizard.php
+
+		-
+			message: '#^Method PLL_Wizard\:\:wizard_notice\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
 			count: 1
 			path: src/modules/wizard/wizard.php
 
