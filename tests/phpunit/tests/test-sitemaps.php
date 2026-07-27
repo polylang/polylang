@@ -296,11 +296,9 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->init();
 		$lang = $this->pll_env->model->languages->get( $lang_slug );
 		$query = new WP_Query( $query_args );
-
-		$expected = $this->pll_env->model->languages->get( $expected_slug );
 		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
 
-		$this->assertSame( $expected->slug, $actual->slug );
+		$this->assertSame( $expected_slug, $actual->slug );
 	}
 
 	/**
