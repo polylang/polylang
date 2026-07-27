@@ -63,13 +63,11 @@ class PLL_Updater_Registry {
 			}
 		}
 
-		if ( null === $elected ) {
-			return;
-		}
-
 		self::$elected = $elected;
 
-		$elected->boot_leader( $polylang );
+		if ( null !== $elected ) {
+			$elected->boot_leader( $polylang );
+		}
 	}
 
 	/**
