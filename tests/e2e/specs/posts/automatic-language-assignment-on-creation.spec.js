@@ -25,8 +25,8 @@ test.describe( 'Content Creation and Automatic Default Language Assignment', () 
 	 * Check the default language is assigned to a new draft post.
 	 *
 	 * Prerequisites:
-	 * - Polylang activated and setuped with at least 2 languages.
-	 * - 1 language set as default.
+	 * - Polylang activated and setuped with at least 2 languages, English and French.
+	 * - 1 language set as default (English).
 	 * Steps:
 	 * - Visit the "Add New Post" page in the admin.
 	 * - Check the selected value of the language dropdown.
@@ -49,8 +49,8 @@ test.describe( 'Content Creation and Automatic Default Language Assignment', () 
 	/**
 	 * Check the default language is assigned to a new published post.
 	 *
-	 * - Polylang activated and setuped with at least 2 languages.
-	 * - 1 language set as default.
+	 * - Polylang activated and setuped with at least 2 languages, English and French.
+	 * - 1 language set as default (English).
 	 * Steps:
 	 * - Visit the "Add New Post" page in the admin.
 	 * - Fill in the post title and publish the post.
