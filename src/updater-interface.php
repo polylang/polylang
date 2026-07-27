@@ -25,7 +25,7 @@ interface PLL_Updater_Interface {
 	public static function get_version(): string;
 
 	/**
-	 * Returns the product id, also the storage key in the `polylang_licenses` option.
+	 * Returns the product ID, also the storage key in the `polylang_licenses` option.
 	 *
 	 * @since 3.9
 	 *
