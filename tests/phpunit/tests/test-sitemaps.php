@@ -287,20 +287,17 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @dataProvider lang_query_values_provider
-	 * @param string|false $lang_slug
-	 * @param array        $query_args
-	 * @param string       $expected_slug_or_default
+	 *
+	 * @param string $lang_slug
+	 * @param array  $query_args
+	 * @param string $expected_slug
 	 */
-	public function test_it_should_return_expected_lang_slug( $lang_slug, $query_args, $expected_slug_or_default ) {
+	public function test_it_should_return_expected_lang_slug( $lang_slug, $query_args, $expected_slug ) {
 		$this->init();
-		$lang = $this->pll_env->model->get_language( $lang_slug );
+		$lang = $this->pll_env->model->languages->get( $lang_slug );
 		$query = new WP_Query( $query_args );
 
-		if ( 'default_lang' === $expected_slug_or_default ) {
-			$expected = $this->pll_env->model->get_default_language();
-		} else {
-			$expected = $this->pll_env->model->get_language( $expected_slug_or_default );
-		}
+		$expected = $this->pll_env->model->languages->get( $expected_slug );
 		$actual = $this->pll_env->sitemaps->set_language_from_query( $lang, $query );
 
 		$this->assertSame( $expected->slug, $actual->slug );
@@ -310,9 +307,9 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	 * Provides data about queries, lang and expected values.
 	 *
 	 * @return array $data {
-	 *     @type string|false $lang_slug                Current language code.
-	 *     @type array        $query_args                Arguments for WP query object creation.
-	 *     @type string       $expected_slug_or_default  A language code or 'default_lang' to call the get_default_language() method.
+	 *     @type string     $lang_slug      Current language code.
+	 *     @type array      $query_args     Arguments for WP query object creation.
+	 *     @type string     $expected_slug  A language code ('en' is the default language here).
 	 * }
 	 */
 	public function lang_query_values_provider() {
@@ -333,32 +330,32 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 				array(
 					'fr',
 					array( 'sitemap' => 'posts', 'lang' => '' ),
-					'default_lang',
+					'en',
 				),
-			'Lang is false and query lang is empty, return Default Lang' =>
+			'Lang is not set and query lang is empty, return Default Lang' =>
 				array(
-					false,
+					'',
 					array( 'sitemap' => 'posts', 'lang' => '' ),
-					'default_lang',
+					'en',
 				),
 			'Unknown sitemap value with lang set, return Lang set' =>
-			array(
-				'fr',
-				array( 'sitemap' => 'foo', 'lang' => 'fr' ),
-				'fr',
-			),
+				array(
+					'fr',
+					array( 'sitemap' => 'foo', 'lang' => 'fr' ),
+					'fr',
+				),
 			'Sitemap set with unknown language value, return Lang set' =>
-			array(
-				'fr',
-				array( 'sitemap' => 'posts', 'lang' => 'foo' ),
-				'fr',
-			),
+				array(
+					'fr',
+					array( 'sitemap' => 'posts', 'lang' => 'foo' ),
+					'fr',
+				),
 			'Query without sitemap or lang keys, return Lang set' =>
-			array(
-				'fr',
-				array( 'foo' => 'bar' ),
-				'fr',
-			),
+				array(
+					'fr',
+					array( 'foo' => 'bar' ),
+					'fr',
+				),
 		);
 	}
 }
