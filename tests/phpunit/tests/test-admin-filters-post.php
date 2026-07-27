@@ -486,4 +486,35 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
 	}
+
+	public function filter_translated_post_type_in_settings( $post_types ) {
+		$post_types[] = 'doc';
+		return $post_types;
+	}
+
+	public function test_get_page_return_correct_datas_from_query() {
+		// _unregister_post_type( 'doc' );
+		add_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		$cpt = self::factory()->post->create( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $cpt, 'en' );
+
+		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		self::$model->post->set_language( $page, 'fr' );
+
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = 'doc';
+		set_current_screen();
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		$footer = ob_get_clean();
+
+		$result = array( 'en' => array( $cpt ) );
+
+		$this->assertNotFalse( strpos( $footer, wp_json_encode( $result ) ) );
+	}
 }
