@@ -44,6 +44,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		remove_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
 		_unregister_post_type( 'doc' );
+		_unregister_post_type( 'article' );
 		unset( $GLOBALS['current_screen'] );
 		unset( $GLOBALS['hook_suffix'], $_REQUEST['post_type'] );
 	}
@@ -504,8 +505,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public function test_hierarchical_cpt_script_data_in_footer() {
 		add_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
 		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
-		$cpt = self::factory()->post->create( array( 'post_type' => 'doc' ) );
-		self::$model->post->set_language( $cpt, 'en' );
+		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $en, 'en' );
 		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $page, 'fr' );
 
@@ -521,8 +522,46 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		do_action( 'admin_print_footer_scripts' );
 		$footer = ob_get_clean();
 
-		$result = array( 'en' => array( $cpt ) );
+		$result = array( 'en' => array( $en ) );
 
 		$this->assertNotFalse( strpos( $footer, wp_json_encode( $result ) ) );
+	}
+
+	public function test_non_hierarchical_cpt_script_data_in_footer() {
+		register_post_type( 'article', array( 'public' => true, 'hierarchical' => false ) );
+
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = 'article';
+		set_current_screen();
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		$footer = ob_get_clean();
+
+		$this->assertFalse( strpos( $footer, 'pll_page_languages' ) );
+	}
+
+	public function test_hierarchical_untranslated_cpt_script_data_in_footer() {
+		register_post_type( 'doc_not_translated', array( 'public' => true, 'hierarchical' => true ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'doc_not_translated' ) );
+		self::$model->post->set_language( $en, 'en' );
+
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = 'doc_not_translated';
+		set_current_screen();
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		$footer = ob_get_clean();
+
+		$this->assertFalse( strpos( $footer, 'pll_page_languages' ) );
 	}
 }
