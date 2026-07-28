@@ -45,6 +45,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		remove_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
 		_unregister_post_type( 'doc' );
 		_unregister_post_type( 'article' );
+		_unregister_post_type( 'doc_not_translated' );
 		unset( $GLOBALS['current_screen'] );
 		unset( $GLOBALS['hook_suffix'], $_REQUEST['post_type'] );
 	}
