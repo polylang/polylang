@@ -23,20 +23,20 @@ jQuery(
 		function addLanguage( language ) {
 			// language properties come from the select dropdown which is built server side and well escaped.
 			// see template view-wizard-step-languages.php.
-			var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl );
 			var languageTrashIconHtml = $( '<td />' )
-			.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			.append(
 				$( '<span />' )
 				.addClass( 'dashicons dashicons-trash' )
 				.attr( 'data-language', language.locale )
-				.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				.append(
 					$( '<span />' )
 					.addClass( 'screen-reader-text' )
 					.text( pll_wizard_params.i18n_remove_language_icon )
 				)
 			);
 			// see the comment and the hardcoded code above. languageTrashIconHtml and languageValueHtml are safe.
-			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml );
 			var languageFieldHtml = $( '<input />' ).attr(
 				{
 					type: 'hidden',
@@ -50,7 +50,7 @@ jQuery(
 			languagesMap.set( language.locale, language );
 
 			// see above how languageLineHtml is built.
-			languagesListTable.append( languageLineHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			languagesListTable.append( languageLineHtml );
 			// Bind click event on trash icon.
 			languagesListTable.on(
 				'click',
@@ -73,7 +73,7 @@ jQuery(
 			);
 			// see above how languageFieldHtml is built.
 			// Add hidden input field for posting the form.
-			languageFields.append( languageFieldHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			languageFields.append( languageFieldHtml );
 
 		}
 
@@ -86,7 +86,7 @@ jQuery(
 			messagesContainer.empty();
 			// html is hardcoded and use of jQuery text method which is safe to add message value.
 			// In addition message is i18n value which is initialized server side in PLL_Wizard::add_step_languages and correctly escaped.
-			messagesContainer.prepend( $( '<p/>' ).addClass( 'error' ).text( message ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			messagesContainer.prepend( $( '<p/>' ).addClass( 'error' ).text( message ) );
 		}
 
 		/**
@@ -123,7 +123,7 @@ jQuery(
 		function disableButton( button ){
 			button.prop( 'disabled', true );
 			// Because the button is disabled we need to add the value of the button to ensure it will pass in the request.
-			addLanguageForm.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			addLanguageForm.append(
 				$( '<input />' ).prop(
 					{
 						type: 'hidden',
@@ -274,7 +274,7 @@ jQuery(
 					$( this ).find( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' ).first().text() );
 					// language properties come from the select dropdown #lang_list which is built server side and well escaped.
 					// see template view-wizard-step-languages.php.
-					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) );
 				},
 				buttons: [
 				{

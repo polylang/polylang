@@ -49,7 +49,7 @@ jQuery(
 
 					// @see code from WordPress core https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/js/tags-box.js#L291
 					// @see wp_generate_tag_cloud function which generate the escaped HTML https://github.com/WordPress/WordPress/blob/a02b5cc2a8eecb8e076fbb7cf4de7bd2ec8a8eb1/wp-includes/category-template.php#L966-L975
-					r = $( '<div />' ).addClass( 'the-tagcloud' ).attr( 'id', 'tagcloud-' + tax ).html( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+					r = $( '<div />' ).addClass( 'the-tagcloud' ).attr( 'id', 'tagcloud-' + tax ).html( r );
 					$( 'a', r ).on(
 						'click',
 						function () {
@@ -63,12 +63,12 @@ jQuery(
 					var v = tagCloud.css( 'display' );
 					if ( v ) {
 						// See the comment above when r variable is created.
-						$( '#tagcloud-' + tax ).replaceWith( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+						$( '#tagcloud-' + tax ).replaceWith( r );
 						$( '#tagcloud-' + tax ).css( 'display', v );
 					}
 					else {
 						// See the comment above when r variable is created.
-						$( '#' + id ).after( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+						$( '#' + id ).after( r );
 					}
 				}
 			);
@@ -92,7 +92,7 @@ jQuery(
 				// add our hidden field in the new category form - for each hierarchical taxonomy
 				// to set the language when creating a new category
 				// html code inserted come from html code itself.
-				$( '#' + taxonomy + '-add-submit' ).before( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.before
+				$( '#' + taxonomy + '-add-submit' ).before(
 					$( '<input />' ).attr( 'type', 'hidden' )
 						.attr( 'id', taxonomy + '-lang' )
 						.attr( 'name', 'term_lang_choice' )
@@ -144,35 +144,35 @@ jQuery(
 										switch ( this.what ) {
 											case 'translations': // translations fields
 												// Data is built and come from server side and is well escaped when necessary
-												$( '.translations' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+												$( '.translations' ).html( this.data );
 												initMetaboxAutoComplete();
 											break;
 											case 'taxonomy': // categories metabox for posts
 												var tax = this.data;
 												// @see wp_terms_checklist https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/template.php#L175
 												// @see https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/class-walker-category-checklist.php#L89-L111
-												$( '#' + tax + 'checklist' ).html( this.supplemental.all ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+												$( '#' + tax + 'checklist' ).html( this.supplemental.all );
 												// @see wp_popular_terms_checklist https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/template.php#L236
-												$( '#' + tax + 'checklist-pop' ).html( this.supplemental.populars ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+												$( '#' + tax + 'checklist-pop' ).html( this.supplemental.populars );
 												// @see wp_dropdown_categories https://github.com/WordPress/WordPress/blob/5.5.1/wp-includes/category-template.php#L336
 												// which is called by PLL_Admin_Classic_Editor::post_lang_choice to generate supplemental.dropdown
-												$( '#new' + tax + '_parent' ).replaceWith( this.supplemental.dropdown ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+												$( '#new' + tax + '_parent' ).replaceWith( this.supplemental.dropdown );
 												$( '#' + tax + '-lang' ).val( $( '.post_lang_choice' ).val() ); // hidden field
 											break;
 											case 'pages': // parent dropdown list for pages
 												// @see wp_dropdown_pages https://github.com/WordPress/WordPress/blob/5.2.2/wp-includes/post-template.php#L1186-L1208
 												// @see https://github.com/WordPress/WordPress/blob/5.2.2/wp-includes/class-walker-page-dropdown.php#L88
-												$( '#parent_id' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+												$( '#parent_id' ).html( this.data );
 											break;
 											case 'flag': // flag in front of the select dropdown
 												// Data is built and come from server side and is well escaped when necessary
-												$( '.pll-select-flag' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+												$( '.pll-select-flag' ).html( this.data );
 											break;
 											case 'permalink': // Sample permalink
 												var div = $( '#edit-slug-box' );
 												if ( '-1' != this.data && div.children().length ) {
 													// @see get_sample_permalink_html https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/post.php#L1425-L1454
-													div.html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+													div.html( this.data );
 												}
 											break;
 										}

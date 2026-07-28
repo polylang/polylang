@@ -59,11 +59,11 @@ jQuery(
 
 			// Add the flag from the data attribute in the selected element.
 			// `item.element` is the original `<option>` element, the data to prepend comes from a `data-html-flag` HTML attribute, filled by a method from `PLL_Language`.
-			wrapper.prepend( $( item.element ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			wrapper.prepend( $( item.element ).data( 'flag-html' ) );
 			wrapper.children( 'img' ).addClass( 'ui-icon' );
 
 			// `wrapper` and `ul` are safe, see above.
-			return li.append( wrapper ).appendTo( ul ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append, WordPressVIPMinimum.JS.HTMLExecutingFunctions.appendTo
+			return li.append( wrapper ).appendTo( ul );
 		};
 		// Override selected item since jQuery UI 1.12 which introduces extension point method _renderButtonItem.
 		// @see https://api.jqueryui.com/1.12/selectmenu/#method-_renderButtonItem _renderButtonItem documentation.
@@ -74,7 +74,7 @@ jQuery(
 
 			// Add the flag from the data attribute in the selected element.
 			// The data to prepend comes from a `data-html-flag` HTML attribute, filled by a method from `PLL_Language`.
-			buttonItem.prepend( $( selectElement.element ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			buttonItem.prepend( $( selectElement.element ).data( 'flag-html' ) );
 			buttonItem.children( 'img' ).addClass( 'ui-icon' );
 
 			return buttonItem;
@@ -275,14 +275,14 @@ jQuery(
 								switch ( this.what ) {
 									case 'license-update':
 										// Data comes from `PLL_License::get_form_field()`, where everything is escaped.
-										$( '#pll-license-' + this.data ).replaceWith( this.supplemental.html ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+										$( '#pll-license-' + this.data ).replaceWith( this.supplemental.html );
 									break;
 									case 'success':
 										tr.hide().prev().show(); // close only if there is no error
 									case 'error':
 										$( '.settings-error' ).remove(); // remove previous messages if any
 										// The data comes from `pll_add_notice()`, where message are passed through `wp_kses()`.
-										$( 'h1' ).after( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+										$( 'h1' ).after( this.data );
 
 										// Make notices dismissible
 										// copy paste of common.js from WP 4.2.2
@@ -296,7 +296,7 @@ jQuery(
 												$button.find( '.screen-reader-text' ).text( btnText );
 
 												// Whitelist because of how the button is built. See above
-												$this.append( $button ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+												$this.append( $button );
 
 												$button.on(
 													'click.wp-dismiss-notice',
@@ -376,7 +376,7 @@ jQuery(
 					data,
 					function ( response ) {
 						// Data comes from `PLL_License::get_form_field()`, where everything is escaped.
-						$( '#pll-license-' + response.id ).replaceWith( response.html ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+						$( '#pll-license-' + response.id ).replaceWith( response.html );
 					}
 				);
 			}

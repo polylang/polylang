@@ -42,7 +42,7 @@ trait PLL_Handle_WP_Redirect_Trait {
 
 		add_filter(
 			'wp_redirect',
-			function ( $location, $status ) { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
+			function ( $location, $status ) { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.TerminatingInsteadOfReturn
 				$this->has_redirect      = true;
 				$this->redirect_location = $location;
 				$this->redirect_status   = $status;

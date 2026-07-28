@@ -156,7 +156,7 @@ jQuery(
 											// data is built with a call to WP_Posts_List_Table::single_row method
 											// which uses internally other WordPress methods which escape correctly values.
 											// For Polylang language columns the HTML code is correctly escaped in PLL_Admin_Filters_Columns::post_column method.
-											$( "#post-" + this.supplemental.post_id ).replaceWith( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+											$( "#post-" + this.supplemental.post_id ).replaceWith( this.data );
 										}
 									}
 								);
