@@ -39,6 +39,15 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang']             = $this->pll_admin;
 	}
 
+	public function tear_down() {
+		parent::tear_down();
+
+		remove_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
+		_unregister_post_type( 'doc' );
+		unset( $GLOBALS['current_screen'] );
+		unset( $GLOBALS['hook_suffix'], $_REQUEST['post_type'] );
+	}
+
 	public function test_default_language() {
 		// User preferred language
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
@@ -492,13 +501,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		return $post_types;
 	}
 
-	public function test_get_page_return_correct_datas_from_query() {
-		// _unregister_post_type( 'doc' );
+	public function test_hierarchical_cpt_script_data_in_footer() {
 		add_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
 		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
 		$cpt = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $cpt, 'en' );
-
 		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $page, 'fr' );
 
@@ -507,6 +514,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		set_current_screen();
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
 		do_action( 'admin_enqueue_scripts' );
 
 		ob_start();
