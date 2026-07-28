@@ -565,4 +565,39 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertFalse( strpos( $footer, 'pll_page_languages' ) );
 	}
+
+	public function test_get_pages_query_is_cached_for_dropdown() {
+		add_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+
+		$post = self::factory()->post->create_and_get( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $post->ID, 'en' );
+
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = 'doc';
+		set_current_screen();
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		global $wpdb;
+
+		$before = $wpdb->num_queries;
+		do_action( 'admin_enqueue_scripts' );
+		$after_pll = $wpdb->num_queries;
+
+		// Same arguments as the real 'parent page' dropdown built by wp_dropdown_pages() in WordPress core.
+		wp_dropdown_pages(
+			array(
+				'post_type'    => $post->post_type,
+				'exclude_tree' => $post->ID,
+				'selected'     => $post->post_parent,
+				'sort_column'  => 'menu_order, post_title',
+				'echo'         => 0,
+			)
+		);
+		$after_dropdown = $wpdb->num_queries;
+
+		$this->assertSame( $after_pll, $after_dropdown );
+		$this->assertSame( 1, $after_pll - $before );
+	}
 }
