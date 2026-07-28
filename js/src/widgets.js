@@ -206,7 +206,7 @@ const pllWidget = {
 					const newFlag = document.createElement( 'span' );
 					newFlag.classList.add( 'pll-lang' );
 					newFlag.innerHTML = `${ icon } &nbsp; `; // `icon` comes from `PLL_Admin_Base::add_inline_scripts()`.
-					title.prepend( newFlag );, `newFlag` is a new element we just created with safe data.
+					title.prepend( newFlag ); // `newFlag` is a new element we just created with safe data.
 				}
 			} else if ( currentFlag ) {
 				currentFlag.remove();
