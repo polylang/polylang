@@ -2,7 +2,7 @@
 <ruleset name="Polylang">
 	<description>Coding standards for Polylang</description>
 
-	<arg name="extensions" value="php,js" />
+	<arg name="extensions" value="php" />
 	<arg name="colors"/>
 	<arg value="ps"/>
 	<arg name="parallel" value="20"/>
@@ -51,6 +51,8 @@
 		<exclude name="WordPressVIPMinimum.Hooks.PreGetPosts.PreGetPosts"/>
 		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown"/>
 		<exclude name="WordPressVIPMinimum.Performance.NoPaging.nopaging_nopaging"/>
+		<exclude name="WordPressVIPMinimum.Performance.NoPaging.posts_per_page_numberposts"/>
+		<exclude name="WordPressVIPMinimum.Performance.NoPaging.posts_per_page_posts_per_page"/>
 		<exclude name="WordPressVIPMinimum.Performance.TaxonomyMetaInOptions.PossibleTermMetaInOptions"/>
 		<exclude name="WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE"/>
 	</rule>
@@ -154,46 +156,17 @@
 
 	<!--
 	#############################################################################
-	Global exclusions for js files.
-	#############################################################################
-	-->
-
-	<rule ref="PEAR.Functions.FunctionCallSignature">
-		<exclude-pattern>*/*.js</exclude-pattern>
-	</rule>
-
-	<rule ref="Generic.WhiteSpace.ScopeIndent">
-		<exclude-pattern>*/*.js</exclude-pattern>
-	</rule>
-
-	<rule ref="WordPress.WhiteSpace.OperatorSpacing">
-		<exclude-pattern>*/*.js</exclude-pattern>
-	</rule>
-
-	<rule ref="Generic.Formatting.MultipleStatementAlignment">
-		<exclude-pattern>*/*.js</exclude-pattern>
-	</rule>
-
-	<!--
-	#############################################################################
 	Excluded files.
 	#############################################################################
 	-->
 
 	<rule ref="Squiz.Commenting.FileComment.MissingPackageTag">
 		<exclude-pattern>*-build.php</exclude-pattern>
-		<exclude-pattern>*.js</exclude-pattern>
-	</rule>
-	<rule ref="Squiz.Commenting.FileComment.SpacingAfterComment">
-		<exclude-pattern>*.js</exclude-pattern>
 	</rule>
 
-	<exclude-pattern>js/*.min.js</exclude-pattern>
-	<exclude-pattern>js/build</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>
 	<exclude-pattern>vendor/*</exclude-pattern>
 	<exclude-pattern>tmp/*</exclude-pattern>
-	<exclude-pattern>webpack.config.js</exclude-pattern>
 	<exclude-pattern>rector.php</exclude-pattern>
 	<exclude-pattern>coverage/*</exclude-pattern>
 	<exclude-pattern>playwright-report/*</exclude-pattern>

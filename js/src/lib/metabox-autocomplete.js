@@ -20,7 +20,7 @@ export function initMetaboxAutoComplete() {
 					select: function (event, ui) {
 						jQuery('#htr_lang_' + tr_lang).val(ui.item.id);
 						// ui.item.link is built and come from server side and is well escaped when necessary
-						td.html(ui.item.link); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+						td.html(ui.item.link);
 					},
 				}
 			);
@@ -32,7 +32,7 @@ export function initMetaboxAutoComplete() {
 					if ( ! jQuery(this).val()  ) {
 						jQuery('#htr_lang_' + tr_lang).val(0);
 						// Value is retrieved from HTML already generated server side
-						td.html(td.siblings('.hidden').children().clone()); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+						td.html(td.siblings('.hidden').children().clone());
 					}
 				}
 			);

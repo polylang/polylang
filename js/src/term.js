@@ -83,7 +83,7 @@ jQuery(
 											// data is built with a call to WP_Terms_List_Table::single_row method
 											// which uses internally other WordPress methods which escape correctly values.
 											// For Polylang language columns the HTML code is correctly escaped in PLL_Admin_Filters_Columns::term_column method.
-											$( "#tag-" + this.supplemental.term_id ).replaceWith( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+											$( "#tag-" + this.supplemental.term_id ).replaceWith( this.data );
 										}
 									}
 								);
@@ -150,7 +150,7 @@ jQuery(
 							select: function ( event, ui ) {
 								$( '#htr_lang_' + tr_lang ).val( ui.item.id );
 								// ui.item.link is built and come from server side and is well escaped when necessary
-								td.html( ui.item.link ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+								td.html( ui.item.link );
 							},
 						}
 					);
@@ -162,7 +162,7 @@ jQuery(
 							if ( ! $( this ).val() ) {
 								$( '#htr_lang_' + tr_lang ).val( 0 );
 								// Value is retrieved from HTML already generated server side
-								td.html( td.siblings( '.hidden' ).children().clone() ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+								td.html( td.siblings( '.hidden' ).children().clone() );
 							}
 						}
 					);
@@ -202,20 +202,20 @@ jQuery(
 								switch ( this.what ) {
 									case 'translations': // translations fields
 										// Data is built and come from server side and is well escaped when necessary
-										$( "#term-translations" ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+										$( "#term-translations" ).html( this.data );
 										init_translations();
 									break;
 									case 'parent': // parent dropdown list for hierarchical taxonomies
 										// data correctly escaped in PLL_Admin_Filters_Term::term_lang_choice method which uses wp_dropdown_categories function.
-										$( '#parent' ).replaceWith( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+										$( '#parent' ).replaceWith( this.data );
 									break;
 									case 'tag_cloud': // popular items
 										// data correctly escaped in PLL_Admin_Filters_Term::term_lang_choice method which uses wp_tag_cloud and wp_generate_tag_cloud functions.
-										$( '.tagcloud' ).replaceWith( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+										$( '.tagcloud' ).replaceWith( this.data );
 									break;
 									case 'flag': // flag in front of the select dropdown
 										// Data is built and come from server side and is well escaped when necessary
-										$( '.pll-select-flag' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+										$( '.pll-select-flag' ).html( this.data );
 									break;
 								}
 							}

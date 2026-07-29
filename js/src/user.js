@@ -51,7 +51,7 @@ const pllDescription = {
 					img.setAttribute( 'height', data.flag.height );
 				}
 				label.textContent = ` ${ data.name }`;
-				label.prepend( img ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+				label.prepend( img );
 			} else {
 				label.textContent = data.name;
 			}
@@ -60,13 +60,13 @@ const pllDescription = {
 			textarea.setAttribute( 'id', `description_${ data.slug }` );
 			textarea.setAttribute( 'name', `description_${ data.slug }` );
 			textarea.setAttribute( 'dir', data.direction );
-			textarea.innerHTML = data.description; // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found
+			textarea.innerHTML = data.description;
 
-			wrapper.append( label, document.createElement( 'br' ), textarea ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			wrapper.append( label, document.createElement( 'br' ), textarea );
 			rows.push( wrapper );
 		} );
 
-		originTextarea.replaceWith( ...rows ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+		originTextarea.replaceWith( ...rows );
 	},
 };
 

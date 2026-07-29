@@ -43,7 +43,7 @@ export const useMemoizedFlag = (
 					'--pll-flag-width': flagWidth,
 				} }
 				/* eslint-disable-next-line prettier/prettier */
-				dangerouslySetInnerHTML={ { // phpcs:ignore WordPressVIPMinimum.JS.DangerouslySetInnerHTML.Found
+				dangerouslySetInnerHTML={ {
 					__html: stripFlagDimensions( language.flag ),
 				} }
 			/>

@@ -19,7 +19,7 @@ export const initializeConfirmationModal = () => {
 
 	// Put it after languages list dropdown.
 	// PHPCS ignore dialogContainer is a new safe HTML code generated above.
-	languagesList.after( dialogContainer ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+	languagesList.after( dialogContainer );
 
 	const dialogResult = new Promise(
 		( confirm, cancel ) => {

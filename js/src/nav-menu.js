@@ -83,15 +83,15 @@ const pllNavMenu = {
 				metabox.id.replace( 'menu-item-settings-', '' )
 			);
 
-			// phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+
 			metabox.append(
 				t.createHiddenInput( 'title', itemId, pll_data.title )
 			);
-			// phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+
 			metabox.append(
 				t.createHiddenInput( 'url', itemId, '#pll_switcher' )
 			);
-			metabox.append( t.createHiddenInput( 'pll-detect', itemId, 1 ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			metabox.append( t.createHiddenInput( 'pll-detect', itemId, 1 ) );
 
 			const menuValues =
 				typeof pll_data.val[ itemId ] !== 'undefined'
@@ -128,7 +128,7 @@ const pllNavMenu = {
 
 				const inputWrapper = t.createElement( 'p', wrapperAtts );
 
-				metabox.prepend( inputWrapper ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+				metabox.prepend( inputWrapper );
 
 				// Create the label.
 				const label = t.createElement( 'label', {
@@ -136,7 +136,7 @@ const pllNavMenu = {
 				} );
 				label.innerText = ` ${ optionData.label } `;
 
-				inputWrapper.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				inputWrapper.append( label );
 
 				// Create the input.
 				if ( optionData.choices ) {
@@ -146,14 +146,14 @@ const pllNavMenu = {
 						optionValue,
 						optionData.choices
 					);
-					label.append( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+					label.append( input );
 				} else {
 					const input = t.createCheckboxInput(
 						optionName,
 						itemId,
 						optionValue
 					);
-					label.prepend( input ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+					label.prepend( input );
 				}
 			}
 		},
@@ -222,7 +222,7 @@ const pllNavMenu = {
 					atts
 				);
 				option.innerText = choices[ optionValue ];
-				input.append( option ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				input.append( option );
 			} );
 			return input;
 		},
