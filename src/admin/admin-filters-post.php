@@ -99,15 +99,43 @@ class PLL_Admin_Filters_Post {
 
 		// Hierarchical post types
 		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
-			$pages = get_pages( array( 'sort_column' => 'menu_order, post_title' ) ); // Same arguments as the parent pages dropdown to avoid an extra query.
+			// Only fetch IDs to avoid loading post_content (source of the memory crash on heavy pages).
+			// no_found_rows/ignore_sticky_posts: same optimizations as get_pages() itself.
+			// cache_results: false, otherwise WP_Query loads all columns anyway to make the result reusable by any future query regardless of 'fields' (default behavior since WP 6.1).
+			// Term cache is primed separately below, so update_post_term_cache/meta_cache are disabled here.
+			$page_ids = get_posts(
+				array(
+					'post_type'              => $screen->post_type,
+					'fields'                 => 'ids',
+					'posts_per_page'         => -1,
+					'no_found_rows'          => true,
+					'ignore_sticky_posts'    => true,
+					'cache_results'          => false,
+					'update_post_term_cache' => false,
+					'update_post_meta_cache' => false,
+				)
+			);
 
-			update_post_caches( $pages, $screen->post_type, true, false );
+			update_object_term_cache( $page_ids, $screen->post_type );
+
+			$page_languages = array();
+			foreach ( $page_ids as $id ) {
+				if ( $lang = $this->model->post->get_language( $id ) ) {
+					$page_languages[ $lang->slug ][] = $id;
+				}
+			}
+
+			if ( ! empty( $page_languages ) ) {
+				wp_localize_script( 'pll_post', 'pll_page_languages', $page_languages );
+			}
+
+			update_object_term_cache( $page_ids, $screen->post_type );
 
 			$page_languages = array();
 
-			foreach ( $pages as $page ) {
-				if ( $lang = $this->model->post->get_language( $page->ID ) ) {
-					$page_languages[ $lang->slug ][] = $page->ID;
+			foreach ( $page_ids as $id ) {
+				if ( $lang = $this->model->post->get_language( $id ) ) {
+					$page_languages[ $lang->slug ][] = $id;
 				}
 			}
 
