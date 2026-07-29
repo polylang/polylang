@@ -4,5 +4,9 @@
   "plugins": [ "." ],
   "mappings": {
     "wp-content/plugins/custom-strings": "./tests/e2e/plugins/custom-strings"
+  },
+  "config": {
+  "WP_MEMORY_LIMIT": "32M",
+  "WP_MAX_MEMORY_LIMIT": "32M"
   }
 }
