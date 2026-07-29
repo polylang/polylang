@@ -39,6 +39,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang']             = $this->pll_admin;
 	}
 
+	public function tear_down() {
+		parent::tear_down();
+		_unregister_post_type( 'doc' );
+		_unregister_post_type( 'article' );
+		_unregister_post_type( 'doc_not_translated' );
+	}
+
 	public function test_default_language() {
 		// User preferred language
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
@@ -223,16 +230,16 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
 
-		$this->assertFalse( strpos( $out, 'test' ) );
-		$this->assertNotFalse( strpos( $out, 'essai' ) );
+		$this->assertStringNotContainsString( 'test', $out );
+		$this->assertStringContainsString( 'essai', $out );
 
 		$_POST['lang'] = 'en'; // Prevails on the post language (ajax response to language change)
 		ob_start();
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $out, 'test' ) );
-		$this->assertFalse( strpos( $out, 'essai' ) );
+		$this->assertStringContainsString( 'test', $out );
+		$this->assertStringNotContainsString( 'essai', $out );
 	}
 
 	public function test_languages_meta_box_for_new_post() {
@@ -359,13 +366,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		// Link to English post
 		$input = $xpath->query( '//input[@name="media_tr_lang[en]"]' );
 		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
-		$this->assertNotFalse( strpos( $form, 'Edit the translation in English' ) );
+		$this->assertStringContainsString( 'Edit the translation in English', $form );
 
 		// No self link
 		$this->assertEmpty( $xpath->query( '//input[@name="media_tr_lang[fr]"]' )->length );
 
 		// Link to empty German post
-		$this->assertNotFalse( strpos( $form, 'Add a translation in Deutsch' ) );
+		$this->assertStringContainsString( 'Add a translation in Deutsch', $form );
 	}
 
 	public function test_get_posts_language_filter() {
@@ -464,6 +471,21 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $term_id, $matches[1] );
 	}
 
+	private function set_current_edit_screen( string $post_type ): void {
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = $post_type;
+		set_current_screen();
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+	}
+
+	private function get_admin_footer(): string {
+		do_action( 'admin_enqueue_scripts' );
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		return (string) ob_get_clean();
+	}
+
 	public function test_parent_pages_script_data_in_footer() {
 		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -471,19 +493,117 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$GLOBALS['hook_suffix'] = 'edit.php';
-		$_REQUEST['post_type']  = 'page';
-		set_current_screen();
-		$GLOBALS['wp_scripts'] = new WP_Scripts();
-		wp_default_scripts( $GLOBALS['wp_scripts'] );
-		do_action( 'admin_enqueue_scripts' );
-
-		ob_start();
-		do_action( 'admin_print_footer_scripts' );
-		$footer = ob_get_clean();
+		$this->set_current_edit_screen( 'page' );
+		$footer = $this->get_admin_footer();
 
 		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
 
-		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
+		preg_match( '/var pll_page_languages = (\{.*?\});/', $footer, $matches );
+		$actual = json_decode( $matches[1], true );
+		$this->assertEqualsCanonicalizing( $pages, $actual );
+	}
+
+	public function test_hierarchical_cpt_script_data_in_footer() {
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				$post_types[] = 'doc';
+				return $post_types;
+			}
+		);
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $en, 'en' );
+		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		self::$model->post->set_language( $page, 'fr' );
+
+		$this->set_current_edit_screen( 'doc' );
+		$footer = $this->get_admin_footer();
+
+		$result = array( 'en' => array( $en ) );
+
+		$this->assertStringContainsString( wp_json_encode( $result ), $footer );
+	}
+
+	public function test_non_hierarchical_cpt_script_data_in_footer() {
+		register_post_type( 'article', array( 'public' => true, 'hierarchical' => false ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'article' ) );
+		self::$model->post->set_language( $en, 'en' );
+
+		$this->set_current_edit_screen( 'article' );
+		$footer = $this->get_admin_footer();
+
+		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
+	}
+
+	public function test_hierarchical_untranslated_cpt_script_data_in_footer() {
+		register_post_type( 'doc_not_translated', array( 'public' => true, 'hierarchical' => true ) );
+
+		$this->set_current_edit_screen( 'doc_not_translated' );
+		$footer = $this->get_admin_footer();
+
+		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
+	}
+
+	public function test_admin_enqueue_scripts_only_selects_page_ids() {
+		if ( ! defined( 'SAVEQUERIES' ) ) {
+			define( 'SAVEQUERIES', true );
+		}
+
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				$post_types[] = 'doc';
+				return $post_types;
+			}
+		);
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		self::factory()->post->create( array( 'post_type' => 'doc' ) );
+
+		$this->set_current_edit_screen( 'doc' );
+
+		global $wpdb;
+		$before = count( $wpdb->queries );
+		do_action( 'admin_enqueue_scripts' );
+
+		$get_pages_query = null;
+		foreach ( array_slice( $wpdb->queries, $before ) as $query ) {
+			if ( str_contains( $query[2], 'PLL_Admin_Filters_Post->admin_enqueue_scripts' ) ) {
+				$get_pages_query = $query[0];
+				break;
+			}
+		}
+
+		$this->assertNotNull( $get_pages_query, 'Expected a query triggered by admin_enqueue_scripts().' );
+		$this->assertStringNotContainsString( 'post_content', $get_pages_query );
+		$this->assertStringContainsString( 'wptests_posts.ID', $get_pages_query );
+	}
+
+	public function test_admin_enqueue_scripts_primes_term_cache() {
+		if ( ! defined( 'SAVEQUERIES' ) ) {
+			define( 'SAVEQUERIES', true );
+		}
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				$post_types[] = 'doc';
+				return $post_types;
+			}
+		);
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		register_taxonomy( 'doc_tax', 'doc' );
+
+		$post_id = self::factory()->post->create( array( 'post_type' => 'doc' ) );
+		wp_set_post_terms( $post_id, array( 'test' ), 'doc_tax', true );
+
+		$this->set_current_edit_screen( 'doc' );
+		do_action( 'admin_enqueue_scripts' );
+
+		global $wpdb;
+		$before = count( $wpdb->queries );
+		get_the_terms( $post_id, 'doc_tax' ); // Devrait lire le cache, pas la DB
+		$after = count( $wpdb->queries );
+
+		$this->assertSame( $before, $after, 'get_the_terms() should not trigger a new query if the term cache was primed.' );
 	}
 }
