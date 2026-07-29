@@ -41,7 +41,7 @@ class PLL_Updater_Registry {
 	public static function register( PLL_Updater_Interface $updater ): void {
 		add_action( 'pll_init', array( self::class, 'elect' ), 0 );
 
-		self::$candidates[ $updater->get_id() ] = $updater;
+		self::$candidates[] = $updater;
 	}
 
 	/**
