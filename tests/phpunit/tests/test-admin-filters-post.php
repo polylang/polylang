@@ -601,7 +601,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		global $wpdb;
 		$before = count( $wpdb->queries );
-		get_the_terms( $post_id, 'doc_tax' ); // Devrait lire le cache, pas la DB
+		get_the_terms( $post_id, 'doc_tax' );
 		$after = count( $wpdb->queries );
 
 		$this->assertSame( $before, $after, 'get_the_terms() should not trigger a new query if the term cache was primed.' );

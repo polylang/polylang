@@ -6,12 +6,5 @@
   ],
   "mappings": {
     "wp-content/plugins/custom-strings": "./tests/e2e/plugins/custom-strings"
-  },
-  "config": {
-    "WP_MEMORY_LIMIT": "64M",
-    "WP_MAX_MEMORY_LIMIT": "64M",
-    "WP_DEBUG": true,
-    "WP_DEBUG_LOG": true,
-    "WP_DEBUG_DISPLAY": true
   }
 }
