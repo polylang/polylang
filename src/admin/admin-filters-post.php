@@ -102,7 +102,7 @@ class PLL_Admin_Filters_Post {
 			$pages = get_pages(
 				array(
 					'sort_column' => 'menu_order, post_title',
-					'post_type' => $screen->post_type,
+					'post_type'   => $screen->post_type,
 				)
 			); // Same arguments as the parent pages dropdown to avoid an extra query.
 

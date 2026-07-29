@@ -41,13 +41,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 	public function tear_down() {
 		parent::tear_down();
-
-		remove_filter( 'pll_get_post_types', array( $this, 'add_doc_to_translated_post_types' ) );
 		_unregister_post_type( 'doc' );
 		_unregister_post_type( 'article' );
 		_unregister_post_type( 'doc_not_translated' );
-		unset( $GLOBALS['current_screen'] );
-		unset( $GLOBALS['hook_suffix'], $_REQUEST['post_type'] );
 	}
 
 	public function test_default_language() {
@@ -234,16 +230,16 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
 
-		$this->assertFalse( strpos( $out, 'test' ) );
-		$this->assertNotFalse( strpos( $out, 'essai' ) );
+		$this->assertStringNotContainsString( 'test', $out );
+		$this->assertStringContainsString( 'essai', $out );
 
 		$_POST['lang'] = 'en'; // Prevails on the post language (ajax response to language change)
 		ob_start();
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $out, 'test' ) );
-		$this->assertFalse( strpos( $out, 'essai' ) );
+		$this->assertStringContainsString( 'test', $out );
+		$this->assertStringNotContainsString( 'essai', $out );
 	}
 
 	public function test_languages_meta_box_for_new_post() {
@@ -370,13 +366,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		// Link to English post
 		$input = $xpath->query( '//input[@name="media_tr_lang[en]"]' );
 		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
-		$this->assertNotFalse( strpos( $form, 'Edit the translation in English' ) );
+		$this->assertStringContainsString( 'Edit the translation in English', $form );
 
 		// No self link
 		$this->assertEmpty( $xpath->query( '//input[@name="media_tr_lang[fr]"]' )->length );
 
 		// Link to empty German post
-		$this->assertNotFalse( strpos( $form, 'Add a translation in Deutsch' ) );
+		$this->assertStringContainsString( 'Add a translation in Deutsch', $form );
 	}
 
 	public function test_get_posts_language_filter() {
@@ -502,16 +498,20 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
 
-		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
-	}
-
-	public function add_doc_to_translated_post_types( $post_types ) {
-		$post_types[] = 'doc';
-		return $post_types;
+		$this->assertStringContainsString(
+			'var pll_page_languages = ' . wp_json_encode( $pages ),
+			$footer
+		);
 	}
 
 	public function test_hierarchical_cpt_script_data_in_footer() {
-		add_filter( 'pll_get_post_types', array( $this, 'add_doc_to_translated_post_types' ) );
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				$post_types[] = 'doc';
+				return $post_types;
+			}
+		);
 		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
 		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -523,31 +523,37 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$result = array( 'en' => array( $en ) );
 
-		$this->assertNotFalse( strpos( $footer, wp_json_encode( $result ) ) );
+		$this->assertStringContainsString( wp_json_encode( $result ), $footer );
 	}
 
 	public function test_non_hierarchical_cpt_script_data_in_footer() {
 		register_post_type( 'article', array( 'public' => true, 'hierarchical' => false ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'article' ) );
+		self::$model->post->set_language( $en, 'en' );
 
 		$this->set_current_edit_screen( 'article' );
 		$footer = $this->get_admin_footer();
 
-		$this->assertFalse( strpos( $footer, 'pll_page_languages' ) );
+		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
 	}
 
 	public function test_hierarchical_untranslated_cpt_script_data_in_footer() {
 		register_post_type( 'doc_not_translated', array( 'public' => true, 'hierarchical' => true ) );
-		$en = self::factory()->post->create( array( 'post_type' => 'doc_not_translated' ) );
-		self::$model->post->set_language( $en, 'en' );
 
 		$this->set_current_edit_screen( 'doc_not_translated' );
 		$footer = $this->get_admin_footer();
 
-		$this->assertFalse( strpos( $footer, 'pll_page_languages' ) );
+		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
 	}
 
 	public function test_get_pages_query_is_cached_for_dropdown() {
-		add_filter( 'pll_get_post_types', array( $this, 'add_doc_to_translated_post_types' ) );
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				$post_types[] = 'doc';
+				return $post_types;
+			}
+		);
 		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
 
 		$post = self::factory()->post->create_and_get( array( 'post_type' => 'doc' ) );
@@ -558,18 +564,21 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		global $wpdb;
 
 		do_action( 'admin_enqueue_scripts' );
+		// Instantiating WP_Posts_List_Table automatically runs a query,
+		// so we call it before starting the count.
+		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 		$after_pll = $wpdb->num_queries;
 
-		// Same arguments as the real 'parent page' dropdown built by wp_dropdown_pages() in WordPress core.
-		wp_dropdown_pages(
-			array(
-				'post_type'    => $post->post_type,
-				'exclude_tree' => $post->ID,
-				'selected'     => $post->post_parent,
-				'sort_column'  => 'menu_order, post_title',
-				'echo'         => 0,
-			)
-		);
+		// touch_time() (called internally by inline_edit() further) reads the global $post
+		// via get_post() with no argument — not set outside The Loop, so we set it up manually here.
+		$post_id = $post->ID;
+		global $post;
+		$post = get_post( $post_id );
+		setup_postdata( $post );
+		// Now we trigger the dropdown build to check if it reuses the cached query.
+		ob_start();
+		$wp_list_table->inline_edit();
+		ob_end_clean();
 		$after_dropdown = $wpdb->num_queries;
 
 		$this->assertSame( $after_pll, $after_dropdown );
