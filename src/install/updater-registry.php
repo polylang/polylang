@@ -55,7 +55,7 @@ class PLL_Updater_Registry {
 		}
 
 		if ( null !== $elected ) {
-			$elected->boot_leader( $polylang );
+			$elected->init( $polylang );
 		}
 	}
 }

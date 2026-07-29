@@ -32,5 +32,5 @@ interface PLL_Updater_Interface {
 	 * @param PLL_Base $polylang Polylang object.
 	 * @return void
 	 */
-	public function boot_leader( PLL_Base $polylang ): void;
+	public function init( PLL_Base $polylang ): void;
 }
