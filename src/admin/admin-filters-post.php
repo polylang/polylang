@@ -111,7 +111,7 @@ class PLL_Admin_Filters_Post {
 					'no_found_rows'          => true,
 					'ignore_sticky_posts'    => true,
 					'cache_results'          => false,
-					'update_post_term_cache' => false,
+					'update_post_term_cache' => false, // Voir passer en true et supprimer update_object_term_cache ?
 					'update_post_meta_cache' => false,
 				)
 			);
