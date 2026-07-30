@@ -42,8 +42,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 		_unregister_post_type( 'doc' );
-		_unregister_post_type( 'article' );
-		_unregister_post_type( 'doc_not_translated' );
 	}
 
 	public function test_default_language() {
@@ -479,14 +477,14 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
 	}
 
-	private function get_admin_footer(): string {
+	private function get_admin_footer_scripts(): string {
 		do_action( 'admin_enqueue_scripts' );
 		ob_start();
 		do_action( 'admin_print_footer_scripts' );
 		return (string) ob_get_clean();
 	}
 
-	public function test_parent_pages_script_data_in_footer() {
+	public function test_inline_script_for_pages() {
 		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -494,7 +492,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->set_current_edit_screen( 'page' );
-		$footer = $this->get_admin_footer();
+		$footer = $this->get_admin_footer_scripts();
 
 		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
 
@@ -503,44 +501,48 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertEqualsCanonicalizing( $pages, $actual );
 	}
 
-	public function test_hierarchical_cpt_script_data_in_footer() {
+	private function register_translated_post_type( string $post_type, bool $hierarchical ): void {
 		add_filter(
 			'pll_get_post_types',
-			function ( $post_types ) {
-				$post_types[] = 'doc';
+			function ( $post_types ) use ( $post_type ) {
+				$post_types[] = $post_type;
 				return $post_types;
 			}
 		);
-		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		register_post_type( $post_type, array( 'public' => true, 'hierarchical' => $hierarchical ) );
+	}
+
+	public function test_inline_script_for_hierarchical_cpt() {
+		$this->register_translated_post_type( 'doc', true );
 		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
 		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $page, 'fr' );
 
 		$this->set_current_edit_screen( 'doc' );
-		$footer = $this->get_admin_footer();
+		$footer = $this->get_admin_footer_scripts();
 
 		$result = array( 'en' => array( $en ) );
 
 		$this->assertStringContainsString( wp_json_encode( $result ), $footer );
 	}
 
-	public function test_non_hierarchical_cpt_script_data_in_footer() {
-		register_post_type( 'article', array( 'public' => true, 'hierarchical' => false ) );
-		$en = self::factory()->post->create( array( 'post_type' => 'article' ) );
+	public function test_inline_script_for_non_hierarchical_cpt() {
+		$this->register_translated_post_type( 'doc', false );
+		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$this->set_current_edit_screen( 'article' );
-		$footer = $this->get_admin_footer();
+		$this->set_current_edit_screen( 'doc' );
+		$footer = $this->get_admin_footer_scripts();
 
 		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
 	}
 
-	public function test_hierarchical_untranslated_cpt_script_data_in_footer() {
-		register_post_type( 'doc_not_translated', array( 'public' => true, 'hierarchical' => true ) );
+	public function test_inline_script_for_hierarchical_untranslated_cpt() {
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
 
-		$this->set_current_edit_screen( 'doc_not_translated' );
-		$footer = $this->get_admin_footer();
+		$this->set_current_edit_screen( 'doc' );
+		$footer = $this->get_admin_footer_scripts();
 
 		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
 	}
@@ -549,15 +551,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		if ( ! defined( 'SAVEQUERIES' ) ) {
 			define( 'SAVEQUERIES', true );
 		}
-
-		add_filter(
-			'pll_get_post_types',
-			function ( $post_types ) {
-				$post_types[] = 'doc';
-				return $post_types;
-			}
-		);
-		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		$this->register_translated_post_type( 'doc', true );
 		self::factory()->post->create( array( 'post_type' => 'doc' ) );
 
 		$this->set_current_edit_screen( 'doc' );
@@ -583,14 +577,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		if ( ! defined( 'SAVEQUERIES' ) ) {
 			define( 'SAVEQUERIES', true );
 		}
-		add_filter(
-			'pll_get_post_types',
-			function ( $post_types ) {
-				$post_types[] = 'doc';
-				return $post_types;
-			}
-		);
-		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		$this->register_translated_post_type( 'doc', true );
 		register_taxonomy( 'doc_tax', 'doc' );
 
 		$post_id = self::factory()->post->create( array( 'post_type' => 'doc' ) );

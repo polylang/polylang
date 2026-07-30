@@ -119,19 +119,6 @@ class PLL_Admin_Filters_Post {
 			update_object_term_cache( $page_ids, $screen->post_type );
 
 			$page_languages = array();
-			foreach ( $page_ids as $id ) {
-				if ( $lang = $this->model->post->get_language( $id ) ) {
-					$page_languages[ $lang->slug ][] = $id;
-				}
-			}
-
-			if ( ! empty( $page_languages ) ) {
-				wp_localize_script( 'pll_post', 'pll_page_languages', $page_languages );
-			}
-
-			update_object_term_cache( $page_ids, $screen->post_type );
-
-			$page_languages = array();
 
 			foreach ( $page_ids as $id ) {
 				if ( $lang = $this->model->post->get_language( $id ) ) {
