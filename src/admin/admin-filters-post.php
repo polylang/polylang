@@ -106,7 +106,7 @@ class PLL_Admin_Filters_Post {
 				)
 			); // Same arguments as the parent pages dropdown to avoid an extra query.
 
-			update_post_caches( $pages, $screen->post_type, true, false );
+			update_object_term_cache( wp_list_pluck( $pages, 'ID' ), $screen->post_type );
 
 			$page_languages = array();
 
