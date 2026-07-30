@@ -98,7 +98,7 @@ class PLL_Admin_Filters_Post {
 		}
 
 		// Hierarchical post types
-		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
+		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) && post_type_supports( $screen->post_type, 'page-attributes' ) ) {
 			$pages = get_pages(
 				array(
 					'sort_column' => 'menu_order, post_title',
