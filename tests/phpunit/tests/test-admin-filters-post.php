@@ -509,7 +509,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 				return $post_types;
 			}
 		);
-		register_post_type( $post_type, array( 'public' => true, 'hierarchical' => $hierarchical ) );
+		register_post_type( $post_type, array( 'public' => true, 'hierarchical' => $hierarchical, 'supports' => array( 'page-attributes' ) ) );
 	}
 
 	public function test_inline_script_for_hierarchical_cpt() {
@@ -539,7 +539,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_inline_script_for_hierarchical_untranslated_cpt() {
-		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true ) );
+		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true, 'supports' => array( 'page-attributes' ) ) );
 
 		$this->set_current_edit_screen( 'doc' );
 		$footer = $this->get_admin_footer_scripts();

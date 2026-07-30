@@ -98,7 +98,7 @@ class PLL_Admin_Filters_Post {
 		}
 
 		// Hierarchical post types
-		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
+		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) && post_type_supports( $screen->post_type, 'page-attributes' ) ) {
 			// Only fetch IDs to avoid loading post_content (source of the memory crash on heavy pages).
 			// no_found_rows/ignore_sticky_posts: same optimizations as get_pages() itself.
 			// cache_results: false, otherwise WP_Query loads all columns anyway to make the result reusable by any future query regardless of 'fields' (default behavior since WP 6.1).
