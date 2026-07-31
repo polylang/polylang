@@ -501,19 +501,28 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertEqualsCanonicalizing( $pages, $actual );
 	}
 
-	private function register_translated_post_type( string $post_type, bool $hierarchical ): void {
-		add_filter(
-			'pll_get_post_types',
-			function ( $post_types ) use ( $post_type ) {
-				$post_types[] = $post_type;
-				return $post_types;
-			}
+	private function register_post_type_for_dropdown_test( array $args ): void {
+		if ( in_array( 'translated', $args, true ) ) {
+			add_filter(
+				'pll_get_post_types',
+				function ( $post_types ) {
+					$post_types[] = 'doc';
+					return $post_types;
+				}
+			);
+		}
+		register_post_type(
+			'doc',
+			array(
+				'public'       => true,
+				'hierarchical' => in_array( 'hierarchical', $args, true ),
+				'supports'     => in_array( 'page-attributes', $args, true ) ? array( 'page-attributes' ) : array(),
+			)
 		);
-		register_post_type( $post_type, array( 'public' => true, 'hierarchical' => $hierarchical, 'supports' => array( 'page-attributes' ) ) );
 	}
 
 	public function test_inline_script_for_hierarchical_cpt() {
-		$this->register_translated_post_type( 'doc', true );
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
 		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
 		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
@@ -527,31 +536,33 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( wp_json_encode( $result ), $footer );
 	}
 
-	public function test_inline_script_for_non_hierarchical_cpt() {
-		$this->register_translated_post_type( 'doc', false );
+	/**
+	 * @testWith [["hierarchical", "page-attributes", "translated"], true]
+	 *           [["page-attributes", "translated"], false]
+	 *           [["hierarchical", "translated"], false]
+	 *           [["hierarchical", "page-attributes"], false]
+	 *
+	 * @param array<string> $conditions     Which conditions are met: 'hierarchical', 'page-attributes', 'translated'.
+	 * @param bool          $expects_output Whether pll_page_languages is expected in the footer.
+	 *
+	 * @return void
+	 */
+	public function test_inline_script_conditions_for_dropdown( array $conditions, bool $expects_output ): void {
+		$this->register_post_type_for_dropdown_test( $conditions );
 		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		$this->set_current_edit_screen( 'doc' );
 		$footer = $this->get_admin_footer_scripts();
 
-		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
-	}
-
-	public function test_inline_script_for_hierarchical_untranslated_cpt() {
-		register_post_type( 'doc', array( 'public' => true, 'hierarchical' => true, 'supports' => array( 'page-attributes' ) ) );
-
-		$this->set_current_edit_screen( 'doc' );
-		$footer = $this->get_admin_footer_scripts();
-
-		$this->assertStringNotContainsString( 'pll_page_languages', $footer );
+		$this->assertSame( $expects_output, str_contains( $footer, 'pll_page_languages' ) );
 	}
 
 	public function test_admin_enqueue_scripts_only_selects_page_ids() {
 		if ( ! defined( 'SAVEQUERIES' ) ) {
 			define( 'SAVEQUERIES', true );
 		}
-		$this->register_translated_post_type( 'doc', true );
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
 		self::factory()->post->create( array( 'post_type' => 'doc' ) );
 
 		$this->set_current_edit_screen( 'doc' );
@@ -577,7 +588,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		if ( ! defined( 'SAVEQUERIES' ) ) {
 			define( 'SAVEQUERIES', true );
 		}
-		$this->register_translated_post_type( 'doc', true );
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
 		register_taxonomy( 'doc_tax', 'doc' );
 
 		$post_id = self::factory()->post->create( array( 'post_type' => 'doc' ) );
