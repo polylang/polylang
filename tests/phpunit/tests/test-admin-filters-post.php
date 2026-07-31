@@ -565,9 +565,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
 
 		/*
-		* touch_time() (called internally by inline_edit() further) reads the global $post
-		* via get_post() with no argument — not set outside The Loop, so we set it up manually here.
-		*/
+		 * touch_time() (called internally by inline_edit() further) reads the global $post
+		 * via get_post() with no argument — not set outside The Loop, so we set it up manually here.
+		 */
 		$post = self::factory()->post->create_and_get( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $post->ID, 'en' );
 
@@ -576,9 +576,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		do_action( 'admin_enqueue_scripts' );
 
 		/*
-		* Instantiating WP_Posts_List_Table automatically runs a query,
-		* so we call it before starting the count.
-		*/
+		 * Instantiating WP_Posts_List_Table automatically runs a query,
+		 * so we call it before starting the count.
+		 */
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 		$after_pll = $wpdb->num_queries;
 
