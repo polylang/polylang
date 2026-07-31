@@ -247,12 +247,6 @@ parameters:
 			path: src/admin/admin-filters-post.php
 
 		-
-			message: '#^Parameter \#1 \$posts of function update_post_caches expects array\<WP_Post\>, array\<WP_Post\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/admin/admin-filters-post.php
-
-		-
 			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
