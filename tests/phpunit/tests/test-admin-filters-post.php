@@ -502,28 +502,28 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		);
 	}
 
-	private function register_post_type_for_dropdown_test( string $post_type, bool $hierarchical, bool $page_attributes = true, bool $translated = true ): void {
-		if ( $translated ) {
+	private function register_post_type_for_dropdown_test( array $args ): void {
+		if ( in_array( 'translated', $args ) ) {
 			add_filter(
 				'pll_get_post_types',
-				function ( $post_types ) use ( $post_type ) {
-					$post_types[] = $post_type;
+				function ( $post_types ) {
+					$post_types[] = 'doc';
 					return $post_types;
 				}
 			);
 		}
 		register_post_type(
-			$post_type,
+			'doc',
 			array(
 				'public'       => true,
-				'hierarchical' => $hierarchical,
-				'supports'     => $page_attributes ? array( 'page-attributes' ) : array(),
+				'hierarchical' => in_array( 'hierarchical', $args ),
+				'supports'     => in_array( 'page-attributes', $args ) ? array( 'page-attributes' ) : array(),
 			)
 		);
 	}
 
 	public function test_inline_script_for_hierarchical_cpt() {
-		$this->register_post_type_for_dropdown_test( 'doc', true );
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
 		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
 		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
@@ -538,50 +538,47 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [true, true, true, true]
-	 *           [false, true, true, false]
-	 *           [true, false, true, false]
-	 *           [true, true, false, false]
+	 * @testWith [["hierarchical", "page-attributes", "translated"], true]
+	 *           [["page-attributes", "translated"], false]
+	 *           [["hierarchical", "translated"], false]
+	 *           [["hierarchical", "page-attributes"], false]
 	 *
-	 * @param bool $hierarchical    Whether the post type is hierarchical.
-	 * @param bool $page_attributes Whether the post type supports 'page-attributes'.
-	 * @param bool $translated      Whether the post type is registered as translated by Polylang.
-	 * @param bool $expects_output  Whether pll_page_languages is expected in the footer.
+	 * @param array<string> $conditions     Which conditions are met: 'hierarchical', 'page-attributes', 'translated'.
+	 * @param bool          $expects_output Whether pll_page_languages is expected in the footer.
 	 *
 	 * @return void
 	 */
-	public function test_inline_script_conditions_for_dropdown( bool $hierarchical, bool $page_attributes, bool $translated, bool $expects_output ): void {
-		$this->register_post_type_for_dropdown_test( 'doc', $hierarchical, $page_attributes, $translated );
+	public function test_inline_script_conditions_for_dropdown( array $conditions, bool $expects_output ): void {
+		$this->register_post_type_for_dropdown_test( $conditions );
 		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		$this->set_current_edit_screen( 'doc' );
 		$footer = $this->get_admin_footer_scripts();
 
-		if ( $expects_output ) {
-			$this->assertStringContainsString( 'pll_page_languages', $footer );
-		} else {
-			$this->assertStringNotContainsString( 'pll_page_languages', $footer );
-		}
+		$this->assertSame( $expects_output, str_contains( $footer, 'pll_page_languages' ) );
 	}
 
 	public function test_get_pages_query_is_cached_for_dropdown() {
-		global $post;
+		global $wpdb, $post;
 
-		$this->register_post_type_for_dropdown_test( 'doc', true );
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
 
-		// touch_time() (called internally by inline_edit() further) reads the global $post
-		// via get_post() with no argument — not set outside The Loop, so we set it up manually here.
+		/*
+		* touch_time() (called internally by inline_edit() further) reads the global $post
+		* via get_post() with no argument — not set outside The Loop, so we set it up manually here.
+		*/
 		$post = self::factory()->post->create_and_get( array( 'post_type' => 'doc' ) );
 		self::$model->post->set_language( $post->ID, 'en' );
 
 		$this->set_current_edit_screen( 'doc' );
 
-		global $wpdb;
-
 		do_action( 'admin_enqueue_scripts' );
-		// Instantiating WP_Posts_List_Table automatically runs a query,
-		// so we call it before starting the count.
+
+		/*
+		* Instantiating WP_Posts_List_Table automatically runs a query,
+		* so we call it before starting the count.
+		*/
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 		$after_pll = $wpdb->num_queries;
 
