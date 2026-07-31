@@ -503,7 +503,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	private function register_post_type_for_dropdown_test( array $args ): void {
-		if ( in_array( 'translated', $args ) ) {
+		if ( in_array( 'translated', $args, true ) ) {
 			add_filter(
 				'pll_get_post_types',
 				function ( $post_types ) {
@@ -516,8 +516,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'doc',
 			array(
 				'public'       => true,
-				'hierarchical' => in_array( 'hierarchical', $args ),
-				'supports'     => in_array( 'page-attributes', $args ) ? array( 'page-attributes' ) : array(),
+				'hierarchical' => in_array( 'hierarchical', $args, true ),
+				'supports'     => in_array( 'page-attributes', $args, true ) ? array( 'page-attributes' ) : array(),
 			)
 		);
 	}
