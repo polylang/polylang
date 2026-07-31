@@ -39,6 +39,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang']             = $this->pll_admin;
 	}
 
+	public function tear_down() {
+		parent::tear_down();
+		_unregister_post_type( 'doc' );
+	}
+
 	public function test_default_language() {
 		// User preferred language
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
@@ -223,16 +228,16 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
 
-		$this->assertFalse( strpos( $out, 'test' ) );
-		$this->assertNotFalse( strpos( $out, 'essai' ) );
+		$this->assertStringNotContainsString( 'test', $out );
+		$this->assertStringContainsString( 'essai', $out );
 
 		$_POST['lang'] = 'en'; // Prevails on the post language (ajax response to language change)
 		ob_start();
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $out, 'test' ) );
-		$this->assertFalse( strpos( $out, 'essai' ) );
+		$this->assertStringContainsString( 'test', $out );
+		$this->assertStringNotContainsString( 'essai', $out );
 	}
 
 	public function test_languages_meta_box_for_new_post() {
@@ -359,13 +364,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		// Link to English post
 		$input = $xpath->query( '//input[@name="media_tr_lang[en]"]' );
 		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
-		$this->assertNotFalse( strpos( $form, 'Edit the translation in English' ) );
+		$this->assertStringContainsString( 'Edit the translation in English', $form );
 
 		// No self link
 		$this->assertEmpty( $xpath->query( '//input[@name="media_tr_lang[fr]"]' )->length );
 
 		// Link to empty German post
-		$this->assertNotFalse( strpos( $form, 'Add a translation in Deutsch' ) );
+		$this->assertStringContainsString( 'Add a translation in Deutsch', $form );
 	}
 
 	public function test_get_posts_language_filter() {
@@ -464,26 +469,125 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $term_id, $matches[1] );
 	}
 
-	public function test_parent_pages_script_data_in_footer() {
+	private function set_current_edit_screen( string $post_type ): void {
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = $post_type;
+		set_current_screen();
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+	}
+
+	private function get_admin_footer_scripts(): string {
+		do_action( 'admin_enqueue_scripts' );
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		return (string) ob_get_clean();
+	}
+
+	public function test_inline_script_for_pages() {
 		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$GLOBALS['hook_suffix'] = 'edit.php';
-		$_REQUEST['post_type']  = 'page';
-		set_current_screen();
-		$GLOBALS['wp_scripts'] = new WP_Scripts();
-		wp_default_scripts( $GLOBALS['wp_scripts'] );
-		do_action( 'admin_enqueue_scripts' );
-
-		ob_start();
-		do_action( 'admin_print_footer_scripts' );
-		$footer = ob_get_clean();
+		$this->set_current_edit_screen( 'page' );
+		$footer = $this->get_admin_footer_scripts();
 
 		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
 
-		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
+		$this->assertStringContainsString(
+			'var pll_page_languages = ' . wp_json_encode( $pages ),
+			$footer
+		);
+	}
+
+	private function register_post_type_for_dropdown_test( array $args ): void {
+		if ( in_array( 'translated', $args, true ) ) {
+			add_filter(
+				'pll_get_post_types',
+				function ( $post_types ) {
+					$post_types[] = 'doc';
+					return $post_types;
+				}
+			);
+		}
+		register_post_type(
+			'doc',
+			array(
+				'public'       => true,
+				'hierarchical' => in_array( 'hierarchical', $args, true ),
+				'supports'     => in_array( 'page-attributes', $args, true ) ? array( 'page-attributes' ) : array(),
+			)
+		);
+	}
+
+	public function test_inline_script_for_hierarchical_cpt() {
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $en, 'en' );
+		$page = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		self::$model->post->set_language( $page, 'fr' );
+
+		$this->set_current_edit_screen( 'doc' );
+		$footer = $this->get_admin_footer_scripts();
+
+		$result = array( 'en' => array( $en ) );
+
+		$this->assertStringContainsString( wp_json_encode( $result ), $footer );
+	}
+
+	/**
+	 * @testWith [["hierarchical", "page-attributes", "translated"], true]
+	 *           [["page-attributes", "translated"], false]
+	 *           [["hierarchical", "translated"], false]
+	 *           [["hierarchical", "page-attributes"], false]
+	 *
+	 * @param array<string> $conditions     Which conditions are met: 'hierarchical', 'page-attributes', 'translated'.
+	 * @param bool          $expects_output Whether pll_page_languages is expected in the footer.
+	 *
+	 * @return void
+	 */
+	public function test_inline_script_conditions_for_dropdown( array $conditions, bool $expects_output ): void {
+		$this->register_post_type_for_dropdown_test( $conditions );
+		$en = self::factory()->post->create( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $en, 'en' );
+
+		$this->set_current_edit_screen( 'doc' );
+		$footer = $this->get_admin_footer_scripts();
+
+		$this->assertSame( $expects_output, str_contains( $footer, 'pll_page_languages' ) );
+	}
+
+	public function test_get_pages_query_is_cached_for_dropdown() {
+		global $wpdb, $post;
+
+		$this->register_post_type_for_dropdown_test( array( 'hierarchical', 'page-attributes', 'translated' ) );
+
+		/*
+		 * touch_time() (called internally by inline_edit() further) reads the global $post
+		 * via get_post() with no argument — not set outside The Loop, so we set it up manually here.
+		 */
+		$post = self::factory()->post->create_and_get( array( 'post_type' => 'doc' ) );
+		self::$model->post->set_language( $post->ID, 'en' );
+
+		$this->set_current_edit_screen( 'doc' );
+
+		do_action( 'admin_enqueue_scripts' );
+
+		/*
+		 * Instantiating WP_Posts_List_Table automatically runs a query,
+		 * so we call it before starting the count.
+		 */
+		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
+		$after_pll = $wpdb->num_queries;
+
+		// Now we trigger the dropdown build to check if it reuses the cached query.
+		ob_start();
+		$wp_list_table->inline_edit();
+		ob_end_clean();
+		$after_dropdown = $wpdb->num_queries;
+
+		$this->assertSame( $after_pll, $after_dropdown );
 	}
 }
