@@ -100,5 +100,33 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
 	}
 
-	// public function test_homepage_test_missing_translation() {}
+	public function test_homepage_test_missing_translation() {
+		// Arrange
+		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $home_en );
+
+		// Act
+		$test_result = $this->site_health->homepage_test();
+
+		// Assert
+		$this->assertSame( array( 'label', 'status', 'badge', 'description', 'actions', 'test' ), array_keys( $test_result ), 'homepage_test() should return the expected array structure.' );
+		$this->assertSame(
+			'The homepage is not translated in all languages',
+			$test_result['label'],
+			'homepage_test() should have the expected alert label when a languages isn\'t translated.'
+		);
+		$this->assertSame( 'critical', $test_result['status'], 'homepage_test() should have a "status" key set to "critical".' );
+		$this->assertSame(
+			array(
+				'label' => POLYLANG,
+				'color' => 'blue',
+			),
+			$test_result['badge'],
+			'homepage_test() should have the expected badge.'
+		);
+		$this->assertSame( '<p>You must translate your static front page in Français.</p>', $test_result['description'], 'homepage_test() should have the expected description when a language isn\'t translated.' );
+		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when all languages are translated.' );
+		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
+	}
 }
