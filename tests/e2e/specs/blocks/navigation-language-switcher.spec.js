@@ -130,7 +130,9 @@ test.describe.serial(
 			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Dropdown' );
 			await setSwitcherLabels( page, 'Names' );
-			await page.getByRole( 'checkbox', { name: 'Show flags' } ).check();
+			await page
+				.getByRole( 'checkbox', { name: 'Display flags' } )
+				.check();
 
 			const blockWithNamesAndFlags =
 				await getNavigationLanguageSwitcherBlockLocator( page );
@@ -159,7 +161,7 @@ test.describe.serial(
 			// Remove the flags: labels must be shown before flags can be hidden.
 			await setSwitcherLabels( page, 'Names' );
 			await page
-				.getByRole( 'checkbox', { name: 'Show flags' } )
+				.getByRole( 'checkbox', { name: 'Display flags' } )
 				.uncheck();
 			await expect(
 				page.getByRole( 'combobox', { name: 'Labels' } )
@@ -197,7 +199,9 @@ test.describe.serial(
 			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Horizontal' );
 			await setSwitcherLabels( page, 'Names' );
-			await page.getByRole( 'checkbox', { name: 'Show flags' } ).check();
+			await page
+				.getByRole( 'checkbox', { name: 'Display flags' } )
+				.check();
 
 			const blockWithNamesAndFlags =
 				await getNavigationLanguageSwitcherBlockLocator( page );
@@ -226,7 +230,7 @@ test.describe.serial(
 			// Remove the flags: labels must be shown before flags can be hidden.
 			await setSwitcherLabels( page, 'Names' );
 			await page
-				.getByRole( 'checkbox', { name: 'Show flags' } )
+				.getByRole( 'checkbox', { name: 'Display flags' } )
 				.uncheck();
 			await expect(
 				page.getByRole( 'combobox', { name: 'Labels' } )
@@ -271,33 +275,39 @@ test.describe.serial(
 
 			// Edit the Navigation Language Switcher block settings to forces link to front page.
 			await selectNavigationLanguageSwitcherBlock( page );
-			await page.getByRole( 'checkbox', { name: 'Force home' } ).check();
+			await page
+				.getByRole( 'checkbox', { name: 'Force link to front page' } )
+				.check();
 			expect(
 				await page
-					.getByRole( 'checkbox', { name: 'Force home' } )
+					.getByRole( 'checkbox', {
+						name: 'Force link to front page',
+					} )
 					.isChecked()
 			).toBeTruthy();
 
 			// Edit the Navigation Language Switcher block settings to hides the current language.
 			await page
-				.getByRole( 'checkbox', { name: 'Hide current' } )
+				.getByRole( 'checkbox', { name: 'Hide the current language' } )
 				.check();
 			expect(
 				await page
-					.getByRole( 'checkbox', { name: 'Hide current' } )
+					.getByRole( 'checkbox', {
+						name: 'Hide the current language',
+					} )
 					.isChecked()
 			).toBeTruthy();
 
 			// Edit the Navigation Language Switcher block settings to hide languages with no translation.
 			await page
 				.getByRole( 'checkbox', {
-					name: 'Hide if no translation',
+					name: 'Hide languages with no translation',
 				} )
 				.check();
 			expect(
 				await page
 					.getByRole( 'checkbox', {
-						name: 'Hide if no translation',
+						name: 'Hide languages with no translation',
 					} )
 					.isChecked()
 			).toBeTruthy();
