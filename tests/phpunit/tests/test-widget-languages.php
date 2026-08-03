@@ -68,11 +68,7 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( WP_Widget_Factory::class, $wp_widget_factory );
 		$this->assertIsArray( $wp_widget_factory->widgets );
-		$this->assertContainsObjectOfType(
-			Languages::class,
-			$wp_widget_factory->widgets,
-			'WP_Widget_Factory::$widgets should contain a language switcher widget.'
-		);
+		$this->assertContainsObjectOfType( Languages::class, $wp_widget_factory->widgets );
 	}
 
 	/**
@@ -255,20 +251,17 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 	 *
 	 * @param string $type    Class name.
 	 * @param array  $array   List.
-	 * @param string $message Optional. Message to display in case of failure.
 	 * @return void
 	 */
-	private function assertContainsObjectOfType( string $type, array $array, string $message = '' ): void {
-		$found = false;
-
-		foreach ( $array as $obj ) {
-			if ( $obj instanceof $type ) {
-				$found = true;
-				break;
+	private function assertContainsObjectOfType( string $type, array $array ): void {
+		$found = array_find(
+			$array,
+			function ( $obj ) use ( $type ) {
+				return $obj instanceof $type;
 			}
-		}
+		);
 
-		$this->assertTrue( $found, $message, "The given array does not contain any instance of {$type}." );
+		$this->assertNotNull( $found, "The given array does not contain any instance of {$type}." );
 	}
 
 	/**
