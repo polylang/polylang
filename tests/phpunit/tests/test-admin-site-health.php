@@ -66,4 +66,39 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		$this->assertSame( $en->get_tax_prop( 'term_language', 'term_taxonomy_id' ), $info['term_props']['value']['term_language/term_taxonomy_id'] );
 		$this->assertSame( $en->get_tax_prop( 'term_language', 'count' ), $info['term_props']['value']['term_language/count'] );
 	}
+
+	public function test_homepage_test_all_languages_translated() {
+		// Arrange
+		$home_pages = self::factory()->post->create_translated(
+			array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ),
+			array( 'post_title' => 'accueil', 'post_type' => 'page', 'lang' => 'fr' )
+		);
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $home_pages['en'] );
+
+		// Act
+		$test_result = $this->site_health->homepage_test();
+
+		// Assert
+		$this->assertSame( array( 'label', 'status', 'badge', 'description', 'actions', 'test' ), array_keys( $test_result ), 'homepage_test() should return the expected array structure.' );
+		$this->assertSame(
+			'All languages have a translated homepage',
+			$test_result['label'],
+			'homepage_test() should have the expected label when all languages are translated.'
+		);
+		$this->assertSame( 'good', $test_result['status'], 'homepage_test() should have a "status" key set to "good".' );
+		$this->assertSame(
+			array(
+				'label' => POLYLANG,
+				'color' => 'blue',
+			),
+			$test_result['badge'],
+			'homepage_test() should have the expected badge.'
+		);
+		$this->assertSame( '<p>It is mandatory to translate the static front page in all languages.</p>', $test_result['description'], 'homepage_test() should have the expected description when all languages are translated.' );
+		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when all languages are translated.' );
+		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
+	}
+
+	// public function test_homepage_test_missing_translation() {}
 }
