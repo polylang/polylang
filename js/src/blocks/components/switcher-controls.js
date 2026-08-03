@@ -209,7 +209,7 @@ export const SwitcherControls = ( {
 					) }
 					{ 'select' !== layout && (
 						<ToggleControl
-							label={ __( 'Show flags', 'polylang' ) }
+							label={ __( 'Display flags', 'polylang' ) }
 							checked={ show_flags }
 							onChange={ ( value ) => {
 								if ( '' === show_labels && ! value ) {
