@@ -15,6 +15,7 @@ phpunit.xml
 readme.md
 rector.php
 webpack.config.js
+eslint.config.cjs
 
 # Folders
 
