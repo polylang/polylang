@@ -138,22 +138,24 @@ class Get_Test extends TestCase {
 		$this->assertSame( 1, $uls->count() );
 	}
 
-	public function test_layouts_horizontal_vertical(): void {
-		$pll_env = $this->init_frontend();
+	/**
+	 * @testWith ["horizontal"]
+	 *           ["vertical"]
+	 *
+	 * @param string $layout Layout slug.
+	 */
+	public function test_layouts_horizontal_vertical( string $layout ): void {
+		$html  = $this->get_switcher( array( 'layout' => $layout ) )->get();
+		$xpath = $this->get_domxpath( $html );
 
-		foreach ( array( 'horizontal', 'vertical' ) as $layout ) {
-			$html  = $this->get_new_switcher( $pll_env, array( 'layout' => $layout ) )->get();
-			$xpath = $this->get_domxpath( $html );
+		$wrappers = $xpath->query( '//div' );
+		$this->assertSame( 1, $wrappers->count() );
+		$wrapper = $wrappers->item( 0 );
+		$classes = $wrapper->getAttribute( 'class' );
+		$this->assertStringContainsString( " pll-layout-$layout ", " $classes " );
 
-			$wrappers = $xpath->query( '//div' );
-			$this->assertSame( 1, $wrappers->count() );
-			$wrapper = $wrappers->item( 0 );
-			$classes = $wrapper->getAttribute( 'class' );
-			$this->assertStringContainsString( " pll-layout-$layout ", " $classes " );
-
-			$uls = $xpath->query( '//div/ul' );
-			$this->assertSame( 1, $uls->count() );
-		}
+		$uls = $xpath->query( '//div/ul' );
+		$this->assertSame( 1, $uls->count() );
 	}
 
 	public function test_nav_tag(): void {
