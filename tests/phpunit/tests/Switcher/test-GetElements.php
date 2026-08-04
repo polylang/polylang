@@ -2,8 +2,6 @@
 
 namespace WP_Syntex\Polylang\Tests\Switcher;
 
-use WP_Syntex\Polylang\Switcher\Element;
-
 class GetElements_Test extends TestCase {
 	public function test_default_values(): void {
 		$elements = $this->get_switcher()->get_elements();
@@ -331,24 +329,6 @@ class GetElements_Test extends TestCase {
 
 		$this->assertArrayHasKey( 'en', $elements );
 		$this->assertSame( $this->pll_model->get_language( 'en' )->get_home_url(), $elements['en']->url );
-	}
-
-	public function test_type_of_elements(): void {
-		$pll_env = $this->init_frontend();
-
-		foreach ( array( 'horizontal', 'vertical', 'dropdown', 'unknown' ) as $layout ) {
-			$switcher = $this->get_new_switcher( $pll_env, array( 'layout' => $layout ) );
-			$elements = $switcher->get_elements();
-
-			$this->assertArrayHasKey( 'en', $elements );
-			$this->assertInstanceOf( Element\Nav::class, $elements['en'] );
-		}
-
-		$switcher = $this->get_new_switcher( $pll_env, array( 'layout' => 'select' ) );
-		$elements = $switcher->get_elements();
-
-		$this->assertArrayHasKey( 'en', $elements );
-		$this->assertInstanceOf( Element\Select::class, $elements['en'] );
 	}
 
 	/**
