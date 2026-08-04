@@ -102,9 +102,14 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 
 	public function test_homepage_test_missing_translation() {
 		// Arrange
+		$admin_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin_id );
+
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $home_en );
+
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
 		// Act
 		$test_result = $this->site_health->homepage_test();
@@ -125,7 +130,21 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 			$test_result['badge'],
 			'homepage_test() should have the expected badge.'
 		);
-		$this->assertSame( '<p>You must translate your static front page in Français.</p>', $test_result['description'], 'homepage_test() should have the expected description when a language isn\'t translated.' );
+		$this->assertStringContainsString(
+			'You must translate your static front page in',
+			$test_result['description'],
+			'Description should mention the untranslated languages.'
+		);
+		$this->assertStringContainsString(
+			'>Français</a>',
+			$test_result['description'],
+			'Description should contain a translation link for the missing language.'
+		);
+		$this->assertMatchesRegularExpression(
+			'/href="[^"]*new_lang=fr[^"]*"/',
+			$test_result['description'],
+			'Description should contain a link targeting the French translation.'
+		);
 		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when all languages are translated.' );
 		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
 	}
