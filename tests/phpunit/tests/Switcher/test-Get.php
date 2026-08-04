@@ -40,13 +40,13 @@ class Get_Test extends TestCase {
 		$this->assertSame( 'en-US', $links->item( 0 )->getAttribute( 'lang' ) );
 		$this->assertSame( 'en-US', $links->item( 0 )->getAttribute( 'hreflang' ) );
 		$this->assertSame( 'true', $links->item( 0 )->getAttribute( 'aria-current' ) );
-		$this->assertSame( $en_language->get_home_url(), $links->item( 0 )->getAttribute( 'href' ) );
+		$this->assertSame( 'http://example.org/', $links->item( 0 )->getAttribute( 'href' ) );
 		$this->assertSame( 'English', $links->item( 0 )->nodeValue );
 
 		$this->assertSame( 'fr-FR', $links->item( 1 )->getAttribute( 'lang' ) );
 		$this->assertSame( 'fr-FR', $links->item( 1 )->getAttribute( 'hreflang' ) );
 		$this->assertSame( '', $links->item( 1 )->getAttribute( 'aria-current' ) );
-		$this->assertSame( $fr_language->get_home_url(), $links->item( 1 )->getAttribute( 'href' ) );
+		$this->assertSame( 'http://example.org/?lang=fr', $links->item( 1 )->getAttribute( 'href' ) );
 		$this->assertSame( 'Français', $links->item( 1 )->nodeValue );
 
 		$spans = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-flag"]' );
