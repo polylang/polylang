@@ -270,20 +270,17 @@ class GetElements_Test extends TestCase {
 		$this->assertSame( 'English', $elements['en']->get_label() );
 	}
 
-	public function test_home_url(): void {
-		$pll_env  = $this->init_frontend();
-		$home_url = $pll_env->model->languages->get( 'en' )->get_home_url();
+	public function test_home_url_uses_permalink_for_post(): void {
 		$post_url = get_permalink( self::$posts['en'] );
-
-		// Not home URL.
-		$switcher = $this->get_new_switcher( $pll_env, array( 'post_id' => self::$posts['en'] ) );
-		$elements = $switcher->get_elements();
+		$elements = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) )->get_elements();
 
 		$this->assertArrayHasKey( 'en', $elements );
 		$this->assertSame( $post_url, $elements['en']->url );
+	}
 
-		// The filter returns an empty string.
-		$cb = function ( $url, $slug ) use ( $post_url ) {
+	public function test_home_url_fallback_when_filter_returns_empty_string(): void {
+		$post_url = get_permalink( self::$posts['en'] );
+		$cb       = function ( $url, $slug ) use ( $post_url ) {
 			if ( 'en' !== $slug ) {
 				return $url;
 			}
@@ -291,15 +288,16 @@ class GetElements_Test extends TestCase {
 			return '';
 		};
 		add_filter( 'pll_the_language_link', $cb, 10, 2 );
-		$switcher = $this->get_new_switcher( $pll_env, array( 'post_id' => self::$posts['en'] ) );
-		$elements = $switcher->get_elements();
+		$elements = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) )->get_elements();
 		remove_filter( 'pll_the_language_link', $cb );
 
 		$this->assertArrayHasKey( 'en', $elements );
-		$this->assertSame( $home_url, $elements['en']->url );
+		$this->assertSame( $this->pll_model->get_language( 'en' )->get_home_url(), $elements['en']->url );
+	}
 
-		// The filter returns a non-string value.
-		$cb = function ( $url, $slug ) use ( $post_url ) {
+	public function test_home_url_fallback_when_filter_returns_non_string(): void {
+		$post_url = get_permalink( self::$posts['en'] );
+		$cb       = function ( $url, $slug ) use ( $post_url ) {
 			if ( 'en' !== $slug ) {
 				return $url;
 			}
@@ -307,33 +305,32 @@ class GetElements_Test extends TestCase {
 			return array();
 		};
 		add_filter( 'pll_the_language_link', $cb, 10, 2 );
-		$switcher = $this->get_new_switcher( $pll_env, array( 'post_id' => self::$posts['en'] ) );
-		$elements = $switcher->get_elements();
+		$elements = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) )->get_elements();
 		remove_filter( 'pll_the_language_link', $cb );
 
 		$this->assertArrayHasKey( 'en', $elements );
-		$this->assertSame( $home_url, $elements['en']->url );
+		$this->assertSame( $this->pll_model->get_language( 'en' )->get_home_url(), $elements['en']->url );
+	}
 
-		// `force_home` is set to `true`.
-		$cb = function ( $url, $slug ) use ( $post_url ) {
+	public function test_home_url_when_force_home_is_true(): void {
+		$post_url = get_permalink( self::$posts['en'] );
+		$cb       = function ( $url, $slug ) use ( $post_url ) {
 			if ( 'en' === $slug ) {
 				$this->assertSame( $post_url, $url );
 			}
 			return $url;
 		};
 		add_filter( 'pll_the_language_link', $cb, 10, 2 );
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+		$elements = $this->get_switcher(
 			array(
 				'post_id'    => self::$posts['en'],
 				'force_home' => true,
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
 		remove_filter( 'pll_the_language_link', $cb );
 
 		$this->assertArrayHasKey( 'en', $elements );
-		$this->assertSame( $home_url, $elements['en']->url );
+		$this->assertSame( $this->pll_model->get_language( 'en' )->get_home_url(), $elements['en']->url );
 	}
 
 	public function test_type_of_elements(): void {
