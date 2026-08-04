@@ -18,7 +18,7 @@ class Get_Test extends TestCase {
 		);
 
 		$lis = $xpath->query( '//div/ul/li' );
-		$this->assertSame( 2, $lis->count() ); // The 3rd language is hadden because `hide_if_empty` is `true`.
+		$this->assertSame( 2, $lis->count() ); // The 3rd language is hidden because `hide_if_empty` is `true`.
 
 		// The first language is the default one (en).
 		$en_language = $this->pll_model->get_language( 'en' );
