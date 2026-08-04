@@ -68,7 +68,7 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( WP_Widget_Factory::class, $wp_widget_factory );
 		$this->assertIsArray( $wp_widget_factory->widgets );
-		$this->assertContainsObjectOfType( Languages::class, $wp_widget_factory->widgets );
+		$this->assertContainsInstancesOf( Languages::class, $wp_widget_factory->widgets );
 	}
 
 	/**
@@ -244,24 +244,6 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = new PLL_Admin( $links_model );
 		$GLOBALS['polylang']->init();
 		return $GLOBALS['polylang'];
-	}
-
-	/**
-	 * Asserts that an array contains at least one object of the given type.
-	 *
-	 * @param string $type    Class name.
-	 * @param array  $array   List.
-	 * @return void
-	 */
-	private function assertContainsObjectOfType( string $type, array $array ): void {
-		$found = array_find(
-			$array,
-			function ( $obj ) use ( $type ) {
-				return $obj instanceof $type;
-			}
-		);
-
-		$this->assertNotNull( $found, "The given array does not contain any instance of {$type}." );
 	}
 
 	/**

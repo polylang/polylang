@@ -296,4 +296,22 @@ trait PLL_UnitTestCase_Trait {
 
 		$this->assertSameSetsWithIndex( $expected, $translations );
 	}
+
+	/**
+	 * Asserts that an array contains at least one object of the given type.
+	 *
+	 * @param string $type  Class name.
+	 * @param array  $array List.
+	 * @return void
+	 */
+	protected function assertContainsInstancesOf( string $type, array $array ): void {
+		$found = array_find(
+			$array,
+			function ( $obj ) use ( $type ) {
+				return $obj instanceof $type;
+			}
+		);
+
+		$this->assertNotNull( $found, "The given array does not contain any instance of {$type}." );
+	}
 }
