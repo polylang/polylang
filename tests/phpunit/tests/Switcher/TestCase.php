@@ -13,7 +13,6 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
 
 abstract class TestCase extends PLL_UnitTestCase {
 	protected static $posts;
-	protected $pll_options;
 
 	/**
 	 * @param PLL_UnitTest_Factory $factory
@@ -41,18 +40,14 @@ abstract class TestCase extends PLL_UnitTestCase {
 		parent::wpTearDownAfterClass();
 	}
 
-	public function set_up() {
-		parent::set_up();
-
-		$this->pll_options = $this->create_options(
-			array(
-				'default_lang' => 'en',
+	protected function init_frontend(): PLL_Frontend {
+		$this->pll_model     = new PLL_Model(
+			$this->create_options(
+				array(
+					'default_lang' => 'en',
+				)
 			)
 		);
-	}
-
-	protected function init_frontend(): PLL_Frontend {
-		$this->pll_model     = new PLL_Model( $this->pll_options );
 		$links_model         = $this->pll_model->get_links_model();
 		$GLOBALS['polylang'] = new PLL_Frontend( $links_model );
 		$GLOBALS['polylang']->init();
