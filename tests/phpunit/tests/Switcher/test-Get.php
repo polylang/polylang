@@ -4,7 +4,7 @@ namespace WP_Syntex\Polylang\Tests\Switcher;
 
 class Get_Test extends TestCase {
 	public function test_default_values(): void {
-		$html  = $this->get_switcher()->get();
+		$html  = $this->get_switcher_and_init_frontend()->get();
 		$xpath = $this->get_domxpath( $html );
 
 		$wrappers = $xpath->query( '//div' );
@@ -54,7 +54,7 @@ class Get_Test extends TestCase {
 	}
 
 	public function test_layout_unknown(): void {
-		$html = $this->get_switcher( array( 'layout' => 'unknown' ) )->get();
+		$html = $this->get_switcher_and_init_frontend( array( 'layout' => 'unknown' ) )->get();
 
 		$wrappers = $this->get_domxpath( $html )->query( '//div' );
 		$this->assertSame( 1, $wrappers->count() );
@@ -64,7 +64,7 @@ class Get_Test extends TestCase {
 	}
 
 	public function test_layout_select(): void {
-		$html  = $this->get_switcher( array( 'layout' => 'select' ) )->get();
+		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => 'select' ) )->get();
 		$xpath = $this->get_domxpath( $html );
 
 		$wrappers = $xpath->query( '//div' );
@@ -118,7 +118,7 @@ class Get_Test extends TestCase {
 	}
 
 	public function test_layout_dropdown(): void {
-		$html  = $this->get_switcher( array( 'layout' => 'dropdown' ) )->get();
+		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => 'dropdown' ) )->get();
 		$xpath = $this->get_domxpath( $html );
 
 		$wrappers = $xpath->query( '//div' );
@@ -145,7 +145,7 @@ class Get_Test extends TestCase {
 	 * @param string $layout Layout slug.
 	 */
 	public function test_layouts_horizontal_vertical( string $layout ): void {
-		$html  = $this->get_switcher( array( 'layout' => $layout ) )->get();
+		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => $layout ) )->get();
 		$xpath = $this->get_domxpath( $html );
 
 		$wrappers = $xpath->query( '//div' );
@@ -161,7 +161,7 @@ class Get_Test extends TestCase {
 	public function test_nav_tag(): void {
 		add_theme_support( 'html5', array( 'navigation-widgets' ) );
 
-		$html  = $this->get_switcher()->get();
+		$html  = $this->get_switcher_and_init_frontend()->get();
 		$xpath = $this->get_domxpath( $html );
 
 		$wrapper = $xpath->query( '//nav' );

@@ -4,7 +4,7 @@ namespace WP_Syntex\Polylang\Tests\Switcher;
 
 class GetElements_Test extends TestCase {
 	public function test_default_values(): void {
-		$elements = $this->get_switcher()->get_elements();
+		$elements = $this->get_switcher_and_init_frontend()->get_elements();
 
 		$this->assertCount( 2, $elements );
 		$this->assertArrayHasKey( 'en', $elements );
@@ -65,7 +65,7 @@ class GetElements_Test extends TestCase {
 	public function test_non_default_values(): void {
 		// `$post_id` and `$hide_if_no_translation` have dedicated tests.
 		// `$preserve_spacing`, `$show_wrapper`, `$wrapper_classes`, and `$unique_id` have no effects on elements.
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'layout'            => 'horizontal',
 				'alignment'         => 'stretched',
@@ -158,7 +158,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_post_id(): void {
-		$switcher = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) );
+		$switcher = $this->get_switcher_and_init_frontend( array( 'post_id' => self::$posts['en'] ) );
 		$elements = $switcher->get_elements();
 
 		$this->assertArrayHasKey( 'en', $elements );
@@ -173,7 +173,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_hide_if_no_translation(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'post_id'                => self::$posts['en'],
 				'hide_if_empty'          => false, // For DE.
@@ -186,7 +186,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_show_if_no_translation(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'post_id'                => self::$posts['en'],
 				'hide_if_empty'          => false, // For DE.
@@ -201,7 +201,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_label_with_flags_and_names(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'show_flags' => true,
 			)
@@ -218,7 +218,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_label_with_flags_and_codes(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'show_flags'  => true,
 				'show_labels' => 'codes',
@@ -232,7 +232,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_label_with_flags_only(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'show_flags'  => true,
 				'show_labels' => '',
@@ -246,7 +246,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_label_falls_back_to_names_when_empty(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'show_flags'  => false,
 				'show_labels' => '',
@@ -257,7 +257,7 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_label_for_select_layout(): void {
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'layout'      => 'select',
 				'show_flags'  => true,
@@ -270,7 +270,7 @@ class GetElements_Test extends TestCase {
 
 	public function test_home_url_uses_permalink_for_post(): void {
 		$post_url = get_permalink( self::$posts['en'] );
-		$elements = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) )->get_elements();
+		$elements = $this->get_switcher_and_init_frontend( array( 'post_id' => self::$posts['en'] ) )->get_elements();
 
 		$this->assertArrayHasKey( 'en', $elements );
 		$this->assertSame( $post_url, $elements['en']->url );
@@ -286,7 +286,7 @@ class GetElements_Test extends TestCase {
 			return '';
 		};
 		add_filter( 'pll_the_language_link', $cb, 10, 2 );
-		$elements = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) )->get_elements();
+		$elements = $this->get_switcher_and_init_frontend( array( 'post_id' => self::$posts['en'] ) )->get_elements();
 		remove_filter( 'pll_the_language_link', $cb );
 
 		$this->assertArrayHasKey( 'en', $elements );
@@ -303,7 +303,7 @@ class GetElements_Test extends TestCase {
 			return array();
 		};
 		add_filter( 'pll_the_language_link', $cb, 10, 2 );
-		$elements = $this->get_switcher( array( 'post_id' => self::$posts['en'] ) )->get_elements();
+		$elements = $this->get_switcher_and_init_frontend( array( 'post_id' => self::$posts['en'] ) )->get_elements();
 		remove_filter( 'pll_the_language_link', $cb );
 
 		$this->assertArrayHasKey( 'en', $elements );
@@ -319,7 +319,7 @@ class GetElements_Test extends TestCase {
 			return $url;
 		};
 		add_filter( 'pll_the_language_link', $cb, 10, 2 );
-		$elements = $this->get_switcher(
+		$elements = $this->get_switcher_and_init_frontend(
 			array(
 				'post_id'    => self::$posts['en'],
 				'force_home' => true,

@@ -71,7 +71,7 @@ abstract class TestCase extends PLL_UnitTestCase {
 	 * @param array $settings_arr Optional settings.
 	 * @return Switcher
 	 */
-	protected function get_switcher( array $settings_arr = array() ): Switcher {
+	protected function get_switcher_and_init_frontend( array $settings_arr = array() ): Switcher {
 		return $this->get_new_switcher( $this->init_frontend(), $settings_arr );
 	}
 
