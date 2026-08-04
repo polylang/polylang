@@ -45,7 +45,6 @@ module.exports = [
 				2,
 				{
 					allow: [
-						'pll_block_editor_blocks_settings',
 						'show_flags',
 						'show_names',
 						'flag_aspect_ratio',
@@ -68,7 +67,6 @@ module.exports = [
 			globals: {
 				...globals.browser,
 				ajaxurl: 'readonly',
-				pll_block_editor_blocks_settings: 'readonly',
 				pll_data: 'readonly',
 				pllDefaultLanguage: 'readonly',
 			},

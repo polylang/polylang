@@ -96,9 +96,8 @@ class Block extends Abstract_Block {
 	 * @return string The HTML string output to serve.
 	 */
 	public function render( $attributes, $content, $block ) {
-		$attributes = $this->set_attributes_for_block( $attributes );
-		$settings   = new Settings( $attributes );
-		$elements   = ( new Switcher( $settings, $this->links ) )->get_elements();
+		$settings = new Settings( $attributes );
+		$elements = ( new Switcher( $settings, $this->links ) )->get_elements();
 
 		if ( empty( $elements ) ) {
 			return '';

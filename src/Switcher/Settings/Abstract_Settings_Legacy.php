@@ -28,7 +28,6 @@ abstract class Abstract_Settings_Legacy {
 
 	/**
 	 * Legacy default settings.
-	 * Copied from `PLL_Switcher`.
 	 */
 	protected const DEFAULTS = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
@@ -121,7 +120,7 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected function convert_from_legacy( array $settings ): array {
 		if ( ! isset( $settings['show_wrapper'] ) ) {
-			// `PLL_Walker_Dropdown` displays the wrapper (`<select>`) while `PLL_Walker_List` didn't.
+			// Legacy dropdowns included the `<select>` wrapper; list layouts did not.
 			$settings['show_wrapper'] = ! empty( $settings['dropdown'] );
 		}
 
