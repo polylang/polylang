@@ -175,45 +175,40 @@ class GetElements_Test extends TestCase {
 	}
 
 	public function test_hide_if_no_translation(): void {
-		$pll_env = $this->init_frontend();
-
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+		$elements = $this->get_switcher(
 			array(
 				'post_id'                => self::$posts['en'],
 				'hide_if_empty'          => false, // For DE.
 				'hide_if_no_translation' => true,
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertCount( 2, $elements ); // EN + FR.
 		$this->assertArrayNotHasKey( 'de', $elements );
+	}
 
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+	public function test_show_if_no_translation(): void {
+		$elements = $this->get_switcher(
 			array(
 				'post_id'                => self::$posts['en'],
 				'hide_if_empty'          => false, // For DE.
 				'hide_if_no_translation' => false,
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertCount( 3, $elements ); // EN + FR + DE.
 		$this->assertArrayHasKey( 'de', $elements );
 		$this->assertFalse( $elements['de']->has_translations );
-		$this->assertSame( $pll_env->model->languages->get( 'de' )->get_home_url(), $elements['de']->url );
+		$this->assertSame( $this->pll_model->get_language( 'de' )->get_home_url(), $elements['de']->url );
 	}
 
-	public function test_label(): void {
-		$pll_env = $this->init_frontend();
-
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+	public function test_label_with_flags_and_names(): void {
+		$elements = $this->get_switcher(
 			array(
 				'show_flags' => true,
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertArrayHasKey( 'en', $elements );
 		$label = $elements['en']->get_label();
 
@@ -222,52 +217,56 @@ class GetElements_Test extends TestCase {
 			$label
 		);
 		$this->assertStringNotContainsString( ' style="', $label );
+	}
 
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+	public function test_label_with_flags_and_codes(): void {
+		$elements = $this->get_switcher(
 			array(
 				'show_flags'  => true,
 				'show_labels' => 'codes',
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertMatchesRegularExpression(
 			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label">EN<\/span>$/', // Empty alt.
 			$elements['en']->get_label()
 		);
+	}
 
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+	public function test_label_with_flags_only(): void {
+		$elements = $this->get_switcher(
 			array(
-				'show_flags' => true,
+				'show_flags'  => true,
 				'show_labels' => '',
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertMatchesRegularExpression(
 			'/^<span class="pll-switcher-flag"><img[^>]* alt="[^"]+"[^>]*><\/span>$/', // Non empty alt.
 			$elements['en']->get_label()
 		);
+	}
 
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+	public function test_label_falls_back_to_names_when_empty(): void {
+		$elements = $this->get_switcher(
 			array(
-				'show_flags' => false,
+				'show_flags'  => false,
 				'show_labels' => '',
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertSame( '<span class="pll-switcher-label">English</span>', $elements['en']->get_label() );
+	}
 
-		$switcher = $this->get_new_switcher(
-			$pll_env,
+	public function test_label_for_select_layout(): void {
+		$elements = $this->get_switcher(
 			array(
-				'layout'     => 'select',
-				'show_flags' => true,
+				'layout'      => 'select',
+				'show_flags'  => true,
 				'show_labels' => '',
 			)
-		);
-		$elements = $switcher->get_elements();
+		)->get_elements();
+
 		$this->assertSame( 'English', $elements['en']->get_label() );
 	}
 
