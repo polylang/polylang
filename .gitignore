@@ -18,7 +18,6 @@ src/modules/module-build.php
 .DS_Store
 composer.lock
 DB-CONFIG
-package-lock.json
 Thumbs.db
 
 # Playwright
