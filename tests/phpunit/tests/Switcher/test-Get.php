@@ -121,21 +121,22 @@ class Get_Test extends TestCase {
 		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => 'dropdown' ) )->get();
 		$xpath = $this->get_domxpath( $html );
 
-		$wrappers = $xpath->query( '//div[contains(concat( " ", normalize-space( @class ), " " ), " pll-switcher ")]' );
-		$this->assertSame( 1, $wrappers->count() );
+		$wrappers = $xpath->query( '//*[contains(concat( " ", normalize-space( @class ), " " ), " pll-switcher ")]' );
+		$this->assertSame( 1, $wrappers->count(), $html );
 		$wrapper = $wrappers->item( 0 );
 		$classes = $wrapper->getAttribute( 'class' );
 		$this->assertStringContainsString( ' pll-layout-dropdown ', " $classes " );
 
-		$top_level_links = $xpath->query( './a', $wrapper );
-		$this->assertSame( 1, $top_level_links->count() );
+		// Top-level current language link (outside the submenu list).
+		$top_level_links = $xpath->query( './/a[not(ancestor::li)]', $wrapper );
+		$this->assertSame( 1, $top_level_links->count(), $html );
 		$this->assertSame(
 			$this->pll_model->get_language( 'en' )->get_home_url(),
 			$top_level_links->item( 0 )->getAttribute( 'href' )
 		);
 
-		$uls = $xpath->query( './ul', $wrapper );
-		$this->assertSame( 1, $uls->count() );
+		$uls = $xpath->query( './/ul', $wrapper );
+		$this->assertSame( 1, $uls->count(), $html );
 	}
 
 	/**

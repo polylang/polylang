@@ -82,8 +82,8 @@ abstract class TestCase extends PLL_UnitTestCase {
 	 * @return DOMXpath
 	 */
 	protected function get_domxpath( string $html ): DOMXpath {
-		// Inline SVG `xmlns` confuses libxml's HTML parser on some platforms (extra nodes).
-		$html = preg_replace( '/\sxmlns="http:\/\/www\.w3\.org\/2000\/svg"/', '', $html );
+		// Inline SVG makes libxml's HTML parser invent extra wrapper nodes on some platforms.
+		$html = preg_replace( '/<svg\b[^>]*>.*?<\/svg>/s', '', $html );
 
 		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $html, LIBXML_NOERROR );
