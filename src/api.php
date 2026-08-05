@@ -67,7 +67,7 @@ function pll_the_languages( $args = array() ) {
 
 	$settings = new Settings( $args );
 
-	// Backward compatibility. See https://github.com/polylang/polylang/blob/bb2f55cb322f657a73d006d5c064c74b98c65a55/src/switcher.php#L141-L143.
+	// Backward compatibility: legacy dropdown switchers ignored `hide_current` unless `raw` was set.
 	$settings->hide_current = ! empty( $args['hide_current'] ) && ! ( ! empty( $args['dropdown'] ) && empty( $args['raw'] ) );
 
 	$switcher = new Switcher( $settings, PLL()->links );

@@ -6,7 +6,6 @@
 namespace WP_Syntex\Polylang\Blocks\Language_Switcher;
 
 use PLL_Language;
-use PLL_Switcher;
 use WP_Block_Type_Registry;
 use WP_HTML_Tag_Processor;
 
@@ -26,22 +25,6 @@ abstract class Abstract_Block {
 	 * @var \PLL_Model
 	 */
 	protected $model;
-
-	/**
-	 * Current lang to render the language switcher block in an admin context.
-	 *
-	 * @since 2.8
-	 *
-	 * @var string|null
-	 */
-	protected $admin_current_lang;
-
-	/**
-	 * Is it the edit context?
-	 *
-	 * @var bool
-	 */
-	protected $is_edit_context = false;
 
 	/**
 	 * Current language.
@@ -71,9 +54,6 @@ abstract class Abstract_Block {
 	 * @return self
 	 */
 	public function init() {
-		// Use rest_pre_dispatch_filter to get additional parameters for language switcher block.
-		add_filter( 'rest_pre_dispatch', array( $this, 'get_rest_query_params' ), 10, 3 );
-
 		// Register language switcher block.
 		add_action( 'init', array( $this, 'register' ) );
 
@@ -101,8 +81,6 @@ abstract class Abstract_Block {
 	 * @return string The HTML string output to serve.
 	 */
 	abstract public function render( $attributes, $content, $block );
-
-
 
 	/**
 	 * Returns the path to the block JSON file directory.
@@ -150,14 +128,11 @@ abstract class Abstract_Block {
 				'wp-components',
 				'wp-element',
 				'wp-i18n',
-				'wp-server-side-render',
 				'wp-editor',
 			),
 			POLYLANG_VERSION,
 			true
 		);
-
-		wp_localize_script( $script_handle, 'pll_block_editor_blocks_settings', PLL_Switcher::get_switcher_options( 'block', 'string' ) );
 
 		// Translated strings used in JS code
 		wp_set_script_translations( $script_handle, 'polylang' );
@@ -183,55 +158,6 @@ abstract class Abstract_Block {
 			'let pllEditorCurrentLanguageSlug = ' . wp_json_encode( $current_language->slug ) . ';',
 			'after'
 		);
-	}
-
-	/**
-	 * Returns the REST parameters for language switcher block.
-	 * Used to store the request's language and context locally.
-	 * Previously was in the `PLL_Block_Editor_Switcher_Block` class.
-	 *
-	 * @see WP_REST_Server::dispatch()
-	 *
-	 * @since 2.8
-	 *
-	 * @param mixed            $result  Response to replace the requested version with. Can be anything
-	 *                                  a normal endpoint can return, or null to not hijack the request.
-	 * @param \WP_REST_Server  $server  Server instance.
-	 * @param \WP_REST_Request $request Request used to generate the response.
-	 * @return mixed
-	 * @template T of \WP_REST_Request
-	 * @phpstan-param T $request
-	 */
-	public function get_rest_query_params( $result, $server, $request ) {
-		if ( pll_is_edit_rest_request( $request ) ) {
-			$this->is_edit_context = true;
-
-			$lang = $request->get_param( 'lang' );
-			if ( is_string( $lang ) && ! empty( $lang ) ) {
-				$this->admin_current_lang = $lang;
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * Adds the attributes to render the block correctly.
-	 * Also specifies not to echo the switcher in any case.
-	 *
-	 * @since 3.2
-	 *
-	 * @param array $attributes The attributes of the currently rendered block.
-	 * @return array The modified attributes.
-	 */
-	protected function set_attributes_for_block( $attributes ) {
-		$attributes['echo'] = 0;
-		if ( $this->is_edit_context ) {
-			$attributes['admin_render']           = 1;
-			$attributes['admin_current_lang']     = $this->admin_current_lang;
-			$attributes['hide_if_empty']          = 0;
-			$attributes['hide_if_no_translation'] = 0; // Force not to hide the language for the block preview even if the option is checked.
-		}
-		return $attributes;
 	}
 
 	/**

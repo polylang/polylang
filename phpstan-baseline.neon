@@ -1297,36 +1297,6 @@ parameters:
 			path: src/settings/view-languages.php
 
 		-
-			message: '#^Cannot access property \$model on PLL_Links\|null\.$#'
-			identifier: property.nonObject
-			count: 5
-			path: src/switcher.php
-
-		-
-			message: '#^Cannot access property \$options on PLL_Links\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/switcher.php
-
-		-
-			message: '#^Cannot call method get_home_url\(\) on PLL_Links\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/switcher.php
-
-		-
-			message: '#^Method PLL_Switcher\:\:get_link\(\) should return string\|null but returns string\|false\.$#'
-			identifier: return.type
-			count: 2
-			path: src/switcher.php
-
-		-
-			message: '#^Parameter \#1 \$language of method PLL_Switcher\:\:get_link\(\) expects PLL_Language, PLL_Language\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/switcher.php
-
-		-
 			message: '#^Method PLL_Translatable_Object\:\:query_objects_with_no_lang\(\) should return array\<string\> but returns array\<mixed, mixed\>\.$#'
 			identifier: return.type
 			count: 1
@@ -1421,9 +1391,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/walker-dropdown.php
-
-		-
-			message: '#^Parameter \#2 \$max_depth of method Walker\:\:walk\(\) expects int, array\|int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/walker-list.php
