@@ -119,7 +119,7 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		$this->assertSame(
 			'The homepage is not translated in all languages',
 			$test_result['label'],
-			'homepage_test() should have the expected alert label when a languages isn\'t translated.'
+			'homepage_test() should have the expected alert label when not all languages are translated.'
 		);
 		$this->assertSame( 'critical', $test_result['status'], 'homepage_test() should have a "status" key set to "critical".' );
 		$this->assertSame(
@@ -145,7 +145,7 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 			$test_result['description'],
 			'Description should contain a link targeting the French translation.'
 		);
-		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when all languages are translated.' );
+		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when a language is not translated.' );
 		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
 	}
 
@@ -194,5 +194,89 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 
 		// Assert
 		$this->assertSame( array(), $result, 'status_tests() should not modify $tests when no page is set as front page.' );
+	}
+
+	/**
+	 * Creates a given number of posts without any language assigned.
+	 *
+	 * @param int    $number    Number of posts to create.
+	 * @param string $post_type Post type to use. Default 'post'.
+	 * @return int[] The created post IDs.
+	 */
+	private function create_posts_without_lang( int $number, string $post_type = 'post' ): array {
+		$ids = array();
+
+		for ( $i = 0; $i < $number; $i++ ) {
+			$ids[] = self::factory()->post->create( array( 'post_type' => $post_type ) );
+		}
+
+		return $ids;
+	}
+
+	public function test_get_post_ids_without_lang_returns_posts_grouped_by_post_type() {
+		// Arrange
+		$post_no_lang_ids = $this->create_posts_without_lang( 2, 'post' );
+		$page_no_lang_ids = $this->create_posts_without_lang( 2, 'page' );
+		$post_en = self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
+
+		// Act
+		$result = $this->site_health->get_post_ids_without_lang();
+
+		// Assert :
+		$this->assertSame( array( 'post', 'page' ), array_keys( $result ), 'Result should be grouped by post type.' );
+		$this->assertEqualsCanonicalizing(
+			$post_no_lang_ids,
+			explode( ',', $result['post'] ),
+			'Result should contain posts IDs without language.'
+		);
+		$this->assertEqualsCanonicalizing(
+			$page_no_lang_ids,
+			explode( ',', $result['page'] ),
+			'Result should contain pages IDs without language.'
+		);
+		$this->assertStringNotContainsString( (string) $post_en, $result['post'], 'Result should not contain posts that already have a language.' );
+	}
+
+	public function test_get_post_ids_without_lang_respects_default_limit() {
+		// Arrange
+		$post_no_lang_ids = $this->create_posts_without_lang( 7, 'post' );
+
+		// Act
+		$result = $this->site_health->get_post_ids_without_lang();
+		$result_ids = explode( ',', $result['post'] );
+
+		// Assert
+		$this->assertCount( 5, $result_ids, 'Result should be limited to 5 post IDs by default.' );
+		$this->assertEmpty(
+			array_diff( $result_ids, $post_no_lang_ids ),
+			'All returned IDs should be among the created posts without language.'
+		);
+	}
+
+	public function test_get_post_ids_without_lang_returns_all_with_limit_minus_one() {
+		// Arrange
+		$post_no_lang_ids = $this->create_posts_without_lang( 7, 'post' );
+
+		// Act
+		$result = $this->site_health->get_post_ids_without_lang( -1 );
+		$result_ids = explode( ',', $result['post'] );
+
+		// Assert
+		$this->assertCount( 7, $result_ids, 'Result should contain all 7 post IDs when limit is -1.' );
+		$this->assertEmpty(
+			array_diff( $result_ids, $post_no_lang_ids ),
+			'Result should contain exactly the created post IDs when limit is -1.'
+		);
+	}
+
+	public function test_get_post_ids_without_lang_returns_empty_array_when_none_missing() {
+		// Arrange
+		self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
+
+		// Act
+		$result = $this->site_health->get_post_ids_without_lang();
+
+		// Assert
+		$this->assertEmpty( $result, 'Result should contain an empty array when all posts have lang.' );
 	}
 }
