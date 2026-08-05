@@ -33,6 +33,9 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 
 		$this->site_health = new PLL_Admin_Site_Health( $this->pll_admin );
+
+		// Assign a language to WordPress' default category ("Uncategorized"), so it doesn't interfere with tests checking terms without a language.
+		$this->pll_admin->model->term->set_language( (int) get_option( 'default_category' ), 'en' );
 	}
 
 	public function test_info_languages_term_props() {
@@ -278,5 +281,89 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 
 		// Assert
 		$this->assertEmpty( $result, 'Result should contain an empty array when all posts have lang.' );
+	}
+
+	/**
+	 * Creates a given number of terms without any language assigned.
+	 *
+	 * @param int    $number   Number of terms to create.
+	 * @param string $taxonomy Taxonomy to use. Default 'category'.
+	 * @return int[] The created term IDs.
+	 */
+	private function create_terms_without_lang( int $number, string $taxonomy = 'category' ): array {
+		$ids = array();
+
+		for ( $i = 0; $i < $number; $i++ ) {
+			$ids[] = self::factory()->term->create( array( 'taxonomy' => $taxonomy ) );
+		}
+
+		return $ids;
+	}
+
+	public function test_get_term_ids_without_lang_returns_terms_grouped_by_taxonomy() {
+		// Arrange
+		$category_no_lang_ids = $this->create_terms_without_lang( 2, 'category' );
+		$post_tag_no_lang_ids = $this->create_terms_without_lang( 2, 'post_tag' );
+		$term_en = self::factory()->term->create( array( 'taxonomy' => 'category', 'lang' => 'en' ) );
+
+		// Act
+		$result = $this->site_health->get_term_ids_without_lang();
+
+		// Assert :
+		$this->assertSame( array( 'category', 'post_tag' ), array_keys( $result ), 'Result should be grouped by taxonomy.' );
+		$this->assertEqualsCanonicalizing(
+			$category_no_lang_ids,
+			explode( ',', $result['category'] ),
+			'Result should contain category IDs without language.'
+		);
+		$this->assertEqualsCanonicalizing(
+			$post_tag_no_lang_ids,
+			explode( ',', $result['post_tag'] ),
+			'Result should contain post_tag IDs without language.'
+		);
+		$this->assertStringNotContainsString( (string) $term_en, $result['category'], 'Result should not contain terms that already have a language.' );
+	}
+
+	public function test_get_term_ids_without_lang_respects_default_limit() {
+		// Arrange
+		$category_no_lang_ids = $this->create_terms_without_lang( 7, 'category' );
+
+		// Act
+		$result = $this->site_health->get_term_ids_without_lang();
+		$result_ids = explode( ',', $result['category'] );
+
+		// Assert
+		$this->assertCount( 5, $result_ids, 'Result should be limited to 5 term IDs by default.' );
+		$this->assertEmpty(
+			array_diff( $result_ids, $category_no_lang_ids ),
+			'All returned IDs should be among the created terms without language.'
+		);
+	}
+
+	public function test_get_term_ids_without_lang_returns_all_with_limit_minus_one() {
+		// Arrange
+		$category_no_lang_ids = $this->create_terms_without_lang( 7, 'category' );
+
+		// Act
+		$result = $this->site_health->get_term_ids_without_lang( -1 );
+		$result_ids = explode( ',', $result['category'] );
+
+		// Assert
+		$this->assertCount( 7, $result_ids, 'Result should contain all 7 term IDs when limit is -1.' );
+		$this->assertEmpty(
+			array_diff( $result_ids, $category_no_lang_ids ),
+			'Result should contain exactly the created term IDs when limit is -1.'
+		);
+	}
+
+	public function test_get_term_ids_without_lang_returns_empty_array_when_none_missing() {
+		// Arrange
+		self::factory()->term->create( array( 'taxonomy' => 'category', 'lang' => 'en' ) );
+
+		// Act
+		$result = $this->site_health->get_term_ids_without_lang();
+
+		// Assert
+		$this->assertEmpty( $result, 'Result should contain an empty array when all terms have lang.' );
 	}
 }
