@@ -59,7 +59,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		get_current_screen()->render_list_table_columns_preferences();
 		$html = ob_get_clean();
 
-		$doc  = new DomDocument();
+		$doc = new DomDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $html );
 		$xpath = new DOMXpath( $doc );
 
