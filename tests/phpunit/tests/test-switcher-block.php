@@ -282,6 +282,50 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 		);
 	}
 
+	public function test_pll_menu_item_meta_in_rest() {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		global $wp_rest_server;
+		$wp_rest_server = new Spy_REST_Server();
+
+		$options     = self::create_options();
+		$model       = new PLL_Model( $options );
+		$links_model = $model->get_links_model();
+		$links_model->init();
+		$this->pll_env = new PLL_REST_Request( $links_model );
+		do_action( 'rest_api_init', $wp_rest_server );
+
+		// Create 1 menu.
+		$menu_id = wp_create_nav_menu( 'Main' );
+		$menu_item_id = wp_update_nav_menu_item(
+			$menu_id,
+			0,
+			array(
+				'menu-item-type'   => 'custom',
+				'menu-item-title'  => 'Language switcher',
+				'menu-item-url'    => '#pll_switcher',
+				'menu-item-status' => 'publish',
+			)
+		);
+
+		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1 );
+		update_post_meta( $menu_item_id, '_pll_menu_item', $options );
+
+		$request = new WP_REST_Request( 'GET', '/wp/v2/menu-items/' . $menu_item_id );
+		$response = rest_do_request( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$menu_item = $response->get_data();
+
+		$this->assertNotEmpty( $menu_item );
+		$this->assertNotEmpty( $menu_item['meta'] );
+		$this->assertNotEmpty( $menu_item['meta']['_pll_menu_item'] );
+		$this->assertFalse( $menu_item['meta']['_pll_menu_item']['hide_if_no_translation'] );
+		$this->assertFalse( $menu_item['meta']['_pll_menu_item']['hide_current'] );
+		$this->assertFalse( $menu_item['meta']['_pll_menu_item']['force_home'] );
+		$this->assertTrue( $menu_item['meta']['_pll_menu_item']['show_flags'] );
+		$this->assertTrue( $menu_item['meta']['_pll_menu_item']['show_names'] );
+	}
+
 	/**
 	 * Renders a Polylang switcher block using WP_Block.
 	 *
