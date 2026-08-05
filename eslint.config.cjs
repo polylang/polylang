@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const wpPlugin = require( '@wordpress/eslint-plugin' );
+const AutomatticPlugin = require( '@automattic/eslint-plugin-wpvip' );
 const globals = require( 'globals' );
 
 module.exports = [
@@ -20,7 +20,11 @@ module.exports = [
 			'**/*.map',
 		],
 	},
-	...wpPlugin.configs.recommended,
+	// Compose explicitly: `recommended` only auto-loads React when `react` is a
+	// declared dependency; we get it transitively via `@wordpress/element`.
+	...AutomatticPlugin.configs.javascript,
+	...AutomatticPlugin.configs.formatting,
+	...AutomatticPlugin.configs.react,
 	{
 		settings: {
 			'import/core-modules': [
@@ -35,12 +39,6 @@ module.exports = [
 			],
 		},
 		rules: {
-			'jsdoc/no-undefined-types': [
-				1,
-				{
-					definedTypes: [ 'React', 'ReactElement', 'APIFetchOptions' ],
-				},
-			],
 			camelcase: [
 				2,
 				{

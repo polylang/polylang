@@ -30,6 +30,7 @@
     "@wpsyntex/polylang-react-library": "^1.0.0"
   },
   "devDependencies": {
+    "@automattic/eslint-plugin-wpvip": "^1.3.0",
     "@playwright/test": "^1.58.2",
     "@wordpress/babel-preset-default": "^8.41.0",
     "@wordpress/base-styles": "^6.17.0",
@@ -44,6 +45,7 @@
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.4",
     "css-minimizer-webpack-plugin": "^8.0.0",
+    "eslint": "^9.39.5",
     "glob": "^11.0.0",
     "mini-css-extract-plugin": "^2.10.1",
     "postcss": "^8.5.8",
