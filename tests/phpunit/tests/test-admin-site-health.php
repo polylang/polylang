@@ -152,6 +152,20 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
 	}
 
+	public function test_homepage_test_when_front_page_does_not_exist() {
+		// Arrange
+		$deleted_page_id = self::factory()->post->create( array( 'post_type' => 'page', 'lang' => 'en' ) );
+		wp_delete_post( $deleted_page_id, true );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $deleted_page_id );
+
+		// Act
+		$test_result = $this->site_health->homepage_test();
+
+		// Assert
+		$this->assertSame( 'good', $test_result['status'], 'homepage_test() should return "good" when the front page no longer exists.' );
+	}
+
 	public function test_status_tests_adds_pll_homepage_test_when_static_front_page_is_set() {
 		// Arrange
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
@@ -174,6 +188,30 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 			$result['direct']['pll_homepage']['test'],
 			'The "pll_homepage" test should reference the homepage_test() callback.'
 		);
+	}
+
+	public function test_status_tests_preserves_existing_tests_when_static_front_page_is_set() {
+		// Arrange
+		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $home_en );
+
+		$existing_tests = array(
+			'direct' => array(
+				'other_test' => array(
+					'label' => 'Some other test',
+					'test'  => '__return_true',
+				),
+			),
+		);
+
+		// Act
+		$result = $this->site_health->status_tests( $existing_tests );
+
+		// Assert
+		$this->assertArrayHasKey( 'other_test', $result['direct'], 'Existing tests should not be overwritten.' );
+		$this->assertSame( $existing_tests['direct']['other_test'], $result['direct']['other_test'], 'Existing test data should remain unchanged.' );
+		$this->assertArrayHasKey( 'pll_homepage', $result['direct'], 'pll_homepage should still be added alongside existing tests.' );
 	}
 
 	public function test_status_tests_does_not_add_pll_homepage_test_when_static_front_page_is_not_set() {
@@ -272,6 +310,34 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		);
 	}
 
+	public function test_get_post_ids_without_lang_respects_custom_limit() {
+		// Arrange
+		$post_no_lang_ids = $this->create_posts_without_lang( 7, 'post' );
+
+		// Act
+		$result = $this->site_health->get_post_ids_without_lang( 2 );
+		$result_ids = explode( ',', $result['post'] );
+
+		// Assert
+		$this->assertCount( 2, $result_ids, 'Result should be limited to 2 post IDs when a custom limit is passed.' );
+		$this->assertEmpty(
+			array_diff( $result_ids, $post_no_lang_ids ),
+			'2 returned IDs should be among the created posts without language.'
+		);
+	}
+
+	public function test_get_post_ids_without_lang_treats_limit_below_one_as_unlimited() {
+		// Arrange
+		$this->create_posts_without_lang( 7, 'post' );
+
+		// Act
+		$result = $this->site_health->get_post_ids_without_lang( 0 );
+		$result_ids = explode( ',', $result['post'] );
+
+		// Assert
+		$this->assertCount( 7, $result_ids, 'A limit below 1 (other than the documented -1) should be treated as unlimited.' );
+	}
+
 	public function test_get_post_ids_without_lang_returns_empty_array_when_none_missing() {
 		// Arrange
 		self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
@@ -354,6 +420,18 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 			array_diff( $result_ids, $category_no_lang_ids ),
 			'Result should contain exactly the created term IDs when limit is -1.'
 		);
+	}
+
+	public function test_get_term_ids_without_lang_treats_limit_below_one_as_unlimited() {
+		// Arrange
+		$this->create_terms_without_lang( 7, 'category' );
+
+		// Act
+		$result = $this->site_health->get_term_ids_without_lang( 0 );
+		$result_ids = explode( ',', $result['category'] );
+
+		// Assert
+		$this->assertCount( 7, $result_ids, 'A limit below 1 (other than the documented -1) should be treated as unlimited.' );
 	}
 
 	public function test_get_term_ids_without_lang_returns_empty_array_when_none_missing() {
