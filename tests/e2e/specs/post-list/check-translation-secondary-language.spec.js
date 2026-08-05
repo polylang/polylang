@@ -82,7 +82,7 @@ test.describe( 'Check Post language', { tag: [ '@pre-release' ] }, async () => {
 		const frenchPost = await page.evaluate( () => {
 			return window.wp.data.select( 'core/editor' ).getCurrentPost();
 		} );
-console.log( frenchPost.id );
+
 		// The French post is correctly linked to the English post
 		await expect(
 			page.getByRole( 'textbox', { name: 'Translation' } )
@@ -108,4 +108,5 @@ console.log( frenchPost.id );
 				`/wp-admin/post\\.php\\?post=${ frenchPost.id }&action=edit`
 		))
 		} );
+
 } );
