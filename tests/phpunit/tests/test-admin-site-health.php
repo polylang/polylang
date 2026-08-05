@@ -148,4 +148,51 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when all languages are translated.' );
 		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
 	}
+
+	public function test_status_tests_adds_pll_homepage_test_when_static_front_page_is_set() {
+		// Arrange
+		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $home_en );
+
+		// Act
+		$result = $this->site_health->status_tests( array() );
+
+		// Assert
+		$this->assertArrayHasKey( 'direct', $result, 'status_tests() should add a "direct" key.' );
+		$this->assertArrayHasKey( 'pll_homepage', $result['direct'], 'status_tests() should add a "pll_homepage" entry when a static front page is set.' );
+		$this->assertSame(
+			'Homepage translated',
+			$result['direct']['pll_homepage']['label'],
+			'The "pll_homepage" test should have the expected label.'
+		);
+		$this->assertSame(
+			array( $this->site_health, 'homepage_test' ),
+			$result['direct']['pll_homepage']['test'],
+			'The "pll_homepage" test should reference the homepage_test() callback.'
+		);
+	}
+
+	public function test_status_tests_does_not_add_pll_homepage_test_when_static_front_page_is_not_set() {
+		// Arrange
+		update_option( 'show_on_front', 'posts' );
+
+		// Act
+		$result = $this->site_health->status_tests( array() );
+
+		// Assert
+		$this->assertSame( array(), $result, 'status_tests() should not modify $tests when there is no static front page.' );
+	}
+
+	public function test_status_tests_does_not_add_pll_homepage_test_when_page_on_front_is_empty() {
+		// Arrange
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', 0 );
+
+		// Act
+		$result = $this->site_health->status_tests( array() );
+
+		// Assert
+		$this->assertSame( array(), $result, 'status_tests() should not modify $tests when no page is set as front page.' );
+	}
 }
