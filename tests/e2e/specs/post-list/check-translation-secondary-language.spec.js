@@ -79,6 +79,10 @@ test.describe( 'Check Post language', { tag: [ '@pre-release' ] }, async () => {
 			return window.wp.data.dispatch( 'core/editor' ).savePost();
 		} );
 
+		const frenchPost = await page.evaluate( () => {
+			return window.wp.data.select( 'core/editor' ).getCurrentPost();
+		} );
+console.log( frenchPost.id );
 		// The French post is correctly linked to the English post
 		await expect(
 			page.getByRole( 'textbox', { name: 'Translation' } )
@@ -96,5 +100,12 @@ test.describe( 'Check Post language', { tag: [ '@pre-release' ] }, async () => {
 				name: 'Edit the translation in Français',
 			} )
 		).toBeVisible();
-	} );
+
+		// No duplicate created
+		const href = await page.getByRole('link', { name: ' Edit the translation in Français' }).getAttribute( 'href');
+		expect(href).toMatch(
+			new RegExp(
+				`/wp-admin/post\\.php\\?post=${ frenchPost.id }&action=edit`
+		))
+		} );
 } );
