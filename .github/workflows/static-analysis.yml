@@ -17,10 +17,20 @@ jobs:
     - name: Check out the source code
       uses: actions/checkout@v4
 
+    - name: Filter according to modified files
+      uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          php:
+            - '**/*.php'
+
     - name: Run PHPCS and PHPStan tests
       uses: polylang/actions/static-analysis@main
+      if: ${{ steps.filter.outputs.php == 'true' }}
 
     - name: Run PHPCompatibility for files that require php 5.6
+      if: ${{ steps.filter.outputs.php == 'true' }}
       run: vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist
       shell: bash
 
