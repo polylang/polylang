@@ -42,6 +42,32 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_column_headers( get_current_screen() ) );
 	}
 
+	/**
+	 * This test has also to deal with the static variable in get_culumn_headers().
+	 *
+	 * @testWith ["edit-post"]
+	 *           ["edit-category"]
+	 *
+	 * @param string $screen
+	 * @return void
+	 */
+	public function test_screen_options_in_list_screens( $screen ) {
+		new PLL_Context_Admin();
+		set_current_screen( $screen );
+
+		ob_start();
+		get_current_screen()->render_list_table_columns_preferences();
+		$html = ob_get_clean();
+
+		$doc  = new DomDocument();
+		$doc->loadHTML( '<?xml encoding="UTF-8">' . $html );
+		$xpath = new DOMXpath( $doc );
+
+		$this->assertNotEmpty( $xpath->query( '//label[.="English"]' )->length );
+		$this->assertNotEmpty( $xpath->query( '//label[.="Français"]' )->length );
+	}
+
+
 	public function test_post_with_no_language() {
 		$post_id = self::factory()->post->create();
 
