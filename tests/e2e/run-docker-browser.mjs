@@ -16,8 +16,8 @@
  */
 
 import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
@@ -54,7 +54,7 @@ const isContainerRunning = ( containerName ) => {
 	try {
 		const result = execSync(
 			`docker ps --filter "name=${ containerName }" --format "{{.Names}}"`,
-			{ encoding: 'utf-8', stdio: 'pipe' }
+			{ encoding: 'utf-8', stdio: 'pipe' },
 		);
 		return result.trim() === containerName;
 	} catch {
@@ -72,7 +72,7 @@ const containerExists = ( containerName ) => {
 	try {
 		const result = execSync(
 			`docker ps -a --filter "name=${ containerName }" --format "{{.Names}}"`,
-			{ encoding: 'utf-8', stdio: 'pipe' }
+			{ encoding: 'utf-8', stdio: 'pipe' },
 		);
 		return result.trim() === containerName;
 	} catch {
@@ -90,7 +90,7 @@ const getContainerImage = ( containerName ) => {
 	try {
 		const result = execSync(
 			`docker inspect --format='{{.Config.Image}}' ${ containerName }`,
-			{ encoding: 'utf-8', stdio: 'pipe' }
+			{ encoding: 'utf-8', stdio: 'pipe' },
 		);
 		return result.trim();
 	} catch {
@@ -148,7 +148,7 @@ const startPlaywrightServer = () => {
 				`--init --ipc=host --network host ` +
 				`${ PLAYWRIGHT_IMAGE } ` +
 				`/bin/sh -c "npx -y playwright@${ PLAYWRIGHT_VERSION } run-server --port ${ PLAYWRIGHT_SERVER_PORT } --host 0.0.0.0"`,
-			{ stdio: 'inherit' }
+			{ stdio: 'inherit' },
 		);
 		console.log( 'Playwright Server started successfully.' );
 		return true;
@@ -180,7 +180,7 @@ const isDockerRunning = () => {
 const main = () => {
 	if ( ! isDockerRunning() ) {
 		console.error(
-			'Docker is not running. Please start Docker and try again.'
+			'Docker is not running. Please start Docker and try again.',
 		);
 		process.exit( 1 );
 	}
@@ -203,7 +203,7 @@ const main = () => {
 			}
 		} else {
 			console.log(
-				`Container exists with different Playwright version (${ existingImage }). Removing...`
+				`Container exists with different Playwright version (${ existingImage }). Removing...`,
 			);
 			if ( ! removeContainer( PLAYWRIGHT_SERVER_NAME ) ) {
 				console.error( 'Failed to remove existing container.' );

@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { __, _x } from '@wordpress/i18n';
 import { InspectorControls, BlockControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -15,8 +14,9 @@ import {
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUnitControl as UnitControl,
 } from '@wordpress/components';
-import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
+import { __, _x } from '@wordpress/i18n';
+import { store as noticesStore } from '@wordpress/notices';
 
 const CSS_LENGTH_UNITS = [
 	{ value: 'px', label: 'px' },
@@ -92,11 +92,11 @@ export const SwitcherControls = ( {
 	const { createWarningNotice } = useDispatch( noticesStore );
 
 	const layoutSelectOptions = ALL_LAYOUT_OPTIONS.filter( ( option ) =>
-		layoutOptions.includes( option.value )
+		layoutOptions.includes( option.value ),
 	);
 
 	const layoutToolbarControls = ALL_LAYOUT_TOOLBAR_CONTROLS.filter(
-		( control ) => layoutOptions.includes( control.layout )
+		( control ) => layoutOptions.includes( control.layout ),
 	).map( ( control ) => ( {
 		title: control.title,
 		onClick: () => setAttributes( { layout: control.layout } ),
@@ -139,8 +139,8 @@ export const SwitcherControls = ( {
 					createWarningNotice(
 						__(
 							'Labels cannot be hidden if flags are not shown.',
-							'polylang'
-						)
+							'polylang',
+						),
 					);
 
 					return;
@@ -186,8 +186,8 @@ export const SwitcherControls = ( {
 										createWarningNotice(
 											__(
 												'Labels cannot be hidden if flags are not shown.',
-												'polylang'
-											)
+												'polylang',
+											),
 										);
 
 										return;
@@ -216,8 +216,8 @@ export const SwitcherControls = ( {
 									createWarningNotice(
 										__(
 											'Flags cannot be hidden if labels are not displayed.',
-											'polylang'
-										)
+											'polylang',
+										),
 									);
 
 									return;
@@ -236,7 +236,7 @@ export const SwitcherControls = ( {
 									{
 										label: __(
 											'Landscape (3:2)',
-											'polylang'
+											'polylang',
 										),
 										value: '3:2',
 									},
@@ -312,7 +312,7 @@ export const SwitcherControls = ( {
 					<ToggleControl
 						label={ __(
 							'Hide languages with no translation',
-							'polylang'
+							'polylang',
 						) }
 						checked={ hide_if_no_translation }
 						onChange={ ( value ) =>
@@ -342,8 +342,8 @@ export const SwitcherControls = ( {
 									createWarningNotice(
 										__(
 											'Flags cannot be hidden if labels are not displayed.',
-											'polylang'
-										)
+											'polylang',
+										),
 									);
 
 									return;

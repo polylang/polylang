@@ -34,7 +34,7 @@ function mapBlockTree( blocks, menuItems, blocksMapping, mapper ) {
 			block.innerBlocks,
 			menuItems,
 			blocksMapping,
-			mapper
+			mapper,
 		),
 	} );
 
@@ -57,7 +57,7 @@ const blocksFilter = ( block, menuItems, blocksMapping ) => {
 		block.attributes?.url === '#pll_switcher'
 	) {
 		const menuItem = menuItems.find(
-			( item ) => item.url === '#pll_switcher'
+			( item ) => item.url === '#pll_switcher',
 		); // Get the corresponding menu item.
 		const attributes = menuItem.meta._pll_menu_item; // Get its options.
 		const newBlock = createBlock( metadata.name, attributes );
@@ -80,6 +80,6 @@ export const menuItemsToBlocksFilter = ( blocks, menuItems ) => ( {
 		blocks.innerBlocks,
 		menuItems,
 		blocks.mapping,
-		blocksFilter
+		blocksFilter,
 	),
 } );

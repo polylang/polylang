@@ -11,9 +11,10 @@ import { registerBlockType } from '@wordpress/blocks';
  * Internal dependencies
  */
 import { translation as translationIcon } from '@wpsyntex/polylang-react-library';
+
+import deprecated from './deprecated';
 import { Edit } from './edit';
 import metadata from '../../../../src/modules/Blocks/Language_Switcher/Standard/block.json';
-import deprecated from './deprecated';
 
 registerBlockType( metadata.name, {
 	icon: translationIcon,

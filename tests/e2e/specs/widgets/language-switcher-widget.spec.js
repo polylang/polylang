@@ -86,8 +86,8 @@ test.describe(
 			// The block error message must not appear.
 			await expect(
 				page.getByText(
-					'This block has encountered an error and cannot be previewed.'
-				)
+					'This block has encountered an error and cannot be previewed.',
+				),
 			).not.toBeVisible();
 
 			// The block must be visible and display both languages.
@@ -98,5 +98,5 @@ test.describe(
 			await expect( block.getByText( 'English' ) ).toBeVisible();
 			await expect( block.getByText( 'Français' ) ).toBeVisible();
 		} );
-	}
+	},
 );

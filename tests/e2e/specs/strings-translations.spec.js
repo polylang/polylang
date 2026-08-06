@@ -49,10 +49,10 @@ test.describe.serial( 'Strings translations', () => {
 				page,
 			} ) => {
 				await page.goto(
-					'wp-admin/admin.php?page=mlang_strings&paged=1'
+					'wp-admin/admin.php?page=mlang_strings&paged=1',
 				);
 				await expect(
-					page.getByRole( 'cell', { name: 'blogname' } )
+					page.getByRole( 'cell', { name: 'blogname' } ),
 				).toBeVisible();
 
 				const blognameRow = page
@@ -69,7 +69,7 @@ test.describe.serial( 'Strings translations', () => {
 				await expect(
 					page.getByRole( 'cell', {
 						name: 'polylang FR',
-					} )
+					} ),
 				).toBeVisible();
 			} );
 		} );
@@ -101,21 +101,21 @@ test.describe.serial( 'Strings translations', () => {
 				await admin.visitAdminPage(
 					'admin.php',
 					`page=mlang_strings&group=${ encodeURIComponent(
-						'Polylang E2E'
-					) }`
+						'Polylang E2E',
+					) }`,
 				);
 
 				await expect(
 					admin.page.getByRole( 'cell', {
 						name: 'Hello Polylang E2E',
 						exact: true,
-					} )
+					} ),
 				).toBeVisible();
 				await expect(
 					admin.page.getByRole( 'cell', {
 						name: 'e2e_custom_greeting',
 						exact: true,
-					} )
+					} ),
 				).toBeVisible();
 
 				const stringRow = admin.page
@@ -130,7 +130,7 @@ test.describe.serial( 'Strings translations', () => {
 					.click();
 
 				await expect( stringRow.getByLabel( 'Français' ) ).toHaveValue(
-					'Bonjour Polylang E2E FR'
+					'Bonjour Polylang E2E FR',
 				);
 			} );
 
@@ -152,8 +152,8 @@ test.describe.serial( 'Strings translations', () => {
 				await admin.visitAdminPage(
 					'admin.php',
 					`page=mlang_strings&group=${ encodeURIComponent(
-						'Polylang E2E'
-					) }`
+						'Polylang E2E',
+					) }`,
 				);
 
 				const multilineRow = admin.page
@@ -164,14 +164,14 @@ test.describe.serial( 'Strings translations', () => {
 				await expect(
 					multilineRow.getByRole( 'cell', {
 						name: 'e2e_custom_multiline',
-					} )
+					} ),
 				).toBeVisible();
 
 				const frenchField = multilineRow.getByLabel( 'Français' );
 
 				await expect( frenchField ).toHaveAttribute(
 					'name',
-					/translation\[fr\]/
+					/translation\[fr\]/,
 				);
 
 				await frenchField.fill( 'Ligne un\nLigne deux' );
@@ -186,7 +186,7 @@ test.describe.serial( 'Strings translations', () => {
 					.getByLabel( 'Français' );
 
 				await expect( frenchFieldAfterSave ).toHaveValue(
-					'Ligne un\nLigne deux'
+					'Ligne un\nLigne deux',
 				);
 			} );
 		} );
@@ -236,7 +236,7 @@ test.describe.serial( 'Strings translations', () => {
 					page
 						.locator( 'header' )
 						.locator( '.wp-block-site-title' )
-						.getByText( 'polylang FR', { exact: true } )
+						.getByText( 'polylang FR', { exact: true } ),
 				).toBeVisible();
 			} );
 		} );
@@ -259,7 +259,7 @@ test.describe.serial( 'Strings translations', () => {
 				await page.goto( frenchPostUrl );
 
 				await expect(
-					page.locator( '.pll-e2e-custom-string' )
+					page.locator( '.pll-e2e-custom-string' ),
 				).toHaveText( 'Bonjour Polylang E2E FR' );
 			} );
 
@@ -280,10 +280,10 @@ test.describe.serial( 'Strings translations', () => {
 				await page.goto( frenchPostUrl );
 
 				await expect(
-					page.locator( '.pll-e2e-custom-string-multiline' )
+					page.locator( '.pll-e2e-custom-string-multiline' ),
 				).toContainText( 'Ligne un' );
 				await expect(
-					page.locator( '.pll-e2e-custom-string-multiline' )
+					page.locator( '.pll-e2e-custom-string-multiline' ),
 				).toContainText( 'Ligne deux' );
 			} );
 		} );

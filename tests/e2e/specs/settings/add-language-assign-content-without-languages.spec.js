@@ -58,7 +58,7 @@ test.describe(
 
 			// Target the <span class="screen-reader-text">Default language</span>
 			await expect(
-				englishRow.getByText( 'Default language', { exact: true } )
+				englishRow.getByText( 'Default language', { exact: true } ),
 			).toBeVisible();
 		} );
 
@@ -96,10 +96,10 @@ test.describe(
 			// After clicking the "Assign" link, the previously created post should now be assigned to the default language (English en_US).
 			await admin.visitAdminPage( 'edit.php' );
 			const NoLanguagePostRow = page.locator(
-				`#post-${ noLanguagePost.id }`
+				`#post-${ noLanguagePost.id }`,
 			);
 			await expect(
-				NoLanguagePostRow.getByAltText( 'English' )
+				NoLanguagePostRow.getByAltText( 'English' ),
 			).toBeVisible();
 			await admin.visitAdminPage( 'admin.php', 'page=mlang' );
 		} );
@@ -145,5 +145,5 @@ test.describe(
 
 			await expect( postsCell ).toHaveText( '1', { timeout: 10_000 } );
 		} );
-	}
+	},
 );

@@ -28,7 +28,7 @@ export const useMemoizedFlag = (
 	language,
 	showFlags,
 	flagBorderRadius,
-	flagWidth
+	flagWidth,
 ) => {
 	return useMemo( () => {
 		if ( ! showFlags || ! language?.flag ) {

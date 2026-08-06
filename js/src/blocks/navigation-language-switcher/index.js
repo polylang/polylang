@@ -12,9 +12,10 @@ import { addFilter } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { translation as translationIcon } from '@wpsyntex/polylang-react-library';
+
+import deprecated from './deprecated';
 import { Edit } from './edit';
 import { menuItemsToBlocksFilter } from './menu-items-converter';
-import deprecated from './deprecated';
 import metadata from '../../../../src/modules/Blocks/Language_Switcher/Navigation/block.json';
 
 registerBlockType( metadata.name, {
@@ -39,5 +40,5 @@ registerBlockType( metadata.name, {
 addFilter(
 	'blocks.navigation.__unstableMenuItemsToBlocks',
 	'polylang/include-language-switcher',
-	menuItemsToBlocksFilter
+	menuItemsToBlocksFilter,
 );

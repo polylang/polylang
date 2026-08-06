@@ -70,7 +70,7 @@ test.describe.serial(
 			const navInserter = navigationBlock
 				.getByRole( 'button', { name: 'Add page' } )
 				.or(
-					navigationBlock.getByRole( 'button', { name: 'Add block' } ) // Fallback for WP 6.9
+					navigationBlock.getByRole( 'button', { name: 'Add block' } ), // Fallback for WP 6.9
 				);
 			await expect( navInserter ).toBeVisible();
 			await navInserter.click();
@@ -142,7 +142,7 @@ test.describe.serial(
 				'navigation-language-switcher-dropdown-with-names-and-flags.png',
 				{
 					maxDiffPixelRatio: 0.25,
-				}
+				},
 			);
 
 			// Remove the language names and keep the flags.
@@ -155,7 +155,7 @@ test.describe.serial(
 				'navigation-language-switcher-dropdown-with-flags.png',
 				{
 					maxDiffPixelRatio: 0.25,
-				}
+				},
 			);
 
 			// Remove the flags: labels must be shown before flags can be hidden.
@@ -164,7 +164,7 @@ test.describe.serial(
 				.getByRole( 'checkbox', { name: 'Display flags' } )
 				.uncheck();
 			await expect(
-				page.getByRole( 'combobox', { name: 'Labels' } )
+				page.getByRole( 'combobox', { name: 'Labels' } ),
 			).toHaveValue( 'names' );
 
 			const blockWithNames =
@@ -174,7 +174,7 @@ test.describe.serial(
 				'navigation-language-switcher-dropdown-with-names.png',
 				{
 					maxDiffPixelRatio: 0.25,
-				}
+				},
 			);
 
 			// Save the changes for next tests.
@@ -211,7 +211,7 @@ test.describe.serial(
 				'navigation-language-switcher-list-with-names-and-flags.png',
 				{
 					maxDiffPixelRatio: 0.25,
-				}
+				},
 			);
 
 			// Remove the language names and keep the flags.
@@ -224,7 +224,7 @@ test.describe.serial(
 				'navigation-language-switcher-list-with-flags.png',
 				{
 					maxDiffPixelRatio: 0.25,
-				}
+				},
 			);
 
 			// Remove the flags: labels must be shown before flags can be hidden.
@@ -233,7 +233,7 @@ test.describe.serial(
 				.getByRole( 'checkbox', { name: 'Display flags' } )
 				.uncheck();
 			await expect(
-				page.getByRole( 'combobox', { name: 'Labels' } )
+				page.getByRole( 'combobox', { name: 'Labels' } ),
 			).toHaveValue( 'names' );
 
 			const blockWithNames =
@@ -243,7 +243,7 @@ test.describe.serial(
 				'navigation-language-switcher-list-with-names.png',
 				{
 					maxDiffPixelRatio: 0.25,
-				}
+				},
 			);
 
 			// Save the changes for next tests.
@@ -283,7 +283,7 @@ test.describe.serial(
 					.getByRole( 'checkbox', {
 						name: 'Force link to front page',
 					} )
-					.isChecked()
+					.isChecked(),
 			).toBeTruthy();
 
 			// Edit the Navigation Language Switcher block settings to hides the current language.
@@ -295,7 +295,7 @@ test.describe.serial(
 					.getByRole( 'checkbox', {
 						name: 'Hide the current language',
 					} )
-					.isChecked()
+					.isChecked(),
 			).toBeTruthy();
 
 			// Edit the Navigation Language Switcher block settings to hide languages with no translation.
@@ -309,10 +309,10 @@ test.describe.serial(
 					.getByRole( 'checkbox', {
 						name: 'Hide languages with no translation',
 					} )
-					.isChecked()
+					.isChecked(),
 			).toBeTruthy();
 		} );
-	}
+	},
 );
 
 /**
@@ -368,7 +368,7 @@ const navigateToNavigationEditor = async ( admin, page, navigation ) => {
 	} );
 
 	await expect(
-		page.locator( 'iframe[name="editor-canvas"]' )
+		page.locator( 'iframe[name="editor-canvas"]' ),
 	).toBeVisible();
 };
 

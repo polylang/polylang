@@ -15,9 +15,9 @@ import {
 /**
  * Internal dependencies
  */
-import { LanguagesContext } from '../languages-context';
 import { SwitcherLanguageLink } from '../components/switcher-language-link';
 import { getLabelSpacing } from '../components/switcher-utils';
+import { LanguagesContext } from '../languages-context';
 
 /**
  * Rendered switcher component.
@@ -43,7 +43,7 @@ export const RenderedSwitcher = ( { attributes, context } ) => {
 	const languagesToRender = useCuratedLanguages(
 		languages,
 		currentLanguage,
-		isDropdown
+		isDropdown,
 	);
 	const labelSpacing = getLabelSpacing( show_labels, flag_label_spacing );
 	const withSubmenuIcon =

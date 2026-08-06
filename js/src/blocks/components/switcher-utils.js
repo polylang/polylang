@@ -11,7 +11,7 @@ export const getSwitcherClassName = (
 	layout,
 	showFlags,
 	flagAspectRatio,
-	alignment
+	alignment,
 ) => {
 	const classes = [ 'pll-switcher', `pll-layout-${ layout }` ];
 
@@ -21,7 +21,7 @@ export const getSwitcherClassName = (
 
 	if ( showFlags ) {
 		classes.push(
-			`pll-aspect-ratio-${ flagAspectRatio.replace( ':', '' ) }`
+			`pll-aspect-ratio-${ flagAspectRatio.replace( ':', '' ) }`,
 		);
 	}
 

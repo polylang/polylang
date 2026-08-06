@@ -14,14 +14,14 @@ import {
 /**
  * Internal dependencies
  */
-import { useCurrentLanguageWithEditorContext } from '../hooks/use-current-language-with-editor-context';
-import { LanguagesContext } from '../languages-context';
 import { SwitcherLanguageLink } from '../components/switcher-language-link';
 import {
 	getLabel,
 	getLabelSpacing,
 	getSwitcherClassName,
 } from '../components/switcher-utils';
+import { useCurrentLanguageWithEditorContext } from '../hooks/use-current-language-with-editor-context';
+import { LanguagesContext } from '../languages-context';
 
 /**
  * Rendered switcher component.
@@ -46,14 +46,14 @@ export const RenderedSwitcher = ( { attributes } ) => {
 	const curatedLanguages = useCuratedLanguages(
 		languages,
 		currentLanguage,
-		false
+		false,
 	);
 	const alignment = style?.typography?.textAlign;
 	const switcherClassName = getSwitcherClassName(
 		layout,
 		show_flags,
 		flag_aspect_ratio,
-		alignment
+		alignment,
 	);
 	const labelSpacing = getLabelSpacing( show_labels, flag_label_spacing );
 	const linkProps = {

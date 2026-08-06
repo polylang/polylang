@@ -150,7 +150,7 @@ test.describe( 'Should detect browser preferred language', () => {
 
 		await setAcceptLanguageHeader(
 			context,
-			'zh-Hant-HK;q=1.0,zh-CN;q=0.9,en;q=0.8'
+			'zh-Hant-HK;q=1.0,zh-CN;q=0.9,en;q=0.8',
 		);
 
 		await page.goto( '/' );
@@ -168,13 +168,13 @@ test.describe( 'Should detect browser preferred language', () => {
 const expectLanguageCookie = async ( page, expectedLanguage ) => {
 	const cookies = await page.context().cookies();
 	const languageCookie = cookies.find(
-		( cookie ) => cookie.name === 'pll_language'
+		( cookie ) => cookie.name === 'pll_language',
 	);
 
 	expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
 	expect(
 		languageCookie.value,
-		'Preferred language should be ' + expectedLanguage
+		'Preferred language should be ' + expectedLanguage,
 	).toBe( expectedLanguage );
 };
 

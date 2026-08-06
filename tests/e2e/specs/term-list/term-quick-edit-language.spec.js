@@ -45,7 +45,7 @@ test.describe( 'Quick Edit language selection for terms', () => {
 		// Navigate to Categories admin page.
 		await admin.visitAdminPage(
 			'edit-tags.php',
-			'taxonomy=category&post_type=post'
+			'taxonomy=category&post_type=post',
 		);
 
 		// Create a French category via UI.
@@ -91,7 +91,7 @@ test.describe( 'Quick Edit language selection for terms', () => {
 		// Verify the displayed text.
 		const selectedOption = await page
 			.locator(
-				`#edit-${ termId } select[name="inline_lang_choice"] option:checked`
+				`#edit-${ termId } select[name="inline_lang_choice"] option:checked`,
 			)
 			.textContent();
 
