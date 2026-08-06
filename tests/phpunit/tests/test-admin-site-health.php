@@ -444,4 +444,24 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		// Assert
 		$this->assertEmpty( $result, 'Result should contain an empty array when all terms have lang.' );
 	}
+
+	public function test_info_languages_contains_expected_fields() {
+		// Arrange
+		$en = $this->pll_admin->model->get_language( 'en' );
+
+		// Act
+		$debug_info = $this->site_health->info_languages( array() );
+		$fields = $debug_info['pll_language_en']['fields'];
+
+		// Assert
+		$this->assertSame( 'name', $fields['name']['label'], 'Label should equal the key name.' );
+		$this->assertSame( $en->name, $fields['name']['value'], 'Name value should match the language object.' );
+		$this->assertSame( (string) $en->term_id, (string) $fields['term_id']['value'], 'Term_id value should match the language object.' );
+		$this->assertSame( $en->slug, $fields['slug']['value'], 'Slug value should match the language object.' );
+		$this->assertSame( 'order', $fields['term_group']['label'], 'Label should equal the key name.' );
+		$this->assertSame( (string) $en->term_group, (string) $fields['term_group']['value'], 'Term_group value should match the language object.' );
+		foreach ( array( 'flag', 'host', 'taxonomy', 'description', 'parent', 'filter', 'custom_flag' ) as $excluded_key ) {
+			$this->assertArrayNotHasKey( $excluded_key, $fields, "Excluded key \"$excluded_key\" should not be present." );
+		}
+	}
 }
