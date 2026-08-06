@@ -325,12 +325,6 @@ parameters:
 			path: src/admin/admin-links.php
 
 		-
-			message: '#^Parameter \#1 \$post_type of method PLL_Model\:\:is_translated_post_type\(\) expects array\<string\>\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/admin/admin-links.php
-
-		-
 			message: '#^Cannot access offset int on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
