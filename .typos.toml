@@ -23,6 +23,7 @@ extend-ignore-re = [
     "Etiquette exemple",
     "non-classe",
     "\\bicl_lso_",
+    "Automattic",
 ]
 
 [default.extend-identifiers]
