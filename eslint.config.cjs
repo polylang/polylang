@@ -39,6 +39,22 @@ module.exports = [
 			],
 		},
 		rules: {
+			// Same as the WPVIP config, but tolerates the blank lines introduced by
+			// the WordPress `/** … dependencies */` import blocks.
+			'import/order': [
+				'error',
+				{
+					'newlines-between': 'always-and-inside-groups',
+					alphabetize: {
+						order: 'asc',
+					},
+					groups: [
+						[ 'builtin', 'external' ],
+						[ 'index', 'internal', 'object', 'parent', 'sibling' ],
+						[ 'type' ],
+					],
+				},
+			],
 			camelcase: [
 				2,
 				{
