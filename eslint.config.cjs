@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const AutomatticPlugin = require( '@automattic/eslint-plugin-wpvip' );
+const wpPlugin = require( '@wordpress/eslint-plugin' );
 const globals = require( 'globals' );
 
 module.exports = [
@@ -25,6 +26,9 @@ module.exports = [
 	...AutomatticPlugin.configs.javascript,
 	...AutomatticPlugin.configs.formatting,
 	...AutomatticPlugin.configs.react,
+	// WordPress-specific rules only (not the full WP recommended stack).
+	...wpPlugin.configs.custom,
+	...wpPlugin.configs.i18n,
 	{
 		settings: {
 			'import/core-modules': [

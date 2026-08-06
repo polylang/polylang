@@ -11,6 +11,7 @@ import {
 	ToolbarGroup,
 	ToolbarButton,
 	ToolbarDropdownMenu,
+	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUnitControl as UnitControl,
 } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
