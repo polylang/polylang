@@ -33,9 +33,6 @@ class Columns_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$editor );
 	}
 
-	/**
-	 * This must be the first test due to the static variable in get_culumn_headers().
-	 */
 	public function test_no_screen_options_in_term_screen() {
 		new PLL_Context_Admin();
 		set_current_screen( 'term.php' );
@@ -43,10 +40,8 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * This test has also to deal with the static variable in get_culumn_headers().
-	 *
 	 * @testWith ["edit-post"]
-	 *           ["edit-category"]
+	 *           ["edit-tags"]
 	 *
 	 * @param string $screen
 	 * @return void
