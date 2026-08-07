@@ -64,13 +64,6 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 	 * @param string $expected The name of a file containing the expected result.
 	 */
 	public function test_render_polylang_navigation_switcher_block( $options, $context, $expected ) {
-		global $wp_version;
-
-		// Backward compatibility with WordPress < 6.8.
-		if ( version_compare( $wp_version, '6.8-alpha', '<' ) ) {
-			$this->markTestSkipped( 'Test on navigation language switcher block HTML rendering requires WP 6.8.' );
-		}
-
 		// We need to have some content in the defined languages
 		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );

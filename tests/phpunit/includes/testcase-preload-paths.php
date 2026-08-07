@@ -76,12 +76,9 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	}
 
 	protected function get_context( $context_name, $post = null ) {
-		$context_settings = array();
-
-		if ( property_exists( WP_Block_Editor_Context::class, 'name' ) ) {
-			// Backward compatibility with WordPress < 6.0 where `WP_Block_Editor_Context::$name` didn't exist yet.
-			$context_settings['name'] = $context_name;
-		}
+		$context_settings = array(
+			'name' => $context_name,
+		);
 
 		if ( ! is_null( $post ) ) {
 			$context_settings['post'] = $post;

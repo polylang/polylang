@@ -158,25 +158,6 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @param string   $html           The HTML string.
 	 */
 	protected function assert_languages_in_dropdown( array $expected_langs, string $html ): void {
-		// Backward compatibility with WP 6.6 and below.
-		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
-			$dom = new \DOMDocument();
-			$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
-
-			$langs = array();
-			foreach ( $dom->getElementsByTagName( 'option' ) as $option ) {
-				$lang = $option->getAttribute( 'lang' );
-
-				if ( '' !== $lang ) {
-					$langs[] = $lang;
-				}
-			}
-
-			$this->assertSameSets( $expected_langs, $langs );
-
-			return;
-		}
-
 		$processor = \WP_HTML_Processor::create_fragment( $html );
 		$langs     = array();
 
@@ -198,26 +179,6 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @param string $html          The HTML string.
 	 */
 	protected function assert_selected_language( string $expected_slug, string $html ): void {
-		// Backward compatibility with WP 6.6 and below.
-		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
-			$dom = new \DOMDocument();
-			$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
-
-			foreach ( $dom->getElementsByTagName( 'option' ) as $option ) {
-				if ( ! $option->hasAttribute( 'selected' ) ) {
-					continue;
-				}
-
-				$this->assertSame( $expected_slug, $option->getAttribute( 'value' ) );
-
-				return;
-			}
-
-			$this->fail( 'A language should be selected.' );
-
-			return;
-		}
-
 		$processor = \WP_HTML_Processor::create_fragment( $html );
 		$found     = false;
 
@@ -241,20 +202,6 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @return bool
 	 */
 	protected function is_dropdown_disabled( string $html ): bool {
-		// Backward compatibility with WP 6.6 and below.
-		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
-			$dom = new \DOMDocument();
-			$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
-
-			$selects = $dom->getElementsByTagName( 'select' );
-
-			if ( 0 === $selects->length ) {
-				return false;
-			}
-
-			return $selects->item( 0 )->hasAttribute( 'disabled' );
-		}
-
 		$processor = \WP_HTML_Processor::create_fragment( $html );
 
 		if ( ! $processor->next_tag( 'SELECT' ) ) {
@@ -270,19 +217,6 @@ class Test_Media extends PLL_UnitTestCase {
 	 * @param string $html The HTML string.
 	 */
 	protected function assert_first_option_is_empty( string $html ): void {
-		// Backward compatibility with WP 6.6 and below.
-		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
-			$dom = new \DOMDocument();
-			$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
-
-			$options = $dom->getElementsByTagName( 'option' );
-
-			$this->assertGreaterThan( 0, $options->length, 'The dropdown should have options.' );
-			$this->assertEmpty( $options->item( 0 )->getAttribute( 'value' ), 'The first option should have an empty value.' );
-
-			return;
-		}
-
 		$processor = \WP_HTML_Processor::create_fragment( $html );
 
 		$this->assertTrue( $processor->next_tag( 'OPTION' ), 'The dropdown should have options.' );
