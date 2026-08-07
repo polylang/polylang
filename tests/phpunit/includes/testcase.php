@@ -15,6 +15,17 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase {
 			}
 		);
 
+		Functions\when( 'get_column_headers' )->alias(
+			// Copies the WordPress function without its static variable.
+			function ( $screen ) {
+				if ( is_string( $screen ) ) {
+					$screen = convert_to_screen( $screen );
+				}
+
+				return apply_filters( "manage_{$screen->id}_columns", array() );
+			}
+		);
+
 		parent::set_up();
 
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
