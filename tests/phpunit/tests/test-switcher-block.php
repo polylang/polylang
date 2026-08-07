@@ -194,7 +194,7 @@ class Switcher_Block_Test extends PLL_UnitTestCase {
 	public function test_switcher_block_list_is_wrapped_in_nav_tag() {
 		$rendered = $this->render_switcher_block(
 			'polylang/language-switcher',
-			array( 'dropdown' => 0 )
+			array( 'layout' => 'vertical' )
 		);
 
 		$processor = new WP_HTML_Tag_Processor( $rendered );
