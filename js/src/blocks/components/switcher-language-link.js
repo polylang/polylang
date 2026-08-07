@@ -25,12 +25,7 @@ export const SwitcherLanguageLink = ( {
 	flagWidth,
 	labelSpacing,
 } ) => {
-	const flag = useMemoizedFlag(
-		language,
-		showFlags,
-		flagBorderRadius,
-		flagWidth,
-	);
+	const flag = useMemoizedFlag( language, showFlags, flagBorderRadius, flagWidth );
 
 	return (
 		<SwitcherLinkElement

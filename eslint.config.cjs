@@ -90,4 +90,6 @@ module.exports = [
 			},
 		},
 	},
+	// Last: Prettier turns off conflicting stylistic ESLint rules.
+	...AutomatticPlugin.configs.prettier,
 ];

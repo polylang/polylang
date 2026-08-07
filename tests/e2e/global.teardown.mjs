@@ -11,7 +11,7 @@ async function globalTeardown() {
 		{
 			cwd: process.cwd(),
 			stdio: 'ignore',
-		},
+		}
 	);
 }
 

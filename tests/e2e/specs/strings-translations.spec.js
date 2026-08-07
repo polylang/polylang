@@ -45,15 +45,9 @@ test.describe.serial( 'Strings translations', () => {
 			 *     - Click the "Save Changes" button.
 			 *     - Check that the "polylang FR" string is visible in the "Translations" screen.
 			 */
-			test( 'Blogname core string should be translatable', async ( {
-				page,
-			} ) => {
-				await page.goto(
-					'wp-admin/admin.php?page=mlang_strings&paged=1',
-				);
-				await expect(
-					page.getByRole( 'cell', { name: 'blogname' } ),
-				).toBeVisible();
+			test( 'Blogname core string should be translatable', async ( { page } ) => {
+				await page.goto( 'wp-admin/admin.php?page=mlang_strings&paged=1' );
+				await expect( page.getByRole( 'cell', { name: 'blogname' } ) ).toBeVisible();
 
 				const blognameRow = page
 					.getByRole( 'row', { name: 'Select polylang polylang' } )
@@ -62,14 +56,12 @@ test.describe.serial( 'Strings translations', () => {
 				await blognameRow.click();
 				await blognameRow.fill( 'polylang FR' );
 
-				await page
-					.getByRole( 'button', { name: 'Save Changes' } )
-					.click();
+				await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 
 				await expect(
 					page.getByRole( 'cell', {
 						name: 'polylang FR',
-					} ),
+					} )
 				).toBeVisible();
 			} );
 		} );
@@ -95,43 +87,31 @@ test.describe.serial( 'Strings translations', () => {
 			 *     - Check that the string and name cells show the expected values.
 			 *     - Fill the French translation and save (read on the frontend below).
 			 */
-			test( 'Custom string is listed in admin and can be translated', async ( {
-				admin,
-			} ) => {
+			test( 'Custom string is listed in admin and can be translated', async ( { admin } ) => {
 				await admin.visitAdminPage(
 					'admin.php',
-					`page=mlang_strings&group=${ encodeURIComponent(
-						'Polylang E2E',
-					) }`,
+					`page=mlang_strings&group=${ encodeURIComponent( 'Polylang E2E' ) }`
 				);
 
 				await expect(
 					admin.page.getByRole( 'cell', {
 						name: 'Hello Polylang E2E',
 						exact: true,
-					} ),
+					} )
 				).toBeVisible();
 				await expect(
 					admin.page.getByRole( 'cell', {
 						name: 'e2e_custom_greeting',
 						exact: true,
-					} ),
+					} )
 				).toBeVisible();
 
-				const stringRow = admin.page
-					.getByRole( 'row' )
-					.filter( { hasText: 'Hello Polylang E2E' } );
+				const stringRow = admin.page.getByRole( 'row' ).filter( { hasText: 'Hello Polylang E2E' } );
 
-				await stringRow
-					.getByLabel( 'Français' )
-					.fill( 'Bonjour Polylang E2E FR' );
-				await admin.page
-					.getByRole( 'button', { name: 'Save Changes' } )
-					.click();
+				await stringRow.getByLabel( 'Français' ).fill( 'Bonjour Polylang E2E FR' );
+				await admin.page.getByRole( 'button', { name: 'Save Changes' } ).click();
 
-				await expect( stringRow.getByLabel( 'Français' ) ).toHaveValue(
-					'Bonjour Polylang E2E FR',
-				);
+				await expect( stringRow.getByLabel( 'Français' ) ).toHaveValue( 'Bonjour Polylang E2E FR' );
 			} );
 
 			/**
@@ -151,9 +131,7 @@ test.describe.serial( 'Strings translations', () => {
 			} ) => {
 				await admin.visitAdminPage(
 					'admin.php',
-					`page=mlang_strings&group=${ encodeURIComponent(
-						'Polylang E2E',
-					) }`,
+					`page=mlang_strings&group=${ encodeURIComponent( 'Polylang E2E' ) }`
 				);
 
 				const multilineRow = admin.page
@@ -164,20 +142,15 @@ test.describe.serial( 'Strings translations', () => {
 				await expect(
 					multilineRow.getByRole( 'cell', {
 						name: 'e2e_custom_multiline',
-					} ),
+					} )
 				).toBeVisible();
 
 				const frenchField = multilineRow.getByLabel( 'Français' );
 
-				await expect( frenchField ).toHaveAttribute(
-					'name',
-					/translation\[fr\]/,
-				);
+				await expect( frenchField ).toHaveAttribute( 'name', /translation\[fr\]/ );
 
 				await frenchField.fill( 'Ligne un\nLigne deux' );
-				await admin.page
-					.getByRole( 'button', { name: 'Save Changes' } )
-					.click();
+				await admin.page.getByRole( 'button', { name: 'Save Changes' } ).click();
 
 				const frenchFieldAfterSave = admin.page
 					.getByRole( 'row' )
@@ -185,9 +158,7 @@ test.describe.serial( 'Strings translations', () => {
 					.filter( { hasText: 'Line two' } )
 					.getByLabel( 'Français' );
 
-				await expect( frenchFieldAfterSave ).toHaveValue(
-					'Ligne un\nLigne deux',
-				);
+				await expect( frenchFieldAfterSave ).toHaveValue( 'Ligne un\nLigne deux' );
 			} );
 		} );
 	} );
@@ -223,9 +194,7 @@ test.describe.serial( 'Strings translations', () => {
 			 *     - Check that the document title includes the French site title (WordPress appends site name on singular views).
 			 *     - Check that the header site title block shows "polylang FR" (block themes: `header` + `.wp-block-site-title`).
 			 */
-			test( 'Blogname French translation appears on the frontend', async ( {
-				page,
-			} ) => {
+			test( 'Blogname French translation appears on the frontend', async ( { page } ) => {
 				const response = await page.goto( frenchPostUrl );
 
 				expect( response.status() ).toBe( 200 );
@@ -236,7 +205,7 @@ test.describe.serial( 'Strings translations', () => {
 					page
 						.locator( 'header' )
 						.locator( '.wp-block-site-title' )
-						.getByText( 'polylang FR', { exact: true } ),
+						.getByText( 'polylang FR', { exact: true } )
 				).toBeVisible();
 			} );
 		} );
@@ -253,14 +222,12 @@ test.describe.serial( 'Strings translations', () => {
 			 *     - Open the French post on the frontend.
 			 *     - Check that the appended paragraph shows the French translation.
 			 */
-			test( 'French translation of custom string appears on the frontend', async ( {
-				page,
-			} ) => {
+			test( 'French translation of custom string appears on the frontend', async ( { page } ) => {
 				await page.goto( frenchPostUrl );
 
-				await expect(
-					page.locator( '.pll-e2e-custom-string' ),
-				).toHaveText( 'Bonjour Polylang E2E FR' );
+				await expect( page.locator( '.pll-e2e-custom-string' ) ).toHaveText(
+					'Bonjour Polylang E2E FR'
+				);
 			} );
 
 			/**
@@ -279,12 +246,12 @@ test.describe.serial( 'Strings translations', () => {
 			} ) => {
 				await page.goto( frenchPostUrl );
 
-				await expect(
-					page.locator( '.pll-e2e-custom-string-multiline' ),
-				).toContainText( 'Ligne un' );
-				await expect(
-					page.locator( '.pll-e2e-custom-string-multiline' ),
-				).toContainText( 'Ligne deux' );
+				await expect( page.locator( '.pll-e2e-custom-string-multiline' ) ).toContainText(
+					'Ligne un'
+				);
+				await expect( page.locator( '.pll-e2e-custom-string-multiline' ) ).toContainText(
+					'Ligne deux'
+				);
 			} );
 		} );
 	} );

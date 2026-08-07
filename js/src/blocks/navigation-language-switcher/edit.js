@@ -47,10 +47,7 @@ export const Edit = ( { attributes, context, setAttributes } ) => {
 			/>
 			<Disabled>
 				<LanguagesContext.Provider value={ { languages } }>
-					<RenderedSwitcher
-						attributes={ attributes }
-						context={ context }
-					/>
+					<RenderedSwitcher attributes={ attributes } context={ context } />
 				</LanguagesContext.Provider>
 			</Disabled>
 		</div>

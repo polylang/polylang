@@ -30,10 +30,7 @@ export const Edit = ( { attributes, setAttributes } ) => {
 
 	return (
 		<div { ...useBlockProps() }>
-			<SwitcherControls
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-			/>
+			<SwitcherControls attributes={ attributes } setAttributes={ setAttributes } />
 			<Disabled>
 				<LanguagesContext.Provider value={ { languages } }>
 					<RenderedSwitcher attributes={ attributes } />

@@ -28,26 +28,15 @@ import { LanguagesContext } from '../languages-context';
  * @return {ReactElement} The rendered switcher.
  */
 export const RenderedSwitcher = ( { attributes, context } ) => {
-	const {
-		layout,
-		show_labels,
-		show_flags,
-		flag_border_radius,
-		flag_width,
-		flag_label_spacing,
-	} = attributes;
+	const { layout, show_labels, show_flags, flag_border_radius, flag_width, flag_label_spacing } =
+		attributes;
 	const { showSubmenuIcon, openSubmenusOnClick } = context;
 	const { languages } = useContext( LanguagesContext );
 	const currentLanguage = useCurrentLanguage( languages );
 	const isDropdown = layout === 'dropdown';
-	const languagesToRender = useCuratedLanguages(
-		languages,
-		currentLanguage,
-		isDropdown,
-	);
+	const languagesToRender = useCuratedLanguages( languages, currentLanguage, isDropdown );
 	const labelSpacing = getLabelSpacing( show_labels, flag_label_spacing );
-	const withSubmenuIcon =
-		isDropdown && ( showSubmenuIcon || openSubmenusOnClick );
+	const withSubmenuIcon = isDropdown && ( showSubmenuIcon || openSubmenusOnClick );
 	const linkProps = {
 		showLabels: show_labels,
 		showFlags: show_flags,
@@ -58,13 +47,10 @@ export const RenderedSwitcher = ( { attributes, context } ) => {
 
 	return (
 		<>
-			{ languagesToRender.map( ( language ) => {
+			{ languagesToRender.map( language => {
 				return (
 					<Fragment key={ language.slug }>
-						<SwitcherLanguageLink
-							language={ language }
-							{ ...linkProps }
-						/>
+						<SwitcherLanguageLink language={ language } { ...linkProps } />
 						{ withSubmenuIcon && (
 							<span className="wp-block-navigation__submenu-icon">
 								<SubmenuIcon />

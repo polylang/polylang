@@ -1,102 +1,88 @@
 // @ts-check
 import { test, expect } from '@wordpress/e2e-test-utils-playwright';
-import {
-	createLanguage,
-	deleteAllLanguages,
-	resetAllSettings,
-} from '@wpsyntex/e2e-test-utils';
+import { createLanguage, deleteAllLanguages, resetAllSettings } from '@wpsyntex/e2e-test-utils';
 
 /**
  * Covers language switcher block in the widget editor.
  */
-test.describe(
-	'Language Switcher block in Widget Editor',
-	{ tag: [ '@widget-editor' ] },
-	() => {
-		let initialTheme;
+test.describe( 'Language Switcher block in Widget Editor', { tag: [ '@widget-editor' ] }, () => {
+	let initialTheme;
 
-		/**
-		 * Before all tests:
-		 *     - Activate a theme with widget areas.
-		 *     - Create en_US and fr_FR languages.
-		 */
-		test.beforeAll( async ( { requestUtils } ) => {
-			const [ activeTheme ] = await requestUtils.rest( {
-				path: '/wp/v2/themes',
-				params: { status: 'active' },
-			} );
-			initialTheme = activeTheme.stylesheet;
-
-			// Activate a theme with widget areas.
-			await requestUtils.activateTheme( 'twentytwentyone' );
-
-			await createLanguage( requestUtils, 'en_US' );
-			await createLanguage( requestUtils, 'fr_FR' );
+	/**
+	 * Before all tests:
+	 *     - Activate a theme with widget areas.
+	 *     - Create en_US and fr_FR languages.
+	 */
+	test.beforeAll( async ( { requestUtils } ) => {
+		const [ activeTheme ] = await requestUtils.rest( {
+			path: '/wp/v2/themes',
+			params: { status: 'active' },
 		} );
+		initialTheme = activeTheme.stylesheet;
 
-		/**
-		 * Reset after all tests.
-		 */
-		test.afterAll( async ( { requestUtils } ) => {
-			await requestUtils.activateTheme( initialTheme );
-			await deleteAllLanguages( requestUtils );
-			await resetAllSettings( requestUtils );
+		// Activate a theme with widget areas.
+		await requestUtils.activateTheme( 'twentytwentyone' );
+
+		await createLanguage( requestUtils, 'en_US' );
+		await createLanguage( requestUtils, 'fr_FR' );
+	} );
+
+	/**
+	 * Reset after all tests.
+	 */
+	test.afterAll( async ( { requestUtils } ) => {
+		await requestUtils.activateTheme( initialTheme );
+		await deleteAllLanguages( requestUtils );
+		await resetAllSettings( requestUtils );
+	} );
+
+	test.beforeEach( async ( { admin } ) => {
+		await admin.visitAdminPage( 'widgets.php' );
+	} );
+
+	/**
+	 * Ensures the language switcher block can be added in the widget editor without crashing and displays the languages.
+	 *
+	 * Prerequisites:
+	 *     - en_US and fr_FR languages exist.
+	 *     - A classic theme with widget areas is active (Twenty Twenty-One).
+	 *
+	 * Steps:
+	 *     - Go to "Appearance" > "Widgets".
+	 *     - Add a Language Switcher block.
+	 *     - Verify the block is displayed without the "block has encountered an error" message.
+	 *     - Verify the block preview lists English and French.
+	 */
+	test( 'Block can be added in a widget area and displays languages', async ( { page } ) => {
+		await page
+			.getByRole( 'toolbar', { name: 'Document tools' } )
+			.getByRole( 'button', { name: 'Block Inserter', exact: true } )
+			.click();
+
+		const blockLibrary = page.getByRole( 'region', {
+			name: 'Block Library',
 		} );
+		await expect( blockLibrary ).toBeVisible();
 
-		test.beforeEach( async ( { admin } ) => {
-			await admin.visitAdminPage( 'widgets.php' );
+		await blockLibrary.getByRole( 'searchbox', { name: 'Search' } ).fill( 'Language Switcher' );
+		await blockLibrary
+			.getByRole( 'option', {
+				name: 'Language Switcher',
+				exact: true,
+			} )
+			.click();
+
+		// The block error message must not appear.
+		await expect(
+			page.getByText( 'This block has encountered an error and cannot be previewed.' )
+		).not.toBeVisible();
+
+		// The block must be visible and display both languages.
+		const block = page.getByRole( 'document', {
+			name: 'Block: Language Switcher',
 		} );
-
-		/**
-		 * Ensures the language switcher block can be added in the widget editor without crashing and displays the languages.
-		 *
-		 * Prerequisites:
-		 *     - en_US and fr_FR languages exist.
-		 *     - A classic theme with widget areas is active (Twenty Twenty-One).
-		 *
-		 * Steps:
-		 *     - Go to "Appearance" > "Widgets".
-		 *     - Add a Language Switcher block.
-		 *     - Verify the block is displayed without the "block has encountered an error" message.
-		 *     - Verify the block preview lists English and French.
-		 */
-		test( 'Block can be added in a widget area and displays languages', async ( {
-			page,
-		} ) => {
-			await page
-				.getByRole( 'toolbar', { name: 'Document tools' } )
-				.getByRole( 'button', { name: 'Block Inserter', exact: true } )
-				.click();
-
-			const blockLibrary = page.getByRole( 'region', {
-				name: 'Block Library',
-			} );
-			await expect( blockLibrary ).toBeVisible();
-
-			await blockLibrary
-				.getByRole( 'searchbox', { name: 'Search' } )
-				.fill( 'Language Switcher' );
-			await blockLibrary
-				.getByRole( 'option', {
-					name: 'Language Switcher',
-					exact: true,
-				} )
-				.click();
-
-			// The block error message must not appear.
-			await expect(
-				page.getByText(
-					'This block has encountered an error and cannot be previewed.',
-				),
-			).not.toBeVisible();
-
-			// The block must be visible and display both languages.
-			const block = page.getByRole( 'document', {
-				name: 'Block: Language Switcher',
-			} );
-			await expect( block ).toBeVisible();
-			await expect( block.getByText( 'English' ) ).toBeVisible();
-			await expect( block.getByText( 'Français' ) ).toBeVisible();
-		} );
-	},
-);
+		await expect( block ).toBeVisible();
+		await expect( block.getByText( 'English' ) ).toBeVisible();
+		await expect( block.getByText( 'Français' ) ).toBeVisible();
+	} );
+} );

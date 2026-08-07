@@ -40,5 +40,5 @@ registerBlockType( metadata.name, {
 addFilter(
 	'blocks.navigation.__unstableMenuItemsToBlocks',
 	'polylang/include-language-switcher',
-	menuItemsToBlocksFilter,
+	menuItemsToBlocksFilter
 );

@@ -16,7 +16,7 @@ async function globalSetup( config ) {
 		{
 			cwd: process.cwd(),
 			stdio: 'inherit',
-		},
+		}
 	);
 }
 
