@@ -133,6 +133,8 @@ class Install_Test extends PLL_UnitTestCase {
 	 * This test must be executed before all uninstall tests.
 	 */
 	public function test_uninstall_without_removing_data() {
+		$this->assertFalse( defined( 'PLL_REMOVE_ALL_DATA' ) );
+
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
