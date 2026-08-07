@@ -80,8 +80,7 @@ class Block extends Abstract_Block {
 		static $dropdown_id = 0;
 		++$dropdown_id;
 
-		$attributes['unique_id']    = 'select' === $attributes['layout'] ? 'lang_choice_' . $dropdown_id : '';
-		$attributes['show_wrapper'] = true;
+		$attributes['unique_id'] = 'select' === $attributes['layout'] ? 'lang_choice_' . $dropdown_id : '';
 
 		if ( ! empty( $attributes['style']['typography']['textAlign'] ) ) {
 			$attributes['alignment'] = $attributes['style']['typography']['textAlign'];

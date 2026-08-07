@@ -25,8 +25,8 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  *                                            `dropdown`, and `select`. Default is `vertical`.
  *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
  *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
- *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true` when the layout is `select`,
- *                                            and `false` otherwise.
+ *     @type bool     $show_wrapper           Unused. This template tag does not output a wrapper for list layouts.
+ *                                            Passing `true` triggers a `_doing_it_wrong()` notice. Default is `false`.
  *     @type bool     $show_flags             Display the flags or not. Default is `false`.
  *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
  *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
@@ -63,6 +63,22 @@ function pll_the_languages( $args = array() ) {
 				'pll_the_languages()'
 			)
 		);
+	}
+
+	if ( ! empty( $args['show_wrapper'] ) ) {
+		_doing_it_wrong(
+			'pll_the_languages()',
+			'The show_wrapper argument is not supported. Wrap the output in your own markup instead, for example: `<ul><?php pll_the_languages(); ?></ul>`.',
+			'3.9'
+		);
+		$args['show_wrapper'] = false;
+	} elseif ( ! isset( $args['show_wrapper'] ) ) {
+		$uses_wrapper = ! empty( $args['dropdown'] )
+			|| ( isset( $args['layout'] ) && in_array( $args['layout'], array( 'select', 'dropdown' ), true ) );
+
+		if ( ! $uses_wrapper ) {
+			$args['show_wrapper'] = false;
+		}
 	}
 
 	$settings = new Settings( $args );

@@ -79,7 +79,6 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 	public function test_display_widget_with_non_default_settings(): void {
 		$this->store_settings(
 			array(
-				'show_wrapper' => false,             // Will be forced to `true`.
 				'unique_id'    => 'foobar',          // Will be overwritten to `pll-switcher-widget-2`.
 				'link_classes' => array( 'bidule' ), // Added by 3rd party code, should be rendered.
 			)

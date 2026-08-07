@@ -218,6 +218,40 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * Third party code often wraps the output in its own `<ul>` tag.
+	 * The template tag must return list items only.
+	 */
+	public function test_should_return_list_items_without_wrapper() {
+		$posts = $this->init_test_raw();
+		$this->go_to( get_permalink( $posts['en'] ) );
+
+		$switcher = pll_the_languages( array( 'echo' => 0 ) );
+
+		$this->assertStringStartsWith( '<li', ltrim( $switcher ) );
+		$this->assertStringNotContainsString( '<ul', $switcher );
+		$this->assertStringNotContainsString( '<nav', $switcher );
+
+		$xpath = $this->get_domxpath( '<ul>' . $switcher . '</ul>' );
+		$this->assertSame( 3, $xpath->query( '//ul/li' )->length );
+	}
+
+	public function test_show_wrapper_argument_triggers_doing_it_wrong() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
+		$this->init_test_raw();
+		$this->go_to( home_url( '/' ) );
+
+		$switcher = pll_the_languages(
+			array(
+				'show_wrapper' => true,
+				'echo'         => 0,
+			)
+		);
+
+		$this->assertStringStartsWith( '<li', ltrim( $switcher ) );
+		$this->assertStringNotContainsString( '<ul', $switcher );
+	}
+
+	/**
 	 * Very basic tests for the switcher as list.
 	 */
 	public function test_should_return_list() {
