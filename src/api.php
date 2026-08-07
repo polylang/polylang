@@ -26,7 +26,8 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
  *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
  *     @type bool     $show_wrapper           Display the wrapper or not. Default is `false`. Omitting this argument
- *                                            triggers a `_doing_it_wrong()` notice.
+ *                                            triggers a `_doing_it_wrong()` notice: pass `show_wrapper` => false
+ *                                            explicitly to keep the current behavior.
  *     @type bool     $show_flags             Display the flags or not. Default is `false`.
  *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
  *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
@@ -68,7 +69,7 @@ function pll_the_languages( $args = array() ) {
 	if ( empty( $args['raw'] ) && ! isset( $args['show_wrapper'] ) ) {
 		_doing_it_wrong(
 			'pll_the_languages()',
-			'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => true explicitly to display the wrapper. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+			'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
 			'3.9'
 		);
 		$args['show_wrapper'] = false;
