@@ -68,7 +68,7 @@ function pll_the_languages( $args = array() ) {
 	if ( empty( $args['raw'] ) && ! isset( $args['show_wrapper'] ) ) {
 		_doing_it_wrong(
 			'pll_the_languages()',
-			'pll_the_languages() does not output a wrapper by default. Wrap the output in your own markup, for example: `<ul><?php pll_the_languages(); ?></ul>`, or pass `show_wrapper` => true to display the wrapper. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+			'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => true explicitly to display the wrapper. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
 			'3.9'
 		);
 		$args['show_wrapper'] = false;
