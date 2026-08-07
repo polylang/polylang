@@ -252,6 +252,24 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * @see https://github.com/polylang/polylang-pro/issues/3084
+	 */
+	public function test_default_layout_is_horizontal() {
+		$this->init_test_raw();
+		$this->go_to( home_url( '/' ) );
+
+		$switcher = pll_the_languages(
+			array(
+				'show_wrapper' => true,
+				'echo'         => 0,
+			)
+		);
+
+		$this->assertStringContainsString( 'pll-layout-horizontal', $switcher );
+		$this->assertStringNotContainsString( 'pll-layout-vertical', $switcher );
+	}
+
+	/**
 	 * Very basic tests for the switcher as list.
 	 */
 	public function test_should_return_list() {

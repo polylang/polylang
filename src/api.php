@@ -22,7 +22,7 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  *     Optional switcher settings.
  *
  *     @type string   $layout                 Layout of the switcher. Possible values are `horizontal`, `vertical`,
- *                                            `dropdown`, and `select`. Default is `vertical`.
+ *                                            `dropdown`, and `select`. Default is `horizontal`.
  *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
  *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
  *     @type bool     $show_wrapper           Display the wrapper or not. Default is `false`. Omitting this argument
@@ -73,6 +73,10 @@ function pll_the_languages( $args = array() ) {
 			'3.9'
 		);
 		$args['show_wrapper'] = false;
+	}
+
+	if ( ! isset( $args['layout'] ) && empty( $args['dropdown'] ) ) {
+		$args['layout'] = 'horizontal';
 	}
 
 	$settings = new Settings( $args );
