@@ -466,7 +466,8 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		}
 
 		$empty = 'term_taxonomy_id' === $field ? 0 : '';
-		$terms = get_terms( array( 'taxonomy' => $taxonomy, $field => $value, 'lang' => '' ) );
+
+		$terms = get_terms( array( 'taxonomy' => $taxonomy, $field => $value, 'hide_empty' => false, 'lang' => '' ) );
 
 		if ( empty( $terms ) || ! is_array( $terms ) ) {
 			return $empty;
