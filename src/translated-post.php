@@ -410,6 +410,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			'numberposts'      => 20, // Limit to 20 posts by default.
 			'post_status'      => 'any',
 			'post_type'        => $type,
+			'no_found_rows'    => true,
 			'tax_query'        => array(
 				array(
 					'taxonomy' => $this->tax_language,
