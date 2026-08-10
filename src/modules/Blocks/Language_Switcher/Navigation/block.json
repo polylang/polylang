@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "polylang/navigation-language-switcher",
-    "version": "3.8",
+    "version": "3.9",
     "title": "Navigation Language Switcher",
     "category": "design",
 	"parent": [ "core/navigation" ],

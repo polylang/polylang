@@ -1,0 +1,25 @@
+checks:
+  release-tag:
+    normalize:
+      - trim-v-prefix
+      - version
+    expected:
+      reader: env
+      variable: GITHUB_REF_NAME
+    values:
+      plugin-constant:
+        reader: php
+        file: ../polylang.php
+        path: $.constants.POLYLANG_VERSION
+      plugin-header:
+        reader: wordpress-plugin
+        file: ../polylang.php
+        path: $.Version
+      package-json:
+        reader: json
+        file: ../package.json
+        path: $.version
+      wordpress-readme:
+        reader: wordpress-readme
+        file: ../readme.txt
+        path: $['Stable tag']

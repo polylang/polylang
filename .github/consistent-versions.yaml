@@ -1,0 +1,78 @@
+checks:
+  release-version:
+    normalize: version
+    expected:
+      reader: php
+      file: ../polylang.php
+      path: $.constants.POLYLANG_VERSION
+    values:
+      plugin-header:
+        reader: wordpress-plugin
+        file: ../polylang.php
+        path: $.Version
+      package-json:
+        reader: json
+        file: ../package.json
+        path: $.version
+
+  block-json-version:
+    normalize: version
+    expected:
+      reader: php
+      file: ../polylang.php
+      path: $.constants.POLYLANG_VERSION
+    values:
+      standard-block:
+        reader: json
+        file: ../src/modules/Blocks/Language_Switcher/Standard/block.json
+        path: $.version
+      navigation-block:
+        reader: json
+        file: ../src/modules/Blocks/Language_Switcher/Navigation/block.json
+        path: $.version
+
+  minimum-php:
+    normalize: version
+    expected:
+      reader: php
+      file: ../polylang.php
+      path: $.constants.PLL_MIN_PHP_VERSION
+    values:
+      plugin-header:
+        reader: wordpress-plugin
+        file: ../polylang.php
+        path: $['Requires PHP']
+      wordpress-readme:
+        reader: wordpress-readme
+        file: ../readme.txt
+        path: $['Requires PHP']
+      composer:
+        reader: composer
+        file: ../composer.json
+        path: $.require.php
+        normalize: composer-minimum
+      phpcs:
+        reader: phpcs
+        file: ../phpcs.xml.dist
+        path: $.config.testVersion
+        normalize: composer-minimum
+
+  minimum-wordpress:
+    normalize: version
+    expected:
+      reader: php
+      file: ../polylang.php
+      path: $.constants.PLL_MIN_WP_VERSION
+    values:
+      plugin-header:
+        reader: wordpress-plugin
+        file: ../polylang.php
+        path: $['Requires at least']
+      wordpress-readme:
+        reader: wordpress-readme
+        file: ../readme.txt
+        path: $['Requires at least']
+      phpcs:
+        reader: phpcs
+        file: ../phpcs.xml.dist
+        path: $.config.minimum_supported_wp_version
