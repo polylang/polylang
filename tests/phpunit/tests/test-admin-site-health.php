@@ -506,8 +506,6 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 				),
 			),
 		);
-		echo "\n=====DEBUG INFOS 1 =====\n";
-		print_r( $debug_info );
 
 		// Act
 		$result = $this->site_health->info_languages( $debug_info );
@@ -520,5 +518,107 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 			'Pre-existing data should be preserved unchanged.'
 		);
 		$this->assertSame( 'Language: English - en', $result['pll_language_en']['label'], 'New language entry should be added correctly.' );
+	}
+
+	public function test_info_adds_post_no_lang_field_when_posts_are_missing_lang() {
+		// Arrange
+		$this->create_posts_without_lang( 3, 'post' );
+
+		// Act
+		$debug_info = $this->site_health->info( array() );
+		$fields = $debug_info['pll_warnings']['fields'];
+
+		// Assert
+		$this->assertArrayHasKey( 'post-no-lang', $fields, 'Should contain a "post-no-lang" key.' );
+		$this->assertSame( 'Posts without language', $fields['post-no-lang']['label'], 'Should have the expected label.' );
+		$this->assertSame(
+			$this->site_health->get_post_ids_without_lang(),
+			$fields['post-no-lang']['value'],
+			'Value should list the posts without a language.'
+		);
+	}
+
+	public function test_info_does_not_add_post_no_lang_field_when_all_posts_have_lang() {
+		// Arrange
+		self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
+
+		// Act
+		$debug_info = $this->site_health->info( array() );
+
+		// Assert
+		$this->assertArrayNotHasKey( 'pll_warnings', $debug_info, 'Should not contain the "pll_warnings" section when all posts have a language.' );
+	}
+
+	public function test_info_does_not_add_post_no_lang_field_when_only_terms_are_missing_lang() {
+		// Arrange
+		self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
+		$this->create_terms_without_lang( 1, 'category' );
+
+		// Act
+		$debug_info = $this->site_health->info( array() );
+
+		// Assert
+		$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Should contain the "pll_warnings" section because terms are missing a language.' );
+		$this->assertArrayNotHasKey(
+			'post-no-lang',
+			$debug_info['pll_warnings']['fields'],
+			'Should not contain "post-no-lang" when only terms are missing a language.'
+		);
+		$this->assertArrayHasKey(
+			'term-no-lang',
+			$debug_info['pll_warnings']['fields'],
+			'Should contain "term-no-lang" since a term is missing a language.'
+		);
+	}
+
+	public function test_info_adds_term_no_lang_field_when_terms_are_missing_lang() {
+		// Arrange
+		$this->create_terms_without_lang( 3, 'category' );
+
+		// Act
+		$debug_info = $this->site_health->info( array() );
+		$fields = $debug_info['pll_warnings']['fields'];
+
+		// Assert
+		$this->assertArrayHasKey( 'term-no-lang', $fields, 'Should contain a "term-no-lang" key.' );
+		$this->assertSame( 'Terms without language', $fields['term-no-lang']['label'], 'Should have the expected label.' );
+		$this->assertSame(
+			$this->site_health->get_term_ids_without_lang(),
+			$fields['term-no-lang']['value'],
+			'Value should list the terms without a language.'
+		);
+	}
+
+	public function test_info_does_not_add_term_no_lang_field_when_all_terms_have_lang() {
+		// Arrange
+		self::factory()->term->create( array( 'taxonomy' => 'category', 'lang' => 'en' ) );
+
+		// Act
+		$debug_info = $this->site_health->info( array() );
+
+		// Assert
+		$this->assertArrayNotHasKey( 'pll_warnings', $debug_info, 'Should not contain the "pll_warnings" section when all terms have a language.' );
+	}
+
+	public function test_info_does_not_add_term_no_lang_field_when_only_posts_are_missing_lang() {
+		// Arrange
+		self::factory()->term->create( array( 'taxonomy' => 'category', 'lang' => 'en' ) );
+		$this->create_posts_without_lang( 1, 'post' );
+
+		// Act
+		$debug_info = $this->site_health->info( array() );
+
+		// Assert
+		$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Should contain the "pll_warnings" section because posts are missing a language.' );
+		$this->assertArrayNotHasKey(
+			'term-no-lang',
+			$debug_info['pll_warnings']['fields'],
+			'Should not contain "term-no-lang" when only posts are missing a language.'
+		);
+		$this->assertArrayHasKey(
+			'post-no-lang',
+			$debug_info['pll_warnings']['fields'],
+			'Should contain "post-no-lang" since a post is missing a language.'
+		);
 	}
 }
