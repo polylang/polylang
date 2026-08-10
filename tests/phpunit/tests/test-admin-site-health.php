@@ -464,4 +464,61 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 			$this->assertArrayNotHasKey( $excluded_key, $fields, "Excluded key \"$excluded_key\" should not be present." );
 		}
 	}
+
+	public function test_info_languages_returns_one_entry_per_language() {
+		// Act
+		$debug_info = $this->site_health->info_languages( array() );
+
+		// Assert
+		$this->assertCount( 2, $debug_info, 'Result should contain one entry per configured language.' );
+		$this->assertArrayHasKey( 'pll_language_en', $debug_info, 'Result should contain an entry for English.' );
+		$this->assertArrayHasKey( 'pll_language_fr', $debug_info, 'Result should contain an entry for French.' );
+	}
+
+	public function test_info_languages_returns_empty_array_when_no_language_is_set() {
+		// Arrange
+		self::delete_all_languages();
+
+		try {
+			// Act
+			$debug_info = $this->site_health->info_languages( array() );
+
+			// Assert
+			$this->assertEmpty( $debug_info, 'Result should be empty when no language is set.' );
+		} finally {
+			// Cleanup: always restore languages, even if the assertion above fails, so subsequent tests in the class aren't affected.
+			self::create_language( 'en_US' );
+			self::create_language( 'fr_FR' );
+		}
+	}
+
+	public function test_info_languages_preserves_existing_debug_info() {
+		// Arrange
+		$debug_info = array(
+			'pre_existing_data' => array(
+				'label'       => 'Title of this data',
+				'description' => 'Description',
+				'fields'      => array(
+					'name' => array(
+						'label' => 'Name',
+						'value' => 'Field name',
+					),
+				),
+			),
+		);
+		echo "\n=====DEBUG INFOS 1 =====\n";
+		print_r( $debug_info );
+
+		// Act
+		$result = $this->site_health->info_languages( $debug_info );
+
+		// Assert
+		$this->assertCount( 3, $result, 'Result should contain one entry per configured language, plus the pre-existing data.' );
+		$this->assertSame(
+			$debug_info['pre_existing_data'],
+			$result['pre_existing_data'],
+			'Pre-existing data should be preserved unchanged.'
+		);
+		$this->assertSame( 'Language: English - en', $result['pll_language_en']['label'], 'New language entry should be added correctly.' );
+	}
 }
