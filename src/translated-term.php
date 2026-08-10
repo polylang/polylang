@@ -450,7 +450,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Get a translated term by term field
+	 * Gets a translated term by term field
 	 *
 	 * @since 3.9
 	 *
