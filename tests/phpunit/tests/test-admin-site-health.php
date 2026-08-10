@@ -104,7 +104,7 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_homepage_test_missing_translation() {
-		// Arrange
+		// Translation URLs require a logged-in user with the correct capabilities.
 		$admin_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $admin_id );
 
@@ -263,84 +263,59 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 		// Act
 		$result = $this->site_health->get_post_ids_without_lang();
 
-		// Assert :
+		// Assert
 		$this->assertSame( array( 'post', 'page' ), array_keys( $result ), 'Result should be grouped by post type.' );
-		$this->assertEqualsCanonicalizing(
-			$post_no_lang_ids,
+		$this->assertSameSets(
+			array_map( 'strval', $post_no_lang_ids ),
 			explode( ',', $result['post'] ),
 			'Result should contain posts IDs without language.'
 		);
-		$this->assertEqualsCanonicalizing(
-			$page_no_lang_ids,
+		$this->assertSameSets(
+			array_map( 'strval', $page_no_lang_ids ),
 			explode( ',', $result['page'] ),
 			'Result should contain pages IDs without language.'
 		);
 		$this->assertStringNotContainsString( (string) $post_en, $result['post'], 'Result should not contain posts that already have a language.' );
 	}
 
-	public function test_get_post_ids_without_lang_respects_default_limit() {
+	/**
+	 * @testWith [-1, 7]
+	 *           [2, 2]
+	 *           [0, 7]
+	 *
+	 * @param int $limit          The limit to pass to get_post_ids_without_lang().
+	 * @param int $expected_count The expected number of returned post IDs.
+	 */
+	public function test_get_post_ids_without_lang_respects_limit( int $limit, int $expected_count ) {
 		// Arrange
 		$post_no_lang_ids = $this->create_posts_without_lang( 7, 'post' );
 
 		// Act
-		$result = $this->site_health->get_post_ids_without_lang();
+		$result = $this->site_health->get_post_ids_without_lang( $limit );
 		$result_ids = explode( ',', $result['post'] );
 
 		// Assert
-		$this->assertCount( 5, $result_ids, 'Result should be limited to 5 post IDs by default.' );
+		$this->assertCount( $expected_count, $result_ids, "Result should contain $expected_count post IDs for limit $limit." );
 		$this->assertEmpty(
 			array_diff( $result_ids, $post_no_lang_ids ),
 			'All returned IDs should be among the created posts without language.'
 		);
 	}
 
-	public function test_get_post_ids_without_lang_returns_all_with_limit_minus_one() {
-		// Arrange
-		$post_no_lang_ids = $this->create_posts_without_lang( 7, 'post' );
-
-		// Act
-		$result = $this->site_health->get_post_ids_without_lang( -1 );
-		$result_ids = explode( ',', $result['post'] );
-
-		// Assert
-		$this->assertCount( 7, $result_ids, 'Result should contain all 7 post IDs when limit is -1.' );
-		$this->assertEmpty(
-			array_diff( $result_ids, $post_no_lang_ids ),
-			'Result should contain exactly the created post IDs when limit is -1.'
-		);
-	}
-
-	public function test_get_post_ids_without_lang_respects_custom_limit() {
-		// Arrange
-		$post_no_lang_ids = $this->create_posts_without_lang( 7, 'post' );
-
-		// Act
-		$result = $this->site_health->get_post_ids_without_lang( 2 );
-		$result_ids = explode( ',', $result['post'] );
-
-		// Assert
-		$this->assertCount( 2, $result_ids, 'Result should be limited to 2 post IDs when a custom limit is passed.' );
-		$this->assertEmpty(
-			array_diff( $result_ids, $post_no_lang_ids ),
-			'2 returned IDs should be among the created posts without language.'
-		);
-	}
-
-	public function test_get_post_ids_without_lang_treats_limit_below_one_as_unlimited() {
+	public function test_get_post_ids_without_lang_uses_default_limit_when_no_argument_passed() {
 		// Arrange
 		$this->create_posts_without_lang( 7, 'post' );
 
 		// Act
-		$result = $this->site_health->get_post_ids_without_lang( 0 );
-		$result_ids = explode( ',', $result['post'] );
+		$result = $this->site_health->get_post_ids_without_lang(); // pas d'argument
 
 		// Assert
-		$this->assertCount( 7, $result_ids, 'A limit below 1 (other than the documented -1) should be treated as unlimited.' );
+		$this->assertCount( 5, explode( ',', $result['post'] ), 'Should default to a limit of 5 when no argument is passed.' );
 	}
 
 	public function test_get_post_ids_without_lang_returns_empty_array_when_none_missing() {
 		// Arrange
-		self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
+		self::factory()->post->create( array( 'lang' => 'en' ) );
 
 		// Act
 		$result = $this->site_health->get_post_ids_without_lang();
@@ -377,61 +352,51 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 
 		// Assert :
 		$this->assertSame( array( 'category', 'post_tag' ), array_keys( $result ), 'Result should be grouped by taxonomy.' );
-		$this->assertEqualsCanonicalizing(
-			$category_no_lang_ids,
+		$this->assertSameSets(
+			array_map( 'strval', $category_no_lang_ids ),
 			explode( ',', $result['category'] ),
 			'Result should contain category IDs without language.'
 		);
-		$this->assertEqualsCanonicalizing(
-			$post_tag_no_lang_ids,
+		$this->assertSameSets(
+			array_map( 'strval', $post_tag_no_lang_ids ),
 			explode( ',', $result['post_tag'] ),
 			'Result should contain post_tag IDs without language.'
 		);
 		$this->assertStringNotContainsString( (string) $term_en, $result['category'], 'Result should not contain terms that already have a language.' );
 	}
 
-	public function test_get_term_ids_without_lang_respects_default_limit() {
+	/**
+	 * @testWith [-1, 7]
+	 *           [0, 7]
+	 *
+	 * @param int $limit          The limit to pass to get_term_ids_without_lang().
+	 * @param int $expected_count The expected number of returned term IDs.
+	 */
+	public function test_get_term_ids_without_lang_respects_limit( int $limit, int $expected_count ) {
 		// Arrange
 		$category_no_lang_ids = $this->create_terms_without_lang( 7, 'category' );
 
 		// Act
-		$result = $this->site_health->get_term_ids_without_lang();
+		$result = $this->site_health->get_term_ids_without_lang( $limit );
 		$result_ids = explode( ',', $result['category'] );
 
 		// Assert
-		$this->assertCount( 5, $result_ids, 'Result should be limited to 5 term IDs by default.' );
+		$this->assertCount( $expected_count, $result_ids, "Result should contain $expected_count term IDs for limit $limit." );
 		$this->assertEmpty(
 			array_diff( $result_ids, $category_no_lang_ids ),
 			'All returned IDs should be among the created terms without language.'
 		);
 	}
 
-	public function test_get_term_ids_without_lang_returns_all_with_limit_minus_one() {
-		// Arrange
-		$category_no_lang_ids = $this->create_terms_without_lang( 7, 'category' );
-
-		// Act
-		$result = $this->site_health->get_term_ids_without_lang( -1 );
-		$result_ids = explode( ',', $result['category'] );
-
-		// Assert
-		$this->assertCount( 7, $result_ids, 'Result should contain all 7 term IDs when limit is -1.' );
-		$this->assertEmpty(
-			array_diff( $result_ids, $category_no_lang_ids ),
-			'Result should contain exactly the created term IDs when limit is -1.'
-		);
-	}
-
-	public function test_get_term_ids_without_lang_treats_limit_below_one_as_unlimited() {
+	public function test_get_term_ids_without_lang_uses_default_limit_when_no_argument_passed() {
 		// Arrange
 		$this->create_terms_without_lang( 7, 'category' );
 
 		// Act
-		$result = $this->site_health->get_term_ids_without_lang( 0 );
-		$result_ids = explode( ',', $result['category'] );
+		$result = $this->site_health->get_term_ids_without_lang();
 
 		// Assert
-		$this->assertCount( 7, $result_ids, 'A limit below 1 (other than the documented -1) should be treated as unlimited.' );
+		$this->assertCount( 5, explode( ',', $result['category'] ), 'Should default to a limit of 5 when no argument is passed.' );
 	}
 
 	public function test_get_term_ids_without_lang_returns_empty_array_when_none_missing() {
