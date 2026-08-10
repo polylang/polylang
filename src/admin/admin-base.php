@@ -607,25 +607,21 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				continue;
 			}
 
-			if ( 'category' === $tax->name ) {
-				$field     = 'term_id';
-				$query_var = 'cat';
-				$qv        = get_query_var( $query_var );
-				if ( ! is_int( $qv ) ) {
-					continue;
-				}
-			} else {
-				$field     = 'slug';
-				$query_var = (string) $tax->query_var;
-				$qv        = get_query_var( $query_var );
-				if ( ! is_string( $qv ) ) {
-					continue;
-				}
+			$query_var = (string) $tax->query_var;
+			$qv        = get_query_var( $query_var );
+			if ( empty( $qv ) || ! is_string( $qv ) ) {
+				continue;
 			}
 
-			$qv = $this->model->term->get_by( $field, $qv, $language, $tax->name );
+			$qv = $this->model->term->get_by( 'slug', $qv, $language, $tax->name );
+
 			if ( ! empty( $qv ) ) {
 				$url = add_query_arg( $query_var, $qv, remove_query_arg( $query_var, $url ) );
+			}
+
+			// For categories, we translated 'category_name'. We must remove 'cat' to avoid conflicts.
+			if ( 'category' === $tax->name ) {
+				$url = remove_query_arg( 'cat', $url );
 			}
 		}
 
