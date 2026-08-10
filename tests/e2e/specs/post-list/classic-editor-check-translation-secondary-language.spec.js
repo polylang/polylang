@@ -11,6 +11,7 @@ test.describe( 'Check Post language', { tag: [ '@pre-release' ] }, async () => {
 	 *     - Create an English and a French post. Not translated to each other.
 	 */
 	test.beforeAll( async ( { requestUtils } ) => {
+		await requestUtils.activatePlugin( 'force-classic-editor' );
 		await createLanguage( requestUtils, 'en_US' );
 		await createLanguage( requestUtils, 'fr_FR' );
 
@@ -25,6 +26,7 @@ test.describe( 'Check Post language', { tag: [ '@pre-release' ] }, async () => {
 	 * Reset after all tests.
 	 */
 	test.afterAll( async ( { requestUtils } ) => {
+		await requestUtils.deactivatePlugin( 'force-classic-editor' );
 		await deleteAllLanguages( requestUtils );
 		await requestUtils.deleteAllPosts();
 	} );
