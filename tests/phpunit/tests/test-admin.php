@@ -1,10 +1,11 @@
 <?php
 class Admin_Test extends PLL_UnitTestCase {
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
@@ -70,9 +71,81 @@ class Admin_Test extends PLL_UnitTestCase {
 		// 'all' and 'en' should appear as dropdown items.
 		$all = $wp_admin_bar->get_node( 'all' );
 		$this->assertSame( 'languages', $all->parent );
+		$this->assertSame( '/wp-admin/edit.php?lang=all', $all->href );
 
 		$en = $wp_admin_bar->get_node( 'en' );
 		$this->assertSame( 'languages', $en->parent );
+		$this->assertSame( '/wp-admin/edit.php?lang=en', $en->href );
+	}
+
+	public function test_admin_bar_with_filtered_category() {
+		global $wp_admin_bar;
+
+		$cats = self::factory()->category->create_translated(
+			array( 'name' => 'My cat', 'lang' => 'en' ),
+			array( 'name' => 'Mon chat', 'lang' => 'fr' )
+		);
+
+		$posts = self::factory()->post->create_translated(
+			array( 'post_category' => array( $cats['en'] ), 'lang' => 'en' ),
+			array( 'post_category' => array( $cats['fr'] ), 'lang' => 'fr' )
+		);
+
+
+		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		$this->go_to( home_url( "/wp-admin/edit.php?s&post_status=all&post_type=post&action=-1&m=0&cat={$cats['fr']}&filter_action=Filter&paged=1" ) );
+		$links_model = self::$model->get_links_model();
+		$pll_admin   = new PLL_Admin( $links_model );
+		$pll_admin->init();
+		$pll_admin->filter_lang = self::$model->get_language( 'fr' );
+		$pll_admin->pref_lang   = $pll_admin->filter_lang;
+
+		$GLOBALS['pagenow'] = 'edit.php';
+
+		_wp_admin_bar_init();
+		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
+
+		// 'fr' is selected, so it should not appear in the dropdown.
+		$this->assertSame(
+			esc_url( '/wp-admin/edit.php?s&post_status=all&post_type=post&action=-1&m=0&filter_action=Filter&lang=en&category_name=my-cat' ),
+			$wp_admin_bar->get_node( 'en' )->href
+		);
+	}
+
+	public function test_admin_bar_with_selected_category() {
+		global $wp_admin_bar;
+
+		$cats = self::factory()->category->create_translated(
+			array( 'name' => 'My cat', 'lang' => 'en' ),
+			array( 'name' => 'Mon chat', 'lang' => 'fr' )
+		);
+
+		$posts = self::factory()->post->create_translated(
+			array( 'post_category' => array( $cats['en'] ), 'lang' => 'en' ),
+			array( 'post_category' => array( $cats['fr'] ), 'lang' => 'fr' )
+		);
+
+		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		$this->go_to( home_url( '/wp-admin/edit.php?category_name=mon-chat' ) );
+		$links_model = self::$model->get_links_model();
+		$pll_admin   = new PLL_Admin( $links_model );
+		$pll_admin->init();
+		$pll_admin->filter_lang = self::$model->get_language( 'fr' );
+		$pll_admin->pref_lang   = $pll_admin->filter_lang;
+
+		$GLOBALS['pagenow'] = 'edit.php';
+
+		_wp_admin_bar_init();
+		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
+
+		// 'fr' is selected, so it should not appear in the dropdown.
+		$fr = $wp_admin_bar->get_node( 'fr' );
+		$this->assertNull( $fr );
+
+		$en = $wp_admin_bar->get_node( 'en' );
+		$this->assertSame( esc_url( '/wp-admin/edit.php?lang=en&category_name=my-cat' ), $en->href );
 	}
 
 	/**
