@@ -9,7 +9,7 @@ import {
 /**
  * Covers content creation and automatic default language assignment.
  */
-test.describe( 'Content Creation and Automatic Default Language Assignment', () => {
+test.describe( 'Content creation and automatic default language assignment', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
 		await createLanguage( requestUtils, 'en_US' );
 		await createLanguage( requestUtils, 'fr_FR' );
@@ -49,11 +49,12 @@ test.describe( 'Content Creation and Automatic Default Language Assignment', () 
 	/**
 	 * Check the default language is assigned to a new published post.
 	 *
-	 * - Polylang activated and setuped with at least 2 languages, English and French.
+	 * Prerequisites:
+	 * - Polylang activated and setup with at least 2 languages, English and French.
 	 * - 1 language set as default (English).
 	 * Steps:
 	 * - Visit the "Add New Post" page in the admin.
-	 * - Fill in the post title and publish the post.
+	 * - Fill in the post-title and publish the post.
 	 * - Check the selected value of the language dropdown.
 	 *
 	 * Expected behavior:
