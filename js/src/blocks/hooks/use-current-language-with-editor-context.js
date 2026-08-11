@@ -23,11 +23,11 @@ const findLanguageBySlug = ( languages, slug ) => {
 };
 
 /**
- * Wraps `useCurrentLanguage` from `@wpsyntex/polylang-react-library`.
+ * Resolves the current language in block editor contexts.
  *
- * The widgets editor does not load `@wordpress/editor`, so the library hook
- * cannot run there. In that context, fall back to the default language slug
- * injected by PHP (same as `useCurrentLanguage` when no post language exists).
+ * The widgets editor does not load `@wordpress/editor`, so the `core/editor`
+ * store may be unavailable. In that context, fall back to the current language
+ * slug injected by PHP (default language when none is set).
  *
  * @param {Array} languages The languages list.
  * @return {Object|null} The current language, `null` if not found.
