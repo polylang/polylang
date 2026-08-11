@@ -8,13 +8,13 @@ import { useContext } from '@wordpress/element';
  */
 import {
 	SubmenuIcon,
-	useCurrentLanguage,
 	useCuratedLanguages,
 } from '@wpsyntex/polylang-react-library';
 
 /**
  * Internal dependencies
  */
+import { useCurrentLanguageWithEditorContext } from '../hooks/use-current-language-with-editor-context';
 import { LanguagesContext } from '../languages-context';
 import { SwitcherLanguageLink } from '../components/switcher-language-link';
 import {
@@ -42,7 +42,7 @@ export const RenderedSwitcher = ( { attributes } ) => {
 		style,
 	} = attributes;
 	const { languages } = useContext( LanguagesContext );
-	const currentLanguage = useCurrentLanguage( languages );
+	const currentLanguage = useCurrentLanguageWithEditorContext( languages );
 	const curatedLanguages = useCuratedLanguages(
 		languages,
 		currentLanguage,
