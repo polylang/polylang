@@ -128,7 +128,6 @@ abstract class Abstract_Block {
 				'wp-components',
 				'wp-element',
 				'wp-i18n',
-				'wp-editor',
 			),
 			POLYLANG_VERSION,
 			true
