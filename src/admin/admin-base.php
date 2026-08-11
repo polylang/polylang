@@ -618,6 +618,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			return ! empty( $typenow );
 		}
 
+		if ( 'site-editor.php' === $pagenow ) {
+			return true;
+		}
+
 		if ( 'term.php' === $pagenow ) {
 			return ! empty( $taxnow );
 		}
