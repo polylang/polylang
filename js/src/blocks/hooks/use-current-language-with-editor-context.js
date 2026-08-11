@@ -39,13 +39,6 @@ export const useCurrentLanguageWithEditorContext = ( languages ) => {
 				return null;
 			}
 
-			if ( select( 'core/edit-widgets' ) ) {
-				return findLanguageBySlug(
-					languages,
-					pllEditorCurrentLanguageSlug // eslint-disable-line no-undef
-				);
-			}
-
 			const editorStore = select( 'core/editor' );
 
 			if ( ! editorStore ) {
