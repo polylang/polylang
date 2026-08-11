@@ -12,6 +12,8 @@
 class Model_Maybe_Create_Language_Terms_Test extends PLL_UnitTestCase {
 
 	public function test_maybe_create_language_terms() {
+		$this->assertFalse( function_exists( 'PLL' ), 'The test should run in a separate process' );
+
 		// Translatable custom table.
 		require_once PLL_TEST_DATA_DIR . 'translatable.php';
 
