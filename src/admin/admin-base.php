@@ -605,7 +605,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 	/**
 	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
-	 * Conventionally, it should be hidden on edition pages.
+	 * Conventionally, it should be hidden on edition pages, term edit pages and Site Editor pages.
 	 *
 	 * @since 3.8
 	 *
