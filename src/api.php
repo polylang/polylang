@@ -67,11 +67,13 @@ function pll_the_languages( $args = array() ) {
 	}
 
 	if ( empty( $args['raw'] ) && ! isset( $args['show_wrapper'] ) ) {
-		_doing_it_wrong(
-			'pll_the_languages()',
-			'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
-			'3.9'
-		);
+		if ( ! isset( $args['layout'] ) && empty( $args['dropdown'] ) ) {
+			_doing_it_wrong(
+				'pll_the_languages()',
+				'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+				'3.9'
+			);
+		}
 		$args['show_wrapper'] = ! empty( $args['dropdown'] );
 	}
 

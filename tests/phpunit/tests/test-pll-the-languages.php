@@ -341,7 +341,6 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	 * Very basic tests for the switcher as select.
 	 */
 	public function test_should_return_select() {
-		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
 		$this->setExpectedDeprecated( 'pll_the_languages()' ); // `dropdown` is deprecated.
 		$posts = $this->init_test_raw();
 		$this->go_to( get_permalink( $posts['en'] ) );
