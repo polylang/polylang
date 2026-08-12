@@ -605,24 +605,16 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 	/**
 	 * Tells if the Polylang's admin bar menu should be hidden for the current page.
-	 * Conventionally, it should be hidden on edition pages.
+	 * Conventionally, it should be hidden on edition pages, term edit pages and Site Editor pages.
 	 *
 	 * @since 3.8
 	 *
 	 * @return bool
 	 */
 	public function should_hide_admin_bar_menu(): bool {
-		global $pagenow, $typenow, $taxnow;
+		global $pagenow;
 
-		if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
-			return ! empty( $typenow );
-		}
-
-		if ( 'term.php' === $pagenow ) {
-			return ! empty( $taxnow );
-		}
-
-		return false;
+		return in_array( $pagenow, array( 'post.php', 'post-new.php', 'site-editor.php', 'term.php' ), true );
 	}
 
 	/**

@@ -49,13 +49,48 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '/wp-admin/edit.php?lang=fr', $fr->href );
 	}
 
-	public function test_admin_bar_menu_should_hide() {
+	public function test_admin_bar_menu_with_filtered_language() {
 		global $wp_admin_bar;
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
-		$this->go_to( admin_url( 'post-new.php?post_type=page' ) );
-		$GLOBALS['pagenow'] = 'post-new.php';
-		$GLOBALS['typenow'] = 'page';
+		$this->go_to( home_url( '/wp-admin/edit.php' ) );
+		$links_model = self::$model->get_links_model();
+		$pll_admin   = new PLL_Admin( $links_model );
+		$pll_admin->init();
+		$pll_admin->filter_lang = self::$model->get_language( 'fr' );
+		$pll_admin->pref_lang   = $pll_admin->filter_lang;
+
+		_wp_admin_bar_init();
+		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
+
+		// 'fr' is selected, so it should not appear in the dropdown.
+		$fr = $wp_admin_bar->get_node( 'fr' );
+		$this->assertNull( $fr );
+
+		// 'all' and 'en' should appear as dropdown items.
+		$all = $wp_admin_bar->get_node( 'all' );
+		$this->assertSame( 'languages', $all->parent );
+
+		$en = $wp_admin_bar->get_node( 'en' );
+		$this->assertSame( 'languages', $en->parent );
+	}
+
+	/**
+	 * @testWith [ "post-new.php", "post-new.php?post_type=page" ]
+	 *           [ "post.php", "post.php" ]
+	 *           [ "site-editor.php", "site-editor.php" ]
+	 *           [ "term.php", "term.php" ]
+	 *
+	 * @param string $pagenow The page now.
+	 * @param string $url     The URL of the page.
+	 * @return void
+	 */
+	public function test_admin_bar_menu_should_hide( $pagenow, $url ) {
+		global $wp_admin_bar;
+		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		$this->go_to( admin_url( $url ) );
+		$GLOBALS['pagenow'] = $pagenow;
 
 		$links_model = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
@@ -65,7 +100,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
 
 		$languages = $wp_admin_bar->get_node( 'languages' );
-		$this->assertEmpty( $languages, 'Languages admin bar menu should be hidden on post edit pages' );
+		$this->assertEmpty( $languages, "Languages admin bar menu should be hidden on $pagenow pages" );
 	}
 
 	public function test_remove_customize_submenu_with_block_base_theme() {
