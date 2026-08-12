@@ -119,7 +119,7 @@ test.describe.serial(
 			await setSwitcherLabels( page, 'Names' );
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).check();
 
-			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithNamesAndFlagsScreenshot = await blockWithNamesAndFlags.screenshot();
 			expect( blockWithNamesAndFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-dropdown-with-names-and-flags.png',
@@ -131,7 +131,7 @@ test.describe.serial(
 			// Remove the language names and keep the flags.
 			await setSwitcherLabels( page, 'None' );
 
-			const blockWithFlags = await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithFlags = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithFlagsScreenshot = await blockWithFlags.screenshot();
 			expect( blockWithFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-dropdown-with-flags.png',
@@ -145,7 +145,7 @@ test.describe.serial(
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).uncheck();
 			await expect( page.getByRole( 'combobox', { name: 'Labels' } ) ).toHaveValue( 'names' );
 
-			const blockWithNames = await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithNames = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithNamesScreenshot = await blockWithNames.screenshot();
 			expect( blockWithNamesScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-dropdown-with-names.png',
@@ -178,7 +178,7 @@ test.describe.serial(
 			await setSwitcherLabels( page, 'Names' );
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).check();
 
-			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithNamesAndFlagsScreenshot = await blockWithNamesAndFlags.screenshot();
 			expect( blockWithNamesAndFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-list-with-names-and-flags.png',
@@ -190,7 +190,7 @@ test.describe.serial(
 			// Remove the language names and keep the flags.
 			await setSwitcherLabels( page, 'None' );
 
-			const blockWithFlags = await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithFlags = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithFlagsScreenshot = await blockWithFlags.screenshot();
 			expect( blockWithFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-list-with-flags.png',
@@ -204,7 +204,7 @@ test.describe.serial(
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).uncheck();
 			await expect( page.getByRole( 'combobox', { name: 'Labels' } ) ).toHaveValue( 'names' );
 
-			const blockWithNames = await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithNames = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithNamesScreenshot = await blockWithNames.screenshot();
 			expect( blockWithNamesScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-list-with-names.png',
@@ -307,7 +307,7 @@ const selectNavigationLanguageSwitcherBlock = async page => {
  * @param {Page} page The page object.
  * @return {Locator} The locator of the Navigation Language Switcher block element.
  */
-const getNavigationLanguageSwitcherBlockLocator = page => {
+const getNavigationLanguageSwitcherLocator = page => {
 	return getEditorCanvas( page ).getByRole( 'document', {
 		name: 'Block: Navigation Language Switcher',
 	} );
