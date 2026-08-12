@@ -70,7 +70,10 @@ function pll_the_languages( $args = array() ) {
 		if ( ! isset( $args['layout'] ) && empty( $args['dropdown'] ) ) {
 			_doing_it_wrong(
 				'pll_the_languages()',
-				'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+				esc_html__(
+					'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+					'polylang'
+				),
 				'3.9'
 			);
 		}
