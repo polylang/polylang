@@ -68,5 +68,12 @@
     "test:php:coverage": "npm run env:composer coverage",
     "test:php:coverage:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/polylang bash -c 'WP_MULTISITE=1 composer coverage'",
     "lint:js": "wp-scripts lint-js"
+  },
+  "allowScripts": {
+    "@parcel/watcher": true,
+    "core-js": true,
+    "core-js-pure": true,
+    "fs-ext-extra-prebuilt": true,
+    "unrs-resolver": true
   }
 }

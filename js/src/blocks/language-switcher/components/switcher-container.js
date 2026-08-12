@@ -6,9 +6,10 @@ import { useContext } from '@wordpress/element';
 /**
  * Internal dependencies
  */
+import { useCurrentLanguageWithEditorContext } from '../../hooks/use-current-language-with-editor-context';
 import { LanguagesContext } from '../../languages-context';
 import { SwitcherUI } from './switcher-ui';
-import { useCurrentLanguage, useCuratedLanguages } from '@wpsyntex/polylang-react-library';
+import { useCuratedLanguages } from '@wpsyntex/polylang-react-library';
 
 /**
  * Switcher container component.
@@ -20,7 +21,7 @@ import { useCurrentLanguage, useCuratedLanguages } from '@wpsyntex/polylang-reac
 export const SwitcherContainer = ( { attributes } ) => {
 	const { dropdown, show_flags, show_names } = attributes;
 	const { languages } = useContext( LanguagesContext );
-	const currentLanguage = useCurrentLanguage( languages );
+	const currentLanguage = useCurrentLanguageWithEditorContext( languages );
 	const curatedLanguages = useCuratedLanguages(
 		languages,
 		currentLanguage,
