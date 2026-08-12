@@ -76,28 +76,21 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [ "post-new.php", "post-new.php?post_type=page", "page" ]
-	 *           [ "post.php", "post.php", "post" ]
-	 *           [ "site-editor.php", "site-editor.php", "" ]
-	 *           [ "term.php", "term.php", "category" ]
+	 * @testWith [ "post-new.php", "post-new.php?post_type=page" ]
+	 *           [ "post.php", "post.php" ]
+	 *           [ "site-editor.php", "site-editor.php" ]
+	 *           [ "term.php", "term.php" ]
 	 *
 	 * @param string $pagenow The page now.
 	 * @param string $url     The URL of the page.
-	 * @param string $typenow The type now.
 	 * @return void
 	 */
-	public function test_admin_bar_menu_should_hide( $pagenow, $url, $typenow ) {
+	public function test_admin_bar_menu_should_hide( $pagenow, $url ) {
 		global $wp_admin_bar;
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
 		$this->go_to( admin_url( $url ) );
 		$GLOBALS['pagenow'] = $pagenow;
-
-		if ( 'term.php' === $pagenow ) {
-			$GLOBALS['taxnow'] = $typenow;
-		} else {
-			$GLOBALS['typenow'] = $typenow;
-		}
 
 		$links_model = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
