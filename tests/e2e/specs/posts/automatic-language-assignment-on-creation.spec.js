@@ -1,10 +1,6 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
-import {
-	createLanguage,
-	deleteAllLanguages,
-	resetAllSettings,
-} from '@wpsyntex/e2e-test-utils';
+import { createLanguage, deleteAllLanguages, resetAllSettings } from '@wpsyntex/e2e-test-utils';
 
 /**
  * Covers content creation and automatic default language assignment.
@@ -34,14 +30,9 @@ test.describe( 'Content creation and automatic default language assignment', () 
 	 * Expected behavior:
 	 * Assert that the selected value contains 'en' (the default language).
 	 */
-	test( 'Check default language assignment on draft post', async ( {
-		page,
-		admin,
-	} ) => {
+	test( 'Check default language assignment on draft post', async ( { page, admin } ) => {
 		await admin.visitAdminPage( 'post-new.php' );
-		const selectedValue = await page
-			.getByRole( 'combobox', { name: /language/i } )
-			.inputValue();
+		const selectedValue = await page.getByRole( 'combobox', { name: /language/i } ).inputValue();
 
 		expect( selectedValue ).toContain( 'en' );
 	} );
@@ -66,13 +57,9 @@ test.describe( 'Content creation and automatic default language assignment', () 
 		editor,
 	} ) => {
 		await admin.createNewPost();
-		await editor.canvas
-			.getByRole( 'textbox', { name: /add title/i } )
-			.fill( 'Test Post Title' );
+		await editor.canvas.getByRole( 'textbox', { name: /add title/i } ).fill( 'Test Post Title' );
 		await editor.publishPost();
-		const selectedValue = await page
-			.getByRole( 'combobox', { name: /language/i } )
-			.inputValue();
+		const selectedValue = await page.getByRole( 'combobox', { name: /language/i } ).inputValue();
 
 		expect( selectedValue ).toContain( 'en' );
 	} );
