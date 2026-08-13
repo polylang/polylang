@@ -42,7 +42,6 @@ export const useMemoizedFlag = (
 					'--pll-flag-border-radius': flagBorderRadius,
 					'--pll-flag-width': flagWidth,
 				} }
-				/* eslint-disable-next-line prettier/prettier */
 				dangerouslySetInnerHTML={ {
 					__html: stripFlagDimensions( language.flag ),
 				} }
