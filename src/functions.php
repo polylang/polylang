@@ -187,7 +187,7 @@ function pll_sanitize_ids( $ids ): array {
 	return array_filter( array_map( 'pll_sanitize_id', $ids ) );
 }
 
-/*
+/**
  * Enqueues a JS script.
  *
  * The filename is evaluated by removing the first 4 characters of the handle (`pll-` or `pll_`).
@@ -196,7 +196,7 @@ function pll_sanitize_ids( $ids ): array {
  *
  * @param string   $handle       The handle of the script.
  * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
- * @param array $args     {
+ * @param array    $args     {
  *     Optional. An array of additional script loading strategies. Default empty array.
  *
  *     @type string    $strategy      Optional. If provided, may be either 'defer' or 'async'.
@@ -219,7 +219,7 @@ function pll_enqueue_script( string $handle, array $dependencies = array(), arra
  *
  * @param string   $handle       The handle of the script.
  * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
- * @param array $args     {
+ * @param array    $args     {
  *     Optional. An array of additional script loading strategies. Default empty array.
  *
  *     @type string    $strategy      Optional. If provided, may be either 'defer' or 'async'.
@@ -233,7 +233,7 @@ function pll_register_script( string $handle, array $dependencies = array(), arr
 	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.js';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
-	wp_register_script( $handle, $src, $dependencies, $version, $args );
+	wp_register_script( $handle, $src, $dependencies, (string) $version, $args );
 }
 
 /**
@@ -268,5 +268,5 @@ function pll_register_style( string $handle, array $dependencies = array() ): vo
 	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.css';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
-	wp_register_style( $handle, $src, $dependencies, $version );
+	wp_register_style( $handle, $src, $dependencies, (string) $version );
 }
