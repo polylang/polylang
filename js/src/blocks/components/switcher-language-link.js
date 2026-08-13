@@ -1,9 +1,9 @@
 /**
  * Internal dependencies
  */
-import { useMemoizedFlag } from '../hooks/use-memoized-flag';
 import { SwitcherLinkElement } from './switcher-link-element';
 import { getLabel } from './switcher-utils';
+import { useMemoizedFlag } from '../hooks/use-memoized-flag';
 
 /**
  * Renders a language link for the switcher preview.
@@ -25,12 +25,7 @@ export const SwitcherLanguageLink = ( {
 	flagWidth,
 	labelSpacing,
 } ) => {
-	const flag = useMemoizedFlag(
-		language,
-		showFlags,
-		flagBorderRadius,
-		flagWidth
-	);
+	const flag = useMemoizedFlag( language, showFlags, flagBorderRadius, flagWidth );
 
 	return (
 		<SwitcherLinkElement

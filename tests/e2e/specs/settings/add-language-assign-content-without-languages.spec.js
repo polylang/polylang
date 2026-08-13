@@ -30,36 +30,21 @@ test.describe(
 		 * Behaviour expected:
 		 * - As this is the 1st language, it should be set as the default language.
 		 */
-		test( 'create English en_US as the default language', async ( {
-			page,
-			admin,
-		} ) => {
+		test( 'create English en_US as the default language', async ( { page, admin } ) => {
 			await admin.visitAdminPage( 'admin.php', 'page=mlang' );
 
-			await page
-				.getByRole( 'textbox', { name: 'Full name' } )
-				.fill( 'English' );
-			await page
-				.getByRole( 'textbox', { name: 'Locale' } )
-				.fill( 'en_US' );
-			await page
-				.getByRole( 'textbox', { name: 'Language code' } )
-				.fill( 'en' );
+			await page.getByRole( 'textbox', { name: 'Full name' } ).fill( 'English' );
+			await page.getByRole( 'textbox', { name: 'Locale' } ).fill( 'en_US' );
+			await page.getByRole( 'textbox', { name: 'Language code' } ).fill( 'en' );
 			await page.getByRole( 'radio', { name: 'left to right' } ).check();
 
 			// Submit the form to add the new language.
-			await page
-				.getByRole( 'button', { name: 'Add new language' } )
-				.click();
+			await page.getByRole( 'button', { name: 'Add new language' } ).click();
 
-			const englishRow = page
-				.getByRole( 'row', { name: /English/ } )
-				.first();
+			const englishRow = page.getByRole( 'row', { name: /English/ } ).first();
 
 			// Target the <span class="screen-reader-text">Default language</span>
-			await expect(
-				englishRow.getByText( 'Default language', { exact: true } )
-			).toBeVisible();
+			await expect( englishRow.getByText( 'Default language', { exact: true } ) ).toBeVisible();
 		} );
 
 		/**
@@ -95,12 +80,8 @@ test.describe(
 				.click();
 			// After clicking the "Assign" link, the previously created post should now be assigned to the default language (English en_US).
 			await admin.visitAdminPage( 'edit.php' );
-			const NoLanguagePostRow = page.locator(
-				`#post-${ noLanguagePost.id }`
-			);
-			await expect(
-				NoLanguagePostRow.getByAltText( 'English' )
-			).toBeVisible();
+			const NoLanguagePostRow = page.locator( `#post-${ noLanguagePost.id }` );
+			await expect( NoLanguagePostRow.getByAltText( 'English' ) ).toBeVisible();
 			await admin.visitAdminPage( 'admin.php', 'page=mlang' );
 		} );
 
@@ -116,11 +97,7 @@ test.describe(
 		 * - The post-count in the language table should be incremented.
 		 */
 
-		test( 'Check the post count', async ( {
-			page,
-			admin,
-			requestUtils,
-		} ) => {
+		test( 'Check the post count', async ( { page, admin, requestUtils } ) => {
 			// Create English en_US as the default language.
 			await createLanguage( requestUtils, 'en_US' );
 			// Create a post for English language.
@@ -134,9 +111,7 @@ test.describe(
 			// Visit the language settings page and click on the "Assign" link in the "Content without languages" section.
 			await admin.visitAdminPage( 'admin.php', 'page=mlang' );
 
-			const englishRow = page
-				.getByRole( 'row', { name: /English/ } )
-				.first();
+			const englishRow = page.getByRole( 'row', { name: /English/ } ).first();
 			// The "Posts" column cell contains a link with the post-count as its text.
 
 			const postsCell = englishRow.getByRole( 'cell' ).last();

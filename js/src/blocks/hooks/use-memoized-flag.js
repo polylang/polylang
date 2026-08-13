@@ -9,7 +9,7 @@ import { useMemo } from '@wordpress/element';
  * @param {string} html The flag HTML markup.
  * @return {string} The flag HTML without fixed dimensions.
  */
-const stripFlagDimensions = ( html ) => {
+const stripFlagDimensions = html => {
 	return html
 		.replace( /\s(?:width|height)=["'][^"']*["']/gi, '' )
 		.replace( /\sstyle=["'][^"']*["']/gi, '' );
@@ -24,12 +24,7 @@ const stripFlagDimensions = ( html ) => {
  * @param {string}  flagWidth        The width of the flags as a CSS length.
  * @return {ReactElement|null} The flag for the language.
  */
-export const useMemoizedFlag = (
-	language,
-	showFlags,
-	flagBorderRadius,
-	flagWidth
-) => {
+export const useMemoizedFlag = ( language, showFlags, flagBorderRadius, flagWidth ) => {
 	return useMemo( () => {
 		if ( ! showFlags || ! language?.flag ) {
 			return null;

@@ -11,10 +11,11 @@ import { Disabled } from '@wordpress/components';
 /**
  * Internal dependencies
  */
+import { useLanguagesList } from '@wpsyntex/polylang-react-library';
+
 import { SwitcherControls } from '../components/switcher-controls';
 import { LanguagesContext } from '../languages-context';
 import { RenderedSwitcher } from './rendered-switcher';
-import { useLanguagesList } from '@wpsyntex/polylang-react-library';
 
 /**
  * Edit callback for navigation language switcher block.
@@ -46,10 +47,7 @@ export const Edit = ( { attributes, context, setAttributes } ) => {
 			/>
 			<Disabled>
 				<LanguagesContext.Provider value={ { languages } }>
-					<RenderedSwitcher
-						attributes={ attributes }
-						context={ context }
-					/>
+					<RenderedSwitcher attributes={ attributes } context={ context } />
 				</LanguagesContext.Provider>
 			</Disabled>
 		</div>

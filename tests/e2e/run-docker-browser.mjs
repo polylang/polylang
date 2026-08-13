@@ -16,8 +16,8 @@
  */
 
 import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
@@ -50,12 +50,12 @@ const PLAYWRIGHT_IMAGE = `mcr.microsoft.com/playwright:v${ PLAYWRIGHT_VERSION }-
  * @param {string} containerName - The name of the Docker container to check.
  * @return {boolean} True if the container is running, false otherwise.
  */
-const isContainerRunning = ( containerName ) => {
+const isContainerRunning = containerName => {
 	try {
-		const result = execSync(
-			`docker ps --filter "name=${ containerName }" --format "{{.Names}}"`,
-			{ encoding: 'utf-8', stdio: 'pipe' }
-		);
+		const result = execSync( `docker ps --filter "name=${ containerName }" --format "{{.Names}}"`, {
+			encoding: 'utf-8',
+			stdio: 'pipe',
+		} );
 		return result.trim() === containerName;
 	} catch {
 		return false;
@@ -68,7 +68,7 @@ const isContainerRunning = ( containerName ) => {
  * @param {string} containerName - The name of the Docker container to check.
  * @return {boolean} True if the container exists, false otherwise.
  */
-const containerExists = ( containerName ) => {
+const containerExists = containerName => {
 	try {
 		const result = execSync(
 			`docker ps -a --filter "name=${ containerName }" --format "{{.Names}}"`,
@@ -86,12 +86,12 @@ const containerExists = ( containerName ) => {
  * @param {string} containerName - The name of the Docker container.
  * @return {string|null} The image name or null if not found.
  */
-const getContainerImage = ( containerName ) => {
+const getContainerImage = containerName => {
 	try {
-		const result = execSync(
-			`docker inspect --format='{{.Config.Image}}' ${ containerName }`,
-			{ encoding: 'utf-8', stdio: 'pipe' }
-		);
+		const result = execSync( `docker inspect --format='{{.Config.Image}}' ${ containerName }`, {
+			encoding: 'utf-8',
+			stdio: 'pipe',
+		} );
 		return result.trim();
 	} catch {
 		return null;
@@ -104,7 +104,7 @@ const getContainerImage = ( containerName ) => {
  * @param {string} containerName - The name of the Docker container to start.
  * @return {boolean} True if the container was started successfully, false otherwise.
  */
-const startExistingContainer = ( containerName ) => {
+const startExistingContainer = containerName => {
 	try {
 		console.log( `Starting existing container: ${ containerName }...` );
 		execSync( `docker start ${ containerName }`, { stdio: 'inherit' } );
@@ -122,7 +122,7 @@ const startExistingContainer = ( containerName ) => {
  * @param {string} containerName - The name of the Docker container to remove.
  * @return {boolean} True if the container was removed successfully, false otherwise.
  */
-const removeContainer = ( containerName ) => {
+const removeContainer = containerName => {
 	try {
 		console.log( `Removing existing container: ${ containerName }...` );
 		execSync( `docker rm -f ${ containerName }`, { stdio: 'inherit' } );
@@ -179,9 +179,7 @@ const isDockerRunning = () => {
  */
 const main = () => {
 	if ( ! isDockerRunning() ) {
-		console.error(
-			'Docker is not running. Please start Docker and try again.'
-		);
+		console.error( 'Docker is not running. Please start Docker and try again.' );
 		process.exit( 1 );
 	}
 

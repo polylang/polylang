@@ -48,8 +48,7 @@ const v1 = {
 		},
 	},
 
-	isEligible: ( attributes ) =>
-		'dropdown' in attributes || 'show_names' in attributes,
+	isEligible: attributes => 'dropdown' in attributes || 'show_names' in attributes,
 
 	migrate( attributes ) {
 		const {

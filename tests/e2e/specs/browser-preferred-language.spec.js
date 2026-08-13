@@ -41,11 +41,7 @@ test.describe( 'Should detect browser preferred language', () => {
 		await requestUtils.deleteAllPosts();
 	} );
 
-	test( 'Should serve the best matching region', async ( {
-		page,
-		requestUtils,
-		context,
-	} ) => {
+	test( 'Should serve the best matching region', async ( { page, requestUtils, context } ) => {
 		await createLanguage( requestUtils, 'en_US' );
 		await createLanguage( requestUtils, 'en_GB', { slug: 'en-gb' } );
 
@@ -148,10 +144,7 @@ test.describe( 'Should detect browser preferred language', () => {
 			lang: 'en',
 		} );
 
-		await setAcceptLanguageHeader(
-			context,
-			'zh-Hant-HK;q=1.0,zh-CN;q=0.9,en;q=0.8'
-		);
+		await setAcceptLanguageHeader( context, 'zh-Hant-HK;q=1.0,zh-CN;q=0.9,en;q=0.8' );
 
 		await page.goto( '/' );
 
@@ -167,15 +160,12 @@ test.describe( 'Should detect browser preferred language', () => {
  */
 const expectLanguageCookie = async ( page, expectedLanguage ) => {
 	const cookies = await page.context().cookies();
-	const languageCookie = cookies.find(
-		( cookie ) => cookie.name === 'pll_language'
-	);
+	const languageCookie = cookies.find( cookie => cookie.name === 'pll_language' );
 
 	expect( languageCookie, 'Language cookie should be set' ).toBeDefined();
-	expect(
-		languageCookie.value,
-		'Preferred language should be ' + expectedLanguage
-	).toBe( expectedLanguage );
+	expect( languageCookie.value, 'Preferred language should be ' + expectedLanguage ).toBe(
+		expectedLanguage
+	);
 };
 
 /**

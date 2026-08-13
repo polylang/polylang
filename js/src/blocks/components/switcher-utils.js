@@ -7,12 +7,7 @@
  * @param {string}  [alignment]     The items alignment. Omitted when unset.
  * @return {string} The switcher class names.
  */
-export const getSwitcherClassName = (
-	layout,
-	showFlags,
-	flagAspectRatio,
-	alignment
-) => {
+export const getSwitcherClassName = ( layout, showFlags, flagAspectRatio, alignment ) => {
 	const classes = [ 'pll-switcher', `pll-layout-${ layout }` ];
 
 	if ( alignment ) {
@@ -20,9 +15,7 @@ export const getSwitcherClassName = (
 	}
 
 	if ( showFlags ) {
-		classes.push(
-			`pll-aspect-ratio-${ flagAspectRatio.replace( ':', '' ) }`
-		);
+		classes.push( `pll-aspect-ratio-${ flagAspectRatio.replace( ':', '' ) }` );
 	}
 
 	return classes.join( ' ' );

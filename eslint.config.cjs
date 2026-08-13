@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+const AutomatticPlugin = require( '@automattic/eslint-plugin-wpvip' );
 const wpPlugin = require( '@wordpress/eslint-plugin' );
 const globals = require( 'globals' );
 
@@ -20,7 +21,14 @@ module.exports = [
 			'**/*.map',
 		],
 	},
-	...wpPlugin.configs.recommended,
+	// Compose explicitly: `recommended` only auto-loads React when `react` is a
+	// declared dependency; we get it transitively via `@wordpress/element`.
+	...AutomatticPlugin.configs.javascript,
+	...AutomatticPlugin.configs.formatting,
+	...AutomatticPlugin.configs.react,
+	// WordPress-specific rules only (not the full WP recommended stack).
+	...wpPlugin.configs.custom,
+	...wpPlugin.configs.i18n,
 	{
 		settings: {
 			'import/core-modules': [
@@ -35,10 +43,20 @@ module.exports = [
 			],
 		},
 		rules: {
-			'jsdoc/no-undefined-types': [
-				1,
+			// Same as the WPVIP config, but tolerates the blank lines introduced by
+			// the WordPress `/** … dependencies */` import blocks.
+			'import/order': [
+				'error',
 				{
-					definedTypes: [ 'React', 'ReactElement', 'APIFetchOptions' ],
+					'newlines-between': 'always-and-inside-groups',
+					alphabetize: {
+						order: 'asc',
+					},
+					groups: [
+						[ 'builtin', 'external' ],
+						[ 'index', 'internal', 'object', 'parent', 'sibling' ],
+						[ 'type' ],
+					],
 				},
 			],
 			camelcase: [
@@ -72,4 +90,6 @@ module.exports = [
 			},
 		},
 	},
+	// Last: Prettier turns off conflicting stylistic ESLint rules.
+	...AutomatticPlugin.configs.prettier,
 ];

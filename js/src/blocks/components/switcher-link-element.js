@@ -10,9 +10,7 @@
 export const SwitcherLinkElement = ( { flag, label, labelSpacing } ) => {
 	const hasLabel = '' !== label;
 	const labelStyle =
-		hasLabel && labelSpacing
-			? { '--pll-flag-label-spacing': labelSpacing }
-			: undefined;
+		hasLabel && labelSpacing ? { '--pll-flag-label-spacing': labelSpacing } : undefined;
 
 	return (
 		// eslint-disable-next-line jsx-a11y/anchor-is-valid

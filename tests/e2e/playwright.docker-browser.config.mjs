@@ -1,5 +1,5 @@
+import { devices } from '@playwright/test';
 import { getPlaywrightConfig } from '@wpsyntex/e2e-test-utils';
-import { devices } from '@playwright/test'; // eslint-disable-line import/no-extraneous-dependencies
 import path from 'path';
 import { fileURLToPath } from 'url';
 

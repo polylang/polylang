@@ -28,14 +28,9 @@ function mapBlockTree( blocks, menuItems, blocksMapping, mapper ) {
 	 * @param {Object} block The block to replace or not.
 	 * @return {Object} The new block potentially replaced by the `mapper`.
 	 */
-	const convertBlock = ( block ) => ( {
+	const convertBlock = block => ( {
 		...mapper( block, menuItems, blocksMapping ),
-		innerBlocks: mapBlockTree(
-			block.innerBlocks,
-			menuItems,
-			blocksMapping,
-			mapper
-		),
+		innerBlocks: mapBlockTree( block.innerBlocks, menuItems, blocksMapping, mapper ),
 	} );
 
 	return blocks.map( convertBlock );
@@ -52,13 +47,8 @@ function mapBlockTree( blocks, menuItems, blocksMapping, mapper ) {
  * @return {Object} The block correctly converted.
  */
 const blocksFilter = ( block, menuItems, blocksMapping ) => {
-	if (
-		block.name === 'core/navigation-link' &&
-		block.attributes?.url === '#pll_switcher'
-	) {
-		const menuItem = menuItems.find(
-			( item ) => item.url === '#pll_switcher'
-		); // Get the corresponding menu item.
+	if ( block.name === 'core/navigation-link' && block.attributes?.url === '#pll_switcher' ) {
+		const menuItem = menuItems.find( item => item.url === '#pll_switcher' ); // Get the corresponding menu item.
 		const attributes = menuItem.meta._pll_menu_item; // Get its options.
 		const newBlock = createBlock( metadata.name, attributes );
 		blocksMapping[ menuItem.id ] = newBlock.clientId; // Update the blocks mapping.
@@ -76,10 +66,5 @@ const blocksFilter = ( block, menuItems, blocksMapping ) => {
  */
 export const menuItemsToBlocksFilter = ( blocks, menuItems ) => ( {
 	...blocks,
-	innerBlocks: mapBlockTree(
-		blocks.innerBlocks,
-		menuItems,
-		blocks.mapping,
-		blocksFilter
-	),
+	innerBlocks: mapBlockTree( blocks.innerBlocks, menuItems, blocks.mapping, blocksFilter ),
 } );

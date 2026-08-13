@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { __, _x } from '@wordpress/i18n';
 import { InspectorControls, BlockControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -15,8 +14,9 @@ import {
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUnitControl as UnitControl,
 } from '@wordpress/components';
-import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
+import { __, _x } from '@wordpress/i18n';
+import { store as noticesStore } from '@wordpress/notices';
 
 const CSS_LENGTH_UNITS = [
 	{ value: 'px', label: 'px' },
@@ -91,13 +91,13 @@ export const SwitcherControls = ( {
 
 	const { createWarningNotice } = useDispatch( noticesStore );
 
-	const layoutSelectOptions = ALL_LAYOUT_OPTIONS.filter( ( option ) =>
+	const layoutSelectOptions = ALL_LAYOUT_OPTIONS.filter( option =>
 		layoutOptions.includes( option.value )
 	);
 
-	const layoutToolbarControls = ALL_LAYOUT_TOOLBAR_CONTROLS.filter(
-		( control ) => layoutOptions.includes( control.layout )
-	).map( ( control ) => ( {
+	const layoutToolbarControls = ALL_LAYOUT_TOOLBAR_CONTROLS.filter( control =>
+		layoutOptions.includes( control.layout )
+	).map( control => ( {
 		title: control.title,
 		onClick: () => setAttributes( { layout: control.layout } ),
 	} ) );
@@ -137,10 +137,7 @@ export const SwitcherControls = ( {
 			onClick: () => {
 				if ( ! show_flags ) {
 					createWarningNotice(
-						__(
-							'Labels cannot be hidden if flags are not shown.',
-							'polylang'
-						)
+						__( 'Labels cannot be hidden if flags are not shown.', 'polylang' )
 					);
 
 					return;
@@ -162,7 +159,7 @@ export const SwitcherControls = ( {
 						label={ __( 'Layout', 'polylang' ) }
 						value={ layout }
 						options={ layoutSelectOptions }
-						onChange={ ( value ) => {
+						onChange={ value => {
 							setAttributes( { layout: value } );
 
 							if ( 'select' === value ) {
@@ -180,14 +177,11 @@ export const SwitcherControls = ( {
 							label={ __( 'Labels', 'polylang' ) }
 							value={ show_labels }
 							options={ labelOptions }
-							onChange={ ( value ) => {
+							onChange={ value => {
 								if ( '' === value ) {
 									if ( ! show_flags ) {
 										createWarningNotice(
-											__(
-												'Labels cannot be hidden if flags are not shown.',
-												'polylang'
-											)
+											__( 'Labels cannot be hidden if flags are not shown.', 'polylang' )
 										);
 
 										return;
@@ -195,8 +189,7 @@ export const SwitcherControls = ( {
 
 									setAttributes( {
 										show_labels: value,
-										flag_label_spacing:
-											LABEL_SPACING_DEFAULT_VALUE,
+										flag_label_spacing: LABEL_SPACING_DEFAULT_VALUE,
 									} );
 
 									return;
@@ -211,13 +204,10 @@ export const SwitcherControls = ( {
 						<ToggleControl
 							label={ __( 'Display flags', 'polylang' ) }
 							checked={ show_flags }
-							onChange={ ( value ) => {
+							onChange={ value => {
 								if ( '' === show_labels && ! value ) {
 									createWarningNotice(
-										__(
-											'Flags cannot be hidden if labels are not displayed.',
-											'polylang'
-										)
+										__( 'Flags cannot be hidden if labels are not displayed.', 'polylang' )
 									);
 
 									return;
@@ -234,10 +224,7 @@ export const SwitcherControls = ( {
 								selected={ flag_aspect_ratio }
 								options={ [
 									{
-										label: __(
-											'Landscape (3:2)',
-											'polylang'
-										),
+										label: __( 'Landscape (3:2)', 'polylang' ),
 										value: '3:2',
 									},
 									{
@@ -245,7 +232,7 @@ export const SwitcherControls = ( {
 										value: '1:1',
 									},
 								] }
-								onChange={ ( value ) =>
+								onChange={ value =>
 									setAttributes( {
 										flag_aspect_ratio: value,
 									} )
@@ -260,7 +247,7 @@ export const SwitcherControls = ( {
 								step={ 1 }
 								allowReset={ true }
 								resetFallbackValue={ 0 }
-								onChange={ ( value ) =>
+								onChange={ value =>
 									setAttributes( {
 										flag_border_radius: value,
 									} )
@@ -272,7 +259,7 @@ export const SwitcherControls = ( {
 								label={ __( 'Size', 'polylang' ) }
 								value={ flag_width }
 								units={ CSS_LENGTH_UNITS }
-								onChange={ ( value ) =>
+								onChange={ value =>
 									setAttributes( {
 										flag_width: value,
 									} )
@@ -284,7 +271,7 @@ export const SwitcherControls = ( {
 									label={ __( 'Label spacing', 'polylang' ) }
 									value={ flag_label_spacing }
 									units={ CSS_LENGTH_UNITS }
-									onChange={ ( value ) =>
+									onChange={ value =>
 										setAttributes( {
 											flag_label_spacing: value,
 										} )
@@ -298,26 +285,17 @@ export const SwitcherControls = ( {
 					<ToggleControl
 						label={ __( 'Force link to front page', 'polylang' ) }
 						checked={ force_home }
-						onChange={ ( value ) =>
-							setAttributes( { force_home: value } )
-						}
+						onChange={ value => setAttributes( { force_home: value } ) }
 					/>
 					<ToggleControl
 						label={ __( 'Hide the current language', 'polylang' ) }
 						checked={ hide_current }
-						onChange={ ( value ) =>
-							setAttributes( { hide_current: value } )
-						}
+						onChange={ value => setAttributes( { hide_current: value } ) }
 					/>
 					<ToggleControl
-						label={ __(
-							'Hide languages with no translation',
-							'polylang'
-						) }
+						label={ __( 'Hide languages with no translation', 'polylang' ) }
 						checked={ hide_if_no_translation }
-						onChange={ ( value ) =>
-							setAttributes( { hide_if_no_translation: value } )
-						}
+						onChange={ value => setAttributes( { hide_if_no_translation: value } ) }
 					/>
 				</PanelBody>
 			</InspectorControls>
@@ -329,21 +307,14 @@ export const SwitcherControls = ( {
 					/>
 					{ 'select' !== layout && (
 						<ToolbarButton
-							icon={
-								<span className="dashicons dashicons-flag"></span>
-							}
+							icon={ <span className="dashicons dashicons-flag"></span> }
 							label={
-								show_flags
-									? __( 'Hide flags', 'polylang' )
-									: __( 'Display flags', 'polylang' )
+								show_flags ? __( 'Hide flags', 'polylang' ) : __( 'Display flags', 'polylang' )
 							}
 							onClick={ () => {
 								if ( show_flags && '' === show_labels ) {
 									createWarningNotice(
-										__(
-											'Flags cannot be hidden if labels are not displayed.',
-											'polylang'
-										)
+										__( 'Flags cannot be hidden if labels are not displayed.', 'polylang' )
 									);
 
 									return;
@@ -357,9 +328,7 @@ export const SwitcherControls = ( {
 					) }
 					{ 'select' !== layout && (
 						<ToolbarDropdownMenu
-							icon={
-								<span className="dashicons dashicons-editor-textcolor"></span>
-							}
+							icon={ <span className="dashicons dashicons-editor-textcolor"></span> }
 							label={ __( 'Labels', 'polylang' ) }
 							controls={ toolbarLabelControls }
 						/>

@@ -6,22 +6,15 @@ import { useContext } from '@wordpress/element';
 /**
  * External dependencies
  */
-import {
-	SubmenuIcon,
-	useCuratedLanguages,
-} from '@wpsyntex/polylang-react-library';
+import { SubmenuIcon, useCuratedLanguages } from '@wpsyntex/polylang-react-library';
 
 /**
  * Internal dependencies
  */
+import { SwitcherLanguageLink } from '../components/switcher-language-link';
+import { getLabel, getLabelSpacing, getSwitcherClassName } from '../components/switcher-utils';
 import { useCurrentLanguageWithEditorContext } from '../hooks/use-current-language-with-editor-context';
 import { LanguagesContext } from '../languages-context';
-import { SwitcherLanguageLink } from '../components/switcher-language-link';
-import {
-	getLabel,
-	getLabelSpacing,
-	getSwitcherClassName,
-} from '../components/switcher-utils';
 
 /**
  * Rendered switcher component.
@@ -43,11 +36,7 @@ export const RenderedSwitcher = ( { attributes } ) => {
 	} = attributes;
 	const { languages } = useContext( LanguagesContext );
 	const currentLanguage = useCurrentLanguageWithEditorContext( languages );
-	const curatedLanguages = useCuratedLanguages(
-		languages,
-		currentLanguage,
-		false
-	);
+	const curatedLanguages = useCuratedLanguages( languages, currentLanguage, false );
 	const alignment = style?.typography?.textAlign;
 	const switcherClassName = getSwitcherClassName(
 		layout,
@@ -71,10 +60,7 @@ export const RenderedSwitcher = ( { attributes } ) => {
 			<nav className={ switcherClassName }>
 				<div className="pll-switcher-inner">
 					{ currentLanguageItem && (
-						<SwitcherLanguageLink
-							language={ currentLanguageItem }
-							{ ...linkProps }
-						/>
+						<SwitcherLanguageLink language={ currentLanguageItem } { ...linkProps } />
 					) }
 					<button className="pll-submenu-toggle">
 						<SubmenuIcon />
@@ -88,12 +74,9 @@ export const RenderedSwitcher = ( { attributes } ) => {
 		return (
 			<div className={ switcherClassName }>
 				<select className="pll-switcher-select">
-					{ curatedLanguages.map( ( language ) => {
+					{ curatedLanguages.map( language => {
 						return (
-							<option
-								key={ language.slug }
-								value={ language.slug }
-							>
+							<option key={ language.slug } value={ language.slug }>
 								{ getLabel( language, show_labels ) }
 							</option>
 						);
@@ -106,13 +89,10 @@ export const RenderedSwitcher = ( { attributes } ) => {
 	return (
 		<nav className={ switcherClassName }>
 			<ul>
-				{ curatedLanguages.map( ( language ) => {
+				{ curatedLanguages.map( language => {
 					return (
 						<li key={ language.slug }>
-							<SwitcherLanguageLink
-								language={ language }
-								{ ...linkProps }
-							/>
+							<SwitcherLanguageLink language={ language } { ...linkProps } />
 						</li>
 					);
 				} ) }

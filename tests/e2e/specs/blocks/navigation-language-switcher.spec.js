@@ -54,11 +54,7 @@ test.describe.serial(
 		 *     - Check the navigation language switcher block is displayed in the editor.
 		 *     - Check the navigation language switcher block has the correct languages in a list.
 		 */
-		test( 'Block should be displayed in the editor', async ( {
-			admin,
-			page,
-			editor,
-		} ) => {
+		test( 'Block should be displayed in the editor', async ( { admin, page, editor } ) => {
 			await navigateToNavigationEditor( admin, page, navigation );
 
 			// Navigation editor: Add page (WP 7) or Add block appender (WP 6.9) → Link UI → Browse all.
@@ -67,18 +63,13 @@ test.describe.serial(
 			} );
 			await navigationBlock.click();
 
-			const navInserter = navigationBlock
-				.getByRole( 'button', { name: 'Add page' } )
-				.or(
-					navigationBlock.getByRole( 'button', { name: 'Add block' } ) // Fallback for WP 6.9
-				);
+			const navInserter = navigationBlock.getByRole( 'button', { name: 'Add page' } ).or(
+				navigationBlock.getByRole( 'button', { name: 'Add block' } ) // Fallback for WP 6.9
+			);
 			await expect( navInserter ).toBeVisible();
 			await navInserter.click();
 
-			await page
-				.getByRole( 'button', { name: 'Add block' } )
-				.first()
-				.click();
+			await page.getByRole( 'button', { name: 'Add block' } ).first().click();
 
 			// QuickInserter only lists a few blocks; Polylang's block is not among them.
 			const addBlockDialog = page.getByRole( 'dialog', {
@@ -95,12 +86,8 @@ test.describe.serial(
 			const blockLibrary = page.getByRole( 'region', {
 				name: 'Block Library',
 			} );
-			await blockLibrary
-				.getByRole( 'searchbox', { name: 'Search' } )
-				.fill( 'language' );
-			await blockLibrary
-				.getByRole( 'option', { name: 'Navigation Language Switcher' } )
-				.click();
+			await blockLibrary.getByRole( 'searchbox', { name: 'Search' } ).fill( 'language' );
+			await blockLibrary.getByRole( 'option', { name: 'Navigation Language Switcher' } ).click();
 
 			// Check the navigation language switcher block is present in the content.
 			await expect
@@ -130,14 +117,10 @@ test.describe.serial(
 			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Dropdown' );
 			await setSwitcherLabels( page, 'Names' );
-			await page
-				.getByRole( 'checkbox', { name: 'Display flags' } )
-				.check();
+			await page.getByRole( 'checkbox', { name: 'Display flags' } ).check();
 
-			const blockWithNamesAndFlags =
-				await getNavigationLanguageSwitcherBlockLocator( page );
-			const blockWithNamesAndFlagsScreenshot =
-				await blockWithNamesAndFlags.screenshot();
+			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherLocator( page );
+			const blockWithNamesAndFlagsScreenshot = await blockWithNamesAndFlags.screenshot();
 			expect( blockWithNamesAndFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-dropdown-with-names-and-flags.png',
 				{
@@ -148,8 +131,7 @@ test.describe.serial(
 			// Remove the language names and keep the flags.
 			await setSwitcherLabels( page, 'None' );
 
-			const blockWithFlags =
-				await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithFlags = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithFlagsScreenshot = await blockWithFlags.screenshot();
 			expect( blockWithFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-dropdown-with-flags.png',
@@ -160,15 +142,10 @@ test.describe.serial(
 
 			// Remove the flags: labels must be shown before flags can be hidden.
 			await setSwitcherLabels( page, 'Names' );
-			await page
-				.getByRole( 'checkbox', { name: 'Display flags' } )
-				.uncheck();
-			await expect(
-				page.getByRole( 'combobox', { name: 'Labels' } )
-			).toHaveValue( 'names' );
+			await page.getByRole( 'checkbox', { name: 'Display flags' } ).uncheck();
+			await expect( page.getByRole( 'combobox', { name: 'Labels' } ) ).toHaveValue( 'names' );
 
-			const blockWithNames =
-				await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithNames = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithNamesScreenshot = await blockWithNames.screenshot();
 			expect( blockWithNamesScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-dropdown-with-names.png',
@@ -199,14 +176,10 @@ test.describe.serial(
 			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Horizontal' );
 			await setSwitcherLabels( page, 'Names' );
-			await page
-				.getByRole( 'checkbox', { name: 'Display flags' } )
-				.check();
+			await page.getByRole( 'checkbox', { name: 'Display flags' } ).check();
 
-			const blockWithNamesAndFlags =
-				await getNavigationLanguageSwitcherBlockLocator( page );
-			const blockWithNamesAndFlagsScreenshot =
-				await blockWithNamesAndFlags.screenshot();
+			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherLocator( page );
+			const blockWithNamesAndFlagsScreenshot = await blockWithNamesAndFlags.screenshot();
 			expect( blockWithNamesAndFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-list-with-names-and-flags.png',
 				{
@@ -217,8 +190,7 @@ test.describe.serial(
 			// Remove the language names and keep the flags.
 			await setSwitcherLabels( page, 'None' );
 
-			const blockWithFlags =
-				await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithFlags = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithFlagsScreenshot = await blockWithFlags.screenshot();
 			expect( blockWithFlagsScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-list-with-flags.png',
@@ -229,15 +201,10 @@ test.describe.serial(
 
 			// Remove the flags: labels must be shown before flags can be hidden.
 			await setSwitcherLabels( page, 'Names' );
-			await page
-				.getByRole( 'checkbox', { name: 'Display flags' } )
-				.uncheck();
-			await expect(
-				page.getByRole( 'combobox', { name: 'Labels' } )
-			).toHaveValue( 'names' );
+			await page.getByRole( 'checkbox', { name: 'Display flags' } ).uncheck();
+			await expect( page.getByRole( 'combobox', { name: 'Labels' } ) ).toHaveValue( 'names' );
 
-			const blockWithNames =
-				await getNavigationLanguageSwitcherBlockLocator( page );
+			const blockWithNames = await getNavigationLanguageSwitcherLocator( page );
 			const blockWithNamesScreenshot = await blockWithNames.screenshot();
 			expect( blockWithNamesScreenshot ).toMatchSnapshot(
 				'navigation-language-switcher-list-with-names.png',
@@ -267,17 +234,12 @@ test.describe.serial(
 		 *     - Ensure the hides languages with no translation setting is displayed correctly.
 		 *     - Ensure settings (forces link to front page, hides the current language, hides languages with no translation) are dispal correctly.
 		 */
-		test( 'Block advanced settings can be edited', async ( {
-			admin,
-			page,
-		} ) => {
+		test( 'Block advanced settings can be edited', async ( { admin, page } ) => {
 			await navigateToNavigationEditor( admin, page, navigation );
 
 			// Edit the Navigation Language Switcher block settings to forces link to front page.
 			await selectNavigationLanguageSwitcherBlock( page );
-			await page
-				.getByRole( 'checkbox', { name: 'Force link to front page' } )
-				.check();
+			await page.getByRole( 'checkbox', { name: 'Force link to front page' } ).check();
 			expect(
 				await page
 					.getByRole( 'checkbox', {
@@ -287,9 +249,7 @@ test.describe.serial(
 			).toBeTruthy();
 
 			// Edit the Navigation Language Switcher block settings to hides the current language.
-			await page
-				.getByRole( 'checkbox', { name: 'Hide the current language' } )
-				.check();
+			await page.getByRole( 'checkbox', { name: 'Hide the current language' } ).check();
 			expect(
 				await page
 					.getByRole( 'checkbox', {
@@ -321,7 +281,7 @@ test.describe.serial(
  * @param {Page} page The page object.
  * @return {import('@playwright/test').FrameLocator} The canvas frame locator.
  */
-const getEditorCanvas = ( page ) => {
+const getEditorCanvas = page => {
 	return page.frameLocator( 'iframe[name="editor-canvas"]' );
 };
 
@@ -331,7 +291,7 @@ const getEditorCanvas = ( page ) => {
  * @param {Page} page The page object.
  * @return {Promise<Locator>} The locator of the Navigation Language Switcher block.
  */
-const selectNavigationLanguageSwitcherBlock = async ( page ) => {
+const selectNavigationLanguageSwitcherBlock = async page => {
 	return page
 		.locator( 'iframe[name="editor-canvas"]' )
 		.contentFrame()
@@ -347,7 +307,7 @@ const selectNavigationLanguageSwitcherBlock = async ( page ) => {
  * @param {Page} page The page object.
  * @return {Locator} The locator of the Navigation Language Switcher block element.
  */
-const getNavigationLanguageSwitcherBlockLocator = ( page ) => {
+const getNavigationLanguageSwitcherLocator = page => {
 	return getEditorCanvas( page ).getByRole( 'document', {
 		name: 'Block: Navigation Language Switcher',
 	} );
@@ -367,9 +327,7 @@ const navigateToNavigationEditor = async ( admin, page, navigation ) => {
 		canvas: 'edit',
 	} );
 
-	await expect(
-		page.locator( 'iframe[name="editor-canvas"]' )
-	).toBeVisible();
+	await expect( page.locator( 'iframe[name="editor-canvas"]' ) ).toBeVisible();
 };
 
 /**
@@ -377,10 +335,8 @@ const navigateToNavigationEditor = async ( admin, page, navigation ) => {
  *
  * @param {Page} page The page object.
  */
-const saveNavigationChanges = async ( page ) => {
-	await page
-		.getByRole( 'button', { name: /Submit for Review|Save/ } )
-		.click();
+const saveNavigationChanges = async page => {
+	await page.getByRole( 'button', { name: /Submit for Review|Save/ } ).click();
 };
 
 /**
