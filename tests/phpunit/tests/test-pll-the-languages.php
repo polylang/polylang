@@ -336,8 +336,6 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 
 	/**
 	 * Very basic tests for the switcher as select.
-	 *
-	 * @see https://github.com/polylang/polylang-pro/issues/3076
 	 */
 	public function test_should_return_select() {
 		$this->setExpectedDeprecated( 'pll_the_languages()' ); // `dropdown` is deprecated.
@@ -366,9 +364,6 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'fr-FR', $lang_attributes->item( 1 )->value );
 	}
 
-	/**
-	 * @see https://github.com/polylang/polylang-pro/issues/3076
-	 */
 	public function test_select_show_wrapper_displays_div() {
 		$this->init_test_raw();
 		$this->go_to( home_url( '/' ) );

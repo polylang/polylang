@@ -117,9 +117,6 @@ class Get_Test extends TestCase {
 		$this->assertSame( 'Français', $fr_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
-	/**
-	 * @see https://github.com/polylang/polylang-pro/issues/3076
-	 */
 	public function test_layout_select_without_wrapper(): void {
 		$html  = $this->get_switcher_and_init_frontend(
 			array(
