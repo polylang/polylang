@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.8.6
+Stable tag: 3.8.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,10 +104,16 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.8.7 (2026-08-17) =
+
+* Pro: Add the translation of new blocks introduced by WP 7.1 #3048
+* Fix quick edit parent page dropdown for hierarchical custom post types #1947
+* Fix wp-editor script enqueued together with the new widgets editor #1968
+
 = 3.8.6 (2026-07-20) =
 
 * Pro: Security: Ensure the user has the required capability for ACF fields when switching language in the editor #3029
-* Security: Fix exposure of some private posts metadata to non-authorized users. Props Patchstack.
+* Security: Fix exposure of some private posts metadata to non-authorized users. Reported by Patchstack.
 * Security: Fix server side default language encoding for the block editor
 * Fix 404 for post type or taxonomy sitemap when its name ends with a language code #1909
 
