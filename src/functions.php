@@ -232,7 +232,7 @@ function pll_register_script( string $handle, array $dependencies = array(), arr
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.js';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
-	$version = filemtime( POLYLANG_ROOT_DIR . $file );
+	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
 	wp_register_script( $handle, $src, $dependencies, $version, $args );
 }
 
@@ -267,6 +267,6 @@ function pll_register_style( string $handle, array $dependencies = array() ): vo
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.css';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
-	$version = filemtime( POLYLANG_ROOT_DIR . $file );
+	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
 	wp_register_style( $handle, $src, $dependencies, $version );
 }
