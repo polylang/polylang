@@ -15,7 +15,7 @@ const findLanguageBySlug = ( languages, slug ) => {
 		return null;
 	}
 
-	const currentLanguage = languages.find( ( language ) => {
+	const currentLanguage = languages.find( language => {
 		return language.slug === slug;
 	} );
 
@@ -32,9 +32,9 @@ const findLanguageBySlug = ( languages, slug ) => {
  * @param {Array} languages The languages list.
  * @return {Object|null} The current language, `null` if not found.
  */
-export const useCurrentLanguageWithEditorContext = ( languages ) => {
+export const useCurrentLanguageWithEditorContext = languages => {
 	return useSelect(
-		( select ) => {
+		select => {
 			if ( ! languages ) {
 				return null;
 			}
@@ -54,8 +54,7 @@ export const useCurrentLanguageWithEditorContext = ( languages ) => {
 				return null;
 			}
 
-			const currentLanguageSlug =
-				currentPost.lang ?? pllEditorCurrentLanguageSlug; // eslint-disable-line no-undef
+			const currentLanguageSlug = currentPost.lang ?? pllEditorCurrentLanguageSlug; // eslint-disable-line no-undef
 
 			return findLanguageBySlug( languages, currentLanguageSlug );
 		},

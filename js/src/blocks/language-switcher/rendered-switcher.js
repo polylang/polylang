@@ -6,10 +6,7 @@ import { useContext } from '@wordpress/element';
 /**
  * External dependencies
  */
-import {
-	SubmenuIcon,
-	useCuratedLanguages,
-} from '@wpsyntex/polylang-react-library';
+import { SubmenuIcon, useCuratedLanguages } from '@wpsyntex/polylang-react-library';
 
 /**
  * Internal dependencies
