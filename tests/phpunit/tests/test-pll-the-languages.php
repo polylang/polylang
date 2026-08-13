@@ -251,10 +251,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( '<li', $switcher );
 	}
 
-	/**
-	 * @see https://github.com/polylang/polylang-pro/issues/3084
-	 */
-	public function test_default_layout_is_horizontal() {
+	public function test_default_layout_is_vertical() {
 		$this->init_test_raw();
 		$this->go_to( home_url( '/' ) );
 
@@ -265,8 +262,8 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$this->assertStringContainsString( 'pll-layout-horizontal', $switcher );
-		$this->assertStringNotContainsString( 'pll-layout-vertical', $switcher );
+		$this->assertStringContainsString( 'pll-layout-vertical', $switcher );
+		$this->assertStringNotContainsString( 'pll-layout-horizontal', $switcher );
 	}
 
 	/**
