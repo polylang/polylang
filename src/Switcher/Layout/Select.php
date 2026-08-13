@@ -20,6 +20,9 @@ class Select extends Abstract_Layout {
 	/**
 	 * Returns the markup of the switcher.
 	 *
+	 * The `<select>` tag is always output. `show_wrapper` only controls the outer
+	 * `<div>` and its screen-reader label.
+	 *
 	 * @since 3.9
 	 *
 	 * @return string
@@ -31,19 +34,29 @@ class Select extends Abstract_Layout {
 			$out .= $element->get();
 		}
 
-		if ( empty( $out ) || ! $this->settings->show_wrapper ) {
+		if ( empty( $out ) ) {
 			return $out;
 		}
 
 		Assets::enqueue_frontend_scripts();
 
-		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$cr     = $this->settings->preserve_spacing ? "\n" : '';
+		$select = sprintf(
+			'<select class="pll-switcher-select" id="%1$s">%2$s</select>',
+			esc_attr( $this->settings->unique_id ),
+			"{$cr}{$out}"
+		);
+
+		if ( ! $this->settings->show_wrapper ) {
+			return "{$cr}{$select}{$cr}";
+		}
+
 		$out = sprintf(
-			'<div class="%1$s"><label class="screen-reader-text" for="%2$s">%3$s</label><select class="pll-switcher-select" id="%2$s">%4$s</select></div>',
+			'<div class="%1$s"><label class="screen-reader-text" for="%2$s">%3$s</label>%4$s</div>',
 			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
 			esc_attr( $this->settings->unique_id ),
 			esc_html( __( 'Choose a language', 'polylang' ) ),
-			"{$cr}{$out}"
+			$select
 		);
 
 		return "{$cr}{$out}{$cr}";
