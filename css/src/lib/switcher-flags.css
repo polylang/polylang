@@ -1,5 +1,8 @@
 /**
  * Shared flag styling for language switcher blocks.
+ *
+ * Keep these styles in sync with the inline CSS in
+ * `src/frontend/frontend-nav-menu.php` (`PLL_Frontend_Nav_Menu::get_element_label()`).
  */
 
 .pll-switcher-flag + .pll-switcher-label {
