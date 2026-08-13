@@ -6,7 +6,6 @@
 use WP_Syntex\Polylang\Switcher\Switcher;
 use WP_Syntex\Polylang\Switcher\Element\Nav;
 use WP_Syntex\Polylang\Switcher\Fields\Menu as Fields;
-use WP_Syntex\Polylang\Switcher\Element\Abstract_Element;
 use WP_Syntex\Polylang\Switcher\Settings\Menu as Settings;
 
 /**
@@ -113,7 +112,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				// Parent item for dropdown.
 				$element = new Nav( $this->curlang, $settings, $this->links );
 
-				$item->title       = $this->get_element_label( $element, $settings );
+				$item->title       = $element->get_label();
 				$item->attr_title  = '';
 				$item->url         = $element->url;
 				$item->classes     = array_merge( $element->item_classes, array( 'pll-parent-menu-item' ) );
@@ -134,7 +133,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				$lang_item = clone $item;
 
 				$lang_item->ID         = "{$lang_item->ID}-{$element->slug}"; // A unique ID.
-				$lang_item->title      = $this->get_element_label( $element, $settings );
+				$lang_item->title      = $element->get_label();
 				$lang_item->attr_title = '';
 				$lang_item->url        = $element->url;
 				$lang_item->lang       = $element->locale; // Save this for use in nav_menu_link_attributes.
@@ -157,46 +156,6 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		return $new_items;
-	}
-
-	/**
-	 * Returns a switcher element label with inline flag styles.
-	 *
-	 * @since 3.9
-	 *
-	 * @param Abstract_Element $element  Switcher element.
-	 * @param Settings         $settings Switcher settings.
-	 * @return string
-	 */
-	private function get_element_label( Abstract_Element $element, Settings $settings ) {
-		$label = $element->get_label();
-
-		if ( ! $settings->show_flags ) {
-			return $label;
-		}
-
-		$processor = new WP_HTML_Tag_Processor( $label );
-
-		// Keep these inline styles in sync with @see{css/src/lib/switcher-flags.css}.
-		if ( $processor->next_tag( array( 'tag_name' => 'SPAN', 'class_name' => 'pll-switcher-flag' ) ) ) {
-			$processor->set_attribute(
-				'style',
-				sprintf(
-					'display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%%);aspect-ratio:%s',
-					str_replace( ':', '/', $settings->flag_aspect_ratio )
-				)
-			);
-		}
-
-		if ( $processor->next_tag( array( 'tag_name' => 'IMG' ) ) ) {
-			$processor->set_attribute( 'style', 'display:block;object-fit:cover;object-position:center;width:100%;height:100%' );
-		}
-
-		if ( $settings->show_labels && $processor->next_tag( array( 'tag_name' => 'SPAN', 'class_name' => 'pll-switcher-label' ) ) ) {
-			$processor->set_attribute( 'style', 'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb' );
-		}
-
-		return $processor->get_updated_html();
 	}
 
 	/**

@@ -73,11 +73,22 @@ class Nav extends Abstract_Element {
 		$label = '';
 
 		if ( ! empty( $this->flag ) ) {
-			$label .= sprintf( '<span class="pll-switcher-flag">%s</span>', $this->flag );
+			// Keep these inline styles in sync with `css/src/lib/switcher-flags.css`.
+			$label .= sprintf(
+				'<span class="pll-switcher-flag" style="%1$s">%2$s</span>',
+				esc_attr(
+					sprintf(
+						'display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%%);aspect-ratio:%s',
+						str_replace( ':', '/', $this->settings->flag_aspect_ratio )
+					)
+				),
+				$this->flag
+			);
 		}
 
 		if ( ! empty( $this->label ) ) {
-			$label .= sprintf( '<span class="pll-switcher-label">%s</span>', esc_html( $this->label ) );
+			$style = empty( $this->flag ) ? '' : ' style="margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb"';
+			$label .= sprintf( '<span class="pll-switcher-label"%1$s>%2$s</span>', $style, esc_html( $this->label ) );
 		}
 
 		return $label;

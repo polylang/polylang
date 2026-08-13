@@ -199,10 +199,14 @@ abstract class Abstract_Block {
 		$processor = new WP_HTML_Tag_Processor( $html );
 
 		while ( $processor->next_tag( array( 'tag_name' => 'SPAN', 'class_name' => 'pll-switcher-flag' ) ) ) {
-			$processor->set_attribute( 'style', $flag_style );
+			$style = $processor->get_attribute( 'style' ) ?? '';
+			/** @var string $style `WP_HTML_Tag_Processor::get_attribute()` returns string|null for non-boolean attributes. */
+			$processor->set_attribute( 'style', '' === $style ? $flag_style : rtrim( $style, ';' ) . ';' . $flag_style );
 
 			if ( '' !== $label_style && $processor->next_tag( array( 'tag_name' => 'SPAN', 'class_name' => 'pll-switcher-label' ) ) ) {
-				$processor->set_attribute( 'style', $label_style );
+				$style = $processor->get_attribute( 'style' ) ?? '';
+				/** @var string $style `WP_HTML_Tag_Processor::get_attribute()` returns string|null for non-boolean attributes. */
+				$processor->set_attribute( 'style', '' === $style ? $label_style : rtrim( $style, ';' ) . ';' . $label_style );
 			}
 		}
 
