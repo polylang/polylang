@@ -120,8 +120,9 @@ abstract class Abstract_Settings_Legacy {
 	 */
 	protected function convert_from_legacy( array $settings ): array {
 		if ( ! isset( $settings['show_wrapper'] ) ) {
-			// Legacy dropdowns included the `<select>` wrapper; list layouts did not.
-			$settings['show_wrapper'] = ! empty( $settings['dropdown'] );
+			// Legacy list and dropdown had no outer wrapper (div/nav). The `<select>`
+			// tag itself is always output for the select layout.
+			$settings['show_wrapper'] = false;
 		}
 
 		if ( isset( $settings['layout'], $settings['dropdown'] ) ) {

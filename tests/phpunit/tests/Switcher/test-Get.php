@@ -117,6 +117,24 @@ class Get_Test extends TestCase {
 		$this->assertSame( 'Français', $fr_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
+	public function test_layout_select_without_wrapper(): void {
+		$html  = $this->get_switcher_and_init_frontend(
+			array(
+				'layout'       => 'select',
+				'show_wrapper' => false,
+			)
+		)->get();
+		$xpath = $this->get_domxpath( $html );
+
+		$this->assertSame( 0, $xpath->query( '//div' )->count() );
+		$this->assertSame( 0, $xpath->query( '//label' )->count() );
+
+		$selects = $xpath->query( '//select' );
+		$this->assertSame( 1, $selects->count() );
+		$this->assertSame( 'pll-switcher-select', $selects->item( 0 )->getAttribute( 'class' ) );
+		$this->assertSame( 2, $xpath->query( '//select/option' )->count() );
+	}
+
 	public function test_layout_dropdown(): void {
 		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => 'dropdown' ) )->get();
 		$xpath = $this->get_domxpath( $html );

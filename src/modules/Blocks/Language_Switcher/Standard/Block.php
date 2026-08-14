@@ -81,7 +81,7 @@ class Block extends Abstract_Block {
 		++$dropdown_id;
 
 		$attributes['unique_id']    = 'select' === $attributes['layout'] ? 'lang_choice_' . $dropdown_id : '';
-		$attributes['show_wrapper'] = true;
+		$attributes['show_wrapper'] = true; // Blocks always display a wrapper. Legacy `dropdown` attributes would otherwise set it to false.
 
 		if ( ! empty( $attributes['style']['typography']['textAlign'] ) ) {
 			$attributes['alignment'] = $attributes['style']['typography']['textAlign'];

@@ -25,8 +25,11 @@ use WP_Syntex\Polylang\Switcher\Settings\Settings;
  *                                            `dropdown`, and `select`. Default is `vertical`.
  *     @type string   $alignment              Alignment of the items. Possible values are `left`, `center`, `right`,
  *                                            `stretched`. Default is `left` or `right`, depending on `is_rtl()`.
- *     @type bool     $show_wrapper           Display the wrapper or not. Default is `true` when the layout is `select`,
- *                                            and `false` otherwise.
+ *     @type bool     $show_wrapper           Display the wrapper or not. Default is `false` for legacy calls (list
+ *                                            items only, or bare `<select>` for dropdown). Default is `true` when
+ *                                            `layout` is `select`. Omitting this argument on a bare list call triggers
+ *                                            a `_doing_it_wrong()` notice: pass `show_wrapper` => false explicitly to
+ *                                            keep the current behavior.
  *     @type bool     $show_flags             Display the flags or not. Default is `false`.
  *     @type string   $flag_aspect_ratio      Flags aspect ratio. Possible values are `3:2` and `1:1`. Default is `3:2`.
  *     @type string   $show_labels            Display the labels. Possible values are an empty string (no labels),
@@ -63,6 +66,24 @@ function pll_the_languages( $args = array() ) {
 				'pll_the_languages()'
 			)
 		);
+	}
+
+	if ( empty( $args['raw'] ) && ! isset( $args['show_wrapper'] ) ) {
+		if ( ! isset( $args['layout'] ) ) {
+			// Backward compatibility with Polylang < 3.9.
+			$args['show_wrapper'] = false;
+
+			if ( empty( $args['dropdown'] ) ) {
+				_doing_it_wrong(
+					'pll_the_languages()',
+					esc_html__(
+						'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+						'polylang'
+					),
+					'3.9'
+				);
+			}
+		}
 	}
 
 	$settings = new Settings( $args );

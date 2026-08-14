@@ -101,6 +101,16 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 			$suffix = $suffix_69;
 		}
 
+		if ( version_compare( $wp_version, '6.9-alpha', '<' ) ) {
+			$suffix_bad_css = '-wp68';
+		} elseif ( version_compare( $wp_version, '7.0-alpha', '<' ) ) {
+			$suffix_bad_css = '-wp69';
+		} elseif ( version_compare( $wp_version, '7.1-alpha', '<' ) ) {
+			$suffix_bad_css = '-wp70';
+		} else {
+			$suffix_bad_css = '';
+		}
+
 		$data = array(
 			'Display as list'                                        => array(
 				'options'  => array(),
@@ -224,7 +234,7 @@ class Switcher_Block_Frontend_Test extends PLL_UnitTestCase {
 						),
 					),
 				),
-				'expected' => 'navigation-language-switcher-dropdown-bad-css' . $suffix . '.html',
+				'expected' => 'navigation-language-switcher-dropdown-bad-css' . $suffix_bad_css . '.html',
 			),
 		);
 

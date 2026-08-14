@@ -218,9 +218,59 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * Third party code often wraps the output in its own `<ul>` tag.
+	 * The template tag must return list items only.
+	 */
+	public function test_should_return_list_items_without_wrapper() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
+		$posts = $this->init_test_raw();
+		$this->go_to( get_permalink( $posts['en'] ) );
+
+		$switcher = pll_the_languages( array( 'echo' => 0 ) );
+
+		$this->assertStringStartsWith( '<li', ltrim( $switcher ) );
+		$this->assertStringNotContainsString( '<ul', $switcher );
+		$this->assertStringNotContainsString( '<nav', $switcher );
+
+		$xpath = $this->get_domxpath( '<ul>' . $switcher . '</ul>' );
+		$this->assertSame( 3, $xpath->query( '//ul/li' )->length );
+	}
+
+	public function test_show_wrapper_argument_displays_wrapper() {
+		$this->init_test_raw();
+		$this->go_to( home_url( '/' ) );
+
+		$switcher = pll_the_languages(
+			array(
+				'show_wrapper' => true,
+				'echo'         => 0,
+			)
+		);
+
+		$this->assertStringContainsString( '<ul', $switcher );
+		$this->assertStringContainsString( '<li', $switcher );
+	}
+
+	public function test_default_layout_is_vertical() {
+		$this->init_test_raw();
+		$this->go_to( home_url( '/' ) );
+
+		$switcher = pll_the_languages(
+			array(
+				'show_wrapper' => true,
+				'echo'         => 0,
+			)
+		);
+
+		$this->assertStringContainsString( 'pll-layout-vertical', $switcher );
+		$this->assertStringNotContainsString( 'pll-layout-horizontal', $switcher );
+	}
+
+	/**
 	 * Very basic tests for the switcher as list.
 	 */
 	public function test_should_return_list() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
 		$posts = $this->init_test_raw();
 
 		$url_en = get_permalink( $posts['en'] );
@@ -248,6 +298,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_should_print_list() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
 		$posts = $this->init_test_raw();
 
 		$url_en = get_permalink( $posts['en'] );
@@ -263,6 +314,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 2.6.3: No label when showing only flags.
 	 */
 	public function test_should_return_list_with_deprecated_arguments() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
 		$this->setExpectedDeprecated( 'pll_the_languages()' ); // `show_names` is deprecated.
 		$posts = $this->init_test_raw();
 		$this->go_to( get_permalink( $posts['en'] ) );
@@ -297,6 +349,11 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 		$switcher = pll_the_languages( $args );
 		$xpath    = $this->get_domxpath( $switcher );
 
+		// 3.8 BC: bare `<select>`, no outer `<div>`.
+		$this->assertStringStartsWith( '<select', ltrim( $switcher ) );
+		$this->assertStringNotContainsString( '<div', $switcher );
+		$this->assertSame( 'pll-switcher-select', $xpath->query( '//select' )->item( 0 )->getAttribute( 'class' ) );
+
 		$option = $xpath->query( '//select/option[.="English"]' )->item( 0 );
 		$this->assertNotEmpty( $option, 'There should be an option tag.' );
 		$this->assertSame( 'selected', $option->getAttribute( 'selected' ) );
@@ -307,11 +364,29 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'fr-FR', $lang_attributes->item( 1 )->value );
 	}
 
+	public function test_select_show_wrapper_displays_div() {
+		$this->init_test_raw();
+		$this->go_to( home_url( '/' ) );
+
+		$switcher = pll_the_languages(
+			array(
+				'layout'       => 'select',
+				'show_wrapper' => true,
+				'echo'         => 0,
+			)
+		);
+		$xpath = $this->get_domxpath( $switcher );
+
+		$this->assertNotEmpty( $xpath->query( '//div/select' )->length );
+		$this->assertNotEmpty( $xpath->query( '//div/label[@class="screen-reader-text"]' )->length );
+	}
+
 	/**
 	 * @ticket #1890
 	 * @see https://github.com/polylang/polylang-pro/issues/1890.
 	 */
 	public function test_flags_a11y_without_names_displayed() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
 		$this->setExpectedDeprecated( 'pll_the_languages()' ); // `show_names` is deprecated.
 		$args = array(
 			'show_flags'    => 1,
@@ -338,6 +413,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang-pro/issues/1890.
 	 */
 	public function test_flags_a11y_with_names_displayed() {
+		$this->setExpectedIncorrectUsage( 'pll_the_languages()' );
 		$this->setExpectedDeprecated( 'pll_the_languages()' ); // `show_names` is deprecated.
 		$args = array(
 			'show_flags'    => 1,

@@ -104,8 +104,7 @@ class Languages extends WP_Widget {
 			return;
 		}
 
-		$instance['unique_id']    = "pll-switcher-widget-{$this->number}";
-		$instance['show_wrapper'] = true;
+		$instance['unique_id'] = "pll-switcher-widget-{$this->number}";
 
 		$instance = Fields::remove_legacy_settings( $instance );
 		$settings = new Settings( $instance );
