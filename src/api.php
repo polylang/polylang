@@ -69,21 +69,21 @@ function pll_the_languages( $args = array() ) {
 	}
 
 	if ( empty( $args['raw'] ) && ! isset( $args['show_wrapper'] ) ) {
-		if ( ! isset( $args['layout'] ) && empty( $args['dropdown'] ) ) {
-			_doing_it_wrong(
-				'pll_the_languages()',
-				esc_html__(
-					'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
-					'polylang'
-				),
-				'3.9'
-			);
+		if ( ! isset( $args['layout'] ) ) {
+			// Backward compatibility with Polylang < 3.9.
 			$args['show_wrapper'] = false;
-		} elseif ( ! empty( $args['dropdown'] ) ) {
-			// 3.8 BC: bare `<select>`, no outer `<div>`.
-			$args['show_wrapper'] = false;
+
+			if ( empty( $args['dropdown'] ) ) {
+				_doing_it_wrong(
+					'pll_the_languages()',
+					esc_html__(
+						'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
+						'polylang'
+					),
+					'3.9'
+				);
+			}
 		}
-		// `layout` => `select` without `show_wrapper` keeps Settings' default (`true`).
 	}
 
 	$settings = new Settings( $args );
