@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Run tests in a separate process to avoid a conflict with Jetpack 16.1 beta.
- *
- * @@runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class WP_Importer_Test extends PLL_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory
