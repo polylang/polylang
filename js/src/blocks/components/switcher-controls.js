@@ -115,7 +115,7 @@ export const SwitcherControls = ( {
 
 	if ( show_flags ) {
 		labelOptions.push( {
-			label: __( 'None', 'polylang' ),
+			label: _x( 'None', 'Labels', 'polylang' ),
 			value: '',
 		} );
 	}
@@ -133,7 +133,7 @@ export const SwitcherControls = ( {
 
 	if ( show_flags ) {
 		toolbarLabelControls.push( {
-			title: __( 'None', 'polylang' ),
+			title: _x( 'None', 'Labels', 'polylang' ),
 			onClick: () => {
 				if ( ! show_flags ) {
 					createWarningNotice(
