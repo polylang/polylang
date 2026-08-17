@@ -51,7 +51,7 @@ class Menu extends Abstract_Fields {
 			'show_labels'            => array(
 				'label'   => __( 'Display labels:', 'polylang' ),
 				'choices' => array(
-					''      => __( 'None', 'polylang' ),
+					''      => _x( 'None', 'Labels', 'polylang' ),
 					'names' => __( 'Language names', 'polylang' ),
 					'codes' => __( 'Language codes', 'polylang' ),
 				),
