@@ -85,13 +85,19 @@ class Admin_Test extends PLL_UnitTestCase {
 			array( 'name' => 'Mon chat', 'lang' => 'fr' )
 		);
 
-		$posts = self::factory()->post->create_translated(
+		self::factory()->post->create_translated(
 			array( 'post_category' => array( $cats['en'] ), 'lang' => 'en' ),
 			array( 'post_category' => array( $cats['fr'] ), 'lang' => 'fr' )
 		);
 
-
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		/*
+		 * For some reason, rewrite rules set in previous tests and which should interfer on admin
+		 * break `go_to()`. This hack makes sure that no rules will break the test.
+		 */
+		delete_option( 'rewrite_rules' );
+		$GLOBALS['wp_rewrite'] = new WP_Rewrite();
 
 		$this->go_to( home_url( "/wp-admin/edit.php?s&post_status=all&post_type=post&action=-1&m=0&cat={$cats['fr']}&filter_action=Filter&paged=1" ) );
 		$links_model = self::$model->get_links_model();
@@ -120,12 +126,19 @@ class Admin_Test extends PLL_UnitTestCase {
 			array( 'name' => 'Mon chat', 'lang' => 'fr' )
 		);
 
-		$posts = self::factory()->post->create_translated(
+		self::factory()->post->create_translated(
 			array( 'post_category' => array( $cats['en'] ), 'lang' => 'en' ),
 			array( 'post_category' => array( $cats['fr'] ), 'lang' => 'fr' )
 		);
 
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
+
+		/*
+		 * For some reason, rewrite rules set in previous tests and which should interfer on admin
+		 * break `go_to()`. This hack makes sure that no rules will break the test.
+		 */
+		delete_option( 'rewrite_rules' );
+		$GLOBALS['wp_rewrite'] = new WP_Rewrite();
 
 		$this->go_to( home_url( '/wp-admin/edit.php?category_name=mon-chat' ) );
 		$links_model = self::$model->get_links_model();
