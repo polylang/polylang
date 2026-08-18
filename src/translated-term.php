@@ -462,7 +462,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 */
 	public function get_by( string $field, $value, $lang, string $taxonomy = '' ) {
 		if ( 'term_id' === $field ) {
-			return $this->get( $value, $lang );
+			return $this->get( (int) $value, $lang );
 		}
 
 		$empty = 'term_taxonomy_id' === $field ? 0 : '';

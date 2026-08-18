@@ -254,6 +254,10 @@ class PLL_Frontend_Auto_Translate {
 	 * @return array Translated tax queries.
 	 */
 	protected function translate_tax_query_recursive( $tax_queries ) {
+		if ( empty( $this->curlang ) ) {
+			return $tax_queries;
+		}
+
 		foreach ( $tax_queries as $key => $q ) {
 			if ( ! is_array( $q ) ) {
 				continue;
@@ -296,12 +300,14 @@ class PLL_Frontend_Auto_Translate {
 			$slugs = explode( $sep, $query_var );
 		}
 
-		foreach ( $slugs as &$slug ) {
-			if ( ! is_string( $slug ) ) {
-				// We got an unexpected query var, let return it unchanged.
-				return $query_var;
+		if ( ! empty( $this->curlang ) ) {
+			foreach ( $slugs as &$slug ) {
+				if ( ! is_string( $slug ) ) {
+					// We got an unexpected query var, let return it unchanged.
+					return $query_var;
+				}
+				$slug = $this->model->term->get_by( 'slug', $slug, $this->curlang, $taxonomy );
 			}
-			$slug = $this->model->term->get_by( 'slug', $slug, $this->curlang, $taxonomy );
 		}
 
 		$slugs = array_filter( $slugs );

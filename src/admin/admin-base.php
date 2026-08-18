@@ -583,6 +583,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *
 	 * @param object $language The language or an object for all languages.
 	 * @return string
+	 *
+	 * @phpstan-param object{'slug': string} $language
 	 */
 	protected function get_admin_bar_menu_url( $language ): string {
 		global $pagenow;
@@ -593,20 +595,35 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			return $url;
 		}
 
-		foreach ( get_object_taxonomies( get_post_type(), 'objects' ) as $tax ) {
+		// Attempt to translate the category (taxonomy) filter if present.
+		$post_type = get_post_type();
+
+		if ( ! $post_type ) {
+			return $url;
+		}
+
+		foreach ( get_object_taxonomies( $post_type, 'objects' ) as $tax ) {
 			if ( ! $this->model->is_translated_taxonomy( $tax->name ) ) {
 				continue;
 			}
 
 			if ( 'category' === $tax->name ) {
-				$query_var = 'cat';
 				$field     = 'term_id';
+				$query_var = 'cat';
+				$qv        = get_query_var( $query_var );
+				if ( ! is_int( $qv ) ) {
+					continue;
+				}
 			} else {
-				$query_var = $tax->query_var;
 				$field     = 'slug';
+				$query_var = (string) $tax->query_var;
+				$qv        = get_query_var( $query_var );
+				if ( ! is_string( $qv ) ) {
+					continue;
+				}
 			}
 
-			$qv = $this->model->term->get_by( $field, get_query_var( $query_var ), $language, $tax->name );
+			$qv = $this->model->term->get_by( $field, $qv, $language, $tax->name );
 			if ( ! empty( $qv ) ) {
 				$url = add_query_arg( $query_var, $qv, remove_query_arg( $query_var, $url ) );
 			}
