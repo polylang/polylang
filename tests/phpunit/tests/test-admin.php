@@ -93,7 +93,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
 		/*
-		 * For some reason, rewrite rules set in previous tests and which should interfer on admin
+		 * For some reason, rewrite rules set in previous tests and which should interfere on admin
 		 * break `go_to()`. This hack makes sure that no rules will break the test.
 		 */
 		delete_option( 'rewrite_rules' );
@@ -134,7 +134,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
 		/*
-		 * For some reason, rewrite rules set in previous tests and which should interfer on admin
+		 * For some reason, rewrite rules set in previous tests and which should interfere on admin
 		 * break `go_to()`. This hack makes sure that no rules will break the test.
 		 */
 		delete_option( 'rewrite_rules' );
