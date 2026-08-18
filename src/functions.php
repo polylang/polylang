@@ -265,7 +265,7 @@ function pll_enqueue_style( string $handle, array $dependencies = array() ): voi
  */
 function pll_register_style( string $handle, array $dependencies = array() ): void {
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-	$file    = '/js/build/' . substr( $handle, 4 ) . $suffix . '.css';
+	$file    = '/css/build/' . substr( $handle, 4 ) . $suffix . '.css';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
 	wp_register_style( $handle, $src, $dependencies, (string) $version );
