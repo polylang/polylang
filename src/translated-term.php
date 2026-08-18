@@ -454,13 +454,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @since 3.9
 	 *
-	 * @param string                  $field    The term field. Accepted values are 'term_id', 'slug', 'name', 'term_taxonomy_id'.
-	 * @param int|string              $value    Search for this term value.
-	 * @param PLL_Language|string|int $lang     Language (object, slug, or term ID).
-	 * @param string                  $taxonomy Taxonomy name. Optional if $field is 'term_id'.
+	 * @param string       $field    The term field. Accepted values are 'term_id', 'slug', 'name', 'term_taxonomy_id'.
+	 * @param int|string   $value    Search for this term value.
+	 * @param PLL_Language $lang     Language (object, slug, or term ID).
+	 * @param string       $taxonomy Taxonomy name. Optional if $field is 'term_id'.
 	 * @return int|string The $field of the translated term. Empty if not found.
 	 */
-	public function get_by( string $field, $value, $lang, string $taxonomy = '' ) {
+	public function get_by( string $field, $value, PLL_Language $lang, string $taxonomy = '' ) {
 		if ( 'term_id' === $field ) {
 			return $this->get( (int) $value, $lang );
 		}
