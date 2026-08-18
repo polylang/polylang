@@ -7,8 +7,7 @@ class Admin_Test extends PLL_UnitTestCase {
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create_many( 2 );
 	}
 
 	public function set_up() {
