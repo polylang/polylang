@@ -34,9 +34,19 @@ class Menu extends Abstract_Fields {
 					'horizontal' => __( 'Inline', 'polylang' ),
 					'dropdown'   => __( 'Dropdown', 'polylang' ),
 				),
+				'section' => __( 'Display', 'polylang' ),
+			),
+			'show_labels'            => array(
+				'label'   => __( 'Display labels:', 'polylang' ),
+				'choices' => array(
+					''      => _x( 'None', 'Labels', 'polylang' ),
+					'names' => __( 'Language names', 'polylang' ),
+					'codes' => __( 'Language codes', 'polylang' ),
+				),
 			),
 			'show_flags'             => array(
-				'label' => __( 'Display flags', 'polylang' ),
+				'label'   => __( 'Display flags', 'polylang' ),
+				'section' => __( 'Flags Settings', 'polylang' ),
 			),
 			'flag_aspect_ratio'      => array(
 				'label'   => __( 'Flags aspect:', 'polylang' ),
@@ -48,16 +58,9 @@ class Menu extends Abstract_Fields {
 					'show_flags' => false,
 				),
 			),
-			'show_labels'            => array(
-				'label'   => __( 'Display labels:', 'polylang' ),
-				'choices' => array(
-					''      => _x( 'None', 'Labels', 'polylang' ),
-					'names' => __( 'Language names', 'polylang' ),
-					'codes' => __( 'Language codes', 'polylang' ),
-				),
-			),
 			'force_home'             => array(
-				'label' => __( 'Force link to front page', 'polylang' ),
+				'label'   => __( 'Force link to front page', 'polylang' ),
+				'section' => __( 'Behavior', 'polylang' ),
 			),
 			'hide_current'           => array(
 				'label' => __( 'Hide the current language', 'polylang' ),
