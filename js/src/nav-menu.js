@@ -83,7 +83,6 @@ const pllNavMenu = {
 				metabox.id.replace( 'menu-item-settings-', '' )
 			);
 
-
 			metabox.append(
 				t.createHiddenInput( 'title', itemId, pll_data.title )
 			);
@@ -98,44 +97,43 @@ const pllNavMenu = {
 					? pll_data.val[ itemId ]
 					: {};
 
+			// Create a global wrapper for our settings.
+			const settingsWrapper = t.createElement( 'div', {
+				class: 'polylang-language-switcher-menu-content',
+			} );
+			metabox.prepend( settingsWrapper );
+
+			// Wrap sections in `fieldset` tags.
+			let sectionWrapper = settingsWrapper; // This 1st value will never be used.
+
+			// Add our settings.
 			for ( const [ optionName, optionData ] of Object.entries(
 				pll_data.data
-			).reverse() ) {
+			) ) {
 				const optionValue =
 					typeof menuValues[ optionName ] !== 'undefined'
 						? menuValues[ optionName ]
 						: optionData.default;
-				// Create the wrapper.
-				const wrapperAtts = { class: 'description' };
 
-				if ( optionData.hide_if ) {
-					Object.keys( optionData.hide_if ).forEach(
-						( conditionName ) => {
-							const conditionValue =
-								optionData.hide_if[ conditionName ];
-							wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`; // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+				// Create a section with title.
+				if ( optionData.section ) {
+					sectionWrapper = document.createElement( 'fieldset' );
+					settingsWrapper.append( sectionWrapper );
 
-							if (
-								typeof menuValues[ conditionName ] !==
-									'undefined' &&
-								conditionValue === menuValues[ conditionName ]
-							) {
-								wrapperAtts.class += ` pll-hidden-by-${ conditionName }`;
-							}
-						}
-					);
+					const sectionTitle = document.createElement( 'legend' );
+					sectionTitle.innerText = optionData.section;
+					sectionWrapper.append( sectionTitle );
 				}
 
-				const inputWrapper = t.createElement( 'p', wrapperAtts );
-
-				metabox.prepend( inputWrapper );
+				// Create the row wrapper.
+				const inputWrapper = t.createWrapper( optionData, menuValues );
+				sectionWrapper.append( inputWrapper );
 
 				// Create the label.
 				const label = t.createElement( 'label', {
 					for: `edit-menu-item-${ optionName }-${ itemId }`, // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword
 				} );
 				label.innerText = ` ${ optionData.label } `;
-
 				inputWrapper.append( label );
 
 				// Create the input.
@@ -173,6 +171,36 @@ const pllNavMenu = {
 				value,
 				'hidden'
 			);
+		},
+
+		/**
+		 * Creates and returns a wrapper row.
+		 *
+		 * @param {Object}  optionData           A field definition.
+		 * @param {boolean} {optionData.hide_if} Optional. "Hide row" conditions.
+		 * @param {Array}   menuValues           The input values.
+		 * @return {HTMLElement} The input element.
+		 */
+		createWrapper: ( optionData, menuValues ) => {
+			const wrapperAtts = { class: 'description' };
+
+			if ( ! optionData.hide_if ) {
+				return pllNavMenu.printMetabox.createElement( 'p', wrapperAtts );
+			}
+
+			Object.keys( optionData.hide_if ).forEach( conditionName => {
+				const conditionValue = optionData.hide_if[ conditionName ];
+				wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`; // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+
+				if (
+					typeof menuValues[ conditionName ] !== 'undefined' &&
+					conditionValue === menuValues[ conditionName ]
+				) {
+					wrapperAtts.class += ` pll-hidden-by-${ conditionName }`;
+				}
+			} );
+
+			return pllNavMenu.printMetabox.createElement( 'p', wrapperAtts );
 		},
 
 		/**
@@ -281,7 +309,7 @@ const pllNavMenu = {
 				return;
 			}
 
-			const wrapper = event.target.closest( '.menu-item-settings' );
+			const wrapper = event.target.closest( '.polylang-language-switcher-menu-content' );
 
 			if ( ! wrapper ) {
 				return;
