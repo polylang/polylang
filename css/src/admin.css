@@ -376,7 +376,11 @@ td.column-default_lang .icon-default-lang:before,
 .polylang-language-switcher-widget-content {
 	width: 100%;
 	border-collapse: collapse;
-	margin-bottom: 20px;
+}
+.polylang-language-switcher-widget-content h4 {
+	padding: 1em 15px .33em;
+	border-top: 1px solid #c3c4c7; /* Acts as a separator. */
+	margin: 0 -15px; /* Makes the separator full widget width. */
 }
 .polylang-language-switcher-widget-content th {
 	width: 10em;
@@ -391,6 +395,14 @@ body.rtl .polylang-language-switcher-widget-content th {
 }
 [class*="pll-hidden-by-"] {
 	display: none;
+}
+.polylang-language-switcher-widget-content label {
+	font-weight: normal;
+}
+.polylang-language-switcher-widget-content + p {
+	padding: 1em 15px .33em;
+	border-top: 1px solid #c3c4c7; /* Acts as a separator. */
+	margin: 1em -15px; /* Makes the separator full width. */
 }
 
 @media screen and ( max-width: 782px ) {
