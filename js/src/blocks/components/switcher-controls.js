@@ -200,7 +200,9 @@ export const SwitcherControls = ( {
 							__next40pxDefaultSize
 						/>
 					) }
-					{ 'select' !== layout && (
+				</PanelBody>
+				{ 'select' !== layout && (
+					<PanelBody title={ __( 'Flags Settings', 'polylang' ) }>
 						<ToggleControl
 							label={ __( 'Display flags', 'polylang' ) }
 							checked={ show_flags }
@@ -216,71 +218,71 @@ export const SwitcherControls = ( {
 								setAttributes( { show_flags: value } );
 							} }
 						/>
-					) }
-					{ show_flags && 'select' !== layout && (
-						<PanelBody title={ __( 'Flags Settings', 'polylang' ) }>
-							<RadioControl
-								label={ __( 'Aspect', 'polylang' ) }
-								selected={ flag_aspect_ratio }
-								options={ [
-									{
-										label: __( 'Landscape (3:2)', 'polylang' ),
-										value: '3:2',
-									},
-									{
-										label: __( 'Square (1:1)', 'polylang' ),
-										value: '1:1',
-									},
-								] }
-								onChange={ value =>
-									setAttributes( {
-										flag_aspect_ratio: value,
-									} )
-								}
-							/>
-							<RangeControl
-								label={ __( 'Border radius', 'polylang' ) }
-								initialPosition={ 0 }
-								value={ flag_border_radius }
-								min={ 0 }
-								max={ 100 }
-								step={ 1 }
-								allowReset={ true }
-								resetFallbackValue={ 0 }
-								onChange={ value =>
-									setAttributes( {
-										flag_border_radius: value,
-									} )
-								}
-								__next40pxDefaultSize
-							/>
-							<UnitControl
-								__next40pxDefaultSize
-								label={ __( 'Size', 'polylang' ) }
-								value={ flag_width }
-								units={ CSS_LENGTH_UNITS }
-								onChange={ value =>
-									setAttributes( {
-										flag_width: value,
-									} )
-								}
-							/>
-							{ '' !== show_labels && (
-								<UnitControl
-									__next40pxDefaultSize
-									label={ __( 'Label spacing', 'polylang' ) }
-									value={ flag_label_spacing }
-									units={ CSS_LENGTH_UNITS }
+						{ show_flags && (
+							<>
+								<RadioControl
+									label={ __( 'Aspect', 'polylang' ) }
+									selected={ flag_aspect_ratio }
+									options={ [
+										{
+											label: __( 'Landscape (3:2)', 'polylang' ),
+											value: '3:2',
+										},
+										{
+											label: __( 'Square (1:1)', 'polylang' ),
+											value: '1:1',
+										},
+									] }
 									onChange={ value =>
 										setAttributes( {
-											flag_label_spacing: value,
+											flag_aspect_ratio: value,
 										} )
 									}
 								/>
-							) }
-						</PanelBody>
-					) }
-				</PanelBody>
+								<RangeControl
+									label={ __( 'Border radius', 'polylang' ) }
+									initialPosition={ 0 }
+									value={ flag_border_radius }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+									allowReset={ true }
+									resetFallbackValue={ 0 }
+									onChange={ value =>
+										setAttributes( {
+											flag_border_radius: value,
+										} )
+									}
+									__next40pxDefaultSize
+								/>
+								<UnitControl
+									__next40pxDefaultSize
+									label={ __( 'Size', 'polylang' ) }
+									value={ flag_width }
+									units={ CSS_LENGTH_UNITS }
+									onChange={ value =>
+										setAttributes( {
+											flag_width: value,
+										} )
+									}
+								/>
+								{ '' !== show_labels && (
+									<UnitControl
+										__next40pxDefaultSize
+										label={ __( 'Label spacing', 'polylang' ) }
+										value={ flag_label_spacing }
+										units={ CSS_LENGTH_UNITS }
+										onChange={ value =>
+											setAttributes( {
+												flag_label_spacing: value,
+											} )
+										}
+									/>
+								) }
+							</>
+						) }
+					</PanelBody>
+				) }
 				<PanelBody title={ __( 'Behavior', 'polylang' ) }>
 					<ToggleControl
 						label={ __( 'Force link to front page', 'polylang' ) }
