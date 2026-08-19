@@ -372,7 +372,7 @@ td.column-default_lang .icon-default-lang:before,
 	margin-right: 10px;
 }
 
-/* Widgets, nav menus */
+/* Widgets */
 .polylang-language-switcher-widget-content {
 	width: 100%;
 	border-collapse: collapse;
@@ -403,6 +403,17 @@ body.rtl .polylang-language-switcher-widget-content th {
 	padding: 1em 15px .33em;
 	border-top: 1px solid #c3c4c7; /* Acts as a separator. */
 	margin: 1em -15px; /* Makes the separator full width. */
+}
+
+/* Nav menus */
+.polylang-language-switcher-menu-content fieldset {
+	padding: 0 10px .67em;
+	border-bottom: 1px solid #c3c4c7; /* Acts as a separator. */
+	margin: 0 -10px; /* Makes the separator full width. */
+}
+.polylang-language-switcher-menu-content legend {
+	padding: .67em 10px;
+	margin: 0 -10px; /* Makes the separator full width. */
 }
 
 @media screen and ( max-width: 782px ) {
