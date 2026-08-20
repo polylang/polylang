@@ -1,13 +1,21 @@
 <?php
-class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
+
+namespace WP_Syntex\Polylang\Tests\Assets;
+
+use PLL_Admin;
+use PLL_Admin_Links;
+use PLL_Admin_Filters;
+use PLL_UnitTest_Factory;
+
+class Admin_Test extends TestCase {
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' ); // We need at least one language to "activate" Polylang on all screens.
+		$factory->language->create( array( 'locale' => 'en_US' ) ); // We need at least one language to "activate" Polylang on all screens.
 	}
 
 	public function test_scripts_in_post_list_table() {
@@ -23,7 +31,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_untranslated_cpt_list_table() {
@@ -40,7 +48,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_edit_post_classic_editor() {
@@ -59,7 +67,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_edit_post_block_editor() {
@@ -75,7 +83,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_edit_untranslated_cpt() {
@@ -92,7 +100,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 
@@ -109,7 +117,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_terms_list_table() {
@@ -125,7 +133,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_untranslated_custom_tax_list_table() {
@@ -142,7 +150,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_edit_term() {
@@ -158,7 +166,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_edit_unstranslated_custom_tax() {
@@ -175,7 +183,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 
@@ -192,7 +200,7 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
 	}
 
 	public function test_scripts_in_edit_widgets() {
@@ -208,6 +216,60 @@ class Admin_Assets_Test extends PLL_Assets_UnitTestCase {
 				'polylang_admin-css',
 			),
 		);
-		$this->_test_scripts( $scripts );
+		$this->assert_admin_assets( $scripts );
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_polylang_assets() {
+		return array(
+			'header' => array(
+				'polylang_admin-css',
+			),
+			'footer' => array(
+				'pll_ajax_backend',
+				'pll_post-js',
+				'pll_term-js',
+				'pll_classic-editor-js',
+				'pll_block-editor-js',
+				'pll_user-js',
+			),
+		);
+	}
+
+	/**
+	 * Tests that given scripts or stylesheets are well enqueued.
+	 * And tests that remaining Polylang files are not enqueued.
+	 *
+	 * @param array $scripts {
+	 *   @type string   $key   Whether the assets is enqueued in the header or in the footer. Accepts 'header' or 'footer'.
+	 *   @type string[] $value The assets names to test against the given position.
+	 * }
+	 * @return void
+	 */
+	protected function assert_admin_assets( $scripts ) {
+		$links_model        = self::$model->get_links_model();
+		$pll_admin          = new PLL_Admin( $links_model );
+		$pll_admin->links   = new PLL_Admin_Links( $pll_admin );
+		$pll_admin->filters = new PLL_Admin_Filters( $pll_admin ); // Instance created on `wp_loaded`: see `PLL_Admin::init()`.
+
+		$this->reset_asset_globals();
+
+		ob_start();
+		// Based on what's done in wp-admin/admin-header.php
+		do_action( 'admin_enqueue_scripts' );
+		do_action( 'admin_print_styles' );
+		do_action( 'admin_print_scripts' );
+		$this->assert_enqueued_assets( $scripts, ob_get_clean(), 'header' );
+
+		if ( 'profile.php' === $GLOBALS['hook_suffix'] ) {
+			do_action( 'personal_options', wp_get_current_user() );
+		}
+
+		ob_start();
+		// Based on what's done in wp-admin/admin-footer.php
+		do_action( 'admin_print_footer_scripts' );
+		$this->assert_enqueued_assets( $scripts, ob_get_clean(), 'footer' );
 	}
 }
