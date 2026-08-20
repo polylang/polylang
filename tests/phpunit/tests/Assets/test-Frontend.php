@@ -1,9 +1,13 @@
 <?php
 
-use WP_Syntex\Polylang\Switcher\Assets;
+namespace WP_Syntex\Polylang\Tests\Assets;
+
+use PLL_Frontend;
+use PLL_Widgets_Trait;
+use PLL_UnitTest_Factory;
 use WP_Syntex\Polylang\Widgets\Languages;
 
-class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
+class Frontend_Test extends TestCase {
 	use PLL_Widgets_Trait;
 
 	private const SIDEBAR_ID = 'sidebar-1';
@@ -15,16 +19,15 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 	private static $widget_index;
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		$factory->language->create_many( 2 );
 
 		// Ensure languages are not hidden by `hide_if_empty`.
-		self::factory()->post->create_translated(
+		$factory->post->create_translated(
 			array( 'lang' => 'en' ),
 			array( 'lang' => 'fr' )
 		);
@@ -45,10 +48,7 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 		$GLOBALS['polylang']->init();
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function get_polylang_assets() {
+	protected function get_polylang_assets(): array {
 		return array(
 			'header' => array(
 				'pll-language-switcher-css', // `css/build/frontend-switcher.css`.
@@ -135,7 +135,6 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 	 */
 	protected function _test_pll_the_languages_assets( $args, $assets ) {
 		$this->reset_asset_globals();
-		$this->assert_frontend_assets_are_not_enqueued();
 
 		pll_the_languages(
 			array_merge(
@@ -146,7 +145,7 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 			)
 		);
 
-		$this->assert_frontend_assets_are_enqueued_correctly( $assets );
+		$this->assert_frontend_assets( $assets );
 	}
 
 	/**
@@ -159,7 +158,6 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 	protected function _test_widget_assets( $layout, $assets ) {
 		$this->setup_active_widget( $layout );
 		$this->reset_asset_globals();
-		$this->assert_frontend_assets_are_not_enqueued();
 
 		do_action( 'wp_enqueue_scripts' );
 
@@ -167,18 +165,18 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 		dynamic_sidebar( self::SIDEBAR_ID );
 		ob_end_clean();
 
-		$this->assert_frontend_assets_are_enqueued_correctly( $assets );
+		$this->assert_frontend_assets( $assets );
 	}
 
 	/**
-	 * Resets WordPress style and script globals.
+	 * Resets WordPress style and script globals and asserts frontend switcher assets are not enqueued yet.
 	 *
 	 * @return void
 	 */
 	protected function reset_asset_globals() {
-		$GLOBALS['wp_styles']  = new WP_Styles();
-		$GLOBALS['wp_scripts'] = new WP_Scripts();
-		wp_default_scripts( $GLOBALS['wp_scripts'] );
+		parent::reset_asset_globals();
+
+		$this->assert_frontend_assets( array() );
 	}
 
 	/**
@@ -187,33 +185,15 @@ class Frontend_Assets_Test extends PLL_Assets_UnitTestCase {
 	 * @param array $assets Expected assets per position.
 	 * @return void
 	 */
-	protected function assert_frontend_assets_are_enqueued_correctly( $assets ) {
+	protected function assert_frontend_assets( $assets ) {
 		ob_start();
 		wp_print_styles();
 		wp_print_head_scripts();
-		$this->assert_scripts_are_enqueued_correctly( $assets, ob_get_clean(), 'header' );
+		$this->assert_enqueued_assets( $assets, ob_get_clean(), 'header' );
 
 		ob_start();
 		wp_print_footer_scripts();
-		$this->assert_scripts_are_enqueued_correctly( $assets, ob_get_clean(), 'footer' );
-	}
-
-	/**
-	 * Asserts frontend switcher scripts and styles are not enqueued yet.
-	 *
-	 * @return void
-	 */
-	protected function assert_frontend_assets_are_not_enqueued() {
-		$this->assertFalse(
-			wp_style_is( Assets::FRONTEND_ASSET_HANDLE, 'enqueued' ),
-			'Frontend switcher CSS should not be enqueued yet.'
-		);
-		$this->assertFalse(
-			wp_script_is( Assets::FRONTEND_ASSET_HANDLE, 'enqueued' ),
-			'Frontend switcher JS should not be enqueued yet.'
-		);
-
-		$this->assert_frontend_assets_are_enqueued_correctly( array() );
+		$this->assert_enqueued_assets( $assets, ob_get_clean(), 'footer' );
 	}
 
 	/**
