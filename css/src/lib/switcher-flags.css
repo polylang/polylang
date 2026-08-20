@@ -1,5 +1,9 @@
 /**
- * Shared flag styling for language switcher blocks.
+ * Flag styling for the language switcher block editor.
+ *
+ * Keep these styles in sync with the inline CSS in
+ * `src/Switcher/Element/Abstract_Element.php` (`Abstract_Element::set_flag()`)
+ * and `src/Switcher/Element/Nav.php` (`Nav::get_label()`).
  */
 
 .pll-switcher-flag + .pll-switcher-label {

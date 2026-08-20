@@ -91,7 +91,7 @@ class GetElements_Test extends TestCase {
 			'locale'           => 'fr-FR',
 			'url'              => $language_fr->get_home_url(),
 			'label'            => 'FR',
-			'flag'             => $this->remove_style_attributes( $language_fr->get_display_flag( 'no-alt' ) ),
+			'flag'             => $this->replace_flag_style( $language_fr->get_display_flag( 'no-alt' ) ),
 			'direction'        => 'ltr',
 			'order'            => 0,
 			'has_translations' => false,
@@ -121,7 +121,7 @@ class GetElements_Test extends TestCase {
 			'locale'           => 'de-DE',
 			'url'              => $language_de->get_home_url(),
 			'label'            => 'DE',
-			'flag'             => $this->remove_style_attributes( $language_de->get_display_flag( 'no-alt' ) ),
+			'flag'             => $this->replace_flag_style( $language_de->get_display_flag( 'no-alt' ) ),
 			'direction'        => 'ltr',
 			'order'            => 0,
 			'has_translations' => false,
@@ -211,10 +211,21 @@ class GetElements_Test extends TestCase {
 		$label = $elements['en']->get_label();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label">English<\/span>$/', // Empty alt.
+			'/^<span class="pll-switcher-flag"[^>]*><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>English<\/span>$/', // Empty alt.
 			$label
 		);
-		$this->assertStringNotContainsString( ' style="', $label );
+		$this->assertStringContainsString(
+			'style="display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%);aspect-ratio:3/2"',
+			$label
+		);
+		$this->assertStringContainsString(
+			'style="display:block;object-fit:cover;object-position:center;width:100%;height:100%"',
+			$label
+		);
+		$this->assertStringContainsString(
+			'style="margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb"',
+			$label
+		);
 	}
 
 	public function test_label_with_flags_and_codes(): void {
@@ -226,7 +237,7 @@ class GetElements_Test extends TestCase {
 		)->get_elements();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label">EN<\/span>$/', // Empty alt.
+			'/^<span class="pll-switcher-flag"[^>]*><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>EN<\/span>$/', // Empty alt.
 			$elements['en']->get_label()
 		);
 	}
@@ -240,7 +251,7 @@ class GetElements_Test extends TestCase {
 		)->get_elements();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"><img[^>]* alt="[^"]+"[^>]*><\/span>$/', // Non empty alt.
+			'/^<span class="pll-switcher-flag"[^>]*><img[^>]* alt="[^"]+"[^>]*><\/span>$/', // Non empty alt.
 			$elements['en']->get_label()
 		);
 	}
@@ -332,12 +343,16 @@ class GetElements_Test extends TestCase {
 	}
 
 	/**
-	 * Removes `style` attributes from the given markup.
+	 * Replaces the `style` attribute of a flag by the one set by `Abstract_Element`.
 	 *
 	 * @param string $string Markup.
 	 * @return string
 	 */
-	private function remove_style_attributes( string $string ): string {
-		return preg_replace( '/style=(["\']).*\1/', '', $string );
+	private function replace_flag_style( string $string ): string {
+		return preg_replace(
+			'/style=(["\']).*?\1/',
+			'style="display:block;object-fit:cover;object-position:center;width:100%;height:100%"',
+			$string
+		);
 	}
 }

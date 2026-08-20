@@ -25,6 +25,12 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
+	public function tear_down() {
+		unset( $GLOBALS['polylang'] );
+
+		parent::tear_down();
+	}
+
 	public function test_nav_menu_locations() {
 		$pll_admin           = new PLL_Admin( $this->links_model );
 		$GLOBALS['polylang'] = $pll_admin;
@@ -276,38 +282,40 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		return $primary_location;
 	}
 
+	/**
+	 * Sets up the frontend with a language switcher nav menu.
+	 *
+	 * @param string $lang Language slug. Default is `en`.
+	 * @return PLL_Frontend
+	 */
+	private function setup_frontend( $lang = 'en' ) {
+		$frontend           = new PLL_Frontend( $this->links_model );
+		$frontend->curlang  = self::$model->get_language( $lang );
+		$frontend->links    = new PLL_Frontend_Links( $frontend );
+		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
+
+		self::require_api(); // Usually loaded only if an instance of Polylang exists.
+		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
+
+		return $frontend;
+	}
+
 	public function test_nav_menu_language_switcher() {
 		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1 ); // default values
 		$primary_location = $this->setup_nav_menus( $options );
 
-		// test nav menus on frontend when using theme locations
-		$frontend = new PLL_Frontend( $this->links_model );
-		$frontend->curlang = self::$model->get_language( 'en' );
-		$frontend->links = new PLL_Frontend_Links( $frontend );
-		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
-
-		self::require_api(); // usually loaded only if an instance of Polylang exists
-		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
+		$this->setup_frontend();
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$this->assertStringContainsString( 'Français', wp_nav_menu( $args ) );
 		$this->assertStringContainsString( 'English', wp_nav_menu( $args ) );
-
-		unset( $GLOBALS['polylang'] );
 	}
 
 	public function test_nav_menu_language_switcher_as_dropdown() {
 		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 1, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1, 'dropdown' => 1 );
 		$primary_location = $this->setup_nav_menus( $options );
 
-		// Test nav menus on frontend when using theme locations.
-		$frontend = new PLL_Frontend( $this->links_model );
-		$frontend->curlang = self::$model->get_language( 'en' );
-		$frontend->links = new PLL_Frontend_Links( $frontend );
-		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
-
-		self::require_api(); // Usually loaded only if an instance of Polylang exists.
-		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
+		$this->setup_frontend();
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$menu = wp_nav_menu( $args );
@@ -323,7 +331,82 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // Current language is hidden.
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
 
-		unset( $GLOBALS['polylang'] );
+		$flags = $xpath->query( '//span[@class="pll-switcher-flag"]' );
+		$this->assertSame( 3, $flags->length );
+		foreach ( $flags as $flag ) {
+			/** @var DOMElement $flag */
+			$this->assertSame(
+				'display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%);aspect-ratio:3/2',
+				$flag->getAttribute( 'style' )
+			);
+		}
+
+		$flag_images = $xpath->query( '//span[@class="pll-switcher-flag"]/img' );
+		$this->assertSame( 3, $flag_images->length );
+		foreach ( $flag_images as $flag_image ) {
+			/** @var DOMElement $flag_image */
+			$this->assertSame(
+				'display:block;object-fit:cover;object-position:center;width:100%;height:100%',
+				$flag_image->getAttribute( 'style' )
+			);
+		}
+
+		$labels = $xpath->query( '//span[@class="pll-switcher-label"]' );
+		$this->assertSame( 3, $labels->length );
+		foreach ( $labels as $label ) {
+			/** @var DOMElement $label */
+			$this->assertSame(
+				'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb',
+				$label->getAttribute( 'style' )
+			);
+		}
+	}
+
+	public function test_nav_menu_language_switcher_list_with_flags() {
+		$options          = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1 );
+		$primary_location = $this->setup_nav_menus( $options );
+
+		$this->setup_frontend();
+
+		$menu = wp_nav_menu( array( 'theme_location' => $primary_location, 'echo' => false ) );
+
+		$doc = new DomDocument();
+		$doc->loadHTML( '<?xml encoding="UTF-8">' . $menu );
+		$xpath = new DOMXpath( $doc );
+
+		$this->assertSame( 1, $xpath->query( '//div/ul' )->length );
+		$this->assertSame( 3, $xpath->query( '//div/ul/li' )->length );
+		$this->assertSame( 0, $xpath->query( '//div/ul/li/ul' )->length ); // Flat list, not dropdown.
+
+		$flags = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-flag"]' );
+		$this->assertSame( 3, $flags->length );
+		foreach ( $flags as $flag ) {
+			/** @var DOMElement $flag */
+			$this->assertSame(
+				'display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%);aspect-ratio:3/2',
+				$flag->getAttribute( 'style' )
+			);
+		}
+
+		$flag_images = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-flag"]/img' );
+		$this->assertSame( 3, $flag_images->length );
+		foreach ( $flag_images as $flag_image ) {
+			/** @var DOMElement $flag_image */
+			$this->assertSame(
+				'display:block;object-fit:cover;object-position:center;width:100%;height:100%',
+				$flag_image->getAttribute( 'style' )
+			);
+		}
+
+		$labels = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-label"]' );
+		$this->assertSame( 3, $labels->length );
+		foreach ( $labels as $label ) {
+			/** @var DOMElement $label */
+			$this->assertSame(
+				'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb',
+				$label->getAttribute( 'style' )
+			);
+		}
 	}
 
 	public function test_menu_items_with_multiple_language_switchers() {
@@ -355,13 +438,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		}
 
 		// Frontend to test the displayed menu.
-		$frontend = new PLL_Frontend( $this->links_model );
-		$frontend->curlang = self::$model->get_language( 'en' );
-		$frontend->links = new PLL_Frontend_Links( $frontend );
-		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
+		$frontend = $this->setup_frontend();
 		$frontend->model->set_languages_ready();
-
-		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$menu_items = $frontend->nav_menu->wp_get_nav_menu_items( wp_get_nav_menu_items( $menu_en ) );
 
@@ -372,8 +450,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		}
 		// Check that order of each menu item corresponds to its position.
 		$this->assertEquals( array_keys( $menu_items_order ), array_values( $menu_items_order ) );
-
-		unset( $GLOBALS['polylang'] );
 	}
 
 	public function test_update_nav_menu_item() {

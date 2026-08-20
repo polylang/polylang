@@ -237,7 +237,8 @@ abstract class Abstract_Element {
 			return;
 		}
 
-		if ( ! $flag->remove_attribute( 'style' ) ) {
+		// Replaces the size set by `PLL_Language::get_flag_html()`. Keep in sync with `css/src/lib/switcher-flags.css`.
+		if ( ! $flag->set_attribute( 'style', 'display:block;object-fit:cover;object-position:center;width:100%;height:100%' ) ) {
 			return;
 		}
 
