@@ -3,8 +3,8 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Switcher\Settings\Settings;
 use WP_Syntex\Polylang\Switcher\Fields\Menu as Fields;
+use WP_Syntex\Polylang\Switcher\Settings\Menu as Settings;
 
 /**
  * Manages custom menus translations as well as the language switcher menu item on admin side
