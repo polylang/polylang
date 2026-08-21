@@ -152,6 +152,21 @@ class Test_Post extends TestCase {
 	}
 
 	/**
+	 * @testWith ["fr"]
+	 *           ["de"]
+	 *
+	 * @param string $lang The language code.
+	 */
+	public function test_returns_lang_from_pll_post_id_during_ajax_post_editing( string $lang ) {
+		$_POST['pll_post_id'] = self::factory()->post->create( array( 'lang' => $lang ) );
+
+		$post   = $this->create_post_capa_object( null, self::$english );
+		$result = $post->get_language();
+
+		$this->assertSame( $lang, $result->slug );
+	}
+
+	/**
 	 * Creates a Post object for testing.
 	 *
 	 * @param Request|null       $request   The request mock or null. Default will create a mock with `Request::get_language` method returning null.
