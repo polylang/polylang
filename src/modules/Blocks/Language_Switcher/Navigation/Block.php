@@ -121,7 +121,12 @@ class Block extends Abstract_Block {
 				$inner_nav_link_blocks[] = new WP_Block( $nav_link_block_args, $block->context );
 			}
 
-			$submenu_attributes               = $this->get_core_block_attributes( $attributes, $top_level_element );
+			$submenu_attributes = $this->get_core_block_attributes( $attributes, $top_level_element );
+
+			if ( ! empty( $attributes['className'] ) ) {
+				$submenu_attributes['className'] .= ' ' . $attributes['className'];
+			}
+
 			$submenu_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
 			$submenu_block_args               = array(
 				'blockName'   => 'core/navigation-submenu',
@@ -135,7 +140,12 @@ class Block extends Abstract_Block {
 			$output = '';
 
 			foreach ( $elements as $element ) {
-				$link_attributes               = $this->get_core_block_attributes( $attributes, $element );
+				$link_attributes = $this->get_core_block_attributes( $attributes, $element );
+
+				if ( ! empty( $attributes['className'] ) ) {
+					$link_attributes['className'] .= ' ' . $attributes['className'];
+				}
+
 				$link_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
 				$nav_link_block_args           = array(
 					'blockName' => 'core/navigation-link',
