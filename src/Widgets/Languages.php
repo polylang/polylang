@@ -71,6 +71,20 @@ class Languages extends WP_Widget {
 		if ( is_active_widget( false, false, $this->id_base ) || is_customize_preview() ) {
 			add_action( 'wp_enqueue_scripts', array( Assets::class, 'enqueue_frontend_styles' ) );
 		}
+
+		add_filter( 'widget_types_to_hide_from_legacy_widget_block', array( $this, 'filter_legacy_widgets' ) );
+	}
+
+	/**
+	 * Hides this legacy widget in the block widgets screen.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array $widget_ids An array of hidden widget ids.
+	 * @return array
+	 */
+	public function filter_legacy_widgets( $widget_ids ) {
+		return array_merge( $widget_ids, array( $this->id_base ) );
 	}
 
 	/**

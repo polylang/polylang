@@ -182,6 +182,14 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 		$this->assertMatchesRegularExpression( "/id=[\"']{$prefix}-hide_if_no_translation[\"'][^>]* checked=[\"']checked[\"']/", $form );
 	}
 
+	public function test_legacy_widget_is_hidden() {
+		$this->init_frontend();
+		do_action( 'widgets_init' );
+
+		$settings = get_legacy_widget_block_editor_settings();
+		$this->assertContains( 'polylang', $settings['widgetTypesToHideFromLegacyWidgetBlock'] );
+	}
+
 	/**
 	 * Stores the widget's options into the database.
 	 *
