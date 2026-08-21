@@ -115,7 +115,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				$item->title       = $element->get_label();
 				$item->attr_title  = '';
 				$item->url         = $element->url;
-				$item->classes     = array_merge( $element->item_classes, array( 'pll-parent-menu-item' ) );
+				$item->classes     = array_merge( $item->classes, $element->item_classes, array( 'pll-parent-menu-item' ) );
 				$item->menu_order += $offset;
 
 				if ( $settings->show_flags ) {
