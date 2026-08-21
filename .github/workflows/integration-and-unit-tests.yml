@@ -5,18 +5,20 @@ on:
     branches: master
     paths:
       - '**.php'
-      - 'phpunit.xml'
+      - '**/phpunit.xml'
       - 'composer.json'
-      - '**.yml'
-      - '**.sh'
+      - 'composer.lock'
+      - 'tests/bin/**'
+      - '.github/workflows/integration-and-unit-tests.yml'
   pull_request:
     branches: master
     paths:
       - '**.php'
-      - 'phpunit.xml'
+      - '**/phpunit.xml'
       - 'composer.json'
-      - '**.yml'
-      - '**.sh'
+      - 'composer.lock'
+      - 'tests/bin/**'
+      - '.github/workflows/integration-and-unit-tests.yml'
   schedule:
     # Runs every Monday at 00:00.
     - cron:  '0 0 * * 1'
