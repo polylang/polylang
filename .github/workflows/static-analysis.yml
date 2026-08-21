@@ -51,6 +51,9 @@ jobs:
           js:
             - 'js/src/blocks/**/*.js'
             - 'tests/e2e/**/*.{js,mjs,cjs}'
+            - 'eslint.config.cjs'
+            - 'package.json'
+            - 'package-lock.json'
 
     - name: Run ESLint on blocks JS source files and e2e tests
       uses: polylang/actions/eslint@main
