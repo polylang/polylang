@@ -1,0 +1,88 @@
+<?php
+
+namespace WP_Syntex\Polylang\Tests\SiteHealth;
+
+use PLL_Admin;
+use PLL_Admin_Site_Health;
+use PLL_UnitTestCase;
+use WP_UnitTest_Factory;
+
+abstract class TestCase extends PLL_UnitTestCase {
+
+	/**
+	 * @var PLL_Admin_Site_Health
+	 */
+	protected $site_health;
+
+	/**
+	 * @var PLL_Admin
+	 */
+	protected $pll_admin;
+
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
+
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+	}
+
+	public function set_up() {
+		parent::set_up();
+
+		$links_model       = self::$model->get_links_model();
+		$this->pll_admin   = new PLL_Admin( $links_model );
+		$this->site_health = new PLL_Admin_Site_Health( $this->pll_admin );
+
+		// Assign a language to WordPress' default category ("Uncategorized"), so it doesn't interfere with tests checking terms without a language.
+		$this->pll_admin->model->term->set_language( (int) get_option( 'default_category' ), 'en' );
+	}
+
+	/**
+	 * Configures WordPress to use a static front page.
+	 *
+	 * @param int    $page ID of the page to use as front page.
+	 * @param string $show Value for 'show_on_front'. Default 'page'.
+	 * @return void
+	 */
+	protected function set_page_on_front( int $page, string $show = 'page' ): void {
+		update_option( 'show_on_front', $show );
+		update_option( 'page_on_front', $page );
+	}
+
+	/**
+	 * Creates a given number of posts without any language assigned.
+	 *
+	 * @param int    $number    Number of posts to create.
+	 * @param string $post_type Post type to use. Default 'post'.
+	 * @return int[] The created post IDs.
+	 */
+	protected function create_posts_without_lang( int $number, string $post_type = 'post' ): array {
+		$ids = array();
+
+		for ( $i = 0; $i < $number; $i++ ) {
+			$ids[] = self::factory()->post->create( array( 'post_type' => $post_type ) );
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Creates a given number of terms without any language assigned.
+	 *
+	 * @param int    $number   Number of terms to create.
+	 * @param string $taxonomy Taxonomy to use. Default 'category'.
+	 * @return int[] The created term IDs.
+	 */
+	protected function create_terms_without_lang( int $number, string $taxonomy = 'category' ): array {
+		$ids = array();
+
+		for ( $i = 0; $i < $number; $i++ ) {
+			$ids[] = self::factory()->term->create( array( 'taxonomy' => $taxonomy ) );
+		}
+
+		return $ids;
+	}
+}
