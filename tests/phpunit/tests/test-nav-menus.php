@@ -644,7 +644,82 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		do_action( 'admin_print_scripts' );
 		$head = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $head, 'pll_data' ) );
 		$this->assertNotFalse( strpos( $head, plugins_url( '/js/build/nav-menu.min.js', POLYLANG_FILE ) ) );
+	}
+
+	/**
+	 * Tests that the `pll_data` JS var is correctly printed.
+	 * This also tests that the old language switcher data is correctly converted to the new structure.
+	 *
+	 * @return void
+	 */
+	public function test_admin_nav_menus_scripts_data() {
+		// Create a menu.
+		$menu_id = wp_create_nav_menu( 'menu_foobar' );
+		// Create a menu item with a language switcher.
+		$item_id = wp_update_nav_menu_item(
+			$menu_id,
+			0,
+			array(
+				'menu-item-type'   => 'custom',
+				'menu-item-title'  => 'Language switcher',
+				'menu-item-url'    => '#pll_switcher',
+				'menu-item-status' => 'publish',
+			)
+		);
+		// Add settings to the menu item.
+		update_post_meta(
+			$item_id,
+			'_pll_menu_item',
+			array(
+				'hide_if_no_translation' => 1,
+				'hide_current'           => 0,
+				'force_home'             => 1,
+				'show_flags'             => 1,
+				'show_names'             => 1,
+				'dropdown'               => 1,
+			)
+		);
+
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+		$pll_admin->nav_menus = new PLL_Admin_Nav_Menu( $pll_admin );
+		$pll_admin->nav_menus->admin_init();
+
+		$GLOBALS['hook_suffix'] = 'nav-menus.php';
+		set_current_screen( 'nav-menus' );
+
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_scripts' );
+		$head = ob_get_clean();
+
+		$this->assertStringContainsString( 'pll_data', $head );
+		$this->assertSame( 1, preg_match( '/\spll_data\s+=\s+(?<JSON>\{[^;]+\});/', $head, $matches ), 'The pll_data var seems malformed.' );
+		$this->assertJson( $matches['JSON'] );
+
+		$decoded = json_decode( $matches['JSON'], true );
+
+		$this->assertIsArray( $decoded );
+		$this->assertSameSets( array( 'data', 'title', 'val' ), array_keys( $decoded ) );
+		$this->assertIsArray( $decoded['data'] );
+		$this->assertSame( 'Languages', $decoded['title'] );
+		$this->assertIsArray( $decoded['val'] );
+		$this->assertArrayHasKey( $item_id, $decoded['val'] );
+
+		$expected = array(
+			'layout'                 => 'dropdown',
+			'show_flags'             => true,
+			'flag_aspect_ratio'      => '3:2',
+			'show_labels'            => 'names',
+			'hide_current'           => false,
+			'hide_if_no_translation' => true,
+			'force_home'             => true,
+		);
+		$this->assertSameSetsWithIndex( $expected, $decoded['val'][ $item_id ] );
 	}
 }
