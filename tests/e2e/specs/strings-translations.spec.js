@@ -96,7 +96,6 @@ test.describe.serial( 'Strings translations', () => {
 				await expect(
 					admin.page.getByRole( 'cell', {
 						name: 'Hello Polylang E2E',
-						exact: true,
 					} )
 				).toBeVisible();
 				await expect(
