@@ -175,6 +175,9 @@ class Languages extends WP_Widget {
 		echo '<table role="presentation" class="polylang-language-switcher-widget-content"><tbody>';
 
 		foreach ( Fields::get() as $key => $field ) {
+			if ( ! empty( $field['section'] ) ) {
+				$this->print_section_heading( $key, $field, $settings );
+			}
 			if ( ! empty( $field['choices'] ) ) {
 				$this->print_select( $key, $field, $settings );
 			} else {
@@ -183,6 +186,27 @@ class Languages extends WP_Widget {
 		}
 
 		echo '</tbody></table>';
+	}
+
+	/**
+	 * Prints a section heading.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string   $key      Setting key.
+	 * @param array    $field    Field labels and other data.
+	 * @param Settings $settings Widget's settings.
+	 * @return void
+	 */
+	private function print_section_heading( string $key, array $field, Settings $settings ): void {
+		// We take a shortcut here with the "hide_if" classes: we're in a specific case where, if the layout is `select`,
+		// the whole "Flags Settings" section will be hidden. The "hide_if" of the 1st row is applied to the whole section.
+		// This is to keep things simple, as long as we don't need more complex behaviors.
+		printf( '<tr%s>', $this->get_wrapper_class_attr( $key, $field, $settings ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		printf(
+			'<td colspan="2"><h4>%s</h4></td></tr>',
+			esc_html( $field['section'] )
+		);
 	}
 
 	/**

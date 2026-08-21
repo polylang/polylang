@@ -34,6 +34,7 @@ class Widget extends Abstract_Fields {
 					'dropdown'   => __( 'Dropdown', 'polylang' ),
 					'select'     => __( 'Selector', 'polylang' ),
 				),
+				'section' => __( 'Display', 'polylang' ),
 			),
 			'alignment'              => array(
 				'label'   => __( 'Alignment:', 'polylang' ),
@@ -42,23 +43,6 @@ class Widget extends Abstract_Fields {
 					'center'    => _x( 'Center', 'alignment', 'polylang' ),
 					'right'     => _x( 'Right', 'alignment', 'polylang' ),
 					'stretched' => _x( 'Stretched', 'alignment', 'polylang' ),
-				),
-			),
-			'show_flags'             => array(
-				'label'   => __( 'Display flags', 'polylang' ),
-				'hide_if' => array(
-					'layout' => 'select',
-				),
-			),
-			'flag_aspect_ratio'      => array(
-				'label'   => __( 'Flags aspect:', 'polylang' ),
-				'choices' => array(
-					'3:2' => __( 'Landscape (3:2)', 'polylang' ),
-					'1:1' => __( 'Square (1:1)', 'polylang' ),
-				),
-				'hide_if' => array(
-					'layout'     => 'select',
-					'show_flags' => false,
 				),
 			),
 			'show_labels'            => array(
@@ -72,8 +56,27 @@ class Widget extends Abstract_Fields {
 					'layout' => 'select',
 				),
 			),
+			'show_flags'             => array(
+				'label'   => __( 'Display flags', 'polylang' ),
+				'hide_if' => array(
+					'layout' => 'select',
+				),
+				'section' => __( 'Flags Settings', 'polylang' ),
+			),
+			'flag_aspect_ratio'      => array(
+				'label'   => __( 'Flags aspect:', 'polylang' ),
+				'choices' => array(
+					'3:2' => __( 'Landscape (3:2)', 'polylang' ),
+					'1:1' => __( 'Square (1:1)', 'polylang' ),
+				),
+				'hide_if' => array(
+					'layout'     => 'select',
+					'show_flags' => false,
+				),
+			),
 			'force_home'             => array(
-				'label' => __( 'Force link to front page', 'polylang' ),
+				'label'   => __( 'Force link to front page', 'polylang' ),
+				'section' => __( 'Behavior', 'polylang' ),
 			),
 			'hide_current'           => array(
 				'label' => __( 'Hide the current language', 'polylang' ),
