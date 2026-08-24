@@ -110,22 +110,19 @@ class Block extends Abstract_Block {
 				return '';
 			}
 
-			$inner_nav_link_blocks = array();
+			$inner_nav_link_blocks   = array();
+			$attributes_wo_classname = array_diff_key( $attributes, array( 'className' => '' ) );
 
 			foreach ( $elements as $element ) {
 				$nav_link_block_args = array(
 					'blockName' => 'core/navigation-link',
-					'attrs'     => $this->get_core_block_attributes( $attributes, $element ),
+					'attrs'     => $this->get_core_block_attributes( $attributes_wo_classname, $element ),
 				);
 
 				$inner_nav_link_blocks[] = new WP_Block( $nav_link_block_args, $block->context );
 			}
 
 			$submenu_attributes = $this->get_core_block_attributes( $attributes, $top_level_element );
-
-			if ( ! empty( $attributes['className'] ) ) {
-				$submenu_attributes['className'] .= ' ' . $attributes['className'];
-			}
 
 			$submenu_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
 			$submenu_block_args               = array(
@@ -141,10 +138,6 @@ class Block extends Abstract_Block {
 
 			foreach ( $elements as $element ) {
 				$link_attributes = $this->get_core_block_attributes( $attributes, $element );
-
-				if ( ! empty( $attributes['className'] ) ) {
-					$link_attributes['className'] .= ' ' . $attributes['className'];
-				}
 
 				$link_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
 				$nav_link_block_args           = array(
@@ -314,6 +307,10 @@ class Block extends Abstract_Block {
 		if ( ! empty( $attributes['show_flags'] ) ) {
 			$aspect_ratio = $attributes['flag_aspect_ratio'] ?? '3:2';
 			$class_name  .= ' pll-aspect-ratio-' . str_replace( ':', '', $aspect_ratio );
+		}
+
+		if ( ! empty( $attributes['className'] ) ) {
+			$class_name .= ' ' . $attributes['className'];
 		}
 
 		return array(
