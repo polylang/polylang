@@ -30,7 +30,6 @@ updates:
       - dependency-name: copy-webpack-plugin
       - dependency-name: "@wordpress/base-styles"
       - dependency-name: "@wpsyntex/polylang-build-scripts"
-      - dependency-name: "@wpsyntex/distribute"
       - dependency-name: glob
       - dependency-name: rimraf
     groups:
@@ -49,7 +48,6 @@ updates:
           - "@wordpress/babel-preset-default"
           - "@wordpress/base-styles"
           - "@wpsyntex/polylang-build-scripts"
-          - "@wpsyntex/distribute"
           - glob
           - rimraf
   - package-ecosystem: composer
