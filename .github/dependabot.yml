@@ -1,4 +1,7 @@
-# Same schedule and allow lists across Polylang plugins; Dependabot does not sync versions between repos.
+# Same schedule across Polylang plugins; Dependabot does not sync versions between repos.
+# allow — if a package does not match, Dependabot does not open a version PR or a security PR for it.
+# groups.build-tools — among packages that already passed allow, matching ones are collapsed into one PR instead of many.
+# open-pull-requests-limit: 3 — caps how many version-update PRs stay open (assignee and Monday 07:00 Europe/Paris are just process).
 version: 2
 updates:
   - package-ecosystem: npm
@@ -37,7 +40,9 @@ updates:
         patterns:
           - webpack
           - webpack-cli
-          - "*-loader"
+          - babel-loader
+          - css-loader
+          - sass-loader
           - sass
           - postcss
           - mini-css-extract-plugin
