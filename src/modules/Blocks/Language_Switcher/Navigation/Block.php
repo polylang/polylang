@@ -103,6 +103,8 @@ class Block extends Abstract_Block {
 			return '';
 		}
 
+		$block_class_name = wp_apply_generated_classname_support( $block->block_type )['class'];
+
 		if ( 'dropdown' === $settings->layout ) {
 			$top_level_element = $this->get_top_level_element( $settings );
 
@@ -124,7 +126,7 @@ class Block extends Abstract_Block {
 
 			$submenu_attributes = $this->get_core_block_attributes( $attributes, $top_level_element );
 
-			$submenu_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
+			$submenu_attributes['className'] .= ' ' . $block_class_name;
 			$submenu_block_args               = array(
 				'blockName'   => 'core/navigation-submenu',
 				'attrs'       => $submenu_attributes,
@@ -139,7 +141,7 @@ class Block extends Abstract_Block {
 			foreach ( $elements as $element ) {
 				$link_attributes = $this->get_core_block_attributes( $attributes, $element );
 
-				$link_attributes['className'] .= ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
+				$link_attributes['className'] .= ' ' . $block_class_name;
 				$nav_link_block_args           = array(
 					'blockName' => 'core/navigation-link',
 					'attrs'     => $link_attributes,
