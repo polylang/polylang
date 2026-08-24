@@ -188,17 +188,24 @@ const pllNavMenu = {
 				return pllNavMenu.printMetabox.createElement( 'p', wrapperAtts );
 			}
 
-			Object.keys( optionData.hide_if ).forEach( conditionName => {
-				const conditionValue = optionData.hide_if[ conditionName ];
-				wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`; // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+			for ( const [ conditionName, conditionValue ] of Object.entries(
+				optionData.hide_if
+			) ) {
+				if ( typeof pll_data.data[ conditionName ] === 'undefined' ) {
+					// Should not happen.
+					return;
+				}
 
-				if (
-					typeof menuValues[ conditionName ] !== 'undefined' &&
-					conditionValue === menuValues[ conditionName ]
-				) {
+				const menuValue =
+					typeof menuValues[ conditionName ] !== 'undefined'
+						? menuValues[ conditionName ]
+						: pll_data.data[ conditionName ].default;
+				wrapperAtts.class += ` pll-hidden-if-${ conditionName }-${ conditionValue }`;
+
+				if ( conditionValue === menuValue ) {
 					wrapperAtts.class += ` pll-hidden-by-${ conditionName }`;
 				}
-			} );
+			}
 
 			return pllNavMenu.printMetabox.createElement( 'p', wrapperAtts );
 		},
