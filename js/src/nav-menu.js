@@ -247,7 +247,9 @@ const pllNavMenu = {
 				name: `menu-item-${ id }[${ itemId }]`,
 				'data-key': id,
 			} );
-			Object.keys( choices ).forEach( ( optionValue ) => {
+			for ( const [ optionValue, optionLabel ] of Object.entries(
+				choices
+			) ) {
 				const atts = { value: optionValue };
 				if ( value === optionValue ) {
 					atts.selected = 'selected';
@@ -256,9 +258,9 @@ const pllNavMenu = {
 					'option',
 					atts
 				);
-				option.innerText = choices[ optionValue ];
+				option.innerText = optionLabel;
 				input.append( option );
-			} );
+			}
 			return input;
 		},
 
