@@ -1,0 +1,66 @@
+# Same schedule and allow lists across Polylang plugins; Dependabot does not sync versions between repos.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    exclude-paths:
+      - tests/e2e/**
+    assignees:
+      - Hug0-Drelon
+    open-pull-requests-limit: 3
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Paris
+    allow:
+      - dependency-type: production
+      - dependency-name: webpack
+      - dependency-name: webpack-cli
+      - dependency-name: babel-loader
+      - dependency-name: "@wordpress/babel-preset-default"
+      - dependency-name: css-loader
+      - dependency-name: sass
+      - dependency-name: sass-loader
+      - dependency-name: postcss
+      - dependency-name: mini-css-extract-plugin
+      - dependency-name: css-minimizer-webpack-plugin
+      - dependency-name: terser-webpack-plugin
+      - dependency-name: clean-webpack-plugin
+      - dependency-name: copy-webpack-plugin
+      - dependency-name: "@wordpress/base-styles"
+      - dependency-name: "@wpsyntex/polylang-build-scripts"
+      - dependency-name: "@wpsyntex/distribute"
+      - dependency-name: glob
+      - dependency-name: rimraf
+    groups:
+      build-tools:
+        patterns:
+          - webpack
+          - webpack-cli
+          - "*-loader"
+          - sass
+          - postcss
+          - mini-css-extract-plugin
+          - css-minimizer-webpack-plugin
+          - terser-webpack-plugin
+          - clean-webpack-plugin
+          - copy-webpack-plugin
+          - "@wordpress/babel-preset-default"
+          - "@wordpress/base-styles"
+          - "@wpsyntex/polylang-build-scripts"
+          - "@wpsyntex/distribute"
+          - glob
+          - rimraf
+  - package-ecosystem: composer
+    directory: /
+    assignees:
+      - Hug0-Drelon
+    open-pull-requests-limit: 3
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Paris
+    allow:
+      - dependency-type: production

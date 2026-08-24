@@ -90,6 +90,19 @@ module.exports = [
 			},
 		},
 	},
+	{
+		files: [ 'tests/e2e/**' ],
+		rules: {
+			// Specs import root devDependencies; the nested stub is not an npm package.
+			'import/no-extraneous-dependencies': [
+				'error',
+				{
+					devDependencies: true,
+					packageDir: __dirname,
+				},
+			],
+		},
+	},
 	// Last: Prettier turns off conflicting stylistic ESLint rules.
 	...AutomatticPlugin.configs.prettier,
 ];
