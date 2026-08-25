@@ -29,4 +29,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEP_NAMES: ${{ steps.metadata.outputs.dependency-names }}
-        run: gh pr comment "${{ github.event.pull_request.number }}" --body "This Dependabot PR updates a **production** dependency (\`${DEP_NAMES}\`)."
+        run: gh pr comment "${{ github.event.pull_request.number }}" --body "This Dependabot PR updates a production dependency (\`${DEP_NAMES}\`). Update the changelog for the next release before merging."
