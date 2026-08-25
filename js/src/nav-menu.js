@@ -285,11 +285,11 @@ const pllNavMenu = {
 		/**
 		 * Creates and returns an element.
 		 *
-		 * @param {string} type Element's type.
-		 * @param {Object} atts Element's attributes.
+		 * @param {string} type   Element's type.
+		 * @param {Object} {atts} Optional. Element's attributes.
 		 * @return {HTMLElement} The element.
 		 */
-		createElement: ( type, atts ) => {
+		createElement: ( type, atts = {} ) => {
 			const el = document.createElement( type );
 			for ( const [ key, value ] of Object.entries( atts ) ) {
 				el.setAttribute( key, value );
