@@ -193,7 +193,7 @@ const pllNavMenu = {
 			) ) {
 				if ( typeof pll_data.data[ conditionName ] === 'undefined' ) {
 					// Should not happen.
-					return;
+					continue;
 				}
 
 				const menuValue =
