@@ -117,10 +117,10 @@ const pllNavMenu = {
 
 				// Create a section with title.
 				if ( optionData.section ) {
-					sectionWrapper = document.createElement( 'fieldset' );
+					sectionWrapper = t.createElement( 'fieldset' );
 					settingsWrapper.append( sectionWrapper );
 
-					const sectionTitle = document.createElement( 'legend' );
+					const sectionTitle = t.createElement( 'legend' );
 					sectionTitle.innerText = optionData.section;
 					sectionWrapper.append( sectionTitle );
 				}
