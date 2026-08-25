@@ -32,10 +32,7 @@ const pllNavMenu = {
 		}
 
 		pllNavMenu.wrapper.addEventListener( 'click', pllNavMenu.printMetabox );
-		pllNavMenu.wrapper.addEventListener(
-			'change',
-			pllNavMenu.manageRowsAndValues
-		);
+		pllNavMenu.wrapper.addEventListener( 'change', pllNavMenu.manageRowsAndValues );
 	},
 
 	printMetabox: {
@@ -44,61 +41,44 @@ const pllNavMenu = {
 		 *
 		 * @param {Event} event The event.
 		 */
-		handleEvent: ( event ) => {
+		handleEvent: event => {
 			if ( ! event.target.classList.contains( 'item-edit' ) ) {
 				// Not clicking on a Edit arrow button.
 				return;
 			}
 
-			const metabox = event.target
-				.closest( '.menu-item' )
-				?.querySelector( '.menu-item-settings' );
+			const metabox = event.target.closest( '.menu-item' )?.querySelector( '.menu-item-settings' );
 
 			if ( ! metabox?.id ) {
 				// Should not happen.
 				return;
 			}
 
-			if (
-				! metabox.querySelectorAll(
-					'input[value="#pll_switcher"][type=text]'
-				).length
-			) {
+			if ( ! metabox.querySelectorAll( 'input[value="#pll_switcher"][type=text]' ).length ) {
 				// Not our metabox, or already replaced.
 				return;
 			}
 
 			// Remove default fields we don't need.
-			[ ...metabox.children ].forEach( ( el ) => {
-				if (
-					'P' === el.nodeName &&
-					! el.classList.contains( 'field-move' )
-				) {
+			[ ...metabox.children ].forEach( el => {
+				if ( 'P' === el.nodeName && ! el.classList.contains( 'field-move' ) ) {
 					el.remove();
 				}
 			} );
 
-			const t = pllNavMenu.printMetabox;
-			const itemId = Number(
-				metabox.id.replace( 'menu-item-settings-', '' )
-			);
+			const thus = pllNavMenu.printMetabox;
+			const itemId = Number( metabox.id.replace( 'menu-item-settings-', '' ) );
 
-			metabox.append(
-				t.createHiddenInput( 'title', itemId, pll_data.title )
-			);
+			metabox.append( thus.createHiddenInput( 'title', itemId, pll_data.title ) );
 
-			metabox.append(
-				t.createHiddenInput( 'url', itemId, '#pll_switcher' )
-			);
-			metabox.append( t.createHiddenInput( 'pll-detect', itemId, 1 ) );
+			metabox.append( thus.createHiddenInput( 'url', itemId, '#pll_switcher' ) );
+			metabox.append( thus.createHiddenInput( 'pll-detect', itemId, 1 ) );
 
 			const menuValues =
-				typeof pll_data.val[ itemId ] !== 'undefined'
-					? pll_data.val[ itemId ]
-					: {};
+				typeof pll_data.val[ itemId ] !== 'undefined' ? pll_data.val[ itemId ] : {};
 
 			// Create a global wrapper for our settings.
-			const settingsWrapper = t.createElement( 'div', {
+			const settingsWrapper = thus.createElement( 'div', {
 				class: 'polylang-language-switcher-menu-content',
 			} );
 			metabox.prepend( settingsWrapper );
@@ -107,9 +87,7 @@ const pllNavMenu = {
 			let sectionWrapper = settingsWrapper; // This 1st value will never be used.
 
 			// Add our settings.
-			for ( const [ optionName, optionData ] of Object.entries(
-				pll_data.data
-			) ) {
+			for ( const [ optionName, optionData ] of Object.entries( pll_data.data ) ) {
 				const optionValue =
 					typeof menuValues[ optionName ] !== 'undefined'
 						? menuValues[ optionName ]
@@ -117,28 +95,28 @@ const pllNavMenu = {
 
 				// Create a section with title.
 				if ( optionData.section ) {
-					sectionWrapper = t.createElement( 'fieldset' );
+					sectionWrapper = thus.createElement( 'fieldset' );
 					settingsWrapper.append( sectionWrapper );
 
-					const sectionTitle = t.createElement( 'legend' );
+					const sectionTitle = thus.createElement( 'legend' );
 					sectionTitle.innerText = optionData.section;
 					sectionWrapper.append( sectionTitle );
 				}
 
 				// Create the row wrapper.
-				const inputWrapper = t.createWrapper( optionData, menuValues );
+				const inputWrapper = thus.createWrapper( optionData, menuValues );
 				sectionWrapper.append( inputWrapper );
 
 				// Create the label.
-				const label = t.createElement( 'label', {
-					for: `edit-menu-item-${ optionName }-${ itemId }`, // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword
+				const label = thus.createElement( 'label', {
+					for: `edit-menu-item-${ optionName }-${ itemId }`,
 				} );
 				label.innerText = ` ${ optionData.label } `;
 				inputWrapper.append( label );
 
 				// Create the input.
 				if ( optionData.choices ) {
-					const input = t.createSelectInput(
+					const input = thus.createSelectInput(
 						optionName,
 						itemId,
 						optionValue,
@@ -146,11 +124,7 @@ const pllNavMenu = {
 					);
 					label.append( input );
 				} else {
-					const input = t.createCheckboxInput(
-						optionName,
-						itemId,
-						optionValue
-					);
+					const input = thus.createCheckboxInput( optionName, itemId, optionValue );
 					label.prepend( input );
 				}
 			}
@@ -165,12 +139,7 @@ const pllNavMenu = {
 		 * @return {HTMLElement} The input element.
 		 */
 		createHiddenInput: ( id, itemId, value ) => {
-			return pllNavMenu.printMetabox.createInput(
-				id,
-				itemId,
-				value,
-				'hidden'
-			);
+			return pllNavMenu.printMetabox.createInput( id, itemId, value, 'hidden' );
 		},
 
 		/**
@@ -188,9 +157,7 @@ const pllNavMenu = {
 				return pllNavMenu.printMetabox.createElement( 'p', wrapperAtts );
 			}
 
-			for ( const [ conditionName, conditionValue ] of Object.entries(
-				optionData.hide_if
-			) ) {
+			for ( const [ conditionName, conditionValue ] of Object.entries( optionData.hide_if ) ) {
 				if ( typeof pll_data.data[ conditionName ] === 'undefined' ) {
 					// Should not happen.
 					continue;
@@ -219,12 +186,7 @@ const pllNavMenu = {
 		 * @return {HTMLElement} The input element.
 		 */
 		createCheckboxInput: ( id, itemId, value ) => {
-			const input = pllNavMenu.printMetabox.createInput(
-				id,
-				itemId,
-				1,
-				'checkbox'
-			);
+			const input = pllNavMenu.printMetabox.createInput( id, itemId, 1, 'checkbox' );
 			input.setAttribute( 'data-key', id );
 			if ( value ) {
 				input.checked = true;
@@ -247,17 +209,12 @@ const pllNavMenu = {
 				name: `menu-item-${ id }[${ itemId }]`,
 				'data-key': id,
 			} );
-			for ( const [ optionValue, optionLabel ] of Object.entries(
-				choices
-			) ) {
+			for ( const [ optionValue, optionLabel ] of Object.entries( choices ) ) {
 				const atts = { value: optionValue };
 				if ( value === optionValue ) {
 					atts.selected = 'selected';
 				}
-				const option = pllNavMenu.printMetabox.createElement(
-					'option',
-					atts
-				);
+				const option = pllNavMenu.printMetabox.createElement( 'option', atts );
 				option.innerText = optionLabel;
 				input.append( option );
 			}
@@ -304,15 +261,12 @@ const pllNavMenu = {
 		 *
 		 * @param {Event} event The event.
 		 */
-		handleEvent: ( event ) => {
+		handleEvent: event => {
 			let value = '';
 
 			if ( 'SELECT' === event.target.nodeName ) {
 				value = event.target.value;
-			} else if (
-				'INPUT' === event.target.nodeName &&
-				'checkbox' === event.target.type
-			) {
+			} else if ( 'INPUT' === event.target.nodeName && 'checkbox' === event.target.type ) {
 				value = event.target.checked;
 			} else {
 				return;
@@ -333,39 +287,29 @@ const pllNavMenu = {
 
 			wrapper
 				.querySelectorAll(
-					`[class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })` // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed
+					`[class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })`
 				)
-				.forEach( ( input ) => {
+				.forEach( input => {
 					input.classList.remove( `pll-hidden-by-${ key }` );
 				} );
-			wrapper
-				.querySelectorAll( `.pll-hidden-if-${ key }-${ value }` ) // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed
-				.forEach( ( input ) => {
-					input.classList.add( `pll-hidden-by-${ key }` );
-				} );
+			wrapper.querySelectorAll( `.pll-hidden-if-${ key }-${ value }` ).forEach( input => {
+				input.classList.add( `pll-hidden-by-${ key }` );
+			} );
 
 			// Forbid disabling both flag and name/code.
 			if ( 'show_labels' === key && '' === value ) {
-				const otherInput = wrapper.querySelector(
-					'[data-key="show_flags"]'
-				);
+				const otherInput = wrapper.querySelector( '[data-key="show_flags"]' );
 
 				if ( otherInput && true !== otherInput.checked ) {
 					otherInput.checked = true;
-					otherInput.dispatchEvent(
-						new Event( 'change', { bubbles: true } )
-					);
+					otherInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 				}
 			} else if ( 'show_flags' === key && false === value ) {
-				const otherInput = wrapper.querySelector(
-					'[data-key="show_labels"]'
-				);
+				const otherInput = wrapper.querySelector( '[data-key="show_labels"]' );
 
 				if ( otherInput && '' === otherInput.value ) {
 					otherInput.value = 'names';
-					otherInput.dispatchEvent(
-						new Event( 'change', { bubbles: true } )
-					);
+					otherInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 				}
 			}
 		},
