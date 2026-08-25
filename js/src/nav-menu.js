@@ -176,10 +176,10 @@ const pllNavMenu = {
 		/**
 		 * Creates and returns a wrapper row.
 		 *
-		 * @param {Object}  optionData           A field definition.
-		 * @param {boolean} {optionData.hide_if} Optional. "Hide row" conditions.
-		 * @param {Array}   menuValues           The input values.
-		 * @return {HTMLElement} The input element.
+		 * @param {Object} optionData           A field definition.
+		 * @param {Object} {optionData.hide_if} Optional. "Hide row" conditions.
+		 * @param {Object} menuValues           The input values.
+		 * @return {HTMLElement} The input element, wrapped in a `<p>` tag.
 		 */
 		createWrapper: ( optionData, menuValues ) => {
 			const wrapperAtts = { class: 'description' };
