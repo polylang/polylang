@@ -1,14 +1,12 @@
 # Same schedule across Polylang plugins; Dependabot does not sync versions between repos.
 # allow — if a package does not match, Dependabot does not open a version PR or a security PR for it.
 # groups.build-tools — among packages that already passed allow, matching ones are collapsed into one PR instead of many.
-# open-pull-requests-limit: 3 — caps how many version-update PRs stay open (Monday 07:00 Europe/Paris is just process).
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     exclude-paths:
       - tests/e2e/**
-    open-pull-requests-limit: 3
     schedule:
       interval: weekly
       day: monday
@@ -55,7 +53,6 @@ updates:
           - rimraf
   - package-ecosystem: composer
     directory: /
-    open-pull-requests-limit: 3
     schedule:
       interval: weekly
       day: monday
