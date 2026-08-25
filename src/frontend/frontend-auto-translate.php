@@ -301,12 +301,12 @@ class PLL_Frontend_Auto_Translate {
 		}
 
 		if ( ! empty( $this->curlang ) ) {
-			foreach ( $slugs as &$slug ) {
+			foreach ( $slugs as $key => $slug ) {
 				if ( ! is_string( $slug ) ) {
 					// We got an unexpected query var, let return it unchanged.
 					return $query_var;
 				}
-				$slug = $this->model->term->get_by( 'slug', $slug, $this->curlang, $taxonomy );
+				$slugs[ $key ] = $this->model->term->get_by( 'slug', $slug, $this->curlang, $taxonomy );
 			}
 		}
 
