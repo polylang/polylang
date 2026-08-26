@@ -103,7 +103,7 @@ class Block extends Abstract_Block {
 			return '';
 		}
 
-		$attributes['className'] .= ' ' . trim( wp_apply_generated_classname_support( $block->block_type )['class'] );
+		$attributes['className'] = trim( $attributes['className'] ) . ' ' . wp_apply_generated_classname_support( $block->block_type )['class'];
 
 		if ( 'dropdown' === $settings->layout ) {
 			$top_level_element = $this->get_top_level_element( $settings );
