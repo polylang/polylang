@@ -286,14 +286,15 @@ const pllNavMenu = {
 				return;
 			}
 
+			const valueSelector = typeof value === 'string' ? value.replaceAll( ':', '\\:' ) : value; // For flag format.
 			wrapper
 				.querySelectorAll(
-					`[class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })`
+					`[class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ valueSelector })`
 				)
 				.forEach( input => {
 					input.classList.remove( `pll-hidden-by-${ key }` );
 				} );
-			wrapper.querySelectorAll( `.pll-hidden-if-${ key }-${ value }` ).forEach( input => {
+			wrapper.querySelectorAll( `.pll-hidden-if-${ key }-${ valueSelector }` ).forEach( input => {
 				input.classList.add( `pll-hidden-by-${ key }` );
 			} );
 
