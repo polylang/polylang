@@ -55,7 +55,7 @@ jobs:
             - 'package.json'
             - 'package-lock.json'
 
-    - name: Run ESLint on blocks JS source files and e2e tests
+    - name: Run ESLint
       uses: polylang/actions/eslint@main
       if: ${{ steps.filter.outputs.js == 'true' }}
       with:
