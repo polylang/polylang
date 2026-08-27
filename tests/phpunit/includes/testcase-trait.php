@@ -12,6 +12,7 @@ use WP_Syntex\Polylang\Options\Options;
  * class properties here.
  */
 trait PLL_UnitTestCase_Trait {
+	use PLL_UnitTest_Map_Meta_Cap_Trait;
 	use PLL_File_Path_Helper_Trait;
 	use PLL_Doing_It_Wrong_Trait;
 	use PLL_Options_Trait;
@@ -72,6 +73,7 @@ trait PLL_UnitTestCase_Trait {
 	 * - Creates the deprecated `self::$model`.
 	 * - Removes some hooks.
 	 * - Tweaks `_doing_it_wrong()`.
+	 * - Asserts `map_meta_cap` filter arguments.
 	 * - Calls `self::pllSetUpBeforeClass()`.
 	 *
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
@@ -90,6 +92,7 @@ trait PLL_UnitTestCase_Trait {
 		remove_action( 'admin_print_styles', 'print_emoji_styles' );
 
 		self::filter_doing_it_wrong_trigger_error();
+		self::assert_map_meta_cap_args();
 
 		/*
 		 * Ensure `$factory` is an instance of `PLL_UnitTest_Factory` otherwise testcases directly
