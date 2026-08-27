@@ -30,4 +30,4 @@ jobs:
       run: npm ci
 
     - name: Run Package JSON Lint
-      run: npx wp-scripts lint-pkg-json
+      run: npm run lint:pkg-json
