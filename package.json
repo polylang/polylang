@@ -32,7 +32,7 @@
   "devDependencies": {
     "@automattic/eslint-plugin-wpvip": "^1.3.0",
     "@playwright/test": "^1.58.2",
-    "@wordpress/babel-preset-default": "^8.41.0",
+    "@wordpress/babel-preset-default": "^8.53.0",
     "@wordpress/base-styles": "^12.1.0",
     "@wordpress/e2e-test-utils-playwright": "^1.41.0 <1.47.0",
     "@wordpress/env": "^10.39.0",
@@ -56,7 +56,7 @@
     "sass": "^1.103.1",
     "sass-loader": "^17.0.0",
     "terser-webpack-plugin": "^5.4.0",
-    "webpack": "^5.105.4",
+    "webpack": "^5.109.2",
     "webpack-cli": "^7.2.2"
   },
   "scripts": {
