@@ -73,6 +73,7 @@ trait PLL_UnitTestCase_Trait {
 	 * - Creates the deprecated `self::$model`.
 	 * - Removes some hooks.
 	 * - Tweaks `_doing_it_wrong()`.
+	 * - Asserts `map_meta_cap` filter arguments.
 	 * - Calls `self::pllSetUpBeforeClass()`.
 	 *
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
