@@ -16,6 +16,7 @@ jobs:
       - name: Request review
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: gh pr edit "${{ github.event.pull_request.number }}" --add-reviewer Hug0-Drelon
 
       - name: Dependabot metadata
@@ -28,5 +29,6 @@ jobs:
         if: steps.metadata.outputs.dependency-type == 'direct:production'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           DEP_NAMES: ${{ steps.metadata.outputs.dependency-names }}
         run: gh pr comment "${{ github.event.pull_request.number }}" --body "This Dependabot PR updates a production dependency (\`${DEP_NAMES}\`). Update the changelog for the next release before merging."
