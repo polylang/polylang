@@ -186,3 +186,83 @@ function pll_sanitize_ids( $ids ): array {
 
 	return array_filter( array_map( 'pll_sanitize_id', $ids ) );
 }
+
+/**
+ * Enqueues a JS script.
+ *
+ * @since 3.9
+ *
+ * @param string   $name         The filename of the script (without the extension).
+ * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
+ * @param array    $args     {
+ *     Optional. An array of additional script loading strategies. Default empty array.
+ *
+ *     @type string    $strategy      Optional. If provided, may be either 'defer' or 'async'.
+ *     @type bool      $in_footer     Optional. Whether to print the script in the footer. Default 'false'.
+ *     @type string    $fetchpriority Optional. The fetch priority for the script. Default 'auto'.
+ * }
+ * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
+ * @return void
+ */
+function pll_enqueue_script( string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-' ): void {
+	pll_register_script( $name, $dependencies, $args );
+	wp_scripts()->enqueue( $prefix . $name );
+}
+
+/**
+ * Registers a JS script.
+ *
+ * @since 3.9
+ *
+ * @param string   $name         The filename of the script (without the extension).
+ * @param string[] $dependencies Optional. An array of registered script handles this script depends on.
+ * @param array    $args     {
+ *     Optional. An array of additional script loading strategies. Default empty array.
+ *
+ *     @type string    $strategy      Optional. If provided, may be either 'defer' or 'async'.
+ *     @type bool      $in_footer     Optional. Whether to print the script in the footer. Default 'false'.
+ *     @type string    $fetchpriority Optional. The fetch priority for the script. Default 'auto'.
+ * }
+ * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
+ * @return void
+ */
+function pll_register_script( string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-' ): void {
+	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+	$file    = '/js/build/' . $name . $suffix . '.js';
+	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
+	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
+	wp_register_script( $prefix . $name, $src, $dependencies, (string) $version, $args );
+}
+
+/**
+ * Enqueues a CSS stylesheet.
+ *
+ * @since 3.9
+ *
+ * @param string   $name         The filename of the stylesheet (without the extension).
+ * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
+ * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
+ * @return void
+ */
+function pll_enqueue_style( string $name, array $dependencies = array(), string $prefix = 'pll-' ): void {
+	pll_register_style( $name, $dependencies );
+	wp_styles()->enqueue( $prefix . $name );
+}
+
+/**
+ * Registers a CSS stylesheet.
+ *
+ * @since 3.9
+ *
+ * @param string   $name         The filename of the stylesheet (without the extension).
+ * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
+ * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
+ * @return void
+ */
+function pll_register_style( string $name, array $dependencies = array(), string $prefix = 'pll-' ): void {
+	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+	$file    = '/css/build/' . $name . $suffix . '.css';
+	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
+	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
+	wp_register_style( $prefix . $name, $src, $dependencies, (string) $version );
+}
