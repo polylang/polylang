@@ -8,7 +8,7 @@ use WP_Syntex\Polylang\Options\Registry as Options_Registry;
  * Test case offering a standardized way to test blogs in multisite.
  */
 abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
-	use PLL_File_Path_Helper_Trait;
+	use PLL_UnitTestCase_Trait;
 
 	/**
 	 * Blog in plain permalinks without Polylang.
