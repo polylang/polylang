@@ -201,11 +201,12 @@ function pll_sanitize_ids( $ids ): array {
  *     @type bool      $in_footer     Optional. Whether to print the script in the footer. Default 'false'.
  *     @type string    $fetchpriority Optional. The fetch priority for the script. Default 'auto'.
  * }
+ * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
  * @return void
  */
-function pll_enqueue_script( string $name, array $dependencies = array(), array $args = array() ): void {
+function pll_enqueue_script( string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-' ): void {
 	pll_register_script( $name, $dependencies, $args );
-	wp_scripts()->enqueue( 'pll-' . $name );
+	wp_scripts()->enqueue( $prefix . $name );
 }
 
 /**
@@ -222,15 +223,15 @@ function pll_enqueue_script( string $name, array $dependencies = array(), array 
  *     @type bool      $in_footer     Optional. Whether to print the script in the footer. Default 'false'.
  *     @type string    $fetchpriority Optional. The fetch priority for the script. Default 'auto'.
  * }
+ * @param string   $prefix       Optional. Prefix to use for the script handle. Default 'pll-'.
  * @return void
  */
-function pll_register_script( string $name, array $dependencies = array(), array $args = array() ): void {
-	$handle  = 'pll-' . $name;
+function pll_register_script( string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-' ): void {
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	$file    = '/js/build/' . $name . $suffix . '.js';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
-	wp_register_script( $handle, $src, $dependencies, (string) $version, $args );
+	wp_register_script( $prefix . $name, $src, $dependencies, (string) $version, $args );
 }
 
 /**
@@ -240,11 +241,12 @@ function pll_register_script( string $name, array $dependencies = array(), array
  *
  * @param string   $name         The filename of the stylesheet (without the extension).
  * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
+ * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
  * @return void
  */
-function pll_enqueue_style( string $name, array $dependencies = array() ): void {
+function pll_enqueue_style( string $name, array $dependencies = array(), string $prefix = 'pll-' ): void {
 	pll_register_style( $name, $dependencies );
-	wp_styles()->enqueue( 'pll-' . $name );
+	wp_styles()->enqueue( $prefix . $name );
 }
 
 /**
@@ -254,13 +256,13 @@ function pll_enqueue_style( string $name, array $dependencies = array() ): void 
  *
  * @param string   $name         The filename of the stylesheet (without the extension).
  * @param string[] $dependencies Optional. An array of registered stylesheet handles this stylesheet depends on.
+ * @param string   $prefix       Optional. Prefix to use for the stylesheet handle. Default 'pll-'.
  * @return void
  */
-function pll_register_style( string $name, array $dependencies = array() ): void {
-	$handle  = 'pll-' . $name;
+function pll_register_style( string $name, array $dependencies = array(), string $prefix = 'pll-' ): void {
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	$file    = '/css/build/' . $name . $suffix . '.css';
 	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
-	wp_register_style( $handle, $src, $dependencies, (string) $version );
+	wp_register_style( $prefix . $name, $src, $dependencies, (string) $version );
 }
