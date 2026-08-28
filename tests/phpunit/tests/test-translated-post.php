@@ -243,6 +243,82 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 	}
 
+	public function test_current_user_can_read_respects_edit_post_capability() {
+		$contributor = self::factory()->user->create( array( 'role' => 'contributor' ) );
+		$editor      = self::factory()->user->create( array( 'role' => 'editor' ) );
+
+		$admin_draft = self::factory()->post->create(
+			array(
+				'post_status' => 'draft',
+				'post_author' => 1,
+			)
+		);
+		$admin_pending = self::factory()->post->create(
+			array(
+				'post_status' => 'pending',
+				'post_author' => 1,
+			)
+		);
+		$admin_future = self::factory()->post->create(
+			array(
+				'post_status' => 'future',
+				'post_author' => 1,
+				'post_date'   => gmdate( 'Y-m-d H:i:s', time() + 100 ),
+			)
+		);
+		$admin_private = self::factory()->post->create(
+			array(
+				'post_status' => 'private',
+				'post_author' => 1,
+			)
+		);
+		$admin_publish = self::factory()->post->create(
+			array(
+				'post_status' => 'publish',
+				'post_author' => 1,
+			)
+		);
+		$own_draft = self::factory()->post->create(
+			array(
+				'post_status' => 'draft',
+				'post_author' => $contributor,
+			)
+		);
+		$own_future = self::factory()->post->create(
+			array(
+				'post_status' => 'future',
+				'post_author' => $contributor,
+				'post_date'   => gmdate( 'Y-m-d H:i:s', time() + 100 ),
+			)
+		);
+
+		wp_set_current_user( $contributor );
+
+		foreach ( array( $admin_draft, $admin_pending, $admin_future ) as $post_id ) {
+			$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
+			$this->assertFalse( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
+		}
+
+		$this->assertFalse( self::$model->post->current_user_can_read( $own_draft ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $own_draft, 'edit' ) );
+
+		$this->assertFalse( self::$model->post->current_user_can_read( $own_future ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $own_future, 'edit' ) );
+
+		$this->assertFalse( self::$model->post->current_user_can_read( $admin_private ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $admin_private, 'edit' ) );
+
+		$this->assertTrue( self::$model->post->current_user_can_read( $admin_publish ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $admin_publish, 'edit' ) );
+
+		wp_set_current_user( $editor );
+
+		$this->assertTrue( self::$model->post->current_user_can_read( $admin_draft, 'edit' ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $admin_pending, 'edit' ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $admin_future, 'edit' ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $admin_private, 'edit' ) );
+	}
+
 	/**
 	 * @dataProvider update_language_provider
 	 *
