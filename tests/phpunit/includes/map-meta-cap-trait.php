@@ -25,7 +25,7 @@ trait PLL_UnitTest_Map_Meta_Cap_Trait {
 					return $caps;
 				}
 
-				static::assertIsInt( $args[0], 'map_meta_cap $args[0] must be an object ID.' );
+				static::assertIsNumeric( $args[0], 'map_meta_cap $args[0] must be an object ID.' );
 
 				return $caps;
 			},
