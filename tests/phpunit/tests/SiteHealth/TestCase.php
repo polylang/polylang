@@ -1,11 +1,11 @@
 <?php
 
-namespace WP_Syntex\Polylang\Tests\SiteHealth;
+namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 use PLL_Admin;
 use PLL_Admin_Site_Health;
 use PLL_UnitTestCase;
-use WP_UnitTest_Factory;
+use PLL_UnitTest_Factory;
 
 abstract class TestCase extends PLL_UnitTestCase {
 
@@ -20,13 +20,12 @@ abstract class TestCase extends PLL_UnitTestCase {
 	protected $pll_admin;
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		$factory->language->create_many( 2 );
 	}
 
 	public function set_up() {

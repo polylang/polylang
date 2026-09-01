@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Syntex\Polylang\Tests\SiteHealth;
+namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 class Languages_Test extends TestCase {
 
