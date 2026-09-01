@@ -151,7 +151,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool
 	 */
 	protected function is_front_page( $query ) {
-		$query = array_diff( array_keys( $query->query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) );
+		$query = array_diff( array_keys( (array) $query->query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) );
 		return 1 === count( $query ) && in_array( 'lang', $query );
 	}
 
@@ -185,7 +185,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		}
 
 		// Fix paged static front page in plain permalinks when Settings > Reading doesn't match the default language
-		elseif ( ! $this->links_model->using_permalinks && count( $query->query ) === 1 && ! empty( $query->query['page'] ) ) {
+		elseif ( ! $this->links_model->using_permalinks && count( (array) $query->query ) === 1 && ! empty( $query->query['page'] ) ) {
 			$lang = $this->model->get_default_language();
 			if ( empty( $lang ) ) {
 				return $lang;

@@ -169,11 +169,11 @@ class Languages extends WP_Widget {
 	 * @since 3.9
 	 *
 	 * @param array $instance Current settings.
-	 * @return void
+	 * @return null
 	 *
 	 * @phpstan-param NewInstance|OldInstance $instance
 	 */
-	public function form( $instance ): void {
+	public function form( $instance ) {
 		$settings = new Settings( Fields::remove_legacy_settings( $instance ) );
 		$title    = ! empty( $instance['title'] ) && is_string( $instance['title'] ) ? $instance['title'] : '';
 
@@ -200,6 +200,7 @@ class Languages extends WP_Widget {
 		}
 
 		echo '</tbody></table>';
+		return null;
 	}
 
 	/**

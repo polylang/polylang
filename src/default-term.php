@@ -139,16 +139,34 @@ class PLL_Default_Term {
 		$cat = wp_insert_term( $cat_name, $taxonomy, array( 'slug' => $cat_slug ) );
 
 		// Check that the term was not previously created (in case the language was deleted and recreated).
-		$cat = $cat->error_data['term_exists'] ?? $cat['term_id'];
+		if ( is_wp_error( $cat ) ) {
+			if ( empty( $cat->error_data['term_exists'] ) ) {
+				return;
+			}
+			$cat = $cat->error_data['term_exists'];
+		} else {
+			$cat = $cat['term_id'];
+		}
+
+		if ( ! is_numeric( $cat ) ) {
+			return;
+		}
+
+		$cat = (int) $cat;
 
 		// Set language.
-		$this->model->term->set_language( (int) $cat, $lang );
+		$this->model->term->set_language( $cat, $lang );
 
 		// This is a translation of the default term.
-		$default = (int) get_option( 'default_' . $taxonomy );
-		$translations = $this->model->term->get_translations( $default );
+		$default = get_option( 'default_' . $taxonomy );
 
-		$this->model->term->save_translations( (int) $cat, $translations );
+		if ( ! is_numeric( $default ) ) {
+			return;
+		}
+
+		$translations = $this->model->term->get_translations( (int) $default );
+
+		$this->model->term->save_translations( $cat, $translations );
 	}
 
 	/**
@@ -162,7 +180,8 @@ class PLL_Default_Term {
 	public function handle_default_term_on_create_language( $args ) {
 		foreach ( $this->taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
-				$default = (int) get_option( 'default_' . $taxonomy );
+				$default = get_option( 'default_' . $taxonomy );
+				$default = is_numeric( $default ) ? (int) $default : 0;
 
 				// Assign default language to default term.
 				if ( ! $this->model->term->get_language( $default ) ) {

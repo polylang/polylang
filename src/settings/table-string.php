@@ -27,6 +27,13 @@ class PLL_Table_String extends WP_List_Table {
 	 * Registered strings.
 	 *
 	 * @var array
+	 *
+	 * @phpstan-var array<non-empty-string, array{
+	 *   name: string,
+	 *   string: string,
+	 *   context: string,
+	 *   multiline: bool
+	 * }>
 	 */
 	protected $strings;
 
@@ -43,6 +50,23 @@ class PLL_Table_String extends WP_List_Table {
 	 * @var string|int
 	 */
 	protected $selected_group;
+
+	/**
+	 * The current list of items.
+	 *
+	 * @var array<string, array>
+	 *
+	 * @phpstan-var array<non-empty-string, array{
+	 *   name: string,
+	 *   string: string,
+	 *   context: string,
+	 *   multiline: bool,
+	 *   translations: array<non-empty-string, string>,
+	 *   row: non-empty-string,
+	 *   disabled: string
+	 * }>
+	 */
+	public $items;
 
 	/**
 	 * Constructor.

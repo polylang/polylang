@@ -98,7 +98,7 @@ class PLL_Table_Settings extends WP_List_Table {
 	 */
 	protected function single_row_columns( $item ) {
 		$column_info = $this->get_column_info();
-		$columns     = $column_info[0];
+		$columns     = (array) $column_info[0];
 		$primary     = $column_info[3];
 
 		foreach ( array_keys( $columns ) as $column_name ) {

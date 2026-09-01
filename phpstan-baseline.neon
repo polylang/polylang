@@ -457,21 +457,9 @@ parameters:
 			path: src/cookie.php
 
 		-
-			message: '#^Cannot access offset ''term_id'' on array\{term_id\: int, term_taxonomy_id\: int\|string\}\|WP_Error\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/default-term.php
-
-		-
 			message: '#^Cannot access property \$slug on PLL_Language\|false\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: src/default-term.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 2
 			path: src/default-term.php
 
 		-
@@ -715,12 +703,6 @@ parameters:
 			path: src/frontend/frontend-static-pages.php
 
 		-
-			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
-			count: 2
-			path: src/frontend/frontend-static-pages.php
-
-		-
 			message: '#^Parameter \#2 \$page of method PLL_Links_Model\:\:add_paged_to_link\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -733,12 +715,6 @@ parameters:
 			path: src/frontend/frontend-static-pages.php
 
 		-
-			message: '#^Property WP_Query\:\:\$queried_object_id \(int\) in isset\(\) is not nullable\.$#'
-			identifier: isset.property
-			count: 1
-			path: src/frontend/frontend-static-pages.php
-
-		-
 			message: '#^Cannot access property \$queried_terms on WP_Tax_Query\|null\.$#'
 			identifier: property.nonObject
 			count: 3
@@ -747,12 +723,6 @@ parameters:
 		-
 			message: '#^Cannot access property \$slug on PLL_Language\|null\.$#'
 			identifier: property.nonObject
-			count: 1
-			path: src/frontend/frontend.php
-
-		-
-			message: '#^Cannot unset property WP_Query\:\:\$queried_object because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
 			count: 1
 			path: src/frontend/frontend.php
 
@@ -867,12 +837,6 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 1
-			path: src/license.php
-
-		-
-			message: '#^Cannot unset property PLL_License\:\:\$license_data because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
 			count: 1
 			path: src/license.php
 
@@ -1231,12 +1195,6 @@ parameters:
 			path: src/settings/settings.php
 
 		-
-			message: '#^Parameter \#2 \$column_name of method PLL_Table_Settings\:\:column_default\(\) expects string, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/settings/table-settings.php
-
-		-
 			message: '#^Cannot access offset mixed on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -1333,18 +1291,6 @@ parameters:
 			path: src/translated-object.php
 
 		-
-			message: '#^Parameter \#3 \$args of function wp_insert_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/translated-object.php
-
-		-
-			message: '#^Parameter \#3 \$args of function wp_update_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/translated-object.php
-
-		-
 			message: '#^Cannot access property \$posts on mixed\.$#'
 			identifier: property.nonObject
 			count: 2
@@ -1365,12 +1311,6 @@ parameters:
 		-
 			message: '#^Cannot access property \$term_taxonomy on mixed\.$#'
 			identifier: property.nonObject
-			count: 1
-			path: src/translated-term.php
-
-		-
-			message: '#^Parameter \#3 \$args of function wp_insert_term expects array\{alias_of\?\: string, description\?\: string, parent\?\: int, slug\?\: string\}, array\{description\: bool\|float\|int\|string\} given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/translated-term.php
 

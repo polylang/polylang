@@ -28,7 +28,6 @@ parameters:
 		- vendor/wpsyntex/polylang-phpstan/stubs/wordpress-override.php
 	ignoreErrors:
 		- identifier: missingType.iterableValue
-		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
 
 		# Temporarily ignored
 		-
@@ -62,10 +61,6 @@ parameters:
 			message: "#^Access to an undefined property WP_Term\\:\\:\\$object_id\\.$#"
 			count: 1
 			path: src/translatable-object.php
-
-
-		# Ignored because the function wp_slash accepts mixed although not documented.
-		- "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
 
 		# Ignored because there is no dynamic return type extension for WP_Syntex\Polylang\Options\Abstract_Option::get()
 		-
