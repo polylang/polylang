@@ -327,7 +327,7 @@ class PLL_Admin_Classic_Editor {
 			}
 		}
 
-		wp_die( (string) wp_json_encode( $return ) );
+		wp_die( wp_json_encode( $return ) ?: '[]' );
 	}
 
 	/**
