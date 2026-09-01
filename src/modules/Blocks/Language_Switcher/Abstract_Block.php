@@ -118,10 +118,11 @@ abstract class Abstract_Block {
 		$script_handle   = 'pll_blocks';
 		$suffix          = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$script_filename = 'js/build/blocks' . $suffix . '.js';
+		$src             = plugins_url( $script_filename, POLYLANG_ROOT_FILE );
 
 		wp_register_script(
 			$script_handle,
-			plugins_url( $script_filename, POLYLANG_ROOT_FILE ),
+			$src ?: false,
 			array(
 				'wp-block-editor',
 				'wp-blocks',

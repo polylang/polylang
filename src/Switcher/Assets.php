@@ -61,6 +61,7 @@ class Assets {
 	 */
 	public static function register_scripts(): void {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_register_script( self::FRONTEND_ASSET_HANDLE, plugins_url( "/js/build/frontend-switcher{$suffix}.js", POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION, true );
+		$src    = plugins_url( "/js/build/frontend-switcher{$suffix}.js", POLYLANG_ROOT_FILE );
+		wp_register_script( self::FRONTEND_ASSET_HANDLE, $src ?: false, array(), POLYLANG_VERSION, true );
 	}
 }
