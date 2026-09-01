@@ -139,23 +139,20 @@ class PLL_Default_Term {
 		$cat = wp_insert_term( $cat_name, $taxonomy, array( 'slug' => $cat_slug ) );
 
 		// Check that the term was not previously created (in case the language was deleted and recreated).
-		if ( is_wp_error( $cat ) ) {
-			if ( empty( $cat->error_data['term_exists'] ) ) {
-				return;
-			}
-			$cat = $cat->error_data['term_exists'];
-		} else {
+		if ( is_array( $cat ) ) {
 			$cat = $cat['term_id'];
+		} elseif ( ! empty( $cat->get_error_data( 'term_exists' ) ) ) {
+			$cat = $cat->get_error_data( 'term_exists' );
+		} else {
+			return;
 		}
 
 		if ( ! is_numeric( $cat ) ) {
 			return;
 		}
 
-		$cat = (int) $cat;
-
 		// Set language.
-		$this->model->term->set_language( $cat, $lang );
+		$this->model->term->set_language( (int) $cat, $lang );
 
 		// This is a translation of the default term.
 		$default = get_option( 'default_' . $taxonomy );
@@ -166,7 +163,7 @@ class PLL_Default_Term {
 
 		$translations = $this->model->term->get_translations( (int) $default );
 
-		$this->model->term->save_translations( $cat, $translations );
+		$this->model->term->save_translations( (int) $cat, $translations );
 	}
 
 	/**
