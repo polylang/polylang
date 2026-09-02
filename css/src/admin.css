@@ -1,3 +1,5 @@
+@import './lib/dialog.css';
+
 /* languages admin panel */
 #add-lang select {
 	width: 95%;
