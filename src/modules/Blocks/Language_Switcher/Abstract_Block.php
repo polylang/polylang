@@ -115,13 +115,9 @@ abstract class Abstract_Block {
 			return;
 		}
 
-		$script_handle   = 'pll_blocks';
-		$suffix          = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		$script_filename = 'js/build/blocks' . $suffix . '.js';
-
-		wp_register_script(
-			$script_handle,
-			plugins_url( $script_filename, POLYLANG_ROOT_FILE ),
+		$script_handle = 'pll_blocks';
+		pll_register_script(
+			'blocks',
 			array(
 				'wp-block-editor',
 				'wp-blocks',
@@ -129,8 +125,10 @@ abstract class Abstract_Block {
 				'wp-element',
 				'wp-i18n',
 			),
-			POLYLANG_VERSION,
-			true
+			array(
+				'in_footer' => true,
+			),
+			'pll_'
 		);
 
 		// Translated strings used in JS code

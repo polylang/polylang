@@ -482,7 +482,8 @@ class PLL_Wizard {
 		// To be really loaded the script needs to be passed to the `$steps['languages']['scripts']` array below with the same handle than in `wp_enqueue_script()`.
 		wp_enqueue_script( 'pll_settings', plugins_url( '/js/build/settings' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 		wp_localize_script( 'pll_settings', 'pll_settings', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
-		wp_register_script( 'pll-wizard-languages', plugins_url( '/js/build/languages-step' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-dialog' ), POLYLANG_VERSION, true );
+
+		pll_enqueue_script( 'wizard-languages', array( 'jquery', 'jquery-ui-dialog' ), array( 'in_footer' => true ) );
 		wp_localize_script(
 			'pll-wizard-languages',
 			'pll_wizard_params',
@@ -504,7 +505,7 @@ class PLL_Wizard {
 				'i18n_remove_language_icon'   => esc_html__( 'Remove this language', 'polylang' ),
 			)
 		);
-		wp_enqueue_script( 'pll-wizard-languages' );
+
 		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/build/selectmenu' . $this->get_suffix() . '.css', POLYLANG_ROOT_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		$steps['languages'] = array(
 			'name'    => esc_html__( 'Languages', 'polylang' ),

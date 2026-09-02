@@ -138,7 +138,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 
 		parent::parse_main_query( $query );
 
-		$is_archive = ( count( $query->query ) == 1 && ! empty( $qv['paged'] ) ) ||
+		$is_archive = ( count( (array) $query->query ) == 1 && ! empty( $qv['paged'] ) ) ||
 			$query->is_date ||
 			$query->is_author ||
 			( ! empty( $qv['post_type'] ) && $query->is_post_type_archive && $this->model->is_translated_post_type( $qv['post_type'] ) );
@@ -146,7 +146,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		// Sets the language in case we hide the default language
 		// Use $query->query['s'] as is_search is not set when search is empty
 		// http://wordpress.org/support/topic/search-for-empty-string-in-default-language
-		if ( $this->options['hide_default'] && ! isset( $qv['lang'] ) && ( $is_archive || isset( $query->query['s'] ) || ( count( $query->query ) == 1 && ! empty( $qv['feed'] ) ) ) ) {
+		if ( $this->options['hide_default'] && ! isset( $qv['lang'] ) && ( $is_archive || isset( $query->query['s'] ) || ( count( (array) $query->query ) == 1 && ! empty( $qv['feed'] ) ) ) ) {
 			$this->set_language( $this->model->get_default_language() );
 			$this->set_curlang_in_query( $query );
 		}

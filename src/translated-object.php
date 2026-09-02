@@ -182,14 +182,14 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		if ( empty( $term ) ) {
 			// Create a new term if necessary.
 			$group = uniqid( 'pll_' );
-			wp_insert_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
+			wp_insert_term( $group, $this->tax_translations, array( 'description' => (string) maybe_serialize( $translations ) ) );
 		} else {
 			// Take care not to overwrite extra data stored in the description field, if any.
 			$group = (int) $term->term_id;
 			$descr = maybe_unserialize( $term->description );
 			$descr = is_array( $descr ) ? array_diff_key( $descr, $old_translations ) : array(); // Remove old translations.
 			$descr = array_merge( $descr, $translations ); // Add new one.
-			wp_update_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $descr ) ) );
+			wp_update_term( $group, $this->tax_translations, array( 'description' => (string) maybe_serialize( $descr ) ) );
 		}
 
 		// Link all translations to the new term.
@@ -245,7 +245,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		if ( empty( $descr ) || ! is_array( $descr ) ) {
 			wp_delete_term( (int) $term->term_id, $this->tax_translations );
 		} else {
-			wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $descr ) ) );
+			wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => (string) maybe_serialize( $descr ) ) );
 		}
 	}
 

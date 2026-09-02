@@ -177,7 +177,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		// Always keep a group for terms to allow relationships remap when importing from a WXR file.
 		$group        = uniqid( 'pll_' );
 		$translations = array( $slug => $id );
-		wp_insert_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
+		wp_insert_term( $group, $this->tax_translations, array( 'description' => (string) maybe_serialize( $translations ) ) );
 		wp_set_object_terms( $id, $group, $this->tax_translations );
 	}
 
