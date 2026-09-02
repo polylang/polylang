@@ -13,6 +13,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
+	private static $page_on_front_en;
+	private static $page_on_front_fr;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -79,6 +81,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
 		self::$model->post->save_translations( self::$page_for_posts_en, array( 'en' => self::$page_for_posts_en, 'fr' => self::$page_for_posts_fr ) );
+
+		self::$page_on_front_en = $factory->post->create( array( 'post_title' => 'front', 'post_type' => 'page' ) );
+		self::$model->post->set_language( self::$page_on_front_en, 'en' );
+
+		self::$page_on_front_fr = $factory->post->create( array( 'post_title' => 'accueil', 'post_type' => 'page' ) );
+		self::$model->post->set_language( self::$page_on_front_fr, 'fr' );
+
+		self::$model->post->save_translations( self::$page_on_front_en, array( 'en' => self::$page_on_front_en, 'fr' => self::$page_on_front_fr ) );
 	}
 
 	public function init_for_sitemaps() {
@@ -567,6 +577,33 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_fr, '/fr/articles/' );
+	}
+
+	/**
+	 * Page on front.
+	 *
+	 * @ticket 3109
+	 * @see https://github.com/polylang/polylang-pro/issues/3109
+	 *
+	 * @testWith ["fr", "accueil"]
+	 *           ["en", "front"]
+	 *
+	 * @param string $lang_slug
+	 * @param string $page_slug
+	 * @return void
+	 */
+	public function test_root_redirect_to_page_on_front( string $lang_slug, string $page_slug ) {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_en );
+		update_option( 'page_for_posts', self::$page_for_posts_en );
+		self::$model->clean_languages_cache(); // Clean the languages transient.
+		$this->assertCanonical(
+			"/$lang_slug/",
+			array(
+				'url' => "/$lang_slug/$page_slug/",
+				'qv'  => array( 'lang' => $lang_slug, 'pagename' => $page_slug, 'page' => '' ),
+			)
+		);
 	}
 
 	/**
