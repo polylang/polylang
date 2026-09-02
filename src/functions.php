@@ -231,10 +231,13 @@ function pll_enqueue_script( string $name, array $dependencies = array(), array 
  * @phpstan-param non-empty-string $name
  */
 function pll_register_script( string $name, array $dependencies = array(), array $args = array(), string $prefix = 'pll-' ): void {
-	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-	$file    = '/js/build/' . $name . $suffix . '.js';
-	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
-	$src     = $src ?: false;
+	$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+	$src    = plugins_url( "/js/build/{$name}{$suffix}.js", POLYLANG_ROOT_FILE );
+
+	if ( '' === $src ) {
+		return;
+	}
+
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
 	wp_register_script( $prefix . $name, $src, array_filter( $dependencies ), (string) $version, $args );
 }
@@ -270,9 +273,12 @@ function pll_enqueue_style( string $name, array $dependencies = array(), string 
  */
 function pll_register_style( string $name, array $dependencies = array(), string $prefix = 'pll-' ): void {
 	$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-	$file    = '/css/build/' . $name . $suffix . '.css';
-	$src     = plugins_url( $file, POLYLANG_ROOT_FILE );
-	$src     = $src ?: false;
+	$src     = plugins_url( "/css/build/{$name}{$suffix}.css", POLYLANG_ROOT_FILE );
+
+	if ( '' === $src ) {
+		return;
+	}
+
 	$version = WP_DEBUG ? time() : POLYLANG_VERSION;
 	wp_register_style( $prefix . $name, $src, $dependencies, (string) $version );
 }
