@@ -356,7 +356,9 @@ class PLL_Admin_Filters_Post {
 			);
 		}
 
-		$views['all'] = str_replace( 'edit.php?', 'edit.php?lang=all&', $views['all'] );
+		if ( isset( $views['all'] ) ) { // In case a filter removes this key.
+			$views['all'] = str_replace( 'edit.php?', 'edit.php?lang=all&', $views['all'] );
+		}
 
 		return $views;
 	}
