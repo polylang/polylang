@@ -23,6 +23,7 @@
     "url": "https://github.com/polylang/polylang/issues"
   },
   "overrides": {
+    "fast-uri": "3.1.6",
     "minimatch": "^9.0.9",
     "serialize-javascript": "^7.0.4"
   },
