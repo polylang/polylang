@@ -50,38 +50,4 @@ abstract class TestCase extends PLL_UnitTestCase {
 		update_option( 'show_on_front', $show );
 		update_option( 'page_on_front', $page );
 	}
-
-	/**
-	 * Creates a given number of posts without any language assigned.
-	 *
-	 * @param int    $number    Number of posts to create.
-	 * @param string $post_type Post type to use. Default 'post'.
-	 * @return int[] The created post IDs.
-	 */
-	protected function create_posts_without_lang( int $number, string $post_type = 'post' ): array {
-		$ids = array();
-
-		for ( $i = 0; $i < $number; $i++ ) {
-			$ids[] = self::factory()->post->create( array( 'post_type' => $post_type ) );
-		}
-
-		return $ids;
-	}
-
-	/**
-	 * Creates a given number of terms without any language assigned.
-	 *
-	 * @param int    $number   Number of terms to create.
-	 * @param string $taxonomy Taxonomy to use. Default 'category'.
-	 * @return int[] The created term IDs.
-	 */
-	protected function create_terms_without_lang( int $number, string $taxonomy = 'category' ): array {
-		$ids = array();
-
-		for ( $i = 0; $i < $number; $i++ ) {
-			$ids[] = self::factory()->term->create( array( 'taxonomy' => $taxonomy ) );
-		}
-
-		return $ids;
-	}
 }
