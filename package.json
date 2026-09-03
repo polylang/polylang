@@ -40,7 +40,7 @@
     "@wordpress/npm-package-json-lint-config": "^5.53.0",
     "@wpsyntex/distribute": "^0.1.0",
     "@wpsyntex/e2e-test-utils": "^0.1.0",
-    "@wpsyntex/polylang-build-scripts": "file:../polylang-build-scripts",
+    "@wpsyntex/polylang-build-scripts": "^2.4.0",
     "babel-loader": "^10.1.1",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^7.1.4",
