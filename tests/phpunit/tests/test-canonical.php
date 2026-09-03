@@ -105,6 +105,19 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
+		wp_delete_post( self::$post_en, true );
+		wp_delete_post( self::$page_id, true );
+		wp_delete_post( self::$custom_post_id, true );
+		wp_delete_post( self::$not_rewritten_cpt_id, true );
+		wp_delete_post( self::$page_for_posts_en, true );
+		wp_delete_post( self::$page_for_posts_fr, true );
+		wp_delete_post( self::$page_on_front_en, true );
+		wp_delete_post( self::$page_on_front_fr, true );
+		wp_delete_term( self::$term_en, 'category' );
+		wp_delete_term( self::$second_term_en, 'category' );
+		wp_delete_term( self::$tag_en, 'post_tag' );
+		wp_delete_term( self::$custom_term_en, 'custom_tax' );
+
 		_unregister_post_type( 'pllcanonical' );
 		_unregister_post_type( 'cptnotrewrited' );
 		_unregister_taxonomy( 'custom_tax' );
