@@ -287,7 +287,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', plugins_url( "/css/build/admin{$suffix}.css", POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		pll_enqueue_style( 'admin', array( 'wp-jquery-ui-dialog' ) );
 
 		$this->add_inline_scripts();
 	}
