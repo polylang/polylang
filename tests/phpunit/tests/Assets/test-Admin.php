@@ -28,7 +28,7 @@ class Admin_Test extends TestCase {
 				'pll_post-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -45,7 +45,7 @@ class Admin_Test extends TestCase {
 				'pll_ajax_backend',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -64,7 +64,7 @@ class Admin_Test extends TestCase {
 				'pll_classic-editor-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -80,7 +80,7 @@ class Admin_Test extends TestCase {
 				'pll_block-editor-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -97,7 +97,7 @@ class Admin_Test extends TestCase {
 				'pll_ajax_backend',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -114,7 +114,7 @@ class Admin_Test extends TestCase {
 				'pll_media-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -130,7 +130,7 @@ class Admin_Test extends TestCase {
 				'pll_term-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -147,7 +147,7 @@ class Admin_Test extends TestCase {
 				'pll_ajax_backend',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -163,7 +163,7 @@ class Admin_Test extends TestCase {
 				'pll_term-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -180,7 +180,7 @@ class Admin_Test extends TestCase {
 				'pll_ajax_backend',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -197,7 +197,7 @@ class Admin_Test extends TestCase {
 				'pll_user-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -213,7 +213,7 @@ class Admin_Test extends TestCase {
 				'pll_widgets-js',
 			),
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 		);
 		$this->assert_admin_assets( $scripts );
@@ -225,7 +225,7 @@ class Admin_Test extends TestCase {
 	protected function get_polylang_assets() {
 		return array(
 			'header' => array(
-				'polylang_admin-css',
+				'pll-admin-css',
 			),
 			'footer' => array(
 				'pll_ajax_backend',

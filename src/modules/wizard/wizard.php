@@ -295,10 +295,10 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/build/admin' . $this->get_suffix() . '.css', POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION );
-		wp_enqueue_style( 'pll-wizard', plugins_url( '/css/build/wizard' . $this->get_suffix() . '.css', POLYLANG_ROOT_FILE ), array( 'dashicons', 'install', 'common', 'forms' ), POLYLANG_VERSION );
+		pll_enqueue_style( 'admin' );
+		pll_enqueue_style( 'wizard', array( 'dashicons', 'install', 'common', 'forms' ) );
 
-		$this->styles = array( 'polylang_admin', 'pll-wizard' );
+		$this->styles = array( 'pll-admin', 'pll-wizard' );
 	}
 
 	/**
