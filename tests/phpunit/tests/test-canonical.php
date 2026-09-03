@@ -609,7 +609,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', self::$page_on_front_en );
 		update_option( 'page_for_posts', self::$page_for_posts_en );
+
+		$this->options['hide_default']  = false;
+		$this->options['rewrite']       = true;
+		$this->options['redirect_lang'] = false;
+
 		self::$model->clean_languages_cache(); // Clean the languages transient.
+
 		$this->assertCanonical(
 			"/$lang_slug/",
 			array(
