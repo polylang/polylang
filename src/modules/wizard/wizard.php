@@ -296,7 +296,7 @@ class PLL_Wizard {
 	 */
 	public function enqueue_scripts() {
 		pll_enqueue_style( 'admin' );
-		wp_enqueue_style( 'pll-wizard', plugins_url( '/css/build/wizard' . $this->get_suffix() . '.css', POLYLANG_ROOT_FILE ), array( 'dashicons', 'install', 'common', 'forms' ), POLYLANG_VERSION );
+		pll_enqueue_style( 'wizard', array( 'dashicons', 'install', 'common', 'forms' ) );
 
 		$this->styles = array( 'pll-admin', 'pll-wizard' );
 	}
