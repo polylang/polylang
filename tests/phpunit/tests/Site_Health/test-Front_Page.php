@@ -3,6 +3,7 @@
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 use PLL_Admin_Links;
+use WP_Site_Health;
 
 class Front_Page_Test extends TestCase {
 
@@ -13,15 +14,21 @@ class Front_Page_Test extends TestCase {
 		);
 		$this->set_page_on_front( $home_pages['en'] );
 
-		$test_result = $this->site_health->homepage_test();
+		$expected = array(
+			'label' => 'All languages have a translated homepage',
+			'status' => 'good',
+			'badge' => array(
+				'label' => POLYLANG,
+				'color' => 'blue',
+			),
+			'description' => '<p>It is mandatory to translate the static front page in all languages.</p>',
+			'actions' => '',
+			'test' => 'pll_homepage',
+		);
 
-		$this->assertSame( array( 'label', 'status', 'badge', 'description', 'actions', 'test' ), array_keys( $test_result ), 'homepage_test() should return the expected array structure.' );
-		$this->assertSame( 'All languages have a translated homepage', $test_result['label'], 'homepage_test() should have the expected label when all languages are translated.' );
-		$this->assertSame( 'good', $test_result['status'], 'homepage_test() should have a "status" key set to "good".' );
-		$this->assertSame( array( 'label' => POLYLANG, 'color' => 'blue' ), $test_result['badge'], 'homepage_test() should have the expected badge.' );
-		$this->assertSame( '<p>It is mandatory to translate the static front page in all languages.</p>', $test_result['description'], 'homepage_test() should have the expected description when all languages are translated.' );
-		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when all languages are translated.' );
-		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
+		$result = $this->site_health->homepage_test();
+
+		$this->assertSameSetsWithIndex( $expected, $result, 'homepage_test() should return the expected array.' );
 	}
 
 	public function test_homepage_test_missing_translation() {
@@ -32,19 +39,47 @@ class Front_Page_Test extends TestCase {
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
+		/**
+		 * Homepage_test() calls get_must_translate_message() which, only when a language is missing,
+		 * builds a translation link via $this->links->get_new_post_translation_link().
+		 * PLL_Admin::links is only set in init(), which is never called in our set_up(),
+		 * so it must be initialized manually here to avoid a fatal error on this code path.
+		 */
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
-		$test_result = $this->site_health->homepage_test();
+		$expected = array(
+			'label' => 'The homepage is not translated in all languages',
+			'status' => 'critical',
+			'badge' => array(
+				'label' => POLYLANG,
+				'color' => 'blue',
+			),
+			'actions' => '',
+			'test' => 'pll_homepage',
+		);
 
-		$this->assertSame( array( 'label', 'status', 'badge', 'description', 'actions', 'test' ), array_keys( $test_result ), 'homepage_test() should return the expected array structure.' );
-		$this->assertSame( 'The homepage is not translated in all languages', $test_result['label'], 'homepage_test() should have the expected alert label when not all languages are translated.' );
-		$this->assertSame( 'critical', $test_result['status'], 'homepage_test() should have a "status" key set to "critical".' );
-		$this->assertSame( array( 'label' => POLYLANG, 'color' => 'blue' ), $test_result['badge'], 'homepage_test() should have the expected badge.' );
-		$this->assertStringContainsString( 'You must translate your static front page in', $test_result['description'], 'Description should mention the untranslated languages.' );
-		$this->assertStringContainsString( '>Français</a>', $test_result['description'], 'Description should contain a translation link for the missing language.' );
-		$this->assertMatchesRegularExpression( '/href="[^"]*new_lang=fr[^"]*"/', $test_result['description'], 'Description should contain a link targeting the French translation.' );
-		$this->assertSame( '', $test_result['actions'], 'homepage_test() should have empty actions when a language is not translated.' );
-		$this->assertSame( 'pll_homepage', $test_result['test'], 'homepage_test() should have the expected test identifier.' );
+		$result = $this->site_health->homepage_test();
+
+		$this->assertSameSetsWithIndex(
+			$expected,
+			array_diff_key( $result, array( 'description' => true ) ),
+			'homepage_test() should return the expected array.'
+		);
+		$this->assertStringContainsString(
+			'You must translate your static front page in',
+			$result['description'],
+			'Description should mention the untranslated languages.'
+		);
+		$this->assertStringContainsString(
+			'>Français</a>',
+			$result['description'],
+			'Description should contain a translation link for the missing language.'
+		);
+		$this->assertMatchesRegularExpression(
+			'/href="[^"]*new_lang=fr[^"]*"/',
+			$result['description'],
+			'Description should contain a link targeting the French translation.'
+		);
 	}
 
 	public function test_homepage_test_when_front_page_does_not_exist() {
@@ -54,6 +89,7 @@ class Front_Page_Test extends TestCase {
 
 		$test_result = $this->site_health->homepage_test();
 
+		// TODO : Waiting answer about that
 		$this->assertSame( 'good', $test_result['status'], 'homepage_test() should return "good" when the front page no longer exists.' );
 	}
 
@@ -73,19 +109,19 @@ class Front_Page_Test extends TestCase {
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
-		$existing_tests = array(
-			'direct' => array(
-				'other_test' => array(
-					'label' => 'Some other test',
-					'test'  => '__return_true',
-				),
-			),
+		$site_health = new WP_Site_Health();
+		$expected = array();
+		add_filter(
+			'site_status_tests',
+			function ( $tests ) use ( &$expected ) {
+				$expected = $tests;
+				return $tests;
+			},
+			1
 		);
+		$result = $site_health->get_tests();
 
-		$result = $this->site_health->status_tests( $existing_tests );
-
-		$this->assertArrayHasKey( 'other_test', $result['direct'], 'Existing tests should not be overwritten.' );
-		$this->assertSame( $existing_tests['direct']['other_test'], $result['direct']['other_test'], 'Existing test data should remain unchanged.' );
+		$this->assertSameSetsWithIndex( $expected['direct'], array_diff_key( $result['direct'], array( 'pll_homepage' => true ) ), 'Existing Site Health tests should be preserved unchanged.' );
 		$this->assertArrayHasKey( 'pll_homepage', $result['direct'], 'pll_homepage should still be added alongside existing tests.' );
 	}
 
