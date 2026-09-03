@@ -52,7 +52,7 @@ class PLL_Admin_Filters_Post {
 
 		// Languages views in post list tables.
 		foreach ( $this->model->get_translated_post_types() as $post_type ) {
-			add_filter( "views_edit-{$post_type}", array( $this, 'views_edit_post' ) );
+			add_filter( "views_edit-{$post_type}", array( $this, 'add_per_language_edit_views' ) );
 		}
 	}
 
@@ -334,7 +334,7 @@ class PLL_Admin_Filters_Post {
 	 * @param string[] $views Array of available list table views.
 	 * @return string[]
 	 */
-	public function views_edit_post( $views ) {
+	public function add_per_language_edit_views( $views ) {
 		global $typenow;
 
 		if ( empty( $typenow ) ) {
