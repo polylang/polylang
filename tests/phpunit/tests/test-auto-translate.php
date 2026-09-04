@@ -189,6 +189,48 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $expected, get_posts( array( 'post__in' => array( $posts['en'] ) ) ) );
 	}
 
+	public function test_recent_posts_widget_post_ids_added_on_pre_get_posts() {
+		// Starting with 'essai2' to avoid 'essai' being a substring match of 'essai2'.
+		$posts = self::factory()->post->create_translated(
+			array( 'post_title' => 'test2', 'lang' => 'en' ),
+			array( 'post_title' => 'essai2', 'lang' => 'fr' )
+		);
+
+		self::factory()->post->create_translated(
+			array( 'post_title' => 'test3', 'lang' => 'en' ),
+			array( 'post_title' => 'essai3', 'lang' => 'fr' )
+		);
+
+		$exclude_post = function ( $query ) use ( $posts ) {
+			if ( ! $query->is_main_query() && $query->get( 'ignore_sticky_posts' ) && $query->get( 'no_found_rows' ) ) {
+				$query->set( 'post__not_in', array( $posts['en'] ) );
+			}
+		};
+
+		add_action( 'pre_get_posts', $exclude_post, 20 );
+
+		try {
+			$widget = new WP_Widget_Recent_Posts();
+
+			ob_start();
+			$widget->widget(
+				array(
+					'before_widget' => '',
+					'after_widget'  => '',
+					'before_title'  => '',
+					'after_title'   => '',
+				),
+				array( 'number' => 2 )
+			);
+			$output = ob_get_clean();
+		} finally {
+			remove_action( 'pre_get_posts', $exclude_post, 20 );
+		}
+
+		$this->assertStringContainsString( 'essai3', $output );
+		$this->assertStringNotContainsString( 'essai2', $output );
+	}
+
 	public function test_page() {
 		$parents = self::factory()->post->create_translated(
 			array( 'post_type' => 'page', 'post_title' => 'test_parent', 'lang' => 'en' ),
