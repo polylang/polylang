@@ -348,11 +348,11 @@ class PLL_Admin_Filters_Post {
 
 		foreach ( $this->model->languages->get_list() as $language ) {
 			$views[ $language->slug ] = sprintf(
-				'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
+				'<a href="%s" %s>%s <span class="count">(%s)</span></a>',
 				esc_url( add_query_arg( 'lang', $language->slug, remove_query_arg( 'paged' ) ) ),
 				! empty( $this->curlang ) && $this->curlang->slug === $language->slug ? 'class="current" aria-current="page"' : '',
 				esc_html( $language->name ),
-				(int) $this->model->count_posts( $language, $q )
+				number_format_i18n( (int) $this->model->count_posts( $language, $q ) )
 			);
 		}
 
