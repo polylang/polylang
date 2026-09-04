@@ -3,6 +3,7 @@
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 use PLL_Admin;
+use PLL_Admin_Links;
 use PLL_Admin_Site_Health;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
@@ -31,9 +32,10 @@ abstract class TestCase extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$links_model       = self::$model->get_links_model();
-		$this->pll_admin   = new PLL_Admin( $links_model );
-		$this->site_health = new PLL_Admin_Site_Health( $this->pll_admin );
+		$links_model            = self::$model->get_links_model();
+		$this->pll_admin        = new PLL_Admin( $links_model );
+		$this->site_health      = new PLL_Admin_Site_Health( $this->pll_admin );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
 		// Assign a language to WordPress' default category ("Uncategorized"), so it doesn't interfere with tests checking terms without a language.
 		$this->pll_admin->model->term->set_language( (int) get_option( 'default_category' ), 'en' );

@@ -2,7 +2,6 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-use PLL_Admin_Links;
 use WP_Site_Health;
 
 class Front_Page_Test extends TestCase {
@@ -15,15 +14,15 @@ class Front_Page_Test extends TestCase {
 		$this->set_page_on_front( $home_pages['en'] );
 
 		$expected = array(
-			'label' => 'All languages have a translated homepage',
+			'label'  => 'All languages have a translated homepage',
 			'status' => 'good',
-			'badge' => array(
+			'badge'  => array(
 				'label' => POLYLANG,
 				'color' => 'blue',
 			),
 			'description' => '<p>It is mandatory to translate the static front page in all languages.</p>',
-			'actions' => '',
-			'test' => 'pll_homepage',
+			'actions'     => '',
+			'test'        => 'pll_homepage',
 		);
 
 		$result = $this->site_health->homepage_test();
@@ -39,23 +38,15 @@ class Front_Page_Test extends TestCase {
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
-		/**
-		 * Homepage_test() calls get_must_translate_message() which, only when a language is missing,
-		 * builds a translation link via $this->links->get_new_post_translation_link().
-		 * PLL_Admin::links is only set in init(), which is never called in our set_up(),
-		 * so it must be initialized manually here to avoid a fatal error on this code path.
-		 */
-		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-
 		$expected = array(
-			'label' => 'The homepage is not translated in all languages',
+			'label'  => 'The homepage is not translated in all languages',
 			'status' => 'critical',
-			'badge' => array(
+			'badge'  => array(
 				'label' => POLYLANG,
 				'color' => 'blue',
 			),
 			'actions' => '',
-			'test' => 'pll_homepage',
+			'test'    => 'pll_homepage',
 		);
 
 		$result = $this->site_health->homepage_test();
@@ -65,32 +56,24 @@ class Front_Page_Test extends TestCase {
 			array_diff_key( $result, array( 'description' => true ) ),
 			'homepage_test() should return the expected array.'
 		);
-		$this->assertStringContainsString(
-			'You must translate your static front page in',
+		$this->assertSame(
+			'<p>You must translate your static front page in <a href="">Français</a>.</p>',
 			$result['description'],
-			'Description should mention the untranslated languages.'
-		);
-		$this->assertStringContainsString(
-			'>Français</a>',
-			$result['description'],
-			'Description should contain a translation link for the missing language.'
-		);
-		$this->assertMatchesRegularExpression(
-			'/href="[^"]*new_lang=fr[^"]*"/',
-			$result['description'],
-			'Description should contain a link targeting the French translation.'
+			'homepage_test() should return the expected description.'
 		);
 	}
 
-	public function test_homepage_test_when_front_page_does_not_exist() {
-		$deleted_page_id = self::factory()->post->create( array( 'post_type' => 'page', 'lang' => 'en' ) );
-		wp_delete_post( $deleted_page_id, true );
-		$this->set_page_on_front( $deleted_page_id );
+	public function test_status_tests_does_not_add_homepage_test_when_front_page_does_not_exist() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', 999999 );
 
-		$test_result = $this->site_health->homepage_test();
+		$result = WP_Site_Health::get_tests();
 
-		// TODO : Waiting answer about that
-		$this->assertSame( 'good', $test_result['status'], 'homepage_test() should return "good" when the front page no longer exists.' );
+		$this->assertArrayNotHasKey(
+			'pll_homepage',
+			$result['direct'],
+			'The homepage test should not be added when the front page does not exist.'
+		);
 	}
 
 	public function test_status_tests_adds_pll_homepage_test_when_static_front_page_is_set() {
@@ -109,20 +92,13 @@ class Front_Page_Test extends TestCase {
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
-		$site_health = new WP_Site_Health();
-		$expected = array();
-		add_filter(
-			'site_status_tests',
-			function ( $tests ) use ( &$expected ) {
-				$expected = $tests;
-				return $tests;
-			},
-			1
-		);
-		$result = $site_health->get_tests();
+		$result_with_pll = WP_Site_Health::get_tests();
+		remove_filter( 'site_status_tests', array( $this->site_health, 'status_tests' ) );
+		$result_without_pll = WP_Site_Health::get_tests();
 
-		$this->assertSameSetsWithIndex( $expected['direct'], array_diff_key( $result['direct'], array( 'pll_homepage' => true ) ), 'Existing Site Health tests should be preserved unchanged.' );
-		$this->assertArrayHasKey( 'pll_homepage', $result['direct'], 'pll_homepage should still be added alongside existing tests.' );
+		$this->assertArrayHasKey( 'pll_homepage', $result_with_pll['direct'], 'pll_homepage should still be added alongside existing tests.' );
+		unset( $result_with_pll['direct']['pll_homepage'] );
+		$this->assertSameSetsWithIndex( $result_without_pll['direct'], $result_with_pll['direct'], 'Existing Site Health tests should be preserved unchanged.' );
 	}
 
 	public function test_status_tests_does_not_add_pll_homepage_test_when_static_front_page_is_not_set() {

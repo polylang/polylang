@@ -13,7 +13,7 @@ class Posts_Test extends TestCase {
 			2,
 			array( 'post_type' => 'page' )
 		);
-		$post_en          = self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
+		$post_en = self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
 
 		$result       = $this->site_health->info( array() );
 		$post_no_lang = $result['pll_warnings']['fields']['post-no-lang']['value'];
