@@ -211,13 +211,22 @@ class PLL_Admin_Site_Health {
 	 * @return array
 	 */
 	public function status_tests( $tests ) {
-		// Add the test only if the homepage displays static page.
-		if ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
-			$tests['direct']['pll_homepage'] = array(
-				'label' => esc_html__( 'Homepage translated', 'polylang' ),
-				'test'  => array( $this, 'homepage_test' ),
-			);
+		// Add the test only if the homepage is an existing static page.
+		if ( 'page' !== get_option( 'show_on_front' ) ) {
+			return $tests;
 		}
+
+		$page_on_front = get_option( 'page_on_front' );
+
+		if ( ! is_numeric( $page_on_front ) || ! get_post( (int) $page_on_front ) ) {
+			return $tests;
+		}
+
+		$tests['direct']['pll_homepage'] = array(
+			'label' => esc_html__( 'Homepage translated', 'polylang' ),
+			'test'  => array( $this, 'homepage_test' ),
+		);
+
 		return $tests;
 	}
 

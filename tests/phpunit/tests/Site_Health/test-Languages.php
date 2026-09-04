@@ -1,39 +1,8 @@
 <?php
-/**
- * @package Polylang
- */
 
-/**
- * Class Admin_Site_Health_Test
- */
-class Admin_Site_Health_Test extends PLL_UnitTestCase {
+namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-	/**
-	 * @var PLL_Admin_Site_Health
-	 */
-	private $site_health;
-
-	/**
-	 * @param WP_UnitTest_Factory $factory
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-	}
-
-	/**
-	 * Performs setup tasks for every test.
-	 */
-	public function set_up() {
-		parent::set_up();
-
-		$links_model     = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
-
-		$this->site_health = new PLL_Admin_Site_Health( $this->pll_admin );
-	}
+class Languages_Test extends TestCase {
 
 	public function test_info_languages_term_props() {
 		$info = $this->site_health->info_languages( array() );
