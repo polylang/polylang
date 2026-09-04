@@ -373,6 +373,7 @@ class PLL_Model {
 			$join    = $this->post->join_clause();
 			$where   = sprintf( " WHERE {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
 			$where  .= $this->post->where_clause( $this->languages->get_list() );
+			$where  .= " AND post_status != 'auto-draft'";
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id, post_status';
 
 			if ( ! empty( $q['m'] ) ) {
@@ -433,7 +434,7 @@ class PLL_Model {
 		$term_taxonomy_id = $lang->get_tax_prop( 'language', 'term_taxonomy_id' );
 
 		if ( 'any' === $q['post_status'] ) {
-			return (int) array_sum( $counts[ $term_taxonomy_id ] );
+			return isset( $counts[ $term_taxonomy_id ] ) ? (int) array_sum( $counts[ $term_taxonomy_id ] ) : 0;
 		}
 
 		return $counts[ $term_taxonomy_id ][ $q['post_status'] ] ?? 0;

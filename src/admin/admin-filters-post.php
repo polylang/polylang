@@ -49,6 +49,11 @@ class PLL_Admin_Filters_Post {
 
 		// Filter untranslated items in the posts list table.
 		add_action( 'restrict_manage_posts', array( $this, 'untranslated_dropdown' ) );
+
+		// Languages views in post list tables.
+		foreach ( $this->model->get_translated_post_types() as $post_type ) {
+			add_filter( "views_edit-{$post_type}", array( $this, 'add_per_language_edit_views' ) );
+		}
 	}
 
 	/**
@@ -319,5 +324,42 @@ class PLL_Admin_Filters_Post {
 		);
 
 		echo $dropdown_html; // phpcs:ignore WordPress.Security.EscapeOutput
+	}
+
+	/**
+	 * Add languages filter views to the list of views available for the post list table.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string[] $views Array of available list table views.
+	 * @return string[]
+	 */
+	public function add_per_language_edit_views( $views ) {
+		global $typenow;
+
+		if ( empty( $typenow ) ) {
+			return $views;
+		}
+
+		$q = array(
+			'post_type'   => $typenow,
+			'post_status' => 'any',
+		);
+
+		foreach ( $this->model->languages->get_list() as $language ) {
+			$views[ $language->slug ] = sprintf(
+				'<a href="%s" %s>%s <span class="count">(%s)</span></a>',
+				esc_url( add_query_arg( 'lang', $language->slug, remove_query_arg( 'paged' ) ) ),
+				! empty( $this->curlang ) && $this->curlang->slug === $language->slug ? 'class="current" aria-current="page"' : '',
+				esc_html( $language->name ),
+				number_format_i18n( (int) $this->model->count_posts( $language, $q ) )
+			);
+		}
+
+		if ( isset( $views['all'] ) ) { // In case a filter removes this key.
+			$views['all'] = str_replace( 'edit.php?', 'edit.php?lang=all&', $views['all'] );
+		}
+
+		return $views;
 	}
 }

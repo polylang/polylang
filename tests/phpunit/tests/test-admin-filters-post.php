@@ -503,6 +503,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	private function register_post_type_for_dropdown_test( array $args ): void {
+		self::$model->cache->clean();
+
 		if ( in_array( 'translated', $args, true ) ) {
 			add_filter(
 				'pll_get_post_types',
