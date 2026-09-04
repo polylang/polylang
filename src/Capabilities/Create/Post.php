@@ -43,6 +43,10 @@ class Post extends Abstract_Object {
 			// Use parent if exists.
 			return $parent_lang;
 		}
+		if ( ! empty( $_POST['pll_post_id'] ) && is_numeric( $_POST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_POST['pll_post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// AJAX request triggered while editing a post (e.g., a plugin creating a post on the fly).
+			return $lang;
+		}
 		if ( isset( $this->pref_lang ) && $user->can_translate( $this->pref_lang ) ) {
 			// Always defined on admin, never defined on frontend.
 			return $this->pref_lang;
