@@ -2,6 +2,7 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use PLL_Admin_Links;
 use WP_Site_Health;
 
 class Front_Page_Test extends TestCase {
@@ -38,6 +39,14 @@ class Front_Page_Test extends TestCase {
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
+		/**
+		 * Homepage_test() calls get_must_translate_message() which, only when a language is missing,
+		 * builds a translation link via $this->links->get_new_post_translation_link().
+		 * PLL_Admin::links is only set in init(), which is never called in our set_up(),
+		 * so it must be initialized manually here to avoid a fatal error on this code path.
+		 */
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+
 		$expected = array(
 			'label'  => 'The homepage is not translated in all languages',
 			'status' => 'critical',
@@ -56,8 +65,8 @@ class Front_Page_Test extends TestCase {
 			array_diff_key( $result, array( 'description' => true ) ),
 			'homepage_test() should return the expected array.'
 		);
-		$this->assertSame(
-			'<p>You must translate your static front page in <a href="">Français</a>.</p>',
+		$this->assertMatchesRegularExpression(
+			'/^<p>You must translate your static front page in <a href="[^"]*post-new\.php\?post_type=page&#038;from_post=' . $home_en . '&#038;new_lang=fr&#038;_wpnonce=[^"]+">Français<\/a>\.<\/p>$/',
 			$result['description'],
 			'homepage_test() should return the expected description.'
 		);
@@ -65,7 +74,7 @@ class Front_Page_Test extends TestCase {
 
 	public function test_status_tests_does_not_add_homepage_test_when_front_page_does_not_exist() {
 		update_option( 'show_on_front', 'page' );
-		update_option( 'page_on_front', 999999 );
+		update_option( 'page_on_front', 999999 ); // Intentionally big not to match an existing page.
 
 		$result = WP_Site_Health::get_tests();
 
