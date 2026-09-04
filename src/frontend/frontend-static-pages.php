@@ -131,15 +131,36 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Prevents the canonical redirect if we are on a static front page.
+	 * Manages redirections for the static front pages.
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $redirect_url The redirect url.
+	 * @param string|false $redirect_url The redirect URL.
 	 * @return string|false
 	 */
 	public function pll_check_canonical_url( $redirect_url ) {
-		return $this->options['redirect_lang'] && ! $this->options['force_lang'] && ! empty( $this->curlang->page_on_front ) && is_page( $this->curlang->page_on_front ) ? false : $redirect_url;
+		global $wp_query;
+
+		if ( empty( $this->curlang->page_on_front ) ) {
+			return $redirect_url;
+		}
+
+		if ( $this->options['redirect_lang'] ) {
+			// Prevent the canonical redirect if we are on a static front page.
+			if ( empty( $redirect_url ) ) {
+				// Already prevented.
+				return $redirect_url;
+			}
+			return ! $this->options['force_lang'] && $wp_query->is_page( $this->curlang->page_on_front ) ? false : $redirect_url;
+		}
+
+		if ( 1 === $this->options['force_lang'] && ! $this->options['hide_default'] && $wp_query->is_home && ! $wp_query->is_posts_page ) {
+			// Redirect example.com/fr/ to example.com/fr/front-page/ if we're not hiding the page name, and not hiding
+			// the language slug for the default language.
+			return $this->curlang->get_home_url();
+		}
+
+		return $redirect_url;
 	}
 
 	/**
