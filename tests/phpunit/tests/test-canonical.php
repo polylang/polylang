@@ -13,6 +13,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
+	private static $page_on_front_en;
+	private static $page_on_front_fr;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -79,6 +81,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
 		self::$model->post->save_translations( self::$page_for_posts_en, array( 'en' => self::$page_for_posts_en, 'fr' => self::$page_for_posts_fr ) );
+
+		self::$page_on_front_en = $factory->post->create( array( 'post_title' => 'front', 'post_type' => 'page' ) );
+		self::$model->post->set_language( self::$page_on_front_en, 'en' );
+
+		self::$page_on_front_fr = $factory->post->create( array( 'post_title' => 'accueil', 'post_type' => 'page' ) );
+		self::$model->post->set_language( self::$page_on_front_fr, 'fr' );
+
+		self::$model->post->save_translations( self::$page_on_front_en, array( 'en' => self::$page_on_front_en, 'fr' => self::$page_on_front_fr ) );
 	}
 
 	public function init_for_sitemaps() {
@@ -95,6 +105,19 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
+		wp_delete_post( self::$post_en, true );
+		wp_delete_post( self::$page_id, true );
+		wp_delete_post( self::$custom_post_id, true );
+		wp_delete_post( self::$not_rewritten_cpt_id, true );
+		wp_delete_post( self::$page_for_posts_en, true );
+		wp_delete_post( self::$page_for_posts_fr, true );
+		wp_delete_post( self::$page_on_front_en, true );
+		wp_delete_post( self::$page_on_front_fr, true );
+		wp_delete_term( self::$term_en, 'category' );
+		wp_delete_term( self::$second_term_en, 'category' );
+		wp_delete_term( self::$tag_en, 'post_tag' );
+		wp_delete_term( self::$custom_term_en, 'custom_tax' );
+
 		_unregister_post_type( 'pllcanonical' );
 		_unregister_post_type( 'cptnotrewrited' );
 		_unregister_taxonomy( 'custom_tax' );
@@ -516,6 +539,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 */
 	public function test_page_for_posts_with_name_and_language() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical(
@@ -529,6 +553,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_for_posts_should_match_page_for_post_option_when_language_is_incorrect() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
@@ -536,6 +561,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_without_language() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/posts/', '/en/posts/' );
@@ -543,6 +569,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_from_plain_permalink() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_en, '/en/posts/' );
@@ -550,6 +577,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/en/articles/', '/fr/articles/' );
@@ -557,6 +585,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_for_post_option_should_be_translated_when_no_language_is_set() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/articles/', '/fr/articles/' );
@@ -564,9 +593,43 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_for_post_option_should_be_translated_from_plain_permalink() {
 		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_fr );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		self::$model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_fr, '/fr/articles/' );
+	}
+
+	/**
+	 * Page on front.
+	 *
+	 * @ticket 3109
+	 * @see https://github.com/polylang/polylang-pro/issues/3109
+	 *
+	 * @testWith ["fr", "accueil"]
+	 *           ["en", "front"]
+	 *
+	 * @param string $lang_slug
+	 * @param string $page_slug
+	 * @return void
+	 */
+	public function test_root_redirect_to_page_on_front( string $lang_slug, string $page_slug ) {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::$page_on_front_en );
+		update_option( 'page_for_posts', self::$page_for_posts_en );
+
+		$this->options['hide_default']  = false;
+		$this->options['rewrite']       = true;
+		$this->options['redirect_lang'] = false;
+
+		self::$model->clean_languages_cache(); // Clean the languages transient.
+
+		$this->assertCanonical(
+			"/$lang_slug/",
+			array(
+				'url' => "/$lang_slug/$page_slug/",
+				'qv'  => array( 'lang' => $lang_slug, 'pagename' => $page_slug, 'page' => '' ),
+			)
+		);
 	}
 
 	/**
