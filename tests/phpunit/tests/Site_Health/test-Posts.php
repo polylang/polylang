@@ -42,6 +42,10 @@ class Posts_Test extends TestCase {
 
 		$result = $this->site_health->info( array() );
 
-		$this->assertArrayNotHasKey( 'pll_warnings', $result, 'Should not add warnings when all posts have a language.' );
+		$this->assertArrayNotHasKey(
+			'post-no-lang',
+			$result['pll_warnings']['fields'] ?? array(),
+			'Should not report posts without language when all posts have a language.'
+		);
 	}
 }

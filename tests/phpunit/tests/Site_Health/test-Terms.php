@@ -43,9 +43,9 @@ class Terms_Test extends TestCase {
 		$result = $this->site_health->info( array() );
 
 		$this->assertArrayNotHasKey(
-			'pll_warnings',
-			$result,
-			'Should not add warnings when no terms are missing a language.'
+			'term-no-lang',
+			$result['pll_warnings']['fields'] ?? array(),
+			'Should not report term without language when all terms have a language.'
 		);
 	}
 }

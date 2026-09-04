@@ -40,10 +40,9 @@ class Front_Page_Test extends TestCase {
 		$this->set_page_on_front( $home_en );
 
 		/**
-		 * Homepage_test() calls get_must_translate_message() which, only when a language is missing,
-		 * builds a translation link via $this->links->get_new_post_translation_link().
-		 * PLL_Admin::links is only set in init(), which is never called in our set_up(),
-		 * so it must be initialized manually here to avoid a fatal error on this code path.
+		 * PLL_Admin_Links stores the current user when instantiated.
+		 * This test requires an administrator to generate the translation link,
+		 * so it must be initialized after setting the administrator as the current user.
 		 */
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
