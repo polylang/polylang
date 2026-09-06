@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.8.7
+Stable tag: 3.8.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.8.8 (2026-09-07) =
+
+* Security: Fix exposure of some draft posts metadata to non-authorized users. Reported by Patchstack.
+* Pro: Allow plugins requiring Polylang to be installed when Polylang Pro is active #3051 #3116
+* Pro: Fix warning `WP_Post conversion to int` with WooCommerce #3101
+* Pro: Fix creation of translation in block editor for WP < 6.7 #3105
+* Fix duplicated posts page #1992
 
 = 3.8.7 (2026-08-17) =
 
