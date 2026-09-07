@@ -32,18 +32,14 @@ class Front_Page_Test extends TestCase {
 	}
 
 	public function test_homepage_test_missing_translation() {
-		// Translation URLs require a logged-in user with the correct capabilities.
-		$admin_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
-		wp_set_current_user( $admin_id );
-
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
-		/**
-		 * PLL_Admin_Links stores the current user when instantiated.
-		 * This test requires an administrator to generate the translation link,
-		 * so it must be initialized after setting the administrator as the current user.
+		/*
+		 * We need PLL_Admin_Links to generate the link.
+		 * PLL_Admin_Links requires a user.
 		 */
+		wp_set_current_user( 1 );
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
 		$expected = array(
@@ -65,7 +61,7 @@ class Front_Page_Test extends TestCase {
 			'homepage_test() should return the expected array.'
 		);
 		$this->assertMatchesRegularExpression(
-			'/^<p>You must translate your static front page in <a href="[^"]*post-new\.php\?post_type=page&#038;from_post=' . $home_en . '&#038;new_lang=fr&#038;_wpnonce=[^"]+">Français<\/a>\.<\/p>$/',
+			'%^<p>You must translate your static front page in <a href="http://example.org/wp-admin/post-new\.php\?post_type=page&#038;from_post=' . $home_en . '&#038;new_lang=fr&#038;_wpnonce=[^"]+">Français<\/a>\.<\/p>$%',
 			$result['description'],
 			'homepage_test() should return the expected description.'
 		);
