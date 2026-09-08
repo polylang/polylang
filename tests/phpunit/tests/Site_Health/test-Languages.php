@@ -2,8 +2,6 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-use WP_Debug_Data;
-
 class Languages_Test extends TestCase {
 
 	public function test_info_languages_term_props() {
@@ -38,25 +36,11 @@ class Languages_Test extends TestCase {
 		$this->assertSame( $en->get_tax_prop( 'term_language', 'count' ), $info['term_props']['value']['term_language/count'] );
 	}
 
-	public function test_info_languages_preserves_existing_debug_info() {
-		require_once ABSPATH . 'wp-admin/includes/class-wp-debug-data.php';
+	public function test_info_languages_is_applied() {
+		$debug_info = $this->get_debug_info();
 
-		$debug_info_with_pll = WP_Debug_Data::debug_data();
-
-		remove_filter( 'debug_information', array( $this->site_health, 'info_languages' ) );
-
-		$debug_info_without_pll = WP_Debug_Data::debug_data();
-
-		$this->assertArrayHasKey( 'pll_language_en', $debug_info_with_pll );
-		$this->assertArrayHasKey( 'pll_language_fr', $debug_info_with_pll );
-
-		unset( $debug_info_with_pll['pll_language_en'], $debug_info_with_pll['pll_language_fr'] );
-
-		$this->assertSameSetsWithIndex(
-			$debug_info_without_pll,
-			$debug_info_with_pll,
-			'Existing debug information should be preserved unchanged.'
-		);
+		$this->assertArrayHasKey( 'pll_language_en', $debug_info );
+		$this->assertArrayHasKey( 'pll_language_fr', $debug_info );
 	}
 
 	public function test_info_languages_contains_expected_fields() {
@@ -93,8 +77,32 @@ class Languages_Test extends TestCase {
 			$this->assertEmpty( $debug_info, 'Result should be empty when no language is set.' );
 		} finally {
 			// Cleanup: always restore languages, even if the assertion above fails, so subsequent tests in the class aren't affected.
-			self::create_language( 'en_US' );
-			self::create_language( 'fr_FR' );
+			self::factory()->language->create_many( 2 );
 		}
+	}
+
+	public function test_info_languages_preserves_existing_debug_info() {
+		$debug_info = array(
+			'pre_existing_data' => array(
+				'label'       => 'Title of this data',
+				'description' => 'Description',
+				'fields'      => array(
+					'name' => array(
+						'label' => 'Name',
+						'value' => 'Field name',
+					),
+				),
+			),
+		);
+
+		$result = $this->site_health->info_languages( $debug_info );
+
+		$this->assertCount( 3, $result, 'Result should contain one entry per configured language, plus the pre-existing data.' );
+		$this->assertSame(
+			$debug_info['pre_existing_data'],
+			$result['pre_existing_data'],
+			'Pre-existing data should be preserved unchanged.'
+		);
+		$this->assertSame( 'Language: English - en', $result['pll_language_en']['label'], 'New language entry should be added correctly.' );
 	}
 }

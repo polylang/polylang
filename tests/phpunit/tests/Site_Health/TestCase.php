@@ -6,6 +6,7 @@ use PLL_Admin;
 use PLL_Admin_Site_Health;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
+use WP_Debug_Data;
 
 abstract class TestCase extends PLL_UnitTestCase {
 
@@ -26,6 +27,12 @@ abstract class TestCase extends PLL_UnitTestCase {
 		parent::pllSetUpBeforeClass( $factory );
 
 		$factory->language->create_many( 2 );
+
+		@mkdir( WP_CONTENT_DIR . '/polylang' );
+		copy(
+			PLL_TEST_DATA_DIR . 'wpml-config.xml',
+			WP_CONTENT_DIR . '/polylang/wpml-config.xml'
+		);
 	}
 
 	public function set_up() {
@@ -39,6 +46,13 @@ abstract class TestCase extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( (int) get_option( 'default_category' ), 'en' );
 	}
 
+	public static function wpTearDownAfterClass() {
+		parent::wpTearDownAfterClass();
+
+		unlink( WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
+		rmdir( WP_CONTENT_DIR . '/polylang' );
+	}
+
 	/**
 	 * Configures WordPress to use a static front page.
 	 *
@@ -49,5 +63,16 @@ abstract class TestCase extends PLL_UnitTestCase {
 	protected function set_page_on_front( int $page, string $show = 'page' ): void {
 		update_option( 'show_on_front', $show );
 		update_option( 'page_on_front', $page );
+	}
+
+	/**
+	 * Retrieves WordPress debug information.
+	 *
+	 * @return array The debug information.
+	 */
+	protected function get_debug_info() {
+		require_once ABSPATH . 'wp-admin/includes/class-wp-debug-data.php';
+
+		return WP_Debug_Data::debug_data();
 	}
 }
