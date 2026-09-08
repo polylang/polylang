@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Syntex\Polylang\Tests\Integration\Meta;
+namespace WP_Syntex\Polylang\Tests\Meta;
 
 trait Copy {
 	/**

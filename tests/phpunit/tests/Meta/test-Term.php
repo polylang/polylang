@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Syntex\Polylang\Tests\Integration\Meta;
+namespace WP_Syntex\Polylang\Tests\Meta;
 
 use PLL_UnitTest_Factory;
 
