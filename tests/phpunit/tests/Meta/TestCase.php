@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Syntex\Polylang_Pro\Tests\Integration\modules\Meta;
+namespace WP_Syntex\Polylang\Tests\Meta;
 
 use PLL_Sync;
 use PLL_Model;
