@@ -36,7 +36,7 @@ class Warnings_Test extends TestCase {
 		);
 		$debug_info = $this->site_health->info( array() );
 
-		$this->assertArrayHasKey( 'simplexml', $debug_info['pll_warnings']['fields'], 'The pll_warnings entry should contain simplexml.' );
+		$this->assertArrayHasKey( 'simplexml', $debug_info['pll_warnings']['fields'], 'Debug information entry should contain simplexml.' );
 		$this->assertSame(
 			'PHP SimpleXML extension',
 			$debug_info['pll_warnings']['fields']['simplexml']['label'],

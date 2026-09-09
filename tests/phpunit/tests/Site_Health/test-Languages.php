@@ -2,6 +2,8 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Error;
+
 class Languages_Test extends TestCase {
 
 	public function test_info_languages_term_props() {
@@ -37,7 +39,19 @@ class Languages_Test extends TestCase {
 	}
 
 	public function test_info_languages_is_applied() {
-		$debug_info = $this->get_debug_info();
+		// Prevent the external WordPress.org request performed by WP_Debug_Data,
+		// which is unrelated to the behavior tested here.
+		$filter = function () {
+			return new WP_Error( 'test_http_request', 'HTTP request disabled for this test.' );
+		};
+
+		add_filter( 'pre_http_request', $filter );
+
+		try {
+			$debug_info = $this->get_debug_info();
+		} finally {
+			remove_filter( 'pre_http_request', $filter );
+		}
 
 		$this->assertArrayHasKey( 'pll_language_en', $debug_info );
 		$this->assertArrayHasKey( 'pll_language_fr', $debug_info );
