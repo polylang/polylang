@@ -2,6 +2,15 @@ name: Consistent versions
 
 on:
   push:
+    branches: master
+
+  pull_request:
+    branches: master
+
+# Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

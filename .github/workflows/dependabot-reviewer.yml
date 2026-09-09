@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened]
 
+
+# Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write

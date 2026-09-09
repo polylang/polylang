@@ -3,7 +3,7 @@ name: End To End Tests
 on:
   push:
     branches: master
-    paths:
+    paths: &e2e_paths
       - '**.php'
       - '!tests/**.php'
       - '**.js'
@@ -17,27 +17,19 @@ on:
       - '.github/workflows/end-to-end-tests.yml'
       - 'babel.config.js'
       - '.wp-env.json'
-
   pull_request:
     branches: master
-    paths:
-      - '**.php'
-      - '!tests/**.php'
-      - '**.js'
-      - '**.mjs'
-      - '**.cjs'
-      - '**.css'
-      - '**.scss'
-      - 'composer.json'
-      - 'package.json'
-      - 'webpack.config.js'
-      - '.github/workflows/end-to-end-tests.yml'
-      - 'babel.config.js'
-      - '.wp-env.json'
+    paths: *e2e_paths
   schedule:
     # Runs every Monday at 00:00.
     - cron:  '0 0 * * 1'
   workflow_dispatch:
+
+
+# Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   testing:

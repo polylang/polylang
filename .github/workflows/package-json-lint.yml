@@ -3,13 +3,18 @@ name: Package JSON Lint
 on:
   push:
     branches: master
-    paths:
+    paths: &package_json_paths
       - 'package.json'
   pull_request:
     branches: master
-    paths:
-      - 'package.json'
+    paths: *package_json_paths
   workflow_dispatch:
+
+
+# Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   testing:
