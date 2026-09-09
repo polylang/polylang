@@ -2,6 +2,27 @@ name: Consistent versions
 
 on:
   push:
+    branches: master
+    paths: &consistent_versions_paths
+      - 'polylang.php'
+      - 'package.json'
+      - 'composer.json'
+      - 'readme.txt'
+      - 'phpcs.xml.dist'
+      - 'src/modules/Blocks/Language_Switcher/Standard/block.json'
+      - 'src/modules/Blocks/Language_Switcher/Navigation/block.json'
+      - '.github/consistent-versions.yaml'
+      - '.github/consistent-versions-tag.yaml'
+      - '.github/workflows/consistent-versions.yml'
+
+  pull_request:
+    branches: master
+    paths: *consistent_versions_paths
+
+# Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

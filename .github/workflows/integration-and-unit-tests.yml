@@ -3,7 +3,7 @@ name: Integration and Unit Tests
 on:
   push:
     branches: master
-    paths:
+    paths: &phpunit_paths
       - '**.php'
       - '**/phpunit.xml'
       - 'composer.json'
@@ -12,17 +12,17 @@ on:
       - '.github/workflows/integration-and-unit-tests.yml'
   pull_request:
     branches: master
-    paths:
-      - '**.php'
-      - '**/phpunit.xml'
-      - 'composer.json'
-      - 'composer.lock'
-      - 'tests/bin/**'
-      - '.github/workflows/integration-and-unit-tests.yml'
+    paths: *phpunit_paths
   schedule:
     # Runs every Monday at 00:00.
     - cron:  '0 0 * * 1'
   workflow_dispatch:
+
+
+# Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   testing:
