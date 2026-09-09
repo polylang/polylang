@@ -2,11 +2,14 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Debug_Data;
 use PLL_Admin;
-use PLL_Admin_Site_Health;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
-use WP_Debug_Data;
+use PLL_Admin_Site_Health;
+
+use function Brain\Monkey\setUp;
+use function Brain\Monkey\tearDown;
 
 abstract class TestCase extends PLL_UnitTestCase {
 
@@ -38,12 +41,20 @@ abstract class TestCase extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
+		setUp();
+
 		$links_model            = self::$model->get_links_model();
 		$this->pll_admin        = new PLL_Admin( $links_model );
 		$this->site_health      = new PLL_Admin_Site_Health( $this->pll_admin );
 
 		// Assign a language to WordPress' default category ("Uncategorized"), so it doesn't interfere with tests checking terms without a language.
 		$this->pll_admin->model->term->set_language( (int) get_option( 'default_category' ), 'en' );
+	}
+
+	public function tear_down() {
+		tearDown();
+
+		parent::tear_down();
 	}
 
 	public static function wpTearDownAfterClass() {
