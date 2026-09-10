@@ -266,11 +266,12 @@ class PLL_Frontend_Auto_Translate {
 			if ( isset( $q['taxonomy'], $q['terms'] ) && $this->model->is_translated_taxonomy( $q['taxonomy'] ) ) {
 				$arr = array();
 				$field = isset( $q['field'] ) && in_array( $q['field'], array( 'slug', 'name' ) ) ? $q['field'] : 'term_id';
-				foreach ( (array) $q['terms'] as $t ) {
-					$arr[] = $this->model->term->get_by( $field, $t, $this->curlang, $q['taxonomy'] );
+				foreach ( (array) $q['terms'] as $term ) {
+					$translated = $this->model->term->get_by( $field, $term, $this->curlang, $q['taxonomy'] );
+					$arr[]      = $translated ?: $term;
 				}
 
-				$tax_queries[ $key ]['terms'] = array_filter( $arr );
+				$tax_queries[ $key ]['terms'] = $arr;
 			} else {
 				// Nested queries.
 				$tax_queries[ $key ] = $this->translate_tax_query_recursive( $q );
