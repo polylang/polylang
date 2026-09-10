@@ -8,7 +8,6 @@ use PLL_Admin_Site_Health;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Model\Languages;
 
-
 class Load_Test extends TestCase {
 
 	public function test_when_languages_are_configured_site_health_is_loaded() {
