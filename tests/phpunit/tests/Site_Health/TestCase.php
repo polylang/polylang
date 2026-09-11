@@ -98,9 +98,11 @@ abstract class TestCase extends PLL_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	protected function reset_wpml_files_cache() {
+	protected static function reset_wpml_files_cache() {
 		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
 
+		// `setAccessible()` is required before PHP 8.1 to access non-public properties,
+		// but is deprecated in recent PHP versions where properties are accessible by default.
 		if ( PHP_VERSION_ID < 80100 ) {
 			$files_reflection->setAccessible( true );
 		}

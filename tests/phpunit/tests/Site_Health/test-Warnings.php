@@ -253,7 +253,7 @@ class Warnings_Test extends TestCase {
 		rmdir( WP_CONTENT_DIR . '/polylang' );
 
 		// Reset the cached file list so PLL_WPML_Config::get_files() rescans the disk.
-		$this->reset_wpml_files_cache();
+		self::reset_wpml_files_cache();
 	}
 
 	/**
@@ -269,6 +269,6 @@ class Warnings_Test extends TestCase {
 		);
 
 		// Reset the cache again so the next test sees the restored file, not the stale empty result.
-		$this->reset_wpml_files_cache();
+		self::reset_wpml_files_cache();
 	}
 }
