@@ -259,7 +259,6 @@ class Warnings_Test extends TestCase {
 
 		// Reset the cached file list so PLL_WPML_Config::get_files() rescans the disk.
 		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
-		$files_reflection->setAccessible( true );
 		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
 		return $files_reflection;
 	}

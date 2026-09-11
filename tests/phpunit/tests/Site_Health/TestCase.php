@@ -42,7 +42,6 @@ abstract class TestCase extends PLL_UnitTestCase {
 		// Force a fresh scan: another test class may already have cached
 		// an empty file list before this one copied wpml-config.xml.
 		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
-		$files_reflection->setAccessible( true );
 		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
 	}
 
