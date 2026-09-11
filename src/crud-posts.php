@@ -538,7 +538,7 @@ class PLL_CRUD_Posts {
 			return $clauses;
 		}
 
-		$untranslated_in = PLL()->model->languages->get( $query->query['untranslated_in'] );
+		$untranslated_in = $this->model->languages->get( $query->query['untranslated_in'] );
 
 		if ( empty( $untranslated_in ) ) {
 			return $clauses;
