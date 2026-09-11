@@ -173,6 +173,36 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( $post_en, $post_fr ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
+	public function test_tax_query_fallback_when_term_has_no_translation() {
+		self::factory()->language->create( array( 'locale' => 'de_DE_formal' ) );
+
+		$terms = self::factory()->term->create_translated(
+			array( 'taxonomy' => 'trtax', 'name' => 'test', 'lang' => 'en' ),
+			array( 'taxonomy' => 'trtax', 'name' => 'essai', 'lang' => 'fr' )
+		);
+
+		$post_en = self::factory()->post->create( array( 'post_type' => 'trcpt', 'lang' => 'en' ) );
+		wp_set_post_terms( $post_en, array( 'test' ), 'trtax' );
+
+		PLL()->curlang = PLL()->model->get_language( 'de' );
+
+		$args = array(
+			'post_type' => 'trcpt',
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'trtax',
+					'field'    => 'term_id',
+					'terms'    => array( $terms['en'] ),
+				),
+			),
+		);
+
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $terms['en'] ), $query->tax_query->queries[0]['terms'] );
+		$this->assertEquals( array( get_post( $post_en ) ), $query->posts );
+	}
+
 	public function test_post() {
 		$posts = self::factory()->post->create_translated(
 			array( 'post_title' => 'test', 'lang' => 'en' ),
