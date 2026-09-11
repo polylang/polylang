@@ -41,8 +41,7 @@ abstract class TestCase extends PLL_UnitTestCase {
 
 		// Force a fresh scan: another test class may already have cached
 		// an empty file list before this one copied wpml-config.xml.
-		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
-		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
+		self::reset_wpml_files_cache();
 	}
 
 	public function set_up() {
@@ -92,5 +91,20 @@ abstract class TestCase extends PLL_UnitTestCase {
 		require_once ABSPATH . 'wp-admin/includes/class-wp-debug-data.php';
 
 		return WP_Debug_Data::debug_data();
+	}
+
+	/**
+	 * Resets the cached wpml-config.xml file list.
+	 *
+	 * @return void
+	 */
+	protected function reset_wpml_files_cache() {
+		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
+
+		if ( PHP_VERSION_ID < 80100 ) {
+			$files_reflection->setAccessible( true );
+		}
+
+		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
 	}
 }

@@ -2,11 +2,8 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-use PLL_WPML_Config;
-use ReflectionProperty;
-use Brain\Monkey\Functions;
-use WP_Debug_Data;
 use WP_Site_Health;
+use Brain\Monkey\Functions;
 
 class Warnings_Test extends TestCase {
 
@@ -83,23 +80,23 @@ class Warnings_Test extends TestCase {
 	}
 
 	public function test_should_not_add_wpml_data_to_debug_information_when_wpml_config_file_is_absent() {
-		$wpml_files_property = $this->remove_wpml_config();
-
-		$debug_info = $this->site_health->info( array() );
+		$this->remove_wpml_config();
 
 		try {
+			$debug_info = $this->site_health->info( array() );
+
 			$this->assertArrayNotHasKey(
 				'wpml',
 				$debug_info['pll_warnings']['fields'] ?? array(),
 				'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
 			);
 		} finally {
-			$this->restore_wpml_config( $wpml_files_property );
+			$this->restore_wpml_config();
 		}
 	}
 
 	public function test_should_not_report_any_warning_field_when_nothing_to_report() {
-		$wpml_files_property = $this->remove_wpml_config();
+		$this->remove_wpml_config();
 
 		self::factory()->post->create(
 			array(
@@ -115,21 +112,21 @@ class Warnings_Test extends TestCase {
 			)
 		);
 
-		$debug_info = $this->site_health->info( array() );
-
 		try {
-				$this->assertArrayNotHasKey(
-					'wpml',
-					$debug_info['pll_warnings']['fields'] ?? array(),
-					'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
-				);
+			$debug_info = $this->site_health->info( array() );
+
+			$this->assertArrayNotHasKey(
+				'wpml',
+				$debug_info['pll_warnings']['fields'] ?? array(),
+				'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
+			);
 			$this->assertArrayNotHasKey(
 				'simplexml',
 				$debug_info['pll_warnings']['fields'] ?? array(),
 				'Debug information should not contain a simplexml entry when no wpml-config.xml file is found.'
 			);
 		} finally {
-			$this->restore_wpml_config( $wpml_files_property );
+			$this->restore_wpml_config();
 		}
 	}
 
@@ -169,7 +166,7 @@ class Warnings_Test extends TestCase {
 	}
 
 	public function test_should_not_add_simplexml_to_modules_when_wpml_config_does_not_exists() {
-		$wpml_files_property = $this->remove_wpml_config();
+		$this->remove_wpml_config();
 		/** @var array|null $modules_before */
 		$modules_before = null;
 		/** @var array|null $modules_after */
@@ -193,17 +190,17 @@ class Warnings_Test extends TestCase {
 			20 // After Polylang's filter
 		);
 
-		$site_health = new WP_Site_Health();
-		$site_health->get_test_php_extensions();
-
 		try {
+			$site_health = new WP_Site_Health();
+			$site_health->get_test_php_extensions();
+
 			$this->assertSame(
 				$modules_before,
 				$modules_after,
 				'The modules list should be left untouched when no wpml-config.xml file is found.'
 			);
 		} finally {
-			$this->restore_wpml_config( $wpml_files_property );
+			$this->restore_wpml_config();
 		}
 	}
 
@@ -250,28 +247,21 @@ class Warnings_Test extends TestCase {
 	/**
 	 * Removes the wpml-config.xml file used by the test fixtures and resets
 	 * `PLL_WPML_Config`'s internal file cache so it rescans the disk.
-	 *
-	 * @return ReflectionProperty Reflection on `PLL_WPML_Config::$files`, to be passed to `restore_wpml_config()`.
 	 */
 	private function remove_wpml_config() {
 		unlink( WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 		rmdir( WP_CONTENT_DIR . '/polylang' );
 
 		// Reset the cached file list so PLL_WPML_Config::get_files() rescans the disk.
-		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
-		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
-		return $files_reflection;
+		$this->reset_wpml_files_cache();
 	}
 
 	/**
 	 * Restores the wpml-config.xml file previously removed by `remove_wpml_config()`
 	 * and resets the cached file list so the next call to `PLL_WPML_Config::get_files()`
 	 * sees the restored file instead of the stale empty result.
-	 *
-	 * @param ReflectionProperty $wpml_files_property Reflection on `PLL_WPML_Config::$files`, as returned by `remove_wpml_config()`.
-	 * @return void
 	 */
-	private function restore_wpml_config( $wpml_files_property ) {
+	private function restore_wpml_config() {
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
 		copy(
 			PLL_TEST_DATA_DIR . 'wpml-config.xml',
@@ -279,6 +269,6 @@ class Warnings_Test extends TestCase {
 		);
 
 		// Reset the cache again so the next test sees the restored file, not the stale empty result.
-		$wpml_files_property->setValue( PLL_WPML_Config::instance(), null );
+		$this->reset_wpml_files_cache();
 	}
 }
