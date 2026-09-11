@@ -5,6 +5,8 @@ namespace WP_Syntex\Polylang\Tests\Site_Health;
 use PLL_WPML_Config;
 use ReflectionProperty;
 use Brain\Monkey\Functions;
+use WP_Debug_Data;
+use WP_Site_Health;
 
 class Warnings_Test extends TestCase {
 
@@ -23,6 +25,31 @@ class Warnings_Test extends TestCase {
 			$debug_info['pll_warnings']['fields']['wpml']['value'],
 			'The wpml entry should contain the expected wpml-config.xml file.'
 		);
+	}
+
+	public function test_should_add_pll_warnings_without_overwriting_existing_entries() {
+		$debug_info = array(
+			'pre_existing_data' => array(
+				'label'       => 'Title of this data',
+				'description' => 'Description',
+				'fields'      => array(
+					'name' => array(
+						'label' => 'Name',
+						'value' => 'Field name',
+					),
+				),
+			),
+		);
+
+		$result = $this->site_health->info( $debug_info );
+
+		$this->assertArrayHasKey( 'pre_existing_data', $result, 'The pre-existing entry should still be present.' );
+		$this->assertSame(
+			$debug_info['pre_existing_data'],
+			$result['pre_existing_data'],
+			'The pre-existing entry should be left untouched by the Polylang filter.'
+		);
+		$this->assertArrayHasKey( 'pll_warnings', $result, 'The pll_warnings entry should be added.' );
 	}
 
 	public function test_should_add_simplexml_warning_when_it_is_missing_with_wpml_config() {
@@ -96,6 +123,110 @@ class Warnings_Test extends TestCase {
 		$debug_info = $this->site_health->info( array() );
 
 		$this->assertArrayNotHasKey( 'network_activated', $debug_info['pll_warnings']['fields'] ?? array(), 'Debug information should not contain an entry for multisite.' );
+	}
+
+	public function test_should_add_simplexml_to_modules_when_wpml_config_exists() {
+		/** @var array|null $captured_modules */
+		$captured_modules = null;
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$captured_modules ) {
+				$captured_modules = $modules;
+				return $modules;
+			},
+			20 // After Polyland filter
+		);
+
+		$site_health = new WP_Site_Health();
+		$site_health->get_test_php_extensions();
+
+		$this->assertIsArray( $captured_modules, 'The filter callback should have captured the modules array.' );
+		$this->assertArrayHasKey( 'simplexml', $captured_modules, 'The simplexml module should have been added to the list.' );
+		$this->assertSame(
+			array( 'extension' => 'simplexml', 'required' => true ),
+			$captured_modules['simplexml'],
+			'The simplexml module should be marked as required.'
+		);
+	}
+
+	public function test_should_not_add_simplexml_to_modules_when_wpml_config_does_not_exists() {
+		$wpml_files_property = $this->remove_wpml_config();
+		/** @var array|null $modules_before */
+		$modules_before = null;
+		/** @var array|null $modules_after */
+		$modules_after = null;
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$modules_before ) {
+				$modules_before = $modules;
+				return $modules;
+			},
+			5 // Before Polyland filter
+		);
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$modules_after ) {
+				$modules_after = $modules;
+				return $modules;
+			},
+			20 // After Polylang's filter
+		);
+
+		$site_health = new WP_Site_Health();
+		$site_health->get_test_php_extensions();
+
+		try {
+			$this->assertSame(
+				$modules_before,
+				$modules_after,
+				'The modules list should be left untouched when no wpml-config.xml file is found.'
+			);
+		} finally {
+			$this->restore_wpml_config( $wpml_files_property );
+		}
+	}
+
+	public function test_should_add_simplexml_without_altering_other_modules() {
+		/** @var array|null $modules_before */
+		$modules_before = null;
+		/** @var array|null $modules_after */
+		$modules_after = null;
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$modules_before ) {
+				$modules_before = $modules;
+				return $modules;
+			},
+			5 // Before Polyland filter
+		);
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$modules_after ) {
+				$modules_after = $modules;
+				return $modules;
+			},
+			20 // After Polylang's filter
+		);
+
+		$site_health = new WP_Site_Health();
+		$site_health->get_test_php_extensions();
+
+
+		$this->assertSame(
+			array_diff_key( $modules_before, array( 'simplexml' => true ) ),
+			array_diff_key( $modules_after, array( 'simplexml' => true ) ),
+			'All other modules should be left untouched by the Polylang filter.'
+		);
+		$this->assertSame(
+			array( 'extension' => 'simplexml', 'required' => true ),
+			$modules_after['simplexml'],
+			'The simplexml module should be marked as required.'
+		);
 	}
 
 	/**

@@ -40,6 +40,42 @@ if ( is_multisite() ) :
 				'The network_activated entry should contain the expected value.'
 			);
 		}
+
+		public function test_multisite_does_not_add_warnings_when_no_posts_are_missing_a_language() {
+			self::factory()->post->create(
+				array(
+					'post_type' => 'post',
+					'lang'      => 'en',
+				)
+			);
+
+			$debug_info = $this->site_health->info( array() );
+
+			$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Debug information should contain an entry for pll_warnings.' );
+			$this->assertArrayNotHasKey(
+				'post-no-lang',
+				$debug_info['pll_warnings']['fields'],
+				'Should not report posts without language when all posts have a language.'
+			);
+		}
+
+		public function test_multisite_does_not_add_warnings_when_no_terms_are_missing_a_language() {
+			self::factory()->term->create(
+				array(
+					'taxonomy' => 'category',
+					'lang'     => 'en',
+				)
+			);
+
+			$debug_info = $this->site_health->info( array() );
+
+			$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Debug information should contain an entry for pll_warnings.' );
+			$this->assertArrayNotHasKey(
+				'term-no-lang',
+				$debug_info['pll_warnings']['fields'],
+				'Should not report term without language when all terms have a language.'
+			);
+		}
 	}
 
 endif;
