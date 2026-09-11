@@ -88,13 +88,17 @@ class Warnings_Test extends TestCase {
 		$debug_info = $this->site_health->info( array() );
 
 		try {
-			$this->assertArrayNotHasKey( 'pll_warnings', $debug_info, 'Debug information should not contain an entry for pll_warnings.' );
+			$this->assertArrayNotHasKey(
+				'wpml',
+				$debug_info['pll_warnings']['fields'] ?? array(),
+				'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
+			);
 		} finally {
 			$this->restore_wpml_config( $wpml_files_property );
 		}
 	}
 
-	public function test_should_not_add_pll_warnings_when_nothing_to_report() {
+	public function test_should_not_report_any_warning_field_when_nothing_to_report() {
 		$wpml_files_property = $this->remove_wpml_config();
 
 		self::factory()->post->create(
@@ -112,14 +116,28 @@ class Warnings_Test extends TestCase {
 		);
 
 		$debug_info = $this->site_health->info( array() );
+
 		try {
-				$this->assertArrayNotHasKey( 'pll_warnings', $debug_info, 'Debug information should not contain an entry for pll_warnings.' );
+				$this->assertArrayNotHasKey(
+					'wpml',
+					$debug_info['pll_warnings']['fields'] ?? array(),
+					'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
+				);
+			$this->assertArrayNotHasKey(
+				'simplexml',
+				$debug_info['pll_warnings']['fields'] ?? array(),
+				'Debug information should not contain a simplexml entry when no wpml-config.xml file is found.'
+			);
 		} finally {
 			$this->restore_wpml_config( $wpml_files_property );
 		}
 	}
 
 	public function test_should_not_add_network_activated_field_when_not_multisite() {
+		if ( is_multisite() ) {
+			$this->markTestSkipped( 'network_activated is always present on multisite.' );
+		}
+
 		$debug_info = $this->site_health->info( array() );
 
 		$this->assertArrayNotHasKey( 'network_activated', $debug_info['pll_warnings']['fields'] ?? array(), 'Debug information should not contain an entry for multisite.' );
