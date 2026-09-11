@@ -2,9 +2,11 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-use WP_Debug_Data;
 use PLL_Admin;
+use WP_Debug_Data;
+use PLL_WPML_Config;
 use PLL_UnitTestCase;
+use ReflectionProperty;
 use PLL_UnitTest_Factory;
 use PLL_Admin_Site_Health;
 
@@ -36,6 +38,12 @@ abstract class TestCase extends PLL_UnitTestCase {
 			PLL_TEST_DATA_DIR . 'wpml-config.xml',
 			WP_CONTENT_DIR . '/polylang/wpml-config.xml'
 		);
+
+		// Force a fresh scan: another test class may already have cached
+		// an empty file list before this one copied wpml-config.xml.
+		$files_reflection = new ReflectionProperty( PLL_WPML_Config::class, 'files' );
+		$files_reflection->setAccessible( true );
+		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
 	}
 
 	public function set_up() {
