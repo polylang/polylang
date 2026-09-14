@@ -104,11 +104,11 @@ export const SwitcherControls = ( {
 
 	const labelOptions = [
 		{
-			label: __( 'Names', 'polylang' ),
+			label: __( 'Language names', 'polylang' ),
 			value: 'names',
 		},
 		{
-			label: __( 'Codes', 'polylang' ),
+			label: __( 'Language codes', 'polylang' ),
 			value: 'codes',
 		},
 	];
@@ -122,11 +122,11 @@ export const SwitcherControls = ( {
 
 	const toolbarLabelControls = [
 		{
-			title: __( 'Names', 'polylang' ),
+			title: __( 'Language names', 'polylang' ),
 			onClick: () => setAttributes( { show_labels: 'names' } ),
 		},
 		{
-			title: __( 'Codes', 'polylang' ),
+			title: __( 'Language codes', 'polylang' ),
 			onClick: () => setAttributes( { show_labels: 'codes' } ),
 		},
 	];
