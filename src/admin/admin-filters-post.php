@@ -306,7 +306,7 @@ class PLL_Admin_Filters_Post {
 
 		$dropdown_html = $dropdown->walk(
 			array_merge(
-				array( (object) array( 'slug' => 0, 'name' => __( 'All translations statuses', 'polylang' ) ) ),
+				array( (object) array( 'slug' => 0, 'name' => __( 'All translation statuses', 'polylang' ) ) ),
 				$languages
 			),
 			-1,
