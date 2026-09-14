@@ -122,13 +122,13 @@ const pllWidget = {
 			// Show/Hide rows.
 			wrapper
 				.querySelectorAll(
-					`:scope [class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })` // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed, PHPCS detects `-if-` like a `if(`.
+					`:scope [class*="pll-hidden-if-${ key }-"]:not(.pll-hidden-if-${ key }-${ value })`
 				)
 				.forEach( ( row ) => {
 					row.classList.remove( `pll-hidden-by-${ key }` );
 				} );
 			wrapper
-				.querySelectorAll( `:scope .pll-hidden-if-${ key }-${ value }` ) // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword, Generic.ControlStructures.InlineControlStructure.NotAllowed, PHPCS detects `-if-` like a `if(`.
+				.querySelectorAll( `:scope .pll-hidden-if-${ key }-${ value }` )
 				.forEach( ( row ) => {
 					row.classList.add( `pll-hidden-by-${ key }` );
 				} );
