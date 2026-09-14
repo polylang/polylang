@@ -46,7 +46,7 @@ class Widget extends Abstract_Fields {
 				),
 			),
 			'show_labels'            => array(
-				'label'   => __( 'Display labels', 'polylang' ),
+				'label'   => __( 'Labels', 'polylang' ),
 				'choices' => array(
 					''      => _x( 'None', 'Labels', 'polylang' ),
 					'names' => __( 'Language names', 'polylang' ),
