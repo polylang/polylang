@@ -428,6 +428,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block' => array(
 				'//figure/figcaption',
 				'//figure/img/@alt',
+				'//*[@name="foo_form_post_ids"]/@value',
+				'//*[@name="foo_form_category_ids"]/@value',
 			),
 			'my-plugin/my-block-2' => array(
 				'//div/p/a',
@@ -440,6 +442,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block' => array(
 				'headingTitle'  => true,
 				'text'          => true,
+				'PostIds'       => array(
+					'*' => true,
+				),
+				'TermIds'       => array(
+					'*' => true,
+				),
 				'wildcardsData' => array(
 					'foo*' => true,
 				),
