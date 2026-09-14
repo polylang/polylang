@@ -116,7 +116,7 @@ test.describe.serial(
 			// Edit the Navigation Language Switcher block settings to dropdown and add language names and flags.
 			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Dropdown' );
-			await setSwitcherLabels( page, 'Names' );
+			await setSwitcherLabels( page, 'Language names' );
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).check();
 
 			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherLocator( page );
@@ -141,7 +141,7 @@ test.describe.serial(
 			);
 
 			// Remove the flags: labels must be shown before flags can be hidden.
-			await setSwitcherLabels( page, 'Names' );
+			await setSwitcherLabels( page, 'Language names' );
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).uncheck();
 			await expect( page.getByRole( 'combobox', { name: 'Labels' } ) ).toHaveValue( 'names' );
 
@@ -175,7 +175,7 @@ test.describe.serial(
 
 			await selectNavigationLanguageSwitcherBlock( page );
 			await setSwitcherLayout( page, 'Horizontal' );
-			await setSwitcherLabels( page, 'Names' );
+			await setSwitcherLabels( page, 'Language names' );
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).check();
 
 			const blockWithNamesAndFlags = await getNavigationLanguageSwitcherLocator( page );
@@ -200,7 +200,7 @@ test.describe.serial(
 			);
 
 			// Remove the flags: labels must be shown before flags can be hidden.
-			await setSwitcherLabels( page, 'Names' );
+			await setSwitcherLabels( page, 'Language names' );
 			await page.getByRole( 'checkbox', { name: 'Display flags' } ).uncheck();
 			await expect( page.getByRole( 'combobox', { name: 'Labels' } ) ).toHaveValue( 'names' );
 
@@ -355,7 +355,7 @@ const setSwitcherLayout = async ( page, layout ) => {
  * Sets the switcher labels option in the block inspector.
  *
  * @param {Page}   page   The page object.
- * @param {string} labels The labels option (e.g. 'Names', 'None').
+ * @param {string} labels The labels option (e.g. 'Language names', 'None').
  */
 const setSwitcherLabels = async ( page, labels ) => {
 	await page.getByRole( 'combobox', { name: 'Labels' } ).selectOption( {

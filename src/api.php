@@ -60,11 +60,7 @@ function pll_the_languages( $args = array() ) {
 		_deprecated_argument(
 			'pll_the_languages()',
 			'3.9',
-			sprintf(
-				/* translators: %s is a function name. */
-				esc_html__( "See %s's documentation.", 'polylang' ),
-				'pll_the_languages()'
-			)
+			'See the documentation of pll_the_languages()'
 		);
 	}
 
@@ -76,10 +72,7 @@ function pll_the_languages( $args = array() ) {
 			if ( empty( $args['dropdown'] ) ) {
 				_doing_it_wrong(
 					'pll_the_languages()',
-					esc_html__(
-						'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
-						'polylang'
-					),
+					'pll_the_languages() does not output a wrapper by default. Pass `show_wrapper` => false explicitly to keep this behavior. In a near future, pll_the_languages() will output a `<ul>` wrapper as well (i.e. `show_wrapper` will default to `true`).',
 					'3.9'
 				);
 			}

@@ -29,7 +29,7 @@ class Menu extends Abstract_Fields {
 	public static function get(): array {
 		return array(
 			'layout'                 => array(
-				'label'   => __( 'Layout:', 'polylang' ),
+				'label'   => __( 'Layout', 'polylang' ),
 				'choices' => array(
 					'horizontal' => __( 'Inline', 'polylang' ),
 					'dropdown'   => __( 'Dropdown', 'polylang' ),
@@ -37,7 +37,7 @@ class Menu extends Abstract_Fields {
 				'section' => __( 'Display', 'polylang' ),
 			),
 			'show_labels'            => array(
-				'label'   => __( 'Display labels:', 'polylang' ),
+				'label'   => __( 'Labels', 'polylang' ),
 				'choices' => array(
 					''      => _x( 'None', 'Labels', 'polylang' ),
 					'names' => __( 'Language names', 'polylang' ),
@@ -49,7 +49,7 @@ class Menu extends Abstract_Fields {
 				'section' => __( 'Flags Settings', 'polylang' ),
 			),
 			'flag_aspect_ratio'      => array(
-				'label'   => __( 'Flags aspect:', 'polylang' ),
+				'label'   => __( 'Aspect', 'polylang' ),
 				'choices' => array(
 					'3:2' => __( 'Landscape (3:2)', 'polylang' ),
 					'1:1' => __( 'Square (1:1)', 'polylang' ),
