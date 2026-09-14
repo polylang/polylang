@@ -98,10 +98,11 @@ class PLL_Frontend_Auto_Translate {
 		$arr = array();
 		if ( ! empty( $qv['category_name'] ) ) {
 			foreach ( explode( ',', $qv['category_name'] ) as $slug ) {
-				$arr[] = $this->model->term->get_by( 'slug', $slug, $this->curlang, 'category' );
+				$translated = $this->model->term->get_by( 'slug', $slug, $this->curlang, 'category' );
+				$arr[]      = $translated ?: $slug;
 			}
 
-			$qv['category_name'] = implode( ',', array_filter( $arr ) );
+			$qv['category_name'] = implode( ',', $arr );
 		}
 
 		// Array of term ids
@@ -131,10 +132,11 @@ class PLL_Frontend_Auto_Translate {
 			$arr = array();
 			if ( ! empty( $qv[ $key ] ) ) {
 				foreach ( $qv[ $key ] as $slug ) {
-					$arr[] = $this->model->term->get_by( 'slug', $slug, $this->curlang, 'post_tag' );
+					$translated = $this->model->term->get_by( 'slug', $slug, $this->curlang, 'post_tag' );
+					$arr[]      = $translated ?: $slug;
 				}
 
-				$qv[ $key ] = array_filter( $arr );
+				$qv[ $key ] = $arr;
 			}
 		}
 
@@ -307,11 +309,10 @@ class PLL_Frontend_Auto_Translate {
 					// We got an unexpected query var, let return it unchanged.
 					return $query_var;
 				}
-				$slugs[ $key ] = $this->model->term->get_by( 'slug', $slug, $this->curlang, $taxonomy );
+				$translated     = $this->model->term->get_by( 'slug', $slug, $this->curlang, $taxonomy );
+				$slugs[ $key ] = $translated ?: $slug;
 			}
 		}
-
-		$slugs = array_filter( $slugs );
 
 		if ( ! empty( $sep ) ) {
 			return implode( $sep, $slugs );
