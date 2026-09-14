@@ -55,7 +55,8 @@ class Dropdown extends Abstract_Layout {
 			$this->get_nav_tag(),
 			esc_attr( $this->settings->unique_id ),
 			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
-			esc_attr( __( 'Choose a language', 'polylang' ) ),
+			/* translators: accessibility text */
+			esc_attr__( 'Choose a language', 'polylang' ),
 			$out
 		);
 
@@ -106,7 +107,8 @@ class Dropdown extends Abstract_Layout {
 		$svg = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.5 4L6 8L10.5 4" stroke-width="1.5"></path></svg>';
 		return sprintf(
 			'<button aria-label="%1$s" class="pll-submenu-toggle">%2$s</button>',
-			esc_attr( __( 'Open/Close languages submenu', 'polylang' ) ),
+			/* translators: accessibility text */
+			esc_attr__( 'Open/Close languages submenu', 'polylang' ),
 			$svg
 		);
 	}
