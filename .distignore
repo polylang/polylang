@@ -1,6 +1,7 @@
 # Files
 
 .*
+*.cjs
 babel.config.json
 composer.json
 composer.lock

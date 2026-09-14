@@ -132,7 +132,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 = 3.8.8 (2026-09-07) =
 
 * Security: Fix exposure of some draft posts metadata to non-authorized users. Reported by Patchstack.
-* Pro: Allow plugins requiring Polylang to be activated while only Poplylang Pro is installed and active #3051 #3116
+* Pro: Allow plugins requiring Polylang to be installed when Polylang Pro is active #3051 #3116
 * Pro: Fix warning `WP_Post conversion to int` with WooCommerce #3101
 * Pro: Fix creation of translation in block editor for WP < 6.7 #3105
 * Fix duplicated posts page #1992
