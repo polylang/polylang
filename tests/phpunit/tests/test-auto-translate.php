@@ -203,6 +203,39 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_en ) ), $query->posts );
 	}
 
+	public function test_term_slug_query_vars_fallback_when_term_has_no_translation() {
+		self::factory()->language->create( array( 'locale' => 'de_DE_formal' ) );
+
+		self::factory()->category->create_translated(
+			array( 'name' => 'test', 'lang' => 'en' ),
+			array( 'name' => 'essai', 'lang' => 'fr' )
+		);
+
+		self::factory()->tag->create_translated(
+			array( 'name' => 'test', 'lang' => 'en' ),
+			array( 'name' => 'essai', 'lang' => 'fr' )
+		);
+
+		self::factory()->term->create_translated(
+			array( 'taxonomy' => 'trtax', 'name' => 'test', 'lang' => 'en' ),
+			array( 'taxonomy' => 'trtax', 'name' => 'essai', 'lang' => 'fr' )
+		);
+
+		PLL()->curlang = PLL()->model->get_language( 'de' );
+
+		$query = new WP_Query( array( 'category_name' => 'test' ) );
+		$this->assertSame( 'test', $query->query_vars['category_name'] );
+
+		$query = new WP_Query( array( 'tag_slug__in' => array( 'test' ) ) );
+		$this->assertSame( array( 'test' ), $query->query_vars['tag_slug__in'] );
+
+		$query = new WP_Query( array( 'tag' => 'test' ) );
+		$this->assertSame( 'test', $query->query_vars['tag'] );
+
+		$query = new WP_Query( array( 'post_type' => 'trcpt', 'trtax' => 'test' ) );
+		$this->assertSame( 'test', $query->query_vars['trtax'] );
+	}
+
 	public function test_post() {
 		$posts = self::factory()->post->create_translated(
 			array( 'post_title' => 'test', 'lang' => 'en' ),
