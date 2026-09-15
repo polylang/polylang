@@ -29,6 +29,7 @@ extend-ignore-re = [
 [default.extend-identifiers]
 "captin411" = "captin411"
 "get_post_stati" = "get_post_stati"
+"avail_post_stati" = "avail_post_stati"
 "OLT_Manager_Test" = "OLT_Manager_Test"
 "PLL_OLT" = "PLL_OLT"
 "PLL_OLT_Manager" = "PLL_OLT_Manager"

@@ -592,4 +592,26 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( $after_pll, $after_dropdown );
 	}
+
+	public function test_all_link_is_current() {
+		global $avail_post_stati;
+
+		$avail_post_stati = get_available_post_statuses( 'post' );
+		$this->set_current_edit_screen( 'post' );
+
+		ob_start();
+		_get_list_table( 'WP_Posts_List_Table' )->views();
+		$html = ob_get_clean();
+
+		$doc = new DOMDocument( '1.0', 'UTF-8' );
+		$internal_errors = libxml_use_internal_errors( true );
+		$doc->loadHTML( $html );
+		libxml_clear_errors();
+		libxml_use_internal_errors( $internal_errors );
+
+		$list = ( new DOMXpath( $doc ) )->query( '//ul/li[@class="all"]/a[@class="current"]' );
+
+		$this->assertSame( 1, $list->count() );
+		$this->assertInstanceOf( DOMElement::class, $list->item( 0 ), 'The "All" link should be the current one.' );
+	}
 }
