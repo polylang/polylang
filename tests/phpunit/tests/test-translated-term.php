@@ -245,4 +245,18 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( self::$model->post->get_translation( $terms['en'], 'fr' ), 0 );
 		$this->assertSame( self::$model->post->get_translation( $terms['fr'], 'en' ), 0 );
 	}
+
+	public function test_set_language_should_not_create_orphan_group() {
+		$id = self::factory()->term->create();
+		self::$model->term->set_language( $id, 'en' );
+		self::$model->term->set_language( $id, 'de' );
+
+		$terms = get_terms( array( 'taxonomy' => 'term_translations', 'hide_empty' => false ) );
+
+		foreach ( $terms as $term ) {
+			$this->assertNotEmpty( $term->count ); // All groups must have at least one term attached.
+			$objects = get_objects_in_term( $term->term_id, 'term_translations' );
+			$this->assertNotEmpty( $objects ); // Double check with the relationship.
+		}
+	}
 }
