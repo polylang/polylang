@@ -1,11 +1,10 @@
 <?php
 
 abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		$factory->language->create_many( 2 );
 	}
 
 	public function set_up() {
