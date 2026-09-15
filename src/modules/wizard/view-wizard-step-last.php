@@ -85,15 +85,15 @@ defined( 'ABSPATH' ) || exit;
 					<?php
 					printf(
 						/* translators: %s is the name of Polylang Business Pack product */
-						esc_html__( 'We have noticed that you are using Polylang with WooCommerce. To ensure a better compatibility, we recommend you use %s which includes both Polylang Pro and Polylang For WooCommerce.', 'polylang' ),
-						'<strong>' . esc_html__( 'Polylang Business Pack', 'polylang' ) . '</strong>'
+						esc_html__( 'We have noticed that you are using WooCommerce. To ensure compatibility, we recommend that you use the %s.', 'polylang' ),
+						'<strong>Polylang Business Pack</strong>'
 					);
 					?>
 				</p>
 			</div>
 			<div class="pll-wizard-next-step-action">
 				<p class="pll-wizard-actions step">
-					<a class="button button-primary button-large" href="https://polylang.pro/pricing/polylang-for-woocommerce/">
+					<a class="button button-primary button-large" href="https://polylang.pro/pricing/polylang-business-pack/">
 						<?php esc_html_e( 'Buy now', 'polylang' ); ?>
 					</a>
 				</p>
