@@ -586,7 +586,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @phpstan-param object{'slug': string} $language
 	 */
 	protected function get_admin_bar_menu_url( $language ): string {
-		global $pagenow;
+		global $pagenow, $post_type;
 
 		$url = add_query_arg( 'lang', $language->slug, remove_query_arg( 'paged' ) );
 
@@ -595,8 +595,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		// Attempt to translate the category (taxonomy) filter if present.
-		$post_type = get_post_type();
-
 		if ( ! $post_type ) {
 			return $url;
 		}
