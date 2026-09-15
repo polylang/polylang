@@ -41,39 +41,45 @@ if ( is_multisite() ) :
 			);
 		}
 
-		public function test_multisite_does_not_add_warnings_when_no_posts_are_missing_a_language() {
+		public function test_multisite_add_warnings_when_posts_are_missing_a_language() {
 			self::factory()->post->create(
 				array(
 					'post_type' => 'post',
-					'lang'      => 'en',
 				)
 			);
 
 			$debug_info = $this->site_health->info( array() );
 
-			$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Debug information should contain an entry for pll_warnings.' );
-			$this->assertArrayNotHasKey(
+			$this->assertArrayHasKey(
+				'pll_warnings',
+				$debug_info,
+				'Debug information should contain an entry for pll_warnings.'
+			);
+			$this->assertArrayHasKey(
 				'post-no-lang',
 				$debug_info['pll_warnings']['fields'],
-				'Should not report posts without language when all posts have a language.'
+				'Should report posts without language when a post is missing a language.'
 			);
 		}
 
-		public function test_multisite_does_not_add_warnings_when_no_terms_are_missing_a_language() {
+		public function test_multisite_add_warnings_when_terms_are_missing_a_language() {
 			self::factory()->term->create(
 				array(
 					'taxonomy' => 'category',
-					'lang'     => 'en',
 				)
 			);
 
 			$debug_info = $this->site_health->info( array() );
 
-			$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Debug information should contain an entry for pll_warnings.' );
-			$this->assertArrayNotHasKey(
+			$this->assertArrayHasKey(
+				'pll_warnings',
+				$debug_info,
+				'Debug information should contain an entry for pll_warnings.'
+			);
+			$this->assertArrayHasKey(
 				'term-no-lang',
 				$debug_info['pll_warnings']['fields'],
-				'Should not report term without language when all terms have a language.'
+				'Should report terms without language when a term is missing a language.'
 			);
 		}
 	}

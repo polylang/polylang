@@ -3,9 +3,18 @@
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 use WP_Site_Health;
-use Brain\Monkey\Functions;
 
 class Warnings_Test extends TestCase {
+
+	private $wpml_config_removed = false;
+
+	public function tear_down() {
+		if ( $this->wpml_config_removed ) {
+			$this->restore_wpml_config();
+		}
+
+		parent::tear_down();
+	}
 
 	public function test_should_add_wpml_config_data_to_debug_information() {
 		$debug_info = $this->site_health->info( array() );
@@ -49,30 +58,6 @@ class Warnings_Test extends TestCase {
 		$this->assertArrayHasKey( 'pll_warnings', $result, 'The pll_warnings entry should be added.' );
 	}
 
-	// public function test_should_add_simplexml_warning_when_it_is_missing_with_wpml_config() {
-	// Functions\when( 'extension_loaded' )->alias(
-	// function ( $arg ) {
-	// if ( 'simplexml' === $arg ) {
-	// return false;
-	// }
-	// return true;
-	// }
-	// );
-	// $debug_info = $this->site_health->info( array() );
-
-	// $this->assertArrayHasKey( 'simplexml', $debug_info['pll_warnings']['fields'], 'Debug information entry should contain simplexml.' );
-	// $this->assertSame(
-	// 'PHP SimpleXML extension',
-	// $debug_info['pll_warnings']['fields']['simplexml']['label'],
-	// 'The pll_warnings entry should be added correctly.'
-	// );
-	// $this->assertSame(
-	// 'Not loaded. Contact your host provider.',
-	// $debug_info['pll_warnings']['fields']['simplexml']['value'],
-	// 'The simplexml entry should contain the expected warning message.'
-	// );
-	// }
-
 	public function test_should_not_add_simplexml_warning_when_it_is_present_with_wpml_config() {
 		$debug_info = $this->site_health->info( array() );
 
@@ -82,17 +67,13 @@ class Warnings_Test extends TestCase {
 	public function test_should_not_add_wpml_data_to_debug_information_when_wpml_config_file_is_absent() {
 		$this->remove_wpml_config();
 
-		try {
-			$debug_info = $this->site_health->info( array() );
+		$debug_info = $this->site_health->info( array() );
 
-			$this->assertArrayNotHasKey(
-				'wpml',
-				$debug_info['pll_warnings']['fields'] ?? array(),
-				'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
-			);
-		} finally {
-			$this->restore_wpml_config();
-		}
+		$this->assertArrayNotHasKey(
+			'wpml',
+			$debug_info['pll_warnings']['fields'] ?? array(),
+			'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
+		);
 	}
 
 	public function test_should_not_report_any_warning_field_when_nothing_to_report() {
@@ -112,22 +93,18 @@ class Warnings_Test extends TestCase {
 			)
 		);
 
-		try {
-			$debug_info = $this->site_health->info( array() );
+		$debug_info = $this->site_health->info( array() );
 
-			$this->assertArrayNotHasKey(
-				'wpml',
-				$debug_info['pll_warnings']['fields'] ?? array(),
-				'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
-			);
-			$this->assertArrayNotHasKey(
-				'simplexml',
-				$debug_info['pll_warnings']['fields'] ?? array(),
-				'Debug information should not contain a simplexml entry when no wpml-config.xml file is found.'
-			);
-		} finally {
-			$this->restore_wpml_config();
-		}
+		$this->assertArrayNotHasKey(
+			'wpml',
+			$debug_info['pll_warnings']['fields'] ?? array(),
+			'Debug information should not contain a wpml entry when no wpml-config.xml file is found.'
+		);
+		$this->assertArrayNotHasKey(
+			'simplexml',
+			$debug_info['pll_warnings']['fields'] ?? array(),
+			'Debug information should not contain a simplexml entry when no wpml-config.xml file is found.'
+		);
 	}
 
 	public function test_should_not_add_network_activated_field_when_not_multisite() {
@@ -150,7 +127,7 @@ class Warnings_Test extends TestCase {
 				$captured_modules = $modules;
 				return $modules;
 			},
-			20 // After Polyland filter
+			20 // After Polylang filter
 		);
 
 		$site_health = new WP_Site_Health();
@@ -178,45 +155,7 @@ class Warnings_Test extends TestCase {
 				$modules_before = $modules;
 				return $modules;
 			},
-			5 // Before Polyland filter
-		);
-
-		add_filter(
-			'site_status_test_php_modules',
-			function ( $modules ) use ( &$modules_after ) {
-				$modules_after = $modules;
-				return $modules;
-			},
-			20 // After Polylang's filter
-		);
-
-		try {
-			$site_health = new WP_Site_Health();
-			$site_health->get_test_php_extensions();
-
-			$this->assertSame(
-				$modules_before,
-				$modules_after,
-				'The modules list should be left untouched when no wpml-config.xml file is found.'
-			);
-		} finally {
-			$this->restore_wpml_config();
-		}
-	}
-
-	public function test_should_add_simplexml_without_altering_other_modules() {
-		/** @var array|null $modules_before */
-		$modules_before = null;
-		/** @var array|null $modules_after */
-		$modules_after = null;
-
-		add_filter(
-			'site_status_test_php_modules',
-			function ( $modules ) use ( &$modules_before ) {
-				$modules_before = $modules;
-				return $modules;
-			},
-			5 // Before Polyland filter
+			5 // Before Polylang filter
 		);
 
 		add_filter(
@@ -231,6 +170,39 @@ class Warnings_Test extends TestCase {
 		$site_health = new WP_Site_Health();
 		$site_health->get_test_php_extensions();
 
+		$this->assertSame(
+			$modules_before,
+			$modules_after,
+			'The modules list should be left untouched when no wpml-config.xml file is found.'
+		);
+	}
+
+	public function test_should_add_simplexml_without_altering_other_modules() {
+		/** @var array|null $modules_before */
+		$modules_before = null;
+		/** @var array|null $modules_after */
+		$modules_after = null;
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$modules_before ) {
+				$modules_before = $modules;
+				return $modules;
+			},
+			5 // Before Polylang filter
+		);
+
+		add_filter(
+			'site_status_test_php_modules',
+			function ( $modules ) use ( &$modules_after ) {
+				$modules_after = $modules;
+				return $modules;
+			},
+			20 // After Polylang's filter
+		);
+
+		$site_health = new WP_Site_Health();
+		$site_health->get_test_php_extensions();
 
 		$this->assertSame(
 			array_diff_key( $modules_before, array( 'simplexml' => true ) ),
@@ -254,6 +226,8 @@ class Warnings_Test extends TestCase {
 
 		// Reset the cached file list so PLL_WPML_Config::get_files() rescans the disk.
 		self::reset_wpml_files_cache();
+
+		$this->wpml_config_removed = true;
 	}
 
 	/**
@@ -270,5 +244,7 @@ class Warnings_Test extends TestCase {
 
 		// Reset the cache again so the next test sees the restored file, not the stale empty result.
 		self::reset_wpml_files_cache();
+
+		$this->wpml_config_removed = false;
 	}
 }

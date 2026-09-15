@@ -6,6 +6,18 @@ use WP_Error;
 
 class Languages_Test extends TestCase {
 
+	private $languages_deleted = false;
+
+	public function tear_down() {
+		if ( $this->languages_deleted ) {
+			self::factory()->language->create_many( 2 );
+
+			$this->languages_deleted = false;
+		}
+
+		parent::tear_down();
+	}
+
 	public function test_info_languages_term_props() {
 		$info = $this->site_health->info_languages( array() );
 
@@ -84,15 +96,11 @@ class Languages_Test extends TestCase {
 
 	public function test_info_languages_returns_empty_array_when_no_language_is_set() {
 		self::delete_all_languages();
+		$this->languages_deleted = true;
 
-		try {
-			$debug_info = $this->site_health->info_languages( array() );
+		$debug_info = $this->site_health->info_languages( array() );
 
-			$this->assertEmpty( $debug_info, 'Result should be empty when no language is set.' );
-		} finally {
-			// Cleanup: always restore languages, even if the assertion above fails, so subsequent tests in the class aren't affected.
-			self::factory()->language->create_many( 2 );
-		}
+		$this->assertEmpty( $debug_info, 'Result should be empty when no language is set.' );
 	}
 
 	public function test_info_languages_preserves_existing_debug_info() {
