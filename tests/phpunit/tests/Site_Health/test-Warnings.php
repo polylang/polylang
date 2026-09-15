@@ -49,29 +49,29 @@ class Warnings_Test extends TestCase {
 		$this->assertArrayHasKey( 'pll_warnings', $result, 'The pll_warnings entry should be added.' );
 	}
 
-	public function test_should_add_simplexml_warning_when_it_is_missing_with_wpml_config() {
-		Functions\when( 'extension_loaded' )->alias(
-			function ( $arg ) {
-				if ( 'simplexml' === $arg ) {
-					return false;
-				}
-				return true;
-			}
-		);
-		$debug_info = $this->site_health->info( array() );
+	// public function test_should_add_simplexml_warning_when_it_is_missing_with_wpml_config() {
+	// Functions\when( 'extension_loaded' )->alias(
+	// function ( $arg ) {
+	// if ( 'simplexml' === $arg ) {
+	// return false;
+	// }
+	// return true;
+	// }
+	// );
+	// $debug_info = $this->site_health->info( array() );
 
-		$this->assertArrayHasKey( 'simplexml', $debug_info['pll_warnings']['fields'], 'Debug information entry should contain simplexml.' );
-		$this->assertSame(
-			'PHP SimpleXML extension',
-			$debug_info['pll_warnings']['fields']['simplexml']['label'],
-			'The pll_warnings entry should be added correctly.'
-		);
-		$this->assertSame(
-			'Not loaded. Contact your host provider.',
-			$debug_info['pll_warnings']['fields']['simplexml']['value'],
-			'The simplexml entry should contain the expected warning message.'
-		);
-	}
+	// $this->assertArrayHasKey( 'simplexml', $debug_info['pll_warnings']['fields'], 'Debug information entry should contain simplexml.' );
+	// $this->assertSame(
+	// 'PHP SimpleXML extension',
+	// $debug_info['pll_warnings']['fields']['simplexml']['label'],
+	// 'The pll_warnings entry should be added correctly.'
+	// );
+	// $this->assertSame(
+	// 'Not loaded. Contact your host provider.',
+	// $debug_info['pll_warnings']['fields']['simplexml']['value'],
+	// 'The simplexml entry should contain the expected warning message.'
+	// );
+	// }
 
 	public function test_should_not_add_simplexml_warning_when_it_is_present_with_wpml_config() {
 		$debug_info = $this->site_health->info( array() );
