@@ -5,14 +5,9 @@ namespace WP_Syntex\Polylang\Tests\Site_Health;
 use WP_Error;
 
 class Languages_Test extends TestCase {
-
-	private $languages_deleted = false;
-
 	public function tear_down() {
-		if ( $this->languages_deleted ) {
+		if ( ! self::factory()->pll_model->has_languages() ) {
 			self::factory()->language->create_many( 2 );
-
-			$this->languages_deleted = false;
 		}
 
 		parent::tear_down();
@@ -59,11 +54,7 @@ class Languages_Test extends TestCase {
 
 		add_filter( 'pre_http_request', $filter );
 
-		try {
-			$debug_info = $this->get_debug_info();
-		} finally {
-			remove_filter( 'pre_http_request', $filter );
-		}
+		$debug_info = $this->get_debug_info();
 
 		$this->assertArrayHasKey( 'pll_language_en', $debug_info );
 		$this->assertArrayHasKey( 'pll_language_fr', $debug_info );
@@ -96,7 +87,6 @@ class Languages_Test extends TestCase {
 
 	public function test_info_languages_returns_empty_array_when_no_language_is_set() {
 		self::delete_all_languages();
-		$this->languages_deleted = true;
 
 		$debug_info = $this->site_health->info_languages( array() );
 

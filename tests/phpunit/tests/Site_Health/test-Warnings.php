@@ -5,11 +5,8 @@ namespace WP_Syntex\Polylang\Tests\Site_Health;
 use WP_Site_Health;
 
 class Warnings_Test extends TestCase {
-
-	private $wpml_config_removed = false;
-
 	public function tear_down() {
-		if ( $this->wpml_config_removed ) {
+		if ( ! file_exists( WP_CONTENT_DIR . '/polylang/wpml-config.xml' ) ) {
 			$this->restore_wpml_config();
 		}
 
@@ -226,8 +223,6 @@ class Warnings_Test extends TestCase {
 
 		// Reset the cached file list so PLL_WPML_Config::get_files() rescans the disk.
 		self::reset_wpml_files_cache();
-
-		$this->wpml_config_removed = true;
 	}
 
 	/**
@@ -244,7 +239,5 @@ class Warnings_Test extends TestCase {
 
 		// Reset the cache again so the next test sees the restored file, not the stale empty result.
 		self::reset_wpml_files_cache();
-
-		$this->wpml_config_removed = false;
 	}
 }
