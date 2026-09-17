@@ -833,6 +833,7 @@ class PLL_WPML_Config {
 
 	/**
 	 * Returns the traduction type of the given node, for IDs translation.
+	 * All post types are inferred to `post` except for `attachment` and `wp_block`.
 	 *
 	 * @since 3.9
 	 *
