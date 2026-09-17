@@ -569,12 +569,10 @@ class PLL_WPML_Config {
 
 							$parsing_rules['xpath'][ $block_name ][] = $rule;
 
-							if ( $this->is_ids_type( $this->get_field_attribute( $child, 'type' ) ) ) {
-								$trad_type = $this->get_ids_traduction_type( $child );
+							$trad_type = $this->get_ids_traduction_type( $child );
 
-								if ( ! empty( $trad_type ) ) {
-									$parsing_rules['ids_in_content'][ $block_name ][ $trad_type ][] = $rule;
-								}
+							if ( ! empty( $trad_type ) ) {
+								$parsing_rules['ids_in_content'][ $block_name ][ $trad_type ][] = $rule;
 							}
 							break;
 
@@ -816,7 +814,7 @@ class PLL_WPML_Config {
 		$type = $this->get_field_attribute( $field, 'type' );
 
 		if ( '' !== $type ) {
-			return $this->is_ids_type( $type );
+			return in_array( $type, array( 'post-ids', 'taxonomy-ids' ), true );
 		}
 
 		if ( ! $translate ) {
@@ -860,21 +858,6 @@ class PLL_WPML_Config {
 		}
 
 		return 'post';
-	}
-
-	/**
-	 * Tells if the given type is a "IDs" one.
-	 * These types are found on nodes: `type="post-ids"`.
-	 *
-	 * @since 3.9
-	 *
-	 * @param string $type The type.
-	 * @return bool
-	 *
-	 * @phpstan-assert-if-true 'post-ids'|'taxonomy-ids' $type
-	 */
-	private function is_ids_type( string $type ): bool {
-		return in_array( $type, array( 'post-ids', 'taxonomy-ids' ), true );
 	}
 
 	/**
