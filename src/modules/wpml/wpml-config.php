@@ -22,7 +22,7 @@
  * @phpstan-type XPath         non-empty-string
  * @phpstan-type Rules         array<non-empty-string, array|true>
  * @phpstan-type EncodingTypes non-falsy-string
- * @phpstan-type TradTypes     'term'|'post'|'attachment'|'wp_block'
+ * @phpstan-type TradTypes     'term'|'post'|'attachment'|'wp_block'|'post_mixed'
  *
  * @phpstan-type BlockXPath    array<BlockName, list<XPath>>
  * @phpstan-type BlockKey      array<BlockName, Rules>
@@ -596,7 +596,7 @@ class PLL_WPML_Config {
 								$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
 							}
 
-							foreach ( array( 'post', 'attachment', 'wp_block', 'term' ) as $trad_type ) {
+							foreach ( array( 'post', 'attachment', 'wp_block', 'post_mixed', 'term' ) as $trad_type ) {
 								$ids_attributes = $this->get_ids_attributes( $trad_type, $child, $translate );
 
 								if ( ! empty( $ids_attributes ) ) {
@@ -814,7 +814,7 @@ class PLL_WPML_Config {
 		$type = $this->get_field_attribute( $field, 'type' );
 
 		if ( '' !== $type ) {
-			return in_array( $type, array( 'post-ids', 'taxonomy-ids' ), true );
+			return $this->is_ids_type( $type );
 		}
 
 		if ( ! $translate ) {
@@ -830,8 +830,24 @@ class PLL_WPML_Config {
 	}
 
 	/**
+	 * Tells if the given type is a "IDs" one.
+	 * These types are found on nodes: `type="post-ids"`.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $type The type.
+	 * @return bool
+	 *
+	 * @phpstan-assert-if-true 'post-ids'|'taxonomy-ids' $type
+	 */
+	private function is_ids_type( string $type ): bool {
+		return in_array( $type, array( 'post-ids', 'taxonomy-ids' ), true );
+	}
+
+	/**
 	 * Returns the traduction type of the given node, for IDs translation.
 	 * All post types are inferred to `post` except for `attachment` and `wp_block`.
+	 * If the post type is not specified or empty, the type is `post_mixed`.
 	 *
 	 * @since 3.9
 	 *
@@ -843,12 +859,12 @@ class PLL_WPML_Config {
 	private function get_ids_traduction_type( SimpleXMLElement $field ): string {
 		$type = $this->get_field_attribute( $field, 'type' );
 
-		if ( 'taxonomy-ids' === $type ) {
-			return 'term';
+		if ( ! $this->is_ids_type( $type ) ) {
+			return '';
 		}
 
-		if ( 'post-ids' !== $type ) {
-			return '';
+		if ( 'taxonomy-ids' === $type ) {
+			return 'term';
 		}
 
 		$sub_type = $this->get_field_attribute( $field, 'sub-type' );
@@ -857,7 +873,7 @@ class PLL_WPML_Config {
 			return $sub_type;
 		}
 
-		return 'post';
+		return ! empty( $sub_type ) ? 'post' : 'post_mixed';
 	}
 
 	/**
