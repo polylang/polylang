@@ -432,6 +432,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'//figure/img/@alt',
 				'//*[@name="foo_form_post_ids"]/@value',
 				'//*[@name="foo_form_category_ids"]/@value',
+				'//*[@name="foo_form_post_ids_mixed"]/@value',
+				'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
 			),
 			'my-plugin/my-block-2' => array(
 				'//div/p/a',
@@ -449,6 +451,16 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				),
 				'TermIds'       => array(
 					'*' => true,
+				),
+				'PostIdsMixed'  => array(
+					'foo' => array(
+						'*' => true,
+					),
+				),
+				'TermIdsMixed'  => array(
+					'bar' => array(
+						'*' => true,
+					),
 				),
 				'wildcardsData' => array(
 					'foo*' => true,
@@ -492,24 +504,40 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		);
 		$expected_ids_rules_in_content         = array(
 			'my-plugin/my-block' => array(
-				'post' => array(
+				'post'       => array(
 					'//*[@name="foo_form_post_ids"]/@value',
 				),
-				'term' => array(
+				'term'       => array(
 					'//*[@name="foo_form_category_ids"]/@value',
+					'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
+				),
+				'post_mixed' => array(
+					'//*[@name="foo_form_post_ids_mixed"]/@value',
 				),
 			),
 		);
 		$expected_ids_rules_in_attributes      = array(
 			'my-plugin/my-block' => array(
-				'post' => array(
+				'post'       => array(
 					'PostIds' => array(
 						'*' => true,
 					),
 				),
-				'term' => array(
-					'TermIds' => array(
+				'term'       => array(
+					'TermIds'       => array(
 						'*' => true,
+					),
+					'TermIdsMixed'  => array(
+						'bar' => array(
+							'*' => true,
+						),
+					),
+				),
+				'post_mixed' => array(
+					'PostIdsMixed' => array(
+						'foo' => array(
+							'*' => true,
+						),
 					),
 				),
 			),
