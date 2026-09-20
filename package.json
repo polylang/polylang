@@ -1,6 +1,6 @@
 {
   "name": "@wpsyntex/polylang",
-  "version": "3.9.0-dev",
+  "version": "3.9.0-beta1",
   "description": "Adds multilingual capability to WordPress",
   "author": "WP Syntex",
   "license": "GPL-3.0-or-later",
