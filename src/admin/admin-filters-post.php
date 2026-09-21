@@ -357,12 +357,13 @@ class PLL_Admin_Filters_Post {
 		}
 
 		if ( isset( $views['all'] ) ) { // In case a filter removes this key.
-			$replacement = 'lang=all&';
-
-			if ( ! str_contains( $views['all'], 'all_posts=1' ) ) {
-				$replacement .= 'all_posts=1&';
-			}
-			$views['all'] = str_replace( 'edit.php?', 'edit.php?' . $replacement, $views['all'] );
+   		$views['all'] = add_query_arg(
+   			array( 
+   				'lang'      => 'all',
+   				'all_posts' => 1,
+   			),
+   			$views['all']
+   		);
 		}
 
 		return $views;
