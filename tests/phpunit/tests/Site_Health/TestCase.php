@@ -124,6 +124,10 @@ abstract class TestCase extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	protected static function restore_wpml_config() {
+		if ( file_exists( WP_CONTENT_DIR . '/polylang/wpml-config.xml' ) ) {
+			return;
+		}
+
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
 		copy(
 			PLL_TEST_DATA_DIR . 'wpml-config.xml',

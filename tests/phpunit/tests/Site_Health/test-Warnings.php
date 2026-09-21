@@ -6,9 +6,7 @@ use WP_Site_Health;
 
 class Warnings_Test extends TestCase {
 	public function tear_down() {
-		if ( ! file_exists( WP_CONTENT_DIR . '/polylang/wpml-config.xml' ) ) {
-			self::restore_wpml_config();
-		}
+		self::restore_wpml_config();
 
 		parent::tear_down();
 	}
