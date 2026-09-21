@@ -6,6 +6,7 @@ use WP_Error;
 
 class Languages_Test extends TestCase {
 	public function tear_down() {
+		// Some tests are deleting all languages on purpose, @see test_info_languages_returns_empty_array_when_no_language_is_set.
 		if ( ! self::factory()->pll_model->has_languages() ) {
 			self::factory()->language->create_many( 2 );
 		}

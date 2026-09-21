@@ -33,15 +33,8 @@ abstract class TestCase extends PLL_UnitTestCase {
 
 		$factory->language->create_many( 2 );
 
-		@mkdir( WP_CONTENT_DIR . '/polylang' );
-		copy(
-			PLL_TEST_DATA_DIR . 'wpml-config.xml',
-			WP_CONTENT_DIR . '/polylang/wpml-config.xml'
-		);
-
-		// Force a fresh scan: another test class may already have cached
-		// an empty file list before this one copied wpml-config.xml.
-		self::reset_wpml_files_cache();
+		// Ensure the fixture exists and force PLL_WPML_Config to rescan the file.
+		self::restore_wpml_config();
 	}
 
 	public function set_up() {
@@ -108,5 +101,35 @@ abstract class TestCase extends PLL_UnitTestCase {
 		}
 
 		$files_reflection->setValue( PLL_WPML_Config::instance(), null );
+	}
+
+	/**
+	 * Removes the wpml-config.xml file used by the test fixtures and resets
+	 * `PLL_WPML_Config`'s internal file cache so it rescans the disk.
+	 *
+	 * @return void
+	 */
+	protected static function remove_wpml_config() {
+		unlink( WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
+		rmdir( WP_CONTENT_DIR . '/polylang' );
+
+		self::reset_wpml_files_cache();
+	}
+
+	/**
+	 * Restores the wpml-config.xml file previously removed by `remove_wpml_config()`
+	 * and resets the cached file list so the next call to `PLL_WPML_Config::get_files()`
+	 * sees the restored file instead of the stale cached result.
+	 *
+	 * @return void
+	 */
+	protected static function restore_wpml_config() {
+		@mkdir( WP_CONTENT_DIR . '/polylang' );
+		copy(
+			PLL_TEST_DATA_DIR . 'wpml-config.xml',
+			WP_CONTENT_DIR . '/polylang/wpml-config.xml'
+		);
+
+		self::reset_wpml_files_cache();
 	}
 }

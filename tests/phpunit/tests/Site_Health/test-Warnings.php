@@ -7,7 +7,7 @@ use WP_Site_Health;
 class Warnings_Test extends TestCase {
 	public function tear_down() {
 		if ( ! file_exists( WP_CONTENT_DIR . '/polylang/wpml-config.xml' ) ) {
-			$this->restore_wpml_config();
+			self::restore_wpml_config();
 		}
 
 		parent::tear_down();
@@ -62,7 +62,7 @@ class Warnings_Test extends TestCase {
 	}
 
 	public function test_should_not_add_wpml_data_to_debug_information_when_wpml_config_file_is_absent() {
-		$this->remove_wpml_config();
+		self::remove_wpml_config();
 
 		$debug_info = $this->site_health->info( array() );
 
@@ -74,7 +74,7 @@ class Warnings_Test extends TestCase {
 	}
 
 	public function test_should_not_report_any_warning_field_when_nothing_to_report() {
-		$this->remove_wpml_config();
+		self::remove_wpml_config();
 
 		self::factory()->post->create(
 			array(
@@ -139,8 +139,8 @@ class Warnings_Test extends TestCase {
 		);
 	}
 
-	public function test_should_not_add_simplexml_to_modules_when_wpml_config_does_not_exists() {
-		$this->remove_wpml_config();
+	public function test_should_not_add_simplexml_to_modules_when_wpml_config_does_not_exist() {
+		self::remove_wpml_config();
 		/** @var array|null $modules_before */
 		$modules_before = null;
 		/** @var array|null $modules_after */
@@ -211,33 +211,5 @@ class Warnings_Test extends TestCase {
 			$modules_after['simplexml'],
 			'The simplexml module should be marked as required.'
 		);
-	}
-
-	/**
-	 * Removes the wpml-config.xml file used by the test fixtures and resets
-	 * `PLL_WPML_Config`'s internal file cache so it rescans the disk.
-	 */
-	private function remove_wpml_config() {
-		unlink( WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
-		rmdir( WP_CONTENT_DIR . '/polylang' );
-
-		// Reset the cached file list so PLL_WPML_Config::get_files() rescans the disk.
-		self::reset_wpml_files_cache();
-	}
-
-	/**
-	 * Restores the wpml-config.xml file previously removed by `remove_wpml_config()`
-	 * and resets the cached file list so the next call to `PLL_WPML_Config::get_files()`
-	 * sees the restored file instead of the stale empty result.
-	 */
-	private function restore_wpml_config() {
-		@mkdir( WP_CONTENT_DIR . '/polylang' );
-		copy(
-			PLL_TEST_DATA_DIR . 'wpml-config.xml',
-			WP_CONTENT_DIR . '/polylang/wpml-config.xml'
-		);
-
-		// Reset the cache again so the next test sees the restored file, not the stale empty result.
-		self::reset_wpml_files_cache();
 	}
 }
