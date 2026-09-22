@@ -257,6 +257,7 @@ class PLL_Canonical {
 		 */
 		global $wp_query;
 
+		$old_curlang   = $this->curlang;
 		$this->curlang = $language; // Hack to filter the `page_for_posts` option in the correct language.
 
 		$backup_wp_query = $wp_query;
@@ -268,7 +269,8 @@ class PLL_Canonical {
 
 		$redirect_url = redirect_canonical( $url, false );
 
-		$wp_query = $backup_wp_query;
+		$wp_query      = $backup_wp_query;
+		$this->curlang = $old_curlang;
 
 		return $redirect_url ?: $url;
 	}
