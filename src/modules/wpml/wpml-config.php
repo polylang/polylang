@@ -17,9 +17,18 @@
  *         encoding: string
  *     }
  * >
- * @phpstan-type BlockXPath    array<non-falsy-string, list<non-empty-string>>
- * @phpstan-type BlockKey      array<non-falsy-string, array<array|true>>
- * @phpstan-type BlockEncoding array<non-falsy-string, array<string, non-falsy-string>>
+ *
+ * @phpstan-type BlockName     non-falsy-string
+ * @phpstan-type XPath         non-empty-string
+ * @phpstan-type Rules         array<non-empty-string, array|true>
+ * @phpstan-type EncodingTypes non-falsy-string
+ * @phpstan-type TradTypes     'term'|'post'|'attachment'|'wp_block'|'post_mixed'
+ *
+ * @phpstan-type BlockXPath    array<BlockName, list<XPath>>
+ * @phpstan-type BlockKey      array<BlockName, Rules>
+ * @phpstan-type BlockEncoding array<BlockName, array<EncodingTypes>>
+ * @phpstan-type BlockIdsXPath array<BlockName, array<TradTypes, list<XPath>>>
+ * @phpstan-type BlockIds      array<BlockName, array<TradTypes, Rules>>
  */
 class PLL_WPML_Config {
 	/**
@@ -53,7 +62,9 @@ class PLL_WPML_Config {
 	 * @phpstan-var array{
 	 *     xpath?: BlockXPath,
 	 *     key?: BlockKey,
-	 *     encoding?: BlockEncoding
+	 *     encoding?: BlockEncoding,
+	 *     ids_in_content?: BlockIdsXPath,
+	 *     ids_in_attributes?: BlockIds
 	 * }|null
 	 */
 	protected $parsing_rules = null;
@@ -143,6 +154,8 @@ class PLL_WPML_Config {
 		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
 		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 		add_filter( 'pll_block_attribute_encodings', array( $this, 'decode_blocks_attributes' ), 20 );
+		add_filter( 'pll_sync_blocks_xpath_rules', array( $this, 'translate_blocks_ids_in_content' ), 20 );
+		add_filter( 'pll_sync_block_rules_for_attributes', array( $this, 'translate_blocks_ids_in_attributes' ), 20 );
 
 		$matcher = new PLL_Format_Util();
 
@@ -447,6 +460,36 @@ class PLL_WPML_Config {
 	}
 
 	/**
+	 * Translation management for IDs in blocks content.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
+	 * @return string[][]
+	 *
+	 * @phpstan-param BlockIdsXPath $parsing_rules
+	 * @phpstan-return BlockIdsXPath
+	 */
+	public function translate_blocks_ids_in_content( $parsing_rules ) {
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'ids_in_content' ) );
+	}
+
+	/**
+	 * Translation management for IDs in block attributes.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
+	 * @return string[][]
+	 *
+	 * @phpstan-param BlockIds $parsing_rules
+	 * @phpstan-return BlockIds
+	 */
+	public function translate_blocks_ids_in_attributes( $parsing_rules ) {
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'ids_in_attributes' ) );
+	}
+
+	/**
 	 * Returns rules to extract translatable strings from blocks.
 	 *
 	 * @since 3.3
@@ -454,11 +497,13 @@ class PLL_WPML_Config {
 	 * @param string $rule_tag Tag name to extract.
 	 * @return string[][] The rules.
 	 *
-	 * @phpstan-param 'xpath'|'key'|'encoding' $rule_tag
+	 * @phpstan-param 'xpath'|'key'|'encoding'|'ids_in_content'|'ids_in_attributes' $rule_tag
 	 * @phpstan-return (
 	 *     $rule_tag is 'xpath' ? BlockXPath :
 	 *         ( $rule_tag is 'key' ? BlockKey :
-	 *             BlockEncoding
+	 *             ( $rule_tag is 'encoding' ? BlockEncoding :
+	 *                 ( $rule_tag is 'ids_in_content' ? BlockIdsXPath : BlockIds )
+	 *             )
 	 *         )
 	 *     )
 	 * )
@@ -482,7 +527,9 @@ class PLL_WPML_Config {
 	 * @phpstan-return array{
 	 *     xpath?: BlockXPath,
 	 *     key?: BlockKey,
-	 *     encoding?: BlockEncoding
+	 *     encoding?: BlockEncoding,
+	 *     ids_in_content?: BlockIdsXPath,
+	 *     ids_in_attributes?: BlockIds
 	 * }
 	 */
 	protected function extract_blocks_parsing_rules() {
@@ -496,20 +543,16 @@ class PLL_WPML_Config {
 			}
 
 			foreach ( $blocks as $block ) {
-				$translate = $this->get_field_attribute( $block, 'translate' );
-
-				if ( '1' !== $translate ) {
-					continue;
-				}
-
 				$block_name = $this->get_field_attribute( $block, 'type' );
 
 				if ( empty( $block_name ) ) {
 					continue;
 				}
 
+				$translate = '1' === $this->get_field_attribute( $block, 'translate' );
+
 				foreach ( $block->children() as $child ) {
-					if ( ! $this->is_supported_field( $child ) ) {
+					if ( ! $this->is_supported_field( $child, $translate ) ) {
 						continue;
 					}
 
@@ -520,13 +563,21 @@ class PLL_WPML_Config {
 						case 'xpath':
 							$rule = trim( (string) $child );
 
-							if ( ! empty( $rule ) ) {
-								$parsing_rules['xpath'][ $block_name ][] = $rule;
+							if ( empty( $rule ) ) {
+								break;
+							}
+
+							$parsing_rules['xpath'][ $block_name ][] = $rule;
+
+							$trad_type = $this->get_ids_traduction_type( $child );
+
+							if ( ! empty( $trad_type ) ) {
+								$parsing_rules['ids_in_content'][ $block_name ][ $trad_type ][] = $rule;
 							}
 							break;
 
 						case 'key':
-							$rule = $this->get_field_attributes( $child );
+							$rule = $this->get_field_attributes( $child, $translate );
 
 							if ( empty( $rule ) ) {
 								break;
@@ -540,12 +591,21 @@ class PLL_WPML_Config {
 
 							$encoding = $this->get_field_attribute( $child, 'encoding' );
 
-							if ( 'json' !== $encoding ) {
-								break;
+							if ( 'json' === $encoding ) {
+								// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
+								$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
 							}
 
-							// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
-							$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
+							foreach ( array( 'post', 'attachment', 'wp_block', 'post_mixed', 'term' ) as $trad_type ) {
+								$ids_attributes = $this->get_ids_attributes( $trad_type, $child, $translate );
+
+								if ( ! empty( $ids_attributes ) ) {
+									$parsing_rules['ids_in_attributes'][ $block_name ][ $trad_type ] = array_merge(
+										$parsing_rules['ids_in_attributes'][ $block_name ][ $trad_type ] ?? array(),
+										$ids_attributes
+									);
+								}
+							}
 							break;
 					}
 				}
@@ -652,13 +712,15 @@ class PLL_WPML_Config {
 	 * Gets attributes values recursively.
 	 *
 	 * @since 3.6
+	 * @since 3.9 Parameter `$translate` added.
 	 *
-	 * @param  SimpleXMLElement $field A XML node.
+	 * @param SimpleXMLElement $field     A XML node.
+	 * @param bool             $translate Tells if the parent field has `translate="1"`.
 	 * @return array An array of attributes.
 	 *
-	 * @phpstan-return array<non-empty-string, array|true>
+	 * @phpstan-return Rules
 	 */
-	private function get_field_attributes( SimpleXMLElement $field ): array {
+	private function get_field_attributes( SimpleXMLElement $field, bool $translate ): array {
 		$name = $this->get_field_attribute( $field, 'name' );
 
 		if ( '' === $name ) {
@@ -674,11 +736,59 @@ class PLL_WPML_Config {
 		$sub_attributes = array();
 
 		foreach ( $children as $child ) {
-			if ( ! $this->is_supported_field( $child ) ) {
+			if ( ! $this->is_supported_field( $child, $translate ) ) {
 				continue;
 			}
 
-			$sub = $this->get_field_attributes( $child );
+			$sub = $this->get_field_attributes( $child, $translate );
+
+			if ( empty( $sub ) ) {
+				continue;
+			}
+
+			$sub_attributes[ $name ] = array_merge( $sub_attributes[ $name ] ?? array(), $sub );
+		}
+
+		return $sub_attributes;
+	}
+
+	/**
+	 * Returns attributes values recursively, but only for values containing IDs.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string           $trad_type Translation type. Either `post`, `term`, `attachment` or `wp_block`.
+	 * @param SimpleXMLElement $field     A XML node.
+	 * @param bool             $translate Tells if the parent field has `translate="1"`.
+	 * @return array An array of attributes.
+	 *
+	 * @phpstan-param TradTypes $trad_type
+	 * @phpstan-return Rules
+	 */
+	private function get_ids_attributes( string $trad_type, SimpleXMLElement $field, bool $translate ) {
+		$name = $this->get_field_attribute( $field, 'name' );
+
+		if ( '' === $name ) {
+			return array();
+		}
+
+		$children = $field->children();
+
+		if ( 0 === $children->count() ) {
+			if ( $this->get_ids_traduction_type( $field ) !== $trad_type ) {
+				return array();
+			}
+			return array( $name => true );
+		}
+
+		$sub_attributes = array();
+
+		foreach ( $children as $child ) {
+			if ( ! $this->is_supported_field( $child, $translate ) ) {
+				continue;
+			}
+
+			$sub = $this->get_ids_attributes( $trad_type, $child, $translate );
 
 			if ( empty( $sub ) ) {
 				continue;
@@ -694,13 +804,20 @@ class PLL_WPML_Config {
 	 * Tells if the given field is supported.
 	 *
 	 * @since 3.8.4
+	 * @since 3.9 Parameter `$translate` added.
 	 *
-	 * @param SimpleXMLElement $field A XML node.
+	 * @param SimpleXMLElement $field     A XML node.
+	 * @param bool             $translate Tells if the parent field has `translate="1"`.
 	 * @return bool
 	 */
-	private function is_supported_field( SimpleXMLElement $field ): bool {
-		if ( $this->get_field_attribute( $field, 'type' ) !== '' ) {
-			// No `type` supported for now.
+	private function is_supported_field( SimpleXMLElement $field, bool $translate ): bool {
+		$type = $this->get_field_attribute( $field, 'type' );
+
+		if ( '' !== $type ) {
+			return $this->is_ids_type( $type );
+		}
+
+		if ( ! $translate ) {
 			return false;
 		}
 
@@ -710,6 +827,53 @@ class PLL_WPML_Config {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Tells if the given type is a "IDs" one.
+	 * These types are found on nodes: `type="post-ids"`.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $type The type.
+	 * @return bool
+	 *
+	 * @phpstan-assert-if-true 'post-ids'|'taxonomy-ids' $type
+	 */
+	private function is_ids_type( string $type ): bool {
+		return in_array( $type, array( 'post-ids', 'taxonomy-ids' ), true );
+	}
+
+	/**
+	 * Returns the traduction type of the given node, for IDs translation.
+	 * All post types are inferred to `post` except for `attachment` and `wp_block`.
+	 * If the post type is not specified or empty, the type is `post_mixed`.
+	 *
+	 * @since 3.9
+	 *
+	 * @param SimpleXMLElement $field A XML node.
+	 * @return string
+	 *
+	 * @phpstan-return ''|TradTypes
+	 */
+	private function get_ids_traduction_type( SimpleXMLElement $field ): string {
+		$type = $this->get_field_attribute( $field, 'type' );
+
+		if ( ! $this->is_ids_type( $type ) ) {
+			return '';
+		}
+
+		if ( 'taxonomy-ids' === $type ) {
+			return 'term';
+		}
+
+		$sub_type = $this->get_field_attribute( $field, 'sub-type' );
+
+		if ( in_array( $sub_type, array( 'attachment', 'wp_block' ), true ) ) {
+			return $sub_type;
+		}
+
+		return ! empty( $sub_type ) ? 'post' : 'post_mixed';
 	}
 
 	/**
