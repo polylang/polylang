@@ -15,16 +15,9 @@ class PLL_WPML_API {
 	/**
 	 * Stores the original language when the language is switched.
 	 *
-	 * @var PLL_Language|null
+	 * @var PLL_Language|false|null
 	 */
 	private static $original_language = null;
-
-	/**
-	 * Stack of previous languages when wpml_switch_language is called.
-	 *
-	 * @var array<PLL_Language|null>
-	 */
-	private static $language_stack = array();
 
 	/**
 	 * Constructor.
@@ -355,16 +348,11 @@ class PLL_WPML_API {
 	 */
 	public static function wpml_switch_language( $lang = null, $cookie = false ) {
 		if ( empty( $lang ) ) {
-			if ( ! empty( self::$language_stack ) ) {
-				PLL()->curlang = array_pop( self::$language_stack );
-			} elseif ( null !== self::$original_language ) {
-				PLL()->curlang = self::$original_language;
-			}
-			if ( empty( self::$language_stack ) ) {
+			if ( null !== self::$original_language ) {
+				PLL()->curlang           = self::$original_language;
 				self::$original_language = null;
 			}
 		} else {
-			self::$language_stack[] = PLL()->curlang;
 			if ( null === self::$original_language ) {
 				self::$original_language = PLL()->curlang;
 			}

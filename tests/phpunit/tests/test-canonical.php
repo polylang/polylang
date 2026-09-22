@@ -698,7 +698,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$frontend->curlang = $en;
 
 		$reflection = new ReflectionMethod( $canonical, 'redirect_canonical' );
-		$reflection->setAccessible( true );
+		if ( PHP_VERSION_ID < 80100 ) {
+			$reflection->setAccessible( true );
+		}
 		$reflection->invoke( $canonical, home_url( '/fr/' ), $fr );
 
 		$this->assertSame( $en, $frontend->curlang );
