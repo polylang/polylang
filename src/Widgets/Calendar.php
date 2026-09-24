@@ -11,9 +11,9 @@ if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
 
 /**
  * This classes rewrite the whole Calendar widget functionality as there is no filter on sql queries and only a filter on final output.
- * Code last checked: WP 5.5.
+ * Code last checked: WP 7.2.
  *
- * A request to add filters on sql queries exists: http://core.trac.wordpress.org/ticket/15202.
+ * A request to add filters on SQL queries exists: http://core.trac.wordpress.org/ticket/15202, closed in favor of https://core.trac.wordpress.org/ticket/29319.
  * Method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries).
  * Method used since 0.5: remove the WP widget and replace it by our own -> our language filter will not work if get_calendar is called directly by a theme.
  *
