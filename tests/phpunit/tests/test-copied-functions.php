@@ -8,7 +8,7 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_get_calendar() {
-		$this->check_method( '67952fbea23af7a447f08f27c0ac8215', '7.2', 'get_calendar' );
+		$this->check_method( 'cf4d5e113053d1cbc1d1f454d9b44038', '7.2', 'get_calendar' );
 	}
 
 	public function test_wp_admin_bar() {
