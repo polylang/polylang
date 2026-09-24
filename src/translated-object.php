@@ -242,7 +242,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			 * temporarily 2 languages for the same ID (old and new language)
 			 * when `set_language()` is called.
 			 */
-			$slugs = array_keys( $this->get_translations( $id ), $id );
+			$slugs = array_keys( $this->get_translations( $id ), $id, true );
 			$descr = array_diff_key( $descr, array_flip( $slugs ) );
 		}
 

@@ -252,6 +252,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		self::$model->term->set_language( $id, 'de' );
 
 		$terms = get_terms( array( 'taxonomy' => 'term_translations', 'hide_empty' => false ) );
+		$this->assertNotEmpty( $terms );
 
 		foreach ( $terms as $term ) {
 			$this->assertNotEmpty( $term->count ); // All groups must have at least one term attached.
