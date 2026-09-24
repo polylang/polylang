@@ -118,7 +118,15 @@ class Admin_Test extends PLL_UnitTestCase {
 		);
 	}
 
-	public function test_admin_bar_with_selected_category() {
+
+	/**
+	 * @testWith [ ["en"] ]
+	 *           [ ["en","fr"] ]
+	 *
+	 * @param array $languages Languages to use to create posts.
+	 * @return void
+	 */
+	public function test_admin_bar_with_selected_category( array $languages ) {
 		global $wp_admin_bar;
 
 		$cats = self::factory()->category->create_translated(
@@ -126,10 +134,14 @@ class Admin_Test extends PLL_UnitTestCase {
 			array( 'name' => 'Mon chat', 'lang' => 'fr' )
 		);
 
-		self::factory()->post->create_translated(
-			array( 'post_category' => array( $cats['en'] ), 'lang' => 'en' ),
-			array( 'post_category' => array( $cats['fr'] ), 'lang' => 'fr' )
+		$posts_definitions = array_map(
+			static function ( $lang ) use ( $cats ) {
+				return array( 'post_category' => array( $cats[ $lang ] ), 'lang' => $lang );
+			},
+			$languages
 		);
+
+		self::factory()->post->create_translated( ...$posts_definitions );
 
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
@@ -147,7 +159,8 @@ class Admin_Test extends PLL_UnitTestCase {
 		$pll_admin->filter_lang = self::$model->get_language( 'fr' );
 		$pll_admin->pref_lang   = $pll_admin->filter_lang;
 
-		$GLOBALS['pagenow'] = 'edit.php';
+		$GLOBALS['pagenow']   = 'edit.php';
+		$GLOBALS['post_type'] = 'post';
 
 		_wp_admin_bar_init();
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
