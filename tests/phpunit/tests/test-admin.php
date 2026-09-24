@@ -135,7 +135,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		);
 
 		$posts_definitions = array_map(
-			function ( $lang ) use ( $cats ) {
+			static function ( $lang ) use ( $cats ) {
 				return array( 'post_category' => array( $cats[ $lang ] ), 'lang' => $lang );
 			},
 			$languages
