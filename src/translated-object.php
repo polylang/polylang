@@ -235,11 +235,15 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		$descr = maybe_unserialize( $term->description );
 
 		if ( ! empty( $descr ) && is_array( $descr ) ) {
-			$slug = array_search( $id, $this->get_translations( $id ) ); // In case some plugin stores the same value with different key.
-
-			if ( false !== $slug ) {
-				unset( $descr[ $slug ] );
-			}
+			/*
+			 * Search the ID to remove only among our language keys
+			 * in case some plugin stores the same value with different key.
+			 * Remove all keys with this ID as `get_translations()` may return
+			 * temporarily 2 languages for the same ID (old and new language)
+			 * when `set_language()` is called.
+			 */
+			$slugs = array_keys( $this->get_translations( $id ), $id, true );
+			$descr = array_diff_key( $descr, array_flip( $slugs ) );
 		}
 
 		if ( empty( $descr ) || ! is_array( $descr ) ) {
