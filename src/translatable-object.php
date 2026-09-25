@@ -126,6 +126,76 @@ abstract class PLL_Translatable_Object {
 				'_pll'      => true,
 			)
 		);
+
+		$this->add_sanitization_hooks( $this->tax_language );
+	}
+
+	/**
+	 * Hooks sanitization for a Polylang taxonomy that stores serialized data in term descriptions.
+	 *
+	 * @since 3.8.10
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 * @return void
+	 *
+	 * @phpstan-param non-empty-string $taxonomy
+	 */
+	protected function add_sanitization_hooks( string $taxonomy ): void {
+		add_filter( "pre_{$taxonomy}_description", array( $this, 'sanitize_description' ), 0 );
+		add_filter( "get_{$taxonomy}", array( $this, 'sanitize_term' ), 0 );
+	}
+
+	/**
+	 * Empties the description of a term hydrated from the database when it holds a disallowed serialized type.
+	 *
+	 * `get_{$taxonomy}` is fired by `get_term()`, whatever the sanitization context, and thus covers the
+	 * terms hydrated by `get_terms()` and `wp_get_object_terms()` too. Only the returned object is modified,
+	 * the stored value is left untouched.
+	 *
+	 * @since 3.8.10
+	 *
+	 * @param mixed $term Term object, may be anything another callback returned.
+	 * @return mixed The term, with a sanitized description.
+	 */
+	public function sanitize_term( $term ) {
+		if ( $term instanceof WP_Term && $this->has_disallowed_type( $term->description ) ) {
+			$term->description = '';
+		}
+
+		return $term;
+	}
+
+	/**
+	 * Drops serialized values that contain a disallowed PHP type.
+	 *
+	 * @since 3.8.10
+	 *
+	 * @param mixed $description Term description.
+	 * @return string Empty string for a non-string value or when a disallowed type is found, unchanged otherwise.
+	 */
+	public function sanitize_description( $description ) {
+		if ( ! is_string( $description ) || '' === $description ) {
+			return '';
+		}
+
+		return $this->has_disallowed_type( $description ) ? '' : $description;
+	}
+
+	/**
+	 * Tells if a serialized value contains a disallowed PHP type.
+	 *
+	 * The regex does not parse string payloads: a string value containing `{O:` or `";O:`
+	 * is treated as a disallowed type.
+	 *
+	 * Allowed serialized types: array, string, int, and bool.
+	 *
+	 * @since 3.8.10
+	 *
+	 * @param string $description Term description.
+	 * @return bool
+	 */
+	private function has_disallowed_type( string $description ): bool {
+		return 0 !== preg_match( '#(?:^|[;{])(?:[OCEdrR]:|N;)#', $description );
 	}
 
 	/**
