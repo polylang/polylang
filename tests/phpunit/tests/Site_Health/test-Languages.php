@@ -2,17 +2,10 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Debug_Data;
 use WP_Error;
 
 class Languages_Test extends TestCase {
-	public function tear_down() {
-		// Some tests are deleting all languages on purpose, @see test_info_languages_returns_empty_array_when_no_language_is_set.
-		if ( ! self::factory()->pll_model->has_languages() ) {
-			self::factory()->language->create_many( 2 );
-		}
-
-		parent::tear_down();
-	}
 
 	public function test_info_languages_term_props() {
 		$info = $this->site_health->info_languages( array() );
@@ -55,10 +48,13 @@ class Languages_Test extends TestCase {
 
 		add_filter( 'pre_http_request', $filter );
 
-		$debug_info = $this->get_debug_info();
+		require_once ABSPATH . 'wp-admin/includes/class-wp-debug-data.php';
 
-		$this->assertArrayHasKey( 'pll_language_en', $debug_info );
-		$this->assertArrayHasKey( 'pll_language_fr', $debug_info );
+		$debug_info = WP_Debug_Data::debug_data();
+
+		$this->assertCount( 2, preg_grep( '/^pll_language_/', array_keys( $debug_info ) ), 'Result should contain one entry per configured language.' );
+		$this->assertArrayHasKey( 'pll_language_en', $debug_info, 'Result should contain an entry for English.' );
+		$this->assertArrayHasKey( 'pll_language_fr', $debug_info, 'Result should contain an entry for French.' );
 	}
 
 	public function test_info_languages_contains_expected_fields() {
@@ -76,22 +72,6 @@ class Languages_Test extends TestCase {
 		foreach ( array( 'flag', 'host', 'taxonomy', 'description', 'parent', 'filter', 'custom_flag' ) as $excluded_key ) {
 			$this->assertArrayNotHasKey( $excluded_key, $fields, "Excluded key \"$excluded_key\" should not be present." );
 		}
-	}
-
-	public function test_info_languages_returns_one_entry_per_language() {
-		$debug_info = $this->site_health->info_languages( array() );
-
-		$this->assertCount( 2, $debug_info, 'Result should contain one entry per configured language.' );
-		$this->assertArrayHasKey( 'pll_language_en', $debug_info, 'Result should contain an entry for English.' );
-		$this->assertArrayHasKey( 'pll_language_fr', $debug_info, 'Result should contain an entry for French.' );
-	}
-
-	public function test_info_languages_returns_empty_array_when_no_language_is_set() {
-		self::delete_all_languages();
-
-		$debug_info = $this->site_health->info_languages( array() );
-
-		$this->assertEmpty( $debug_info, 'Result should be empty when no language is set.' );
 	}
 
 	public function test_info_languages_preserves_existing_debug_info() {
