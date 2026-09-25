@@ -261,7 +261,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string
 	 */
 	public function home_url( $url, $path ) {
-		if ( ! ( did_action( 'template_redirect' ) || did_action( 'login_init' ) ) || rtrim( $url, '/' ) != $this->links_model->home ) {
+		if ( ! ( ( did_action( 'parse_request' ) && ! is_admin() ) || did_action( 'template_redirect' ) || did_action( 'login_init' ) ) || rtrim( $url, '/' ) != $this->links_model->home ) {
 			return $url;
 		}
 
