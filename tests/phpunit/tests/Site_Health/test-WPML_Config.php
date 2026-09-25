@@ -146,9 +146,7 @@ class WPML_Config_Test extends TestCase {
 		);
 
 		$site_health = new WP_Site_Health();
-		$tata = $site_health->get_test_php_extensions();
-		echo "\n===== tata =====\n";
-		var_dump( $tata );
+		$site_health->get_test_php_extensions();
 
 		$this->assertSame(
 			$modules_before,
