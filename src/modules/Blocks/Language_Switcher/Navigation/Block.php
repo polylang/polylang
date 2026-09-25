@@ -7,8 +7,8 @@ namespace WP_Syntex\Polylang\Blocks\Language_Switcher\Navigation;
 
 use WP_Block;
 use PLL_Language;
+use SplObjectStorage;
 use WP_HTML_Tag_Processor;
-use WP_Syntex\Polylang\Switcher\Assets;
 use WP_Syntex\Polylang\Switcher\Switcher;
 use WP_Syntex\Polylang\Switcher\Element\Abstract_Element;
 use WP_Syntex\Polylang\Switcher\Element\Nav as Element;
@@ -30,6 +30,27 @@ class Block extends Abstract_Block {
 	const PLACEHOLDER = '%pll%';
 
 	/**
+	 * Trusted locale and label, keyed by the inner navigation blocks created by this switcher.
+	 * Blocks parsed from saved content are never the same instances, so they can't be found here.
+	 *
+	 * @var SplObjectStorage<WP_Block, array{locale: string, label: string}>
+	 */
+	private SplObjectStorage $internal_blocks;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.9
+	 *
+	 * @param \PLL_Base $polylang Polylang object.
+	 */
+	public function __construct( &$polylang ) {
+		parent::__construct( $polylang );
+
+		$this->internal_blocks = new SplObjectStorage();
+	}
+
+	/**
 	 * Adds the required hooks specific to the navigation language switcher.
 	 *
 	 * @since 3.2
@@ -40,7 +61,6 @@ class Block extends Abstract_Block {
 		parent::init();
 
 		add_action( 'rest_api_init', array( $this, 'register_switcher_menu_item_options_meta_rest_field' ) );
-		add_filter( 'block_type_metadata', array( $this, 'register_custom_attributes' ) );
 		add_filter( 'render_block_core/navigation-link', array( $this, 'render_custom_attributes' ), 10, 3 );
 		add_filter( 'render_block_core/navigation-submenu', array( $this, 'render_custom_attributes' ), 10, 3 );
 		add_action( 'init', array( $this, 'register_styles' ) );
@@ -116,37 +136,16 @@ class Block extends Abstract_Block {
 			$attributes_wo_classname = array_diff_key( $attributes, array( 'className' => '' ) );
 
 			foreach ( $elements as $element ) {
-				$nav_link_block_args = array(
-					'blockName' => 'core/navigation-link',
-					'attrs'     => $this->get_core_block_attributes( $attributes_wo_classname, $element ),
-				);
-
-				$inner_nav_link_blocks[] = new WP_Block( $nav_link_block_args, $block->context );
+				$inner_nav_link_blocks[] = $this->create_inner_block( 'core/navigation-link', $attributes_wo_classname, $element, $block->context );
 			}
 
-			$submenu_attributes = $this->get_core_block_attributes( $attributes, $top_level_element );
-
-			$submenu_block_args = array(
-				'blockName'   => 'core/navigation-submenu',
-				'attrs'       => $submenu_attributes,
-				'innerBlocks' => $inner_nav_link_blocks,
-			);
-
-			$submenu_block = new WP_Block( $submenu_block_args, $block->context );
+			$submenu_block = $this->create_inner_block( 'core/navigation-submenu', $attributes, $top_level_element, $block->context, $inner_nav_link_blocks );
 			$output        = $submenu_block->render();
 		} else {
 			$output = '';
 
 			foreach ( $elements as $element ) {
-				$link_attributes = $this->get_core_block_attributes( $attributes, $element );
-
-				$nav_link_block_args = array(
-					'blockName' => 'core/navigation-link',
-					'attrs'     => $link_attributes,
-				);
-
-				$link_block  = new WP_Block( $nav_link_block_args, $block->context );
-				$output     .= $link_block->render();
+				$output .= $this->create_inner_block( 'core/navigation-link', $attributes, $element, $block->context )->render();
 			}
 		}
 
@@ -181,34 +180,6 @@ class Block extends Abstract_Block {
 	}
 
 	/**
-	 * Filters core/navigation-link and core/navigation-submenu attributes during registration to add our own.
-	 *
-	 * @since 3.6
-	 *
-	 * @param array $metadata Metadata for registering a block type.
-	 *
-	 * @return array The filtered metadata if about a core/navigation-link.
-	 */
-	public function register_custom_attributes( $metadata ) {
-		if ( 'core/navigation-link' === $metadata['name'] || 'core/navigation-submenu' === $metadata['name'] ) {
-			$pll_attributes = array(
-				'hreflang'         => array(
-					'type' => 'string',
-				),
-				'lang'             => array(
-					'type' => 'string',
-				),
-				'pll_label_markup' => array(
-					'type' => 'string',
-				),
-			);
-			$metadata['attributes'] = array_merge( $metadata['attributes'], $pll_attributes );
-		}
-
-		return $metadata;
-	}
-
-	/**
 	 * Renders a core/naviagation-link or core/naviagation-submenu block by adding hreflang and lang attributes to the <a> tag
 	 * and also the language flag if required.
 	 *
@@ -221,22 +192,20 @@ class Block extends Abstract_Block {
 	 * @return string A formatted HTML string representing the core/navigation-link or core/navigation-submenu block.
 	 */
 	public function render_custom_attributes( $block_content, $block, $instance ) {
-		if ( ! isset(
-			$instance->attributes['pll_label_markup'],
-			$instance->attributes['lang'],
-			$instance->attributes['hreflang']
-		)
-		) {
+		if ( ! $this->internal_blocks->offsetExists( $instance ) ) {
 			return $block_content;
 		}
+
+		$snapshot = $this->internal_blocks->offsetGet( $instance );
+		$this->internal_blocks->offsetUnset( $instance );
 
 		$content_tags = new WP_HTML_Tag_Processor( $block_content );
 
 		if ( 'core/navigation-submenu' === $instance->name ) {
 			// If `openSubmenusOnClick`, the submenu is rendered as a button, so there are no `<a>` to process.
 			if ( empty( $instance->context['openSubmenusOnClick'] ) && $content_tags->next_tag( array( 'tag_name' => 'a' ) ) ) {
-				$content_tags->set_attribute( 'hreflang', $instance->attributes['hreflang'] );
-				$content_tags->set_attribute( 'lang', $instance->attributes['lang'] );
+				$content_tags->set_attribute( 'hreflang', $snapshot['locale'] );
+				$content_tags->set_attribute( 'lang', $snapshot['locale'] );
 			}
 			if ( $content_tags->next_tag( array( 'tag_name' => 'button' ) ) ) {
 				$content_tags->set_attribute(
@@ -249,15 +218,15 @@ class Block extends Abstract_Block {
 				);
 			}
 		} elseif ( $content_tags->next_tag( array( 'tag_name' => 'a' ) ) ) {
-			$content_tags->set_attribute( 'hreflang', $instance->attributes['hreflang'] );
-			$content_tags->set_attribute( 'lang', $instance->attributes['lang'] );
+			$content_tags->set_attribute( 'hreflang', $snapshot['locale'] );
+			$content_tags->set_attribute( 'lang', $snapshot['locale'] );
 		}
 
 		$overridden_block_content = $content_tags->get_updated_html();
 
 		return str_replace(
 			static::PLACEHOLDER,
-			$instance->attributes['pll_label_markup'],
+			$snapshot['label'],
 			$overridden_block_content
 		);
 	}
@@ -272,6 +241,39 @@ class Block extends Abstract_Block {
 	 */
 	protected function get_path(): string {
 		return __DIR__;
+	}
+
+	/**
+	 * Creates an inner navigation block and stores the locale and label to render for it.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string           $block_name   Core block name.
+	 * @param array            $attributes   Array of polylang/navigation-language-switcher attributes.
+	 * @param Abstract_Element $element      Switcher element.
+	 * @param array            $context      Block context.
+	 * @param WP_Block[]       $inner_blocks Optional inner blocks.
+	 * @return WP_Block
+	 */
+	private function create_inner_block( string $block_name, array $attributes, Abstract_Element $element, array $context, array $inner_blocks = array() ): WP_Block {
+		$block = new WP_Block(
+			array(
+				'blockName'   => $block_name,
+				'attrs'       => $this->get_core_block_attributes( $attributes, $element ),
+				'innerBlocks' => $inner_blocks,
+			),
+			$context
+		);
+
+		$this->internal_blocks->offsetSet(
+			$block,
+			array(
+				'locale' => $element->locale,
+				'label'  => $this->apply_flag_styles_to_markup( $element->get_label(), $attributes ),
+			)
+		);
+
+		return $block;
 	}
 
 	/**
@@ -314,12 +316,9 @@ class Block extends Abstract_Block {
 		}
 
 		return array(
-			'label'            => static::PLACEHOLDER,
-			'url'              => $element->url,
-			'lang'             => $element->locale,
-			'hreflang'         => $element->locale,
-			'pll_label_markup' => $this->apply_flag_styles_to_markup( $element->get_label(), $attributes ),
-			'className'        => $class_name,
+			'label'     => static::PLACEHOLDER,
+			'url'       => $element->url,
+			'className' => $class_name,
 		);
 	}
 }
