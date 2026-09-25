@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.8.9
+Stable tag: 3.8.10
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -125,13 +125,18 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Add views for languages in the posts list table #1899
 * Fix the synchronization of meta values when updating a meta with multiple values #1826
 
+= 3.8.10 (2026-09-28) =
+
+* Security: Fix deserialization of untrusted data. Reported by Ananda Dhakal (Patchstack).
+* Security: Fix XSS in block attribute. Reported by Intrudify via Patchstack.
+
 = 3.8.9 (2026-09-08) =
 
 * Fix wrong redirect on home when the URL includes a query var #1998
 
 = 3.8.8 (2026-09-07) =
 
-* Security: Fix exposure of some draft posts metadata to non-authorized users. Reported by Patchstack.
+* Security: Fix exposure of some draft posts metadata to non-authorized users. Reported by Ananda Dhakal (Patchstack).
 * Pro: Allow plugins requiring Polylang to be installed when Polylang Pro is active #3051 #3116
 * Pro: Fix warning `WP_Post conversion to int` with WooCommerce #3101
 * Pro: Fix creation of translation in block editor for WP < 6.7 #3105
@@ -146,7 +151,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 = 3.8.6 (2026-07-20) =
 
 * Pro: Security: Ensure the user has the required capability for ACF fields when switching language in the editor #3029
-* Security: Fix exposure of some private posts metadata to non-authorized users. Reported by Patchstack.
+* Security: Fix exposure of some private posts metadata to non-authorized users. Reported by Ananda Dhakal (Patchstack).
 * Security: Fix server side default language encoding for the block editor
 * Fix 404 for post type or taxonomy sitemap when its name ends with a language code #1909
 
