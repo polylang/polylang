@@ -91,6 +91,8 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			)
 		);
 
+		$this->add_sanitization_hooks( $this->tax_language );
+
 		add_action( 'setup_theme', array( $this, 'add_language_taxonomy_query_var' ) );
 	}
 
