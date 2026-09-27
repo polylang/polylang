@@ -117,13 +117,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Add a dropdown language switcher with optional flags, available as a classic widget or block
 * Allow to customize the shape and size of the flags in all language switchers
 * Replace PNG 16x11 images by SVG 18x12 images for default flags #1864
-* Change the code of some flags to use iso 3166 for countries or regions, iso 639 for languages #1865
+* Change the code of some flags to use ISO 3166 for countries or regions, ISO 639 for languages #1865
 * Remove the filter `pll_flag_title`, inoperative since v3.0 #1828
 * Harmonize flags across the administration area and improve their accessibility #1857 #2992
 * Translate taxonomy filter in post list table when switching the language filter #1891
 * Allow to filter untranslated posts in the posts list table #1892
 * Add views for languages in the posts list table #1899
 * Fix the synchronization of meta values when updating a meta with multiple values #1826
+* Fix orphan translation group after the language of a term is changed #2015
 
 = 3.8.10 (2026-09-28) =
 
