@@ -24,6 +24,3 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: polylang/actions/consistent-versions@main
-        with:
-          config: .github/consistent-versions.yaml
-          tag-config: .github/consistent-versions-tag.yaml
