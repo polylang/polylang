@@ -380,4 +380,71 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( 'dog-2', $term2->slug, 'WordPress should add numeric suffix for conflict in same language' );
 	}
+
+	/**
+	 * Test translated hierarchical terms with long slugs stay within the terms.slug column limit.
+	 *
+	 * WordPress 7.2 truncates slugs in wp_unique_term_slug() when a parent or numeric suffix is appended.
+	 *
+	 * @see https://github.com/WordPress/wordpress-develop/commit/98d218765f16ffac15fe6c17419786a4a36b990f
+	 */
+	public function test_long_translated_term_slugs_stay_within_column_limit() {
+		$wp_version = explode( '-', $GLOBALS['wp_version'] )[0];
+
+		if ( version_compare( $wp_version, '7.2', '<' ) ) {
+			$this->markTestSkipped( 'This test requires WordPress 7.2 or higher' );
+		}
+
+		// Percent-encodes to a 116 character slug; Polylang parent suffix logic can push it past 200 characters.
+		$name = 'Категория на продукта';
+		$slug = sanitize_title( $name );
+
+		$_POST['term_lang_choice'] = 'en';
+		$en_parent                 = self::factory()->category->create_and_get(
+			array(
+				'name' => $name,
+				'slug' => $slug,
+				'lang' => 'en',
+			)
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_parent );
+		$this->assertLessThanOrEqual( 200, strlen( $en_parent->slug ) );
+
+		$_POST['term_lang_choice'] = 'fr';
+		$fr_parent                 = self::factory()->category->create_and_get(
+			array(
+				'name' => $name,
+				'lang' => 'fr',
+			)
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $fr_parent );
+		$this->assertLessThanOrEqual( 200, strlen( $fr_parent->slug ) );
+
+		$_POST['parent'] = $en_parent->term_id;
+		$en_child        = self::factory()->category->create_and_get(
+			array(
+				'name'   => $name,
+				'parent' => $en_parent->term_id,
+				'lang'   => 'en',
+			)
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_child );
+		$this->assertLessThanOrEqual( 200, strlen( $en_child->slug ) );
+
+		$_POST['term_lang_choice'] = 'fr';
+		$_POST['parent']           = $fr_parent->term_id;
+		$fr_child                  = self::factory()->category->create_and_get(
+			array(
+				'name'   => $name,
+				'parent' => $fr_parent->term_id,
+				'lang'   => 'fr',
+			)
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $fr_child );
+		$this->assertLessThanOrEqual( 200, strlen( $fr_child->slug ) );
+	}
 }
