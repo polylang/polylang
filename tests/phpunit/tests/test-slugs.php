@@ -382,69 +382,142 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Test translated hierarchical terms with long slugs stay within the terms.slug column limit.
+	 * Test terms with slugs longer than the column limit are truncated on insert.
 	 *
 	 * WordPress 7.2 truncates slugs in wp_unique_term_slug() when a parent or numeric suffix is appended.
 	 *
 	 * @see https://github.com/WordPress/wordpress-develop/commit/98d218765f16ffac15fe6c17419786a4a36b990f
 	 */
 	public function test_long_translated_term_slugs_stay_within_column_limit() {
-		$wp_version = explode( '-', $GLOBALS['wp_version'] )[0];
-
-		if ( version_compare( $wp_version, '7.2', '<' ) ) {
+		global $wp_version;
+		if ( version_compare( $wp_version, '7.1', '<=' ) ) {
+			// Backward compatibility with WordPress < 7.2
 			$this->markTestSkipped( 'This test requires WordPress 7.2 or higher' );
 		}
 
-		// Percent-encodes to a 116 character slug; Polylang parent suffix logic can push it past 200 characters.
+		$truncated_numeric_suffix = str_repeat( 'a', 198 ) . '-2';
+
+		// Source language: inserting a 200 character slug that collides is truncated to make room for "-2".
+		$source_slug = str_repeat( 'a', 200 );
+
+		$en_source = get_term(
+			pll_insert_term(
+				'EN source',
+				'category',
+				'en',
+				array(
+					'slug' => $source_slug,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_source );
+		$this->assertSame( $source_slug, $en_source->slug );
+
+		$en_collision = get_term(
+			pll_insert_term(
+				'EN collision',
+				'category',
+				'en',
+				array(
+					'slug' => $source_slug,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_collision );
+		$this->assertSame( $truncated_numeric_suffix, $en_collision->slug );
+
+		// Percent-encodes to a 116 character slug; parent suffixes would exceed 200 characters without truncation.
 		$name = 'Категория на продукта';
 		$slug = sanitize_title( $name );
 
-		$_POST['term_lang_choice'] = 'en';
-		$en_parent                 = self::factory()->category->create_and_get(
-			array(
-				'name' => $name,
-				'slug' => $slug,
-				'lang' => 'en',
-			)
+		$en_parent = get_term(
+			pll_insert_term(
+				$name,
+				'category',
+				'en',
+				array(
+					'slug' => $slug,
+				)
+			)['term_id'],
+			'category'
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
-		$this->assertLessThanOrEqual( 200, strlen( $en_parent->slug ) );
+		$this->assertSame( $slug, $en_parent->slug );
 
-		$_POST['term_lang_choice'] = 'fr';
-		$fr_parent                 = self::factory()->category->create_and_get(
-			array(
-				'name' => $name,
-				'lang' => 'fr',
-			)
+		$fr_parent = get_term(
+			pll_insert_term( $name, 'category', 'fr' )['term_id'],
+			'category'
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $fr_parent );
-		$this->assertLessThanOrEqual( 200, strlen( $fr_parent->slug ) );
+		$this->assertSame( $slug . '-fr', $fr_parent->slug );
 
-		$_POST['parent'] = $en_parent->term_id;
-		$en_child        = self::factory()->category->create_and_get(
-			array(
-				'name'   => $name,
-				'parent' => $en_parent->term_id,
-				'lang'   => 'en',
-			)
+		$en_child = get_term(
+			pll_insert_term(
+				$name,
+				'category',
+				'en',
+				array(
+					'parent' => $en_parent->term_id,
+				)
+			)['term_id'],
+			'category'
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $en_child );
-		$this->assertLessThanOrEqual( 200, strlen( $en_child->slug ) );
+		$this->assertLessThanOrEqual( 200, strlen( $en_child->slug ), 'The slug does not fit the column.' );
+		$this->assertSame(
+			0,
+			preg_match( '/%(?![0-9a-fA-F]{2})/', $en_child->slug ),
+			'The slug contains a truncated percent-encoded sequence.'
+		);
+		$this->assertTrue(
+			wp_is_valid_utf8( urldecode( $en_child->slug ) ),
+			'The slug does not decode to valid UTF-8.'
+		);
+		$this->assertSame( 119, strlen( $en_child->slug ) );
 
-		$_POST['term_lang_choice'] = 'fr';
-		$_POST['parent']           = $fr_parent->term_id;
-		$fr_child                  = self::factory()->category->create_and_get(
-			array(
-				'name'   => $name,
-				'parent' => $fr_parent->term_id,
-				'lang'   => 'fr',
-			)
+		$en_child = get_term(
+			pll_update_term(
+				$en_child->term_id,
+				array(
+					'name' => 'Updated EN child',
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertSame( 'Updated EN child', $en_child->name );
+		$this->assertSame( 119, strlen( $en_child->slug ) );
+
+		$fr_child = get_term(
+			pll_insert_term(
+				$name,
+				'category',
+				'fr',
+				array(
+					'parent' => $fr_parent->term_id,
+				)
+			)['term_id'],
+			'category'
 		);
 
 		$this->assertInstanceOf( WP_Term::class, $fr_child );
-		$this->assertLessThanOrEqual( 200, strlen( $fr_child->slug ) );
+		$this->assertLessThanOrEqual( 200, strlen( $fr_child->slug ), 'The slug does not fit the column.' );
+		$this->assertSame(
+			0,
+			preg_match( '/%(?![0-9a-fA-F]{2})/', $fr_child->slug ),
+			'The slug contains a truncated percent-encoded sequence.'
+		);
+		$this->assertTrue(
+			wp_is_valid_utf8( urldecode( $fr_child->slug ) ),
+			'The slug does not decode to valid UTF-8.'
+		);
+		$this->assertSame( 200, strlen( $fr_child->slug ) );
 	}
 }
