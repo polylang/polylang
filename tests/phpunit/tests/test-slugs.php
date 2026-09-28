@@ -389,8 +389,9 @@ class Slugs_Test extends PLL_UnitTestCase {
 	 * @see https://github.com/WordPress/wordpress-develop/commit/98d218765f16ffac15fe6c17419786a4a36b990f
 	 */
 	public function test_long_translated_term_slugs_stay_within_column_limit() {
-		global $wp_version;
-		if ( version_compare( $wp_version, '7.1', '<=' ) ) {
+		$wp_version = explode( '-', $GLOBALS['wp_version'] )[0];
+
+		if ( version_compare( $wp_version, '7.2', '<' ) ) {
 			// Backward compatibility with WordPress < 7.2
 			$this->markTestSkipped( 'This test requires WordPress 7.2 or higher' );
 		}
