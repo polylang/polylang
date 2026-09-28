@@ -23,4 +23,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: polylang/actions/consistent-versions@main
+      - uses: polylang/actions/consistent-versions@build/consistent-versions-via-composer
