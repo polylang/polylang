@@ -19,14 +19,7 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	 * Monitors PLL_Term_Slug::maybe_get_parent_suffix()
 	 */
 	public function test_wp_unique_term_slug() {
-		$wp_version = explode( '-', $GLOBALS['wp_version'] )[0];
-
-		if ( version_compare( $wp_version, '7.2', '>=' ) ) {
-			$this->check_method( 'ccfa5e5319999728d553fce744884153', '7.2', 'wp_unique_term_slug' );
-		} else {
-			$this->check_method( 'c926e40169b2e1b430eb21039ae8d9d7', '6.4', 'wp_unique_term_slug' );
-		}
-
+		$this->check_method( 'ccfa5e5319999728d553fce744884153', '7.2', 'wp_unique_term_slug' );
 		$this->check_internal_method( 'b84b8505f2708c20ef72d9f01568e305', PLL_Term_Slug::class, 'maybe_get_parent_suffix' );
 	}
 }
