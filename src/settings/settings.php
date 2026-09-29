@@ -162,9 +162,12 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @phpstan-return never
 	 */
 	public function handle_actions( string $action ): void {
+		/** @var PLL_Language|null $new_language */
 		$new_language = null;
+		/** @var PLL_Language|null $old_language */
 		$old_language = null;
-		$error        = null;
+		/** @var WP_Error|null $error */
+		$error = null;
 
 		switch ( $action ) {
 			case 'add':
@@ -196,8 +199,13 @@ class PLL_Settings extends PLL_Admin_Base {
 			case 'delete':
 				check_admin_referer( 'delete-lang' );
 
-				$lang_id      = ! empty( $_GET['lang'] ) ? (int) $_GET['lang'] : 0;
-				$old_language = $lang_id ? $this->model->get_language( $lang_id ) : null;
+				$lang_id = 0;
+				if ( ! empty( $_GET['lang'] ) && is_scalar( $_GET['lang'] ) ) {
+					$lang_id = absint( $_GET['lang'] );
+				}
+				if ( $lang_id ) {
+					$old_language = $this->model->get_language( $lang_id ) ?: null;
+				}
 
 				if ( $lang_id && $old_language && $this->model->delete_language( $lang_id ) ) {
 					pll_add_notice( new WP_Error( 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' ) );
@@ -207,7 +215,9 @@ class PLL_Settings extends PLL_Admin_Base {
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
-				$old_language = ! empty( $_POST['lang_id'] ) ? $this->model->get_language( (int) $_POST['lang_id'] ) : null;
+				if ( ! empty( $_POST['lang_id'] ) ) {
+					$old_language = $this->model->get_language( (int) $_POST['lang_id'] ) ?: null;
+				}
 				$new_language = $this->model->update_language( $_POST );
 
 				if ( is_wp_error( $new_language ) ) {
@@ -223,7 +233,9 @@ class PLL_Settings extends PLL_Admin_Base {
 			case 'default-lang':
 				check_admin_referer( 'default-lang' );
 
-				$new_language = ! empty( $_GET['lang'] ) ? $this->model->get_language( (int) $_GET['lang'] ) : null;
+				if ( ! empty( $_GET['lang'] ) ) {
+					$new_language = $this->model->get_language( (int) $_GET['lang'] ) ?: null;
+				}
 
 				if ( $new_language ) {
 					$this->model->update_default_lang( $new_language->slug );
