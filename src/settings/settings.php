@@ -162,12 +162,9 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @phpstan-return never
 	 */
 	public function handle_actions( string $action ): void {
-		/** @var PLL_Language|null $new_language */
 		$new_language = null;
-		/** @var PLL_Language|null $old_language */
 		$old_language = null;
-		/** @var WP_Error|null $error */
-		$error = null;
+		$error        = null;
 
 		switch ( $action ) {
 			case 'add':
@@ -199,15 +196,9 @@ class PLL_Settings extends PLL_Admin_Base {
 			case 'delete':
 				check_admin_referer( 'delete-lang' );
 
-				$lang_id = 0;
-				if ( ! empty( $_GET['lang'] ) && is_scalar( $_GET['lang'] ) ) {
-					$lang_id = absint( $_GET['lang'] );
-				}
-				if ( $lang_id ) {
-					$old_language = $this->model->get_language( $lang_id ) ?: null;
-				}
+				$old_language = $this->model->get_language( pll_sanitize_id( $_GET['lang'] ?? 0 ) ) ?: null;
 
-				if ( $lang_id && $old_language && $this->model->delete_language( $lang_id ) ) {
+				if ( $old_language && $this->model->delete_language( $old_language->term_id ) ) {
 					pll_add_notice( new WP_Error( 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' ) );
 				}
 
@@ -215,9 +206,7 @@ class PLL_Settings extends PLL_Admin_Base {
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
-				if ( ! empty( $_POST['lang_id'] ) ) {
-					$old_language = $this->model->get_language( (int) $_POST['lang_id'] ) ?: null;
-				}
+				$old_language = $this->model->get_language( pll_sanitize_id( $_POST['lang_id'] ?? 0 ) ) ?: null;
 				$new_language = $this->model->update_language( $_POST );
 
 				if ( is_wp_error( $new_language ) ) {
@@ -233,9 +222,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			case 'default-lang':
 				check_admin_referer( 'default-lang' );
 
-				if ( ! empty( $_GET['lang'] ) ) {
-					$new_language = $this->model->get_language( (int) $_GET['lang'] ) ?: null;
-				}
+				$new_language = $this->model->get_language( pll_sanitize_id( $_GET['lang'] ?? 0 ) ) ?: null;
 
 				if ( $new_language ) {
 					$this->model->update_default_lang( $new_language->slug );
@@ -327,9 +314,9 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		// Handle user input.
 		$action = isset( $_REQUEST['pll_action'] ) && is_string( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( 'edit' === $action && isset( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
+			$edit_lang = $this->model->get_language( pll_sanitize_id( $_GET['lang'] ) ) ?: null;
 		} elseif ( ! empty( $action ) ) {
 			$this->handle_actions( $action );
 		}
