@@ -151,33 +151,39 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'The translation', $mo->translate( 'Some string' ) );
 	}
 
-	public function test_pll_update_language_from_settings_action() {
-		$lang = self::$model->get_language( 'fr' );
+	public function test_update_language_from_settings_with_fallbacks() {
+		$filter = function ( $lang_metas, $args ) {
+			if ( ! empty( $args['fallbacks'] ) && is_string( $args['fallbacks'] ) ) {
+				$fallbacks = array_map( 'trim', explode( ',', $args['fallbacks'] ) );
+				$fallbacks = array_values( array_diff( array_unique( $fallbacks ), array( $args['locale'] ) ) );
 
-		$called = array();
-		add_action(
-			'pll_update_language_from_settings',
-			function ( $new_language, $old_language, $error ) use ( &$called ) {
-				$called[] = array(
-					$new_language ? $new_language->term_id : null,
-					$old_language ? $old_language->term_id : null,
-					$error,
-				);
-			},
-			10,
-			3
-		);
+				return array_merge( $lang_metas, array( 'fallbacks' => $fallbacks ) );
+			}
+
+			if ( empty( $args['lang_id'] ) ) {
+				return array_merge( $lang_metas, array( 'fallbacks' => array( 'es_ES' ) ) );
+			}
+
+			return $lang_metas;
+		};
+
+		add_filter( 'pll_language_metas', $filter, 10, 2 );
+		$de = self::create_language( 'de_DE' );
+
+		self::$model->clean_languages_cache();
+		$de = self::$model->get_language( 'de' );
 
 		$_POST = array(
-			'pll_action'          => 'update',
-			'_wpnonce_add-lang'   => wp_create_nonce( 'add-lang' ),
-			'lang_id'             => $lang->term_id,
-			'name'                => 'Français',
-			'slug'                => 'fr',
-			'locale'              => 'fr_FR',
-			'rtl'                 => '0',
-			'term_group'          => $lang->term_group,
-			'flag'                => $lang->flag_code,
+			'pll_action'        => 'update',
+			'_wpnonce_add-lang' => wp_create_nonce( 'add-lang' ),
+			'lang_id'           => $de->term_id,
+			'name'              => 'Deutsch',
+			'slug'              => 'de',
+			'locale'            => 'de_DE',
+			'rtl'               => '0',
+			'term_group'        => $de->term_group,
+			'flag'              => $de->flag_code,
+			'fallbacks'         => 'es_ES, de_AT',
 		);
 
 		$_REQUEST = array_merge( $_GET, $_POST );
@@ -186,7 +192,11 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env     = new PLL_Settings( $links_model );
 		$this->assert_redirect( array( $pll_env, 'handle_actions' ), array( 'update' ) );
 
-		$this->assertCount( 1, $called );
-		$this->assertSame( array( $lang->term_id, $lang->term_id, null ), $called[0] );
+		self::$model->clean_languages_cache();
+		$de = self::$model->get_language( 'de' );
+
+		$this->assertEqualSets( array( 'es_ES', 'de_AT' ), $de->fallbacks );
+
+		remove_filter( 'pll_language_metas', $filter, 10 );
 	}
 }
