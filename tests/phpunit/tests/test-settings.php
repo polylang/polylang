@@ -150,4 +150,41 @@ class Settings_Test extends PLL_UnitTestCase {
 		$mo->import_from_db( $lang );
 		$this->assertSame( 'The translation', $mo->translate( 'Some string' ) );
 	}
+
+	public function test_pll_update_language_from_settings_action() {
+		$lang = self::$model->get_language( 'fr' );
+
+		$called = array();
+		add_action(
+			'pll_update_language_from_settings',
+			function ( $new_language, $old_language, $error ) use ( &$called ) {
+				$called[] = array(
+					$new_language ? $new_language->term_id : null,
+					$old_language ? $old_language->term_id : null,
+					$error,
+				);
+			},
+			10,
+			3
+		);
+
+		$_POST = array(
+			'pll_action'          => 'update',
+			'_wpnonce_add-lang'   => wp_create_nonce( 'add-lang' ),
+			'lang_id'             => $lang->term_id,
+			'name'                => 'Français',
+			'slug'                => 'fr',
+			'locale'              => 'fr_FR',
+			'rtl'                 => '0',
+			'term_group'          => $lang->term_group,
+			'flag'                => $lang->flag_code,
+		);
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+		$pll_env->handle_actions( 'update' );
+
+		$this->assertCount( 1, $called );
+		$this->assertSame( array( $lang->term_id, $lang->term_id, null ), $called[0] );
+	}
 }
