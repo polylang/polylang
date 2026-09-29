@@ -180,9 +180,11 @@ class Settings_Test extends PLL_UnitTestCase {
 			'flag'                => $lang->flag_code,
 		);
 
+		$_REQUEST = array_merge( $_GET, $_POST );
+
 		$links_model = self::$model->get_links_model();
 		$pll_env     = new PLL_Settings( $links_model );
-		$pll_env->handle_actions( 'update' );
+		$this->assert_redirect( array( $pll_env, 'handle_actions' ), array( 'update' ) );
 
 		$this->assertCount( 1, $called );
 		$this->assertSame( array( $lang->term_id, $lang->term_id, null ), $called[0] );

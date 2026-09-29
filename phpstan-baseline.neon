@@ -1201,12 +1201,6 @@ parameters:
 			path: src/settings/settings-url.php
 
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 3
-			path: src/settings/settings.php
-
-		-
 			message: '#^Property PLL_Settings\:\:\$modules \(array\<PLL_Settings_Module\>\|null\) does not accept array\<object\>\.$#'
 			identifier: assign.propertyType
 			count: 1
