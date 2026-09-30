@@ -162,10 +162,9 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'test-en', $en->slug );
 
 		// Let's create another child term with the same parent and the same name.
-		$en_new = pll_insert_term(
+		$en_new = wp_insert_term(
 			'test',
 			'category',
-			'en',
 			array(
 				'parent' => $en_parent->term_id,
 			)

@@ -35,10 +35,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
 		$this->pll_admin->posts        = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
-
-		$GLOBALS['polylang'] = $this->pll_admin;
-
-		self::require_api();
 	}
 
 	public function test_default_language() {
@@ -504,7 +500,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug );
 
 		// Second category in English with the same name.
-		$error = pll_insert_term( 'test', 'category', 'en' );
+		$error = wp_insert_term( 'test', 'category' );
 
 		$this->assertWPError( $error );
 		$this->assertSame( 'term_exists', $error->get_error_code() );
@@ -517,7 +513,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug );
 
 		// Second category in French with the same name.
-		$error = pll_insert_term( 'test', 'category', 'fr' );
+		$error = wp_insert_term( 'test', 'category' );
 
 		$this->assertWPError( $error );
 		$this->assertSame( 'term_exists', $error->get_error_code() );
@@ -708,7 +704,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'fr', $fr_lang->slug, 'French term has not the right language set.' );
 
 		// Let's create a third term with the same name.
-		$error = pll_insert_term( 'test', 'category', 'fr' );
+		$error = wp_insert_term( 'test', 'category' );
 
 		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 		$this->assertSame( 'term_exists', $error->get_error_code() );
@@ -793,7 +789,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Cats', 'slug' => 'cat' ) );
 
 		// Second category in English with the same name and empty slug.
-		$error = pll_insert_term( 'Cats', 'category', 'en' );
+		$error = wp_insert_term( 'Cats', 'category' );
 		$this->assertWPError( $error, 'A term with the same name should not be created.' );
 		$this->assertSame( 'term_exists', $error->get_error_code() );
 	}
