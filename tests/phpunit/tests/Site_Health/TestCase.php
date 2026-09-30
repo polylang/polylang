@@ -3,7 +3,6 @@
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 use PLL_Admin;
-use WP_Debug_Data;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
 use PLL_Admin_Site_Health;
