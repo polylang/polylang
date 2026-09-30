@@ -264,38 +264,32 @@ class PLL_Settings extends PLL_Admin_Base {
 			return;
 		}
 
-		$locales = array();
-
-		if ( 'en_US' !== $language->locale && ( ! $before instanceof PLL_Language || $before->locale !== $language->locale ) ) {
-			$locales[] = $language->locale;
-		}
-
-		$fallbacks = $language->fallbacks;
-
-		if ( $before instanceof PLL_Language ) {
-			$previous_fallbacks = ! empty( $before->fallbacks ) ? $before->fallbacks : array();
-			$fallbacks          = array_diff( $fallbacks, $previous_fallbacks );
-		}
-
-		$locales = array_unique( array_merge( $locales, $fallbacks ) );
-		$locales = array_filter( $locales );
-
-		if ( empty( $locales ) ) {
+		if ( 'en_US' === $language->locale && empty( $language->fallbacks ) ) {
 			return;
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
-		$main_locale_failed = false;
+		if ( 'en_US' !== $language->locale && ! wp_download_language_pack( $language->locale ) ) {
+			$message = $before
+				? __( 'The language was updated, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' )
+				: __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' );
 
-		foreach ( $locales as $locale ) {
-			if ( ! wp_download_language_pack( $locale ) && $locale === $language->locale ) {
-				$main_locale_failed = true;
-			}
+			pll_add_notice( new WP_Error( 'pll_download_mo', $message, 'warning' ) );
 		}
 
-		if ( $main_locale_failed ) {
-			pll_add_notice( new WP_Error( 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ), 'warning' ) );
+		foreach ( $language->fallbacks as $locale ) {
+			if ( 'en_US' === $locale || $locale === $language->locale ) {
+				continue;
+			}
+
+			if ( ! wp_download_language_pack( $locale ) ) {
+				$message = $before && $before->fallbacks
+					? __( 'The language fallback was updated, but the WordPress language fallback file was not downloaded. Please install it manually.', 'polylang' )
+					: __( 'The language fallback was created, but the WordPress language fallback file was not downloaded. Please install it manually.', 'polylang' );
+
+				pll_add_notice( new WP_Error( 'pll_download_mo', $message, 'warning' ) );
+			}
 		}
 
 		// Force checking for themes and plugins translations updates.
