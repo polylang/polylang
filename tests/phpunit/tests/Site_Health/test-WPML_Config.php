@@ -3,7 +3,6 @@
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
 use WP_Debug_Data;
-use WP_Site_Health;
 use PLL_WPML_Config;
 use ReflectionProperty;
 

@@ -2,8 +2,8 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-use PLL_Admin_Links;
 use WP_Site_Health;
+use PLL_Admin_Links;
 
 class Front_Page_Test extends TestCase {
 
