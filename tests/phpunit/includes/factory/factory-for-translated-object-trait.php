@@ -1,7 +1,5 @@
 <?php
 
-use PHPUnit\Framework\Assert;
-
 trait Factory_For_Translated_Object_Trait {
 	/**
 	 * @var PLL_Translated_Post
@@ -27,24 +25,6 @@ trait Factory_For_Translated_Object_Trait {
 		}
 
 		return $object_id;
-	}
-
-	/**
-	 * Create an object and expect an error.
-	 *
-	 * @param array $args The arguments for the object creation.
-	 * @param array $generation_definitions The generation definitions.
-	 * @throws InvalidArgumentException If the object is created successfully.
-	 * @return void
-	 */
-	public function create_and_expect_error( $args = array(), $generation_definitions = null ) {
-		try {
-			$object_id = $this->create( $args, $generation_definitions );
-		} catch ( WP_UnitTest_Factory_Exception $e ) {
-			$object_id = new WP_Error( 'pll-test-error', $e->getMessage() );
-		}
-
-		Assert::assertInstanceOf( WP_Error::class, $object_id );
 	}
 
 	public function create_translated( array ...$objects ) {
