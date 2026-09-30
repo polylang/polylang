@@ -3,6 +3,7 @@
   "core": null,
   "plugins": [ "." ],
   "mappings": {
-    "wp-content/plugins/custom-strings": "./tests/e2e/plugins/custom-strings"
+    "wp-content/plugins/custom-strings": "./tests/e2e/plugins/custom-strings",
+    "wp-content/plugins/force-classic-editor": "./tests/e2e/plugins/force-classic-editor"
   }
 }
