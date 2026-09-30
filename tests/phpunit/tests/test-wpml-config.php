@@ -407,11 +407,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	public function test_gutenberg_blocks() {
 		PLL_WPML_Config::instance()->init();
 
-		register_post_type( 'book' );
-		register_taxonomy( 'genre', 'book' );
-		self::$model->cache->clean( 'post_types' );
-		self::$model->cache->clean( 'taxonomies' );
-
 		$parsing_rules                = array(
 			'my-plugin/my-block' => array(
 				'//div/p',
