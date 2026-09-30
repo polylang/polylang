@@ -552,10 +552,6 @@ class PLL_WPML_Config {
 				$translate = '1' === $this->get_field_attribute( $block, 'translate' );
 
 				foreach ( $block->children() as $child ) {
-					if ( ! $this->is_supported_field( $child, $translate ) ) {
-						continue;
-					}
-
 					$rule      = '';
 					$child_tag = $child->getName();
 
@@ -567,17 +563,39 @@ class PLL_WPML_Config {
 								break;
 							}
 
-							$parsing_rules['xpath'][ $block_name ][] = $rule;
+							// Post IDs, Term IDs.
+							$translation_type = $this->get_ids_translation_type( $child );
 
-							$trad_type = $this->get_ids_traduction_type( $child );
+							if ( ! empty( $translation_type ) ) {
+								$parsing_rules['ids_in_content'][ $block_name ][ $translation_type ][] = $rule;
+								// No need to go further, since a `xpath` tag cannot have children, and we cannot have
+								// a tag that is a "IDs" one and a "classic" one at the same time.
+								break;
+							}
 
-							if ( ! empty( $trad_type ) ) {
-								$parsing_rules['ids_in_content'][ $block_name ][ $trad_type ][] = $rule;
+							// "Classic" field.
+							if ( $translate && $this->is_supported_classic_field( $child ) ) {
+								$parsing_rules['xpath'][ $block_name ][] = $rule;
 							}
 							break;
 
 						case 'key':
-							$rule = $this->get_field_attributes( $child, $translate );
+							// Post IDs, Term IDs.
+							$block_rules = $this->get_ids_attributes(
+								$parsing_rules['ids_in_attributes'][ $block_name ] ?? array(),
+								$child
+							);
+
+							if ( ! empty( $block_rules ) ) {
+								$parsing_rules['ids_in_attributes'][ $block_name ] = $block_rules;
+							}
+
+							// "Classic" fields.
+							if ( ! $translate || ! $this->is_supported_classic_field( $child ) ) {
+								break;
+							}
+
+							$rule = $this->get_field_attributes( $child );
 
 							if ( empty( $rule ) ) {
 								break;
@@ -595,18 +613,6 @@ class PLL_WPML_Config {
 								// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
 								$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
 							}
-
-							foreach ( array( 'post', 'attachment', 'wp_block', 'post_mixed', 'term' ) as $trad_type ) {
-								$ids_attributes = $this->get_ids_attributes( $trad_type, $child, $translate );
-
-								if ( ! empty( $ids_attributes ) ) {
-									$parsing_rules['ids_in_attributes'][ $block_name ][ $trad_type ] = array_merge(
-										$parsing_rules['ids_in_attributes'][ $block_name ][ $trad_type ] ?? array(),
-										$ids_attributes
-									);
-								}
-							}
-							break;
 					}
 				}
 			}
@@ -712,15 +718,13 @@ class PLL_WPML_Config {
 	 * Gets attributes values recursively.
 	 *
 	 * @since 3.6
-	 * @since 3.9 Parameter `$translate` added.
 	 *
-	 * @param SimpleXMLElement $field     A XML node.
-	 * @param bool             $translate Tells if the parent field has `translate="1"`.
+	 * @param SimpleXMLElement $field A XML node.
 	 * @return array An array of attributes.
 	 *
 	 * @phpstan-return Rules
 	 */
-	private function get_field_attributes( SimpleXMLElement $field, bool $translate ): array {
+	private function get_field_attributes( SimpleXMLElement $field ): array {
 		$name = $this->get_field_attribute( $field, 'name' );
 
 		if ( '' === $name ) {
@@ -736,59 +740,11 @@ class PLL_WPML_Config {
 		$sub_attributes = array();
 
 		foreach ( $children as $child ) {
-			if ( ! $this->is_supported_field( $child, $translate ) ) {
+			if ( ! $this->is_supported_classic_field( $child ) ) {
 				continue;
 			}
 
-			$sub = $this->get_field_attributes( $child, $translate );
-
-			if ( empty( $sub ) ) {
-				continue;
-			}
-
-			$sub_attributes[ $name ] = array_merge( $sub_attributes[ $name ] ?? array(), $sub );
-		}
-
-		return $sub_attributes;
-	}
-
-	/**
-	 * Returns attributes values recursively, but only for values containing IDs.
-	 *
-	 * @since 3.9
-	 *
-	 * @param string           $trad_type Translation type. Either `post`, `term`, `attachment` or `wp_block`.
-	 * @param SimpleXMLElement $field     A XML node.
-	 * @param bool             $translate Tells if the parent field has `translate="1"`.
-	 * @return array An array of attributes.
-	 *
-	 * @phpstan-param TradTypes $trad_type
-	 * @phpstan-return Rules
-	 */
-	private function get_ids_attributes( string $trad_type, SimpleXMLElement $field, bool $translate ) {
-		$name = $this->get_field_attribute( $field, 'name' );
-
-		if ( '' === $name ) {
-			return array();
-		}
-
-		$children = $field->children();
-
-		if ( 0 === $children->count() ) {
-			if ( $this->get_ids_traduction_type( $field ) !== $trad_type ) {
-				return array();
-			}
-			return array( $name => true );
-		}
-
-		$sub_attributes = array();
-
-		foreach ( $children as $child ) {
-			if ( ! $this->is_supported_field( $child, $translate ) ) {
-				continue;
-			}
-
-			$sub = $this->get_ids_attributes( $trad_type, $child, $translate );
+			$sub = $this->get_field_attributes( $child );
 
 			if ( empty( $sub ) ) {
 				continue;
@@ -804,20 +760,125 @@ class PLL_WPML_Config {
 	 * Tells if the given field is supported.
 	 *
 	 * @since 3.8.4
-	 * @since 3.9 Parameter `$translate` added.
 	 *
-	 * @param SimpleXMLElement $field     A XML node.
-	 * @param bool             $translate Tells if the parent field has `translate="1"`.
+	 * @param SimpleXMLElement $field A XML node.
 	 * @return bool
 	 */
-	private function is_supported_field( SimpleXMLElement $field, bool $translate ): bool {
+	private function is_supported_field( SimpleXMLElement $field ): bool {
 		$type = $this->get_field_attribute( $field, 'type' );
 
 		if ( '' !== $type ) {
 			return $this->is_ids_type( $type );
 		}
 
-		if ( ! $translate ) {
+		return $this->is_supported_classic_field( $field );
+	}
+
+	/**
+	 * Returns the IDs attributes recursively.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array            $block_rules All IDs rules.
+	 * @param SimpleXMLElement $field       A XML node.
+	 * @param array            $curpath     Current path to the XML node. This is used to keep track of the position of
+	 *                                      the current node in the tree. For example:
+	 *                                      <key name="a">
+	 *                                          <key name="b">
+	 *                                              <key name="c"/>
+	 *                                          </key>
+	 *                                      </key>
+	 *                                      Will be represented by the path:
+	 *                                      array( 'a', 'b', 'c' )
+	 * @return array
+	 *
+	 * @phpstan-param array<TradTypes, Rules> $block_rules
+	 * @phpstan-param list<non-empty-string> $curpath
+	 * @phpstan-return array<TradTypes, Rules>
+	 */
+	private function get_ids_attributes( array $block_rules, SimpleXMLElement $field, array $curpath = array() ): array {
+		$name = $this->get_field_attribute( $field, 'name' );
+
+		if ( '' === $name ) {
+			// Mandatory attribute.
+			return $block_rules;
+		}
+
+		$children = $field->children();
+
+		if ( 0 === $children->count() ) {
+			$translation_type = $this->get_ids_translation_type( $field );
+
+			if ( '' === $translation_type ) {
+				// Nope, not our business.
+				return $block_rules;
+			}
+
+			$curpath[] = $name;
+
+			$block_rules[ $translation_type ] = $this->build_ids_attributes( $block_rules[ $translation_type ] ?? array(), $curpath );
+
+			return $block_rules;
+		}
+
+		$curpath[] = $name;
+
+		foreach ( $children as $child ) {
+			if ( ! $this->is_supported_field( $field ) ) {
+				continue;
+			}
+
+			$block_rules = $this->get_ids_attributes( $block_rules, $child, $curpath );
+		}
+
+		array_pop( $curpath );
+
+		return $block_rules;
+	}
+
+	/**
+	 * Morphs the given path into a rule recursively, and add it to the block rules.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array $block_rules Rules.
+	 * @param array $curpath     Current path to the XML node, passed by reference.
+	 * @return array
+	 *
+	 * @phpstan-param Rules $block_rules
+	 * @phpstan-param list<non-empty-string> $curpath
+	 * @phpstan-return Rules
+	 */
+	private function build_ids_attributes( array $block_rules, array &$curpath ): array {
+		if ( empty( $curpath ) ) {
+			// Should not happen.
+			return $block_rules;
+		}
+
+		if ( count( $curpath ) === 1 ) {
+			$key = array_pop( $curpath );
+			$block_rules[ $key ] = true;
+			return $block_rules;
+		}
+
+		$first = array_shift( $curpath );
+		$block_rules[ $first ] = $this->build_ids_attributes( $block_rules[ $first ] ?? array(), $curpath );
+		array_unshift( $curpath, $first );
+
+		return $block_rules;
+	}
+
+	/**
+	 * Tells if the given "classic" field is supported.
+	 * ("Classic" means "not a IDs field" here.)
+	 *
+	 * @since 3.9
+	 *
+	 * @param SimpleXMLElement $field A XML node.
+	 * @return bool
+	 */
+	private function is_supported_classic_field( SimpleXMLElement $field ): bool {
+		if ( $this->get_field_attribute( $field, 'type' ) !== '' ) {
 			return false;
 		}
 
@@ -845,7 +906,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Returns the traduction type of the given node, for IDs translation.
+	 * Returns the translation type of the given node, for IDs translation.
 	 * All post types are inferred to `post` except for `attachment` and `wp_block`.
 	 * If the post type is not specified or empty, the type is `post_mixed`.
 	 *
@@ -854,9 +915,9 @@ class PLL_WPML_Config {
 	 * @param SimpleXMLElement $field A XML node.
 	 * @return string
 	 *
-	 * @phpstan-return ''|TradTypes
+	 * @phpstan-return TradTypes|''
 	 */
-	private function get_ids_traduction_type( SimpleXMLElement $field ): string {
+	private function get_ids_translation_type( SimpleXMLElement $field ): string {
 		$type = $this->get_field_attribute( $field, 'type' );
 
 		if ( ! $this->is_ids_type( $type ) ) {

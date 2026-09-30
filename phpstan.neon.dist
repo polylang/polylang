@@ -91,3 +91,9 @@ parameters:
 		# Ignored globally
 		-
 			message: '#^Parameter \#1 \$nonce of function wp_verify_nonce expects string, mixed given\.$#'
+
+		# Ignored because the type is recursive.
+		-
+			message: "#^Parameter \\#1 \\$block_rules of method PLL_WPML_Config\\:\\:build_ids_attributes\\(\\) expects array\\<non-empty-string, array\\|true\\>, array\\|true given\\.$#"
+			count: 1
+			path: src/modules/wpml/wpml-config.php
