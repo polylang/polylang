@@ -199,4 +199,38 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		remove_filter( 'pll_language_metas', $filter, 10 );
 	}
+
+	public function test_translation_updates_form_in_success_notice() {
+		wp_set_current_user( 1 );
+
+		$update_plugins = (object) array(
+			'translations' => array(
+				(object) array(
+					'type'     => 'plugin',
+					'slug'     => 'polylang/polylang.php',
+					'language' => 'fr_FR',
+					'version'  => '1.0',
+					'updated'  => '2020-01-01',
+					'package'  => 'https://example.com/fr_FR.zip',
+				),
+			),
+		);
+
+		add_filter(
+			'pre_site_transient_update_plugins',
+			static function () use ( $update_plugins ) {
+				return $update_plugins;
+			}
+		);
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+
+		$method = new ReflectionMethod( PLL_Settings::class, 'get_translation_updates_form_markup' );
+		$method->setAccessible( true );
+		$markup = $method->invoke( $pll_env );
+
+		$this->assertStringContainsString( 'upgrade-translations', $markup );
+		$this->assertStringContainsString( 'do-translation-upgrade', $markup );
+	}
 }
