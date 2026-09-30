@@ -68,14 +68,12 @@ class Languages_Test extends TestCase {
 
 	public function test_info_languages_preserves_existing_debug_info() {
 		$pre_existing_data = array(
-			'pre_existing_data' => array(
-				'label'       => 'Title of this data',
-				'description' => 'Description',
-				'fields'      => array(
-					'name' => array(
-						'label' => 'Name',
-						'value' => 'Field name',
-					),
+			'label'       => 'Title of this data',
+			'description' => 'Description',
+			'fields'      => array(
+				'name' => array(
+					'label' => 'Name',
+					'value' => 'Field name',
 				),
 			),
 		);
@@ -90,11 +88,6 @@ class Languages_Test extends TestCase {
 
 		$debug_info = WP_Debug_Data::debug_data();
 
-		$this->assertSame(
-			$debug_info['pre_existing_data'],
-			$debug_info['pre_existing_data'],
-			'Pre-existing data should be preserved unchanged.'
-		);
 		$this->assertSame(
 			$pre_existing_data,
 			$debug_info['pre_existing_data'],
