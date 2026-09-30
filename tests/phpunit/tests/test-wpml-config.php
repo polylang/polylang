@@ -33,6 +33,14 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
+	public function tear_down() {
+		_unregister_post_type( 'book' );
+		_unregister_post_type( 'dvd' );
+		_unregister_taxonomy( 'genre' );
+		_unregister_taxonomy( 'publisher' );
+		parent::tear_down();
+	}
+
 	protected function prepare_options( $method = 'ARRAY' ) {
 		// mirror options defined in the sample wpml-config.xml
 		$my_plugins_options = array(
@@ -279,9 +287,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$post_types = array_unique( apply_filters( 'pll_get_post_types', $post_types, true ) );
 		$this->assertNotContains( 'book', $post_types );
 		$this->assertNotContains( 'dvd', $post_types );
-
-		_unregister_post_type( 'book' );
-		_unregister_post_type( 'dvd' );
 	}
 
 	public function test_tax() {
@@ -291,6 +296,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		register_post_type( 'book' ); // translated
 		register_taxonomy( 'genre', 'book' ); // translated
 		register_taxonomy( 'publisher', 'book' ); // untranslated
+		self::$model->cache->clean( 'post_types' );
 		self::$model->cache->clean( 'taxonomies' );
 
 		$this->assertTrue( self::$model->is_translated_taxonomy( 'genre' ) );
@@ -302,10 +308,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$taxonomies = array_unique( apply_filters( 'pll_get_taxonomies', $taxonomies, true ) );
 		$this->assertNotContains( 'genre', $taxonomies );
 		$this->assertNotContains( 'publisher', $taxonomies );
-
-		_unregister_post_type( 'book' );
-		_unregister_taxonomy( 'genre' );
-		_unregister_taxonomy( 'publisher' );
 	}
 
 	public function test_translate_strings() {
@@ -405,6 +407,11 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	public function test_gutenberg_blocks() {
 		PLL_WPML_Config::instance()->init();
 
+		register_post_type( 'book' );
+		register_taxonomy( 'genre', 'book' );
+		self::$model->cache->clean( 'post_types' );
+		self::$model->cache->clean( 'taxonomies' );
+
 		$parsing_rules                = array(
 			'my-plugin/my-block' => array(
 				'//div/p',
@@ -430,10 +437,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block' => array(
 				'//figure/figcaption',
 				'//figure/img/@alt',
-				'//*[@name="foo_form_post_ids"]/@value',
-				'//*[@name="foo_form_category_ids"]/@value',
-				'//*[@name="foo_form_post_ids_mixed"]/@value',
-				'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
 			),
 			'my-plugin/my-block-2' => array(
 				'//div/p/a',
@@ -446,22 +449,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block' => array(
 				'headingTitle'  => true,
 				'text'          => true,
-				'PostIds'       => array(
-					'*' => true,
-				),
-				'TermIds'       => array(
-					'*' => true,
-				),
-				'PostIdsMixed'  => array(
-					'foo' => array(
-						'*' => true,
-					),
-				),
-				'TermIdsMixed'  => array(
-					'bar' => array(
-						'*' => true,
-					),
-				),
 				'wildcardsData' => array(
 					'foo*' => true,
 				),
@@ -503,7 +490,19 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			),
 		);
 		$expected_ids_rules_in_content         = array(
-			'my-plugin/my-block' => array(
+			'my-plugin/my-block'   => array(
+				'post'       => array(
+					'//*[@name="foo_form_post_ids"]/@value',
+				),
+				'term'       => array(
+					'//*[@name="foo_form_category_ids"]/@value',
+					'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
+				),
+				'post_mixed' => array(
+					'//*[@name="foo_form_post_ids_mixed"]/@value',
+				),
+			),
+			'my-plugin/my-block-8' => array(
 				'post'       => array(
 					'//*[@name="foo_form_post_ids"]/@value',
 				),
@@ -517,7 +516,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			),
 		);
 		$expected_ids_rules_in_attributes      = array(
-			'my-plugin/my-block' => array(
+			'my-plugin/my-block'   => array(
 				'post'       => array(
 					'PostIds' => array(
 						'*' => true,
@@ -538,6 +537,54 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 						'foo' => array(
 							'*' => true,
 						),
+					),
+				),
+			),
+			'my-plugin/my-block-8' => array(
+				'post'       => array(
+					'first'  => array(
+						'p-page' => true,
+					),
+					'second' => array(
+						'p-posts' => array(
+							'e' => array(
+								'f' => array(
+									'g' => array(
+										'*' => true,
+									),
+								),
+								'h' => true,
+							),
+						),
+					),
+				),
+				'term'       => array(
+					'first'  => array(
+						't-tags' => array(
+							'a' => array(
+								'b' => array(
+									'c' => array(
+										'*' => true,
+									),
+									'd' => true,
+								),
+							),
+						),
+					),
+					'second' => array(
+						't-cat'     => true,
+						't-genre'   => true,
+						't-unknown' => true,
+					),
+				),
+				'attachment' => array(
+					'first' => array(
+						'p-attach' => true,
+					),
+				),
+				'post_mixed' => array(
+					'first' => array(
+						'p-unknown' => true,
 					),
 				),
 			),

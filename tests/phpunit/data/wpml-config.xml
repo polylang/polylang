@@ -152,6 +152,45 @@
 					<key name="text" />
 				</key>
 			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-8" translate="0">
+				<xpath>//figure/figcaption</xpath>
+				<xpath type="post-ids" sub-type="post">//*[@name="foo_form_post_ids"]/@value</xpath>
+				<xpath type="taxonomy-ids" sub-type="category">//*[@name="foo_form_category_ids"]/@value</xpath>
+				<xpath type="post-ids">//*[@name="foo_form_post_ids_mixed"]/@value</xpath>
+				<xpath type="taxonomy-ids">//*[@name="foo_form_taxonomy_ids_mixed"]/@value</xpath>
+				<key name="headingTitle" />
+				<key name="text" />
+				<key name="first">
+					<key name="p-page" type="post-ids" sub-type="page" />
+					<key name="t-tags">
+						<key name="a">
+							<key name="b">
+								<key name="c">
+									<key name="*" type="taxonomy-ids" sub-type="post_tag" />
+								</key>
+								<key name="d" type="taxonomy-ids" sub-type="post_tag" />
+							</key>
+						</key>
+					</key>
+					<key name="p-attach" type="post-ids" sub-type="attachment" />
+					<key name="p-unknown" type="post-ids" />
+				</key>
+				<key name="second">
+					<key name="t-cat" type="taxonomy-ids" sub-type="category" />
+					<key name="p-posts">
+						<key name="e">
+							<key name="f">
+								<key name="g">
+									<key name="*" type="post-ids" sub-type="post" />
+								</key>
+							</key>
+							<key name="h" type="post-ids" sub-type="post" />
+						</key>
+					</key>
+					<key name="t-genre" type="taxonomy-ids" sub-type="genre" />
+					<key name="t-unknown" type="taxonomy-ids" />
+				</key>
+			</gutenberg-block>
 		</gutenberg-blocks>
 		<language-switcher-settings>
 				<key name="icl_lang_sel_config">
