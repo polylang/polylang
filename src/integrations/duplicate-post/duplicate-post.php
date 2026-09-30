@@ -55,11 +55,9 @@ class PLL_Duplicate_Post {
 	 */
 	public function exclude_rewrite_copy_fields( $fields, $post_id ) {
 		// Duplicate Post checks this meta the same way, see `Permissions_Helper::is_rewrite_and_republish_copy()`.
-		if ( 1 !== (int) get_post_meta( $post_id, '_dp_is_rewrite_republish_copy', true ) ) {
-			return $fields;
+		if ( 1 === (int) get_post_meta( $post_id, '_dp_is_rewrite_republish_copy', true ) ) {
+			unset( $fields['post_status'] );
 		}
-
-		unset( $fields['post_status'] );
 
 		return $fields;
 	}
