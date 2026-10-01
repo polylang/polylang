@@ -2,27 +2,9 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
-use WP_Error;
 use WP_Debug_Data;
 
 class Languages_Test extends TestCase {
-
-	public function set_up() {
-		parent::set_up();
-
-		// Prevent the external WordPress.org request performed by WP_Debug_Data,
-		// which is unrelated to the behavior tested here.
-		add_filter(
-			'pre_http_request',
-			function () {
-				return new WP_Error(
-					'test_http_request',
-					'HTTP request disabled for this test.'
-				);
-			}
-		);
-		require_once ABSPATH . 'wp-admin/includes/class-wp-debug-data.php';
-	}
 
 	public function test_info_languages_contains_expected_fields() {
 		$debug_info = WP_Debug_Data::debug_data();
@@ -67,29 +49,10 @@ class Languages_Test extends TestCase {
 	}
 
 	public function test_info_languages_preserves_existing_debug_info() {
-		$pre_existing_data = array(
-			'label'       => 'Title of this data',
-			'description' => 'Description',
-			'fields'      => array(
-				'name' => array(
-					'label' => 'Name',
-					'value' => 'Field name',
-				),
-			),
-		);
-		add_filter(
-			'debug_information',
-			function ( $debug_info ) use ( $pre_existing_data ) {
-				$debug_info['pre_existing_data'] = $pre_existing_data;
-
-				return $debug_info;
-			}
-		);
-
 		$debug_info = WP_Debug_Data::debug_data();
 
 		$this->assertSame(
-			$pre_existing_data,
+			$this->pre_existing_data,
 			$debug_info['pre_existing_data'],
 			'Pre-existing data should be preserved unchanged.'
 		);

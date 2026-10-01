@@ -2,11 +2,13 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Debug_Data;
+
 if ( is_multisite() ) :
 
 	class Multisite_Warnings_Test extends TestCase {
 		public function test_should_add_network_activated_field_when_polylang_is_not_network_activated() {
-			$debug_info = $this->site_health->info( array() );
+			$debug_info = WP_Debug_Data::debug_data();
 
 			$this->assertArrayHasKey( 'network_activated', $debug_info['pll_warnings']['fields'], 'Debug information should contain an entry for network activation.' );
 			$this->assertSame(
@@ -26,7 +28,7 @@ if ( is_multisite() ) :
 			$active_sitewide_plugins[ POLYLANG_BASENAME ] = time();
 			update_site_option( 'active_sitewide_plugins', $active_sitewide_plugins );
 
-			$debug_info = $this->site_health->info( array() );
+			$debug_info = WP_Debug_Data::debug_data();
 
 			$this->assertArrayHasKey( 'network_activated', $debug_info['pll_warnings']['fields'], 'Debug information should contain an entry for network activation.' );
 			$this->assertSame(
@@ -48,7 +50,7 @@ if ( is_multisite() ) :
 				)
 			);
 
-			$debug_info = $this->site_health->info( array() );
+			$debug_info = WP_Debug_Data::debug_data();
 
 			$this->assertArrayHasKey(
 				'pll_warnings',
@@ -69,7 +71,7 @@ if ( is_multisite() ) :
 				)
 			);
 
-			$debug_info = $this->site_health->info( array() );
+			$debug_info = WP_Debug_Data::debug_data();
 
 			$this->assertArrayHasKey(
 				'pll_warnings',

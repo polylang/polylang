@@ -2,6 +2,7 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Error;
 use PLL_Admin;
 use PLL_UnitTestCase;
 use PLL_UnitTest_Factory;
@@ -18,6 +19,11 @@ abstract class TestCase extends PLL_UnitTestCase {
 	 * @var PLL_Admin
 	 */
 	protected $pll_admin;
+
+	/**
+	 * @var array
+	 */
+	protected $pre_existing_data;
 
 	/**
 	 * @param PLL_UnitTest_Factory $factory
@@ -37,6 +43,39 @@ abstract class TestCase extends PLL_UnitTestCase {
 
 		// Assign a language to WordPress' default category ("Uncategorized"), so it doesn't interfere with tests checking terms without a language.
 		$this->pll_admin->model->term->set_language( (int) get_option( 'default_category' ), 'en' );
+
+		// Prevent the external WordPress.org request performed by WP_Debug_Data,
+		// which is unrelated to the behavior tested here.
+		add_filter(
+			'pre_http_request',
+			function () {
+				return new WP_Error(
+					'test_http_request',
+					'HTTP request disabled for this test.'
+				);
+			}
+		);
+		require_once ABSPATH . 'wp-admin/includes/class-wp-debug-data.php';
+
+		// For tests that's checking nothing pre-existent is erased.
+		$this->pre_existing_data = array(
+			'label'       => 'Title of this data',
+			'description' => 'Description',
+			'fields'      => array(
+				'name' => array(
+					'label' => 'Name',
+					'value' => 'Field name',
+				),
+			),
+		);
+		add_filter(
+			'debug_information',
+			function ( $debug_info ) {
+				$debug_info['pre_existing_data'] = $this->pre_existing_data;
+
+				return $debug_info;
+			}
+		);
 	}
 
 	/**

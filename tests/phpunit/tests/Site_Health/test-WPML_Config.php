@@ -16,7 +16,7 @@ class WPML_Config_Test extends TestCase {
 	public function test_should_add_wpml_config_data_to_debug_information() {
 		$this->create_wpml_config();
 
-		$debug_info = $this->site_health->info( array() );
+		$debug_info = WP_Debug_Data::debug_data();
 
 		$this->assertArrayHasKey( 'pll_warnings', $debug_info, 'Debug information should contain an entry for pll_warnings.' );
 		$this->assertArrayHasKey( 'wpml', $debug_info['pll_warnings']['fields'], 'Debug information should contain an entry for wpml-config.xml files.' );
@@ -35,29 +35,10 @@ class WPML_Config_Test extends TestCase {
 	public function test_should_add_pll_warnings_without_overwriting_existing_entries() {
 		$this->create_wpml_config();
 
-		$pre_existing_data = array(
-			'label'       => 'Title of this data',
-			'description' => 'Description',
-			'fields'      => array(
-				'name' => array(
-					'label' => 'Name',
-					'value' => 'Field name',
-				),
-			),
-		);
-		add_filter(
-			'debug_information',
-			function ( $debug_info ) use ( $pre_existing_data ) {
-				$debug_info['pre_existing_data'] = $pre_existing_data;
-
-				return $debug_info;
-			}
-		);
-
 		$debug_info = WP_Debug_Data::debug_data();
 
 		$this->assertSame(
-			$pre_existing_data,
+			$this->pre_existing_data,
 			$debug_info['pre_existing_data'],
 			'The pre-existing entry should be left untouched by the Polylang filter.'
 		);
@@ -65,7 +46,7 @@ class WPML_Config_Test extends TestCase {
 	}
 
 	public function test_should_not_add_wpml_data_to_debug_information_when_wpml_config_file_is_absent() {
-		$debug_info = $this->site_health->info( array() );
+		$debug_info = WP_Debug_Data::debug_data();
 
 		$this->assertArrayNotHasKey(
 			'wpml',
