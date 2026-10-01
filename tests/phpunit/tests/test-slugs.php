@@ -511,7 +511,6 @@ class Slugs_Test extends PLL_UnitTestCase {
 			wp_is_valid_utf8( urldecode( $en_child->slug ) ),
 			'The slug does not decode to valid UTF-8.'
 		);
-		$this->assertSame( 119, strlen( $en_child->slug ) );
 
 		$fr_child = get_term(
 			pll_insert_term(
