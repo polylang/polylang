@@ -44,6 +44,7 @@ class Dropdown extends Abstract_Layout {
 		Assets::enqueue_frontend_scripts();
 
 		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$tag = $this->get_nav_tag();
 		$out = sprintf(
 			"{$cr}<div class=\"pll-switcher-inner\">{$cr}%s{$cr}%s{$cr}<ul>{$cr}%s</ul>{$cr}</div>",
 			$current_item,
@@ -51,8 +52,9 @@ class Dropdown extends Abstract_Layout {
 			$out
 		);
 		$out = sprintf(
-			'<%1$s id="%2$s" class="%3$s" aria-label="%4$s">%5$s</%1$s>',
-			$this->get_nav_tag(),
+			'<%1$s%2$s id="%3$s" class="%4$s" aria-label="%5$s">%6$s</%1$s>',
+			$tag,
+			'div' === $tag ? ' role="navigation"' : '',
 			esc_attr( $this->settings->unique_id ),
 			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
 			/* translators: accessibility text */
