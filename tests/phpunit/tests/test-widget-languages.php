@@ -145,6 +145,46 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * Makes sure that all settings are taken into account when displaying the widget.
+	 *
+	 * @return void
+	 */
+	public function test_display_widget_with_legacy_settings(): void {
+		$widgets_option = array(
+			self::$widget_index => array (
+				'title'                  => '< 3.9',
+				'dropdown'               => 0,
+				'show_names'             => 1,
+				'show_flags'             => 0,
+				'force_home'             => 0,
+				'hide_current'           => 0,
+				'hide_if_no_translation' => 0,
+			),
+			'_multiwidget'      => 1,
+		);
+		update_option( 'widget_polylang', $widgets_option );
+		$this->init_frontend();
+		$this->register_sidebar();
+		$this->add_widget_to_sidebar();
+
+		do_action( 'widgets_init' );
+
+		ob_start();
+		dynamic_sidebar();
+		$widgets = ob_get_clean();
+
+		$xpath = $this->get_domxpath( $widgets );
+
+		$sidebars = $xpath->query( sprintf( '//li[@id="%s"]', self::WIDGET_ID ) );
+		$this->assertSame( 1, $sidebars->count() );
+		$wrappers = $xpath->query( sprintf( '//div[@id="pll-switcher-widget-%d"]', self::$widget_index ), $sidebars->item( 0 ) );
+		$this->assertSame( 1, $wrappers->count() );
+
+		$uls = $xpath->query( '//ul', $wrappers->item( 0 ) );
+		$this->assertSame( 1, $uls->count(), 'The <ul> tag is missing.' );
+	}
+
+	/**
 	 * Makes sure that all settings are taken into account when displaying the form.
 	 *
 	 * @return void
