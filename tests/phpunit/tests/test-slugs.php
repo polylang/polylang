@@ -483,17 +483,34 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 		$this->assertSame( 119, strlen( $en_child->slug ) );
 
+		/*
+		 * Clearing the slug regenerates it from the name, which then collides with the parent and gets suffixed.
+		 *
+		 * @see test_wp_update_term_child_with_long_encoded_slug_should_be_updated()
+		 */
 		$en_child = get_term(
 			pll_update_term(
 				$en_child->term_id,
 				array(
-					'name' => 'Updated EN child',
+					'name'   => $name,
+					'slug'   => '',
+					'parent' => $en_parent->term_id,
 				)
 			)['term_id'],
 			'category'
 		);
 
-		$this->assertSame( 'Updated EN child', $en_child->name );
+		$this->assertSame( $name, $en_child->name );
+		$this->assertLessThanOrEqual( 200, strlen( $en_child->slug ), 'The slug does not fit the column.' );
+		$this->assertSame(
+			0,
+			preg_match( '/%(?![0-9a-fA-F]{2})/', $en_child->slug ),
+			'The slug contains a truncated percent-encoded sequence.'
+		);
+		$this->assertTrue(
+			wp_is_valid_utf8( urldecode( $en_child->slug ) ),
+			'The slug does not decode to valid UTF-8.'
+		);
 		$this->assertSame( 119, strlen( $en_child->slug ) );
 
 		$fr_child = get_term(
