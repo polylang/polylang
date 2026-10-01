@@ -2,6 +2,8 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Debug_Data;
+
 class Terms_Test extends TestCase {
 
 	public function test_info_returns_terms_without_lang_grouped_by_taxonomy() {
@@ -15,7 +17,7 @@ class Terms_Test extends TestCase {
 		);
 		$term_en = self::factory()->term->create( array( 'taxonomy' => 'category', 'lang' => 'en' ) );
 
-		$result        = $this->site_health->info( array() );
+		$result        = WP_Debug_Data::debug_data();
 		$term_no_lang  = $result['pll_warnings']['fields']['term-no-lang']['value'];
 
 		$this->assertSame( array( 'category', 'post_tag' ), array_keys( $term_no_lang ), 'Result should be grouped by taxonomy.' );
@@ -40,7 +42,7 @@ class Terms_Test extends TestCase {
 			)
 		);
 
-		$result = $this->site_health->info( array() );
+		$result = WP_Debug_Data::debug_data();
 
 		$this->assertArrayNotHasKey(
 			'term-no-lang',

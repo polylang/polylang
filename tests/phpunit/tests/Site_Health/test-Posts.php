@@ -2,6 +2,8 @@
 
 namespace WP_Syntex\Polylang\Tests\Site_Health;
 
+use WP_Debug_Data;
+
 class Posts_Test extends TestCase {
 
 	public function test_info_returns_posts_without_lang_grouped_by_post_type() {
@@ -15,7 +17,7 @@ class Posts_Test extends TestCase {
 		);
 		$post_en = self::factory()->post->create( array( 'post_type' => 'post', 'lang' => 'en' ) );
 
-		$result       = $this->site_health->info( array() );
+		$result       = WP_Debug_Data::debug_data();
 		$post_no_lang = $result['pll_warnings']['fields']['post-no-lang']['value'];
 
 		$this->assertSame( array( 'post', 'page' ), array_keys( $post_no_lang ), 'Result should be grouped by post type.' );
@@ -40,7 +42,7 @@ class Posts_Test extends TestCase {
 			)
 		);
 
-		$result = $this->site_health->info( array() );
+		$result = WP_Debug_Data::debug_data();
 
 		$this->assertArrayNotHasKey(
 			'post-no-lang',
