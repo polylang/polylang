@@ -815,8 +815,12 @@ class PLL_WPML_Config {
 			}
 
 			$curpath[] = $name;
+			$temp      = true;
 
-			$block_rules[ $translation_type ] = $this->build_ids_attributes( $block_rules[ $translation_type ] ?? array(), $curpath );
+			foreach ( array_reverse( $curpath ) as $key ) {
+				$temp = array( $key => $temp );
+			}
+			$block_rules[ $translation_type ] = array_merge_recursive( $block_rules[ $translation_type ] ?? array(), $temp );
 
 			return $block_rules;
 		}
@@ -832,38 +836,6 @@ class PLL_WPML_Config {
 		}
 
 		array_pop( $curpath );
-
-		return $block_rules;
-	}
-
-	/**
-	 * Morphs the given path into a rule recursively, and add it to the block rules.
-	 *
-	 * @since 3.9
-	 *
-	 * @param array $block_rules Rules.
-	 * @param array $curpath     Current path to the XML node, passed by reference.
-	 * @return array
-	 *
-	 * @phpstan-param Rules $block_rules
-	 * @phpstan-param list<non-empty-string> $curpath
-	 * @phpstan-return Rules
-	 */
-	private function build_ids_attributes( array $block_rules, array &$curpath ): array {
-		if ( empty( $curpath ) ) {
-			// Should not happen.
-			return $block_rules;
-		}
-
-		if ( count( $curpath ) === 1 ) {
-			$key = array_pop( $curpath );
-			$block_rules[ $key ] = true;
-			return $block_rules;
-		}
-
-		$first = array_shift( $curpath );
-		$block_rules[ $first ] = $this->build_ids_attributes( $block_rules[ $first ] ?? array(), $curpath );
-		array_unshift( $curpath, $first );
 
 		return $block_rules;
 	}
