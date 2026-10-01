@@ -84,12 +84,11 @@ class Front_Page_Test extends TestCase {
 		$home_en = self::factory()->post->create( array( 'post_title' => 'home', 'post_type' => 'page', 'lang' => 'en' ) );
 		$this->set_page_on_front( $home_en );
 
-		$result = $this->site_health->status_tests( array() );
+		$result = WP_Site_Health::get_tests();
 
-		$this->assertArrayHasKey( 'direct', $result, 'status_tests() should add a "direct" key.' );
-		$this->assertArrayHasKey( 'pll_homepage', $result['direct'], 'status_tests() should add a "pll_homepage" entry when a static front page is set.' );
+		$this->assertArrayHasKey( 'pll_homepage', $result['direct'], 'The "pll_homepage" test should be added to the direct tests when a static front page is set.' );
 		$this->assertSame( 'Homepage translated', $result['direct']['pll_homepage']['label'], 'The "pll_homepage" test should have the expected label.' );
-		$this->assertSame( array( $this->site_health, 'homepage_test' ), $result['direct']['pll_homepage']['test'], 'The "pll_homepage" test should reference the homepage_test() callback.' );
+		$this->assertSame( array( $this->site_health, 'homepage_test' ), $result['direct']['pll_homepage']['test'], 'The "pll_homepage" test should use PLL_Admin_Site_Health::homepage_test() as callback.' );
 	}
 
 	public function test_status_tests_preserves_existing_tests_when_static_front_page_is_set() {
@@ -108,16 +107,16 @@ class Front_Page_Test extends TestCase {
 	public function test_status_tests_does_not_add_pll_homepage_test_when_static_front_page_is_not_set() {
 		update_option( 'show_on_front', 'posts' );
 
-		$result = $this->site_health->status_tests( array() );
+		$result = WP_Site_Health::get_tests();
 
-		$this->assertSame( array(), $result, 'status_tests() should not modify $tests when there is no static front page.' );
+		$this->assertArrayNotHasKey( 'pll_homepage', $result['direct'], 'The "pll_homepage" test should not be added when the front page displays the latest posts.' );
 	}
 
 	public function test_status_tests_does_not_add_pll_homepage_test_when_page_on_front_is_empty() {
 		$this->set_page_on_front( 0 );
 
-		$result = $this->site_health->status_tests( array() );
+		$result = WP_Site_Health::get_tests();
 
-		$this->assertSame( array(), $result, 'status_tests() should not modify $tests when no page is set as front page.' );
+		$this->assertArrayNotHasKey( 'pll_homepage', $result['direct'], 'The "pll_homepage" test should not be added when no page is set as the front page.' );
 	}
 }
