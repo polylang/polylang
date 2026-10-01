@@ -151,7 +151,7 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 	 */
 	public function test_display_widget_with_legacy_settings(): void {
 		$widgets_option = array(
-			self::$widget_index => array (
+			self::$widget_index => array(
 				'title'                  => '< 3.9',
 				'dropdown'               => 0,
 				'show_names'             => 1,
