@@ -200,7 +200,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		remove_filter( 'pll_language_metas', $filter, 10 );
 	}
 
-	public function test_translation_updates_form_in_success_notice() {
+	public function test_translation_updates_form_when_updates_available() {
 		wp_set_current_user( 1 );
 
 		$update_plugins = (object) array(
@@ -232,5 +232,64 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		$this->assertStringContainsString( 'upgrade-translations', $markup );
 		$this->assertStringContainsString( 'do-translation-upgrade', $markup );
+		$this->assertStringContainsString( 'Update language packs', $markup );
+	}
+
+	public function test_translation_updates_form_empty_without_updates() {
+		wp_set_current_user( 1 );
+
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+		delete_site_transient( 'update_core' );
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+
+		$method = new ReflectionMethod( PLL_Settings::class, 'get_translation_updates_form_markup' );
+		$method->setAccessible( true );
+
+		$this->assertSame( '', $method->invoke( $pll_env ) );
+	}
+
+	public function test_translation_updates_info_notice_when_updates_available() {
+		wp_set_current_user( 1 );
+
+		$update_plugins = (object) array(
+			'translations' => array(
+				(object) array(
+					'type'     => 'plugin',
+					'slug'     => 'polylang/polylang.php',
+					'language' => 'fr_FR',
+					'version'  => '1.0',
+					'updated'  => '2020-01-01',
+					'package'  => 'https://example.com/fr_FR.zip',
+				),
+			),
+		);
+
+		add_filter(
+			'pre_site_transient_update_plugins',
+			static function () use ( $update_plugins ) {
+				return $update_plugins;
+			}
+		);
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+
+		$method = new ReflectionMethod( PLL_Settings::class, 'maybe_add_translation_updates_notice' );
+		$method->setAccessible( true );
+		$method->invoke( $pll_env );
+
+		$errors = get_settings_errors( 'polylang' );
+		$codes  = wp_list_pluck( $errors, 'code' );
+
+		$this->assertContains( 'pll_translation_updates_available', $codes );
+
+		$notice = wp_list_filter( $errors, array( 'code' => 'pll_translation_updates_available' ) );
+		$notice = reset( $notice );
+
+		$this->assertSame( 'info', $notice['type'] );
+		$this->assertStringContainsString( 'upgrade-translations', $notice['message'] );
 	}
 }

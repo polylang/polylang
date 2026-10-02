@@ -35,6 +35,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		// Adds screen options and the about box in the languages admin panel.
 		add_action( 'load-' . self::get_screen_id( 'lang' ), array( $this, 'load_page' ) );
 		add_action( 'load-' . self::get_screen_id( 'strings' ), array( $this, 'load_page_strings' ) );
+		add_action( 'load-' . self::get_screen_id( 'settings' ), array( $this, 'load_page_settings' ) );
 
 		// Saves the per-page value in screen options.
 		add_filter( 'set_screen_option_pll_lang_per_page', array( $this, 'set_screen_option' ), 10, 3 );
@@ -116,6 +117,8 @@ class PLL_Settings extends PLL_Admin_Base {
 		);
 
 		add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
+
+		$this->maybe_add_translation_updates_notice();
 	}
 
 	/**
@@ -134,6 +137,19 @@ class PLL_Settings extends PLL_Admin_Base {
 				'option'  => 'pll_strings_per_page',
 			)
 		);
+
+		$this->maybe_add_translation_updates_notice();
+	}
+
+	/**
+	 * Runs when the settings tab is loaded.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	public function load_page_settings(): void {
+		$this->maybe_add_translation_updates_notice();
 	}
 
 	/**
@@ -170,13 +186,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				if ( is_wp_error( $language ) ) {
 					pll_add_notice( $language );
 				} else {
-					pll_add_notice(
-						$this->language_saved_success_notice(
-							'pll_languages_created',
-							__( 'Language added.', 'polylang' ),
-							$language
-						)
-					);
+					$this->download_wordpress_language_packs( $language );
+					pll_add_notice( new WP_Error( 'pll_languages_created', __( 'Language added.', 'polylang' ), 'success' ) );
 				}
 
 				break;
@@ -197,13 +208,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				if ( is_wp_error( $language ) ) {
 					pll_add_notice( $language );
 				} else {
-					pll_add_notice(
-						$this->language_saved_success_notice(
-							'pll_languages_updated',
-							__( 'Language updated.', 'polylang' ),
-							$language
-						)
-					);
+					$this->download_wordpress_language_packs( $language );
+					pll_add_notice( new WP_Error( 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'success' ) );
 				}
 
 				break;
@@ -258,34 +264,33 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Builds the success notice after a language is added or updated.
+	 * Queues an info notice when WordPress language packs can be updated.
+	 *
+	 * Relies on data already stored in the update transients (cron, Updates screen, etc.).
+	 * Does not contact WordPress.org from this screen.
 	 *
 	 * @since 3.9
 	 *
-	 * @param string       $code     Settings error code.
-	 * @param string       $message  Success message.
-	 * @param PLL_Language $language Saved language.
-	 *
-	 * @return WP_Error
+	 * @return void
 	 */
-	private function language_saved_success_notice( string $code, string $message, PLL_Language $language ): WP_Error {
-		$this->download_wordpress_language_packs( $language );
-
-		// Force checking for themes and plugins translations updates.
-		wp_clean_themes_cache();
-		wp_clean_plugins_cache();
-
-		$form = $this->get_translation_updates_form_markup();
-		if ( '' !== $form ) {
-			$message .= '<br>' . $form;
+	private function maybe_add_translation_updates_notice(): void {
+		if ( ! $this->model->has_languages() || ! current_user_can( 'update_languages' ) ) {
+			return;
 		}
 
-		return new WP_Error( $code, $message, 'success' );
+		$form = $this->get_translation_updates_form_markup();
+		if ( '' === $form ) {
+			return;
+		}
+
+		pll_add_notice( new WP_Error( 'pll_translation_updates_available', $form, 'info' ) );
 	}
 
 	/**
-	 * Downloads WordPress core language packs for a language and its fallbacks.
+	 * Prepares language pack updates after a language is saved.
 	 *
+	 * Clears plugin and theme update transients, then downloads WordPress core
+	 * language packs for the language and its fallbacks when allowed.
 	 * Plugin and theme translation updates are only offered for installed core locales.
 	 *
 	 * @since 3.9
@@ -294,6 +299,10 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	private function download_wordpress_language_packs( PLL_Language $language ): void {
+		// Invalidate update transients so the next WordPress.org check includes this locale.
+		wp_clean_themes_cache();
+		wp_clean_plugins_cache();
+
 		if ( ! current_user_can( 'install_languages' ) ) {
 			return;
 		}
@@ -333,7 +342,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return string Empty string when there is no form to display.
 	 */
 	private function get_translation_updates_form_markup(): string {
-		if ( ! current_user_can( 'update_languages' ) ) {
+		if ( ! current_user_can( 'update_languages' ) || ! wp_get_translation_updates() ) {
 			return '';
 		}
 
@@ -342,9 +351,9 @@ class PLL_Settings extends PLL_Admin_Base {
 		return sprintf(
 			'<form method="post" action="%1$s" name="upgrade-translations" class="upgrade"><p>%2$s</p>%3$s<p><input class="button" type="submit" value="%4$s" name="upgrade" /></p></form>',
 			esc_url( $form_action ),
-			esc_html__( 'New translations are available.' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Waiting for Polylang 4.0 to use our own domain.
+			esc_html__( 'New language packs are available for WordPress, plugins, and themes.', 'polylang' ),
 			wp_nonce_field( 'upgrade-translations', '_wpnonce', true, false ),
-			esc_attr__( 'Update Translations' ) // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Waiting for Polylang 4.0 to use our own domain.
+			esc_attr__( 'Update language packs', 'polylang' )
 		);
 	}
 
