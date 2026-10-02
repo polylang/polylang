@@ -150,4 +150,146 @@ class Settings_Test extends PLL_UnitTestCase {
 		$mo->import_from_db( $lang );
 		$this->assertSame( 'The translation', $mo->translate( 'Some string' ) );
 	}
+
+	public function test_update_language_from_settings_with_fallbacks() {
+		$filter = function ( $lang_metas, $args ) {
+			if ( ! empty( $args['fallbacks'] ) && is_string( $args['fallbacks'] ) ) {
+				$fallbacks = array_map( 'trim', explode( ',', $args['fallbacks'] ) );
+				$fallbacks = array_values( array_diff( array_unique( $fallbacks ), array( $args['locale'] ) ) );
+
+				return array_merge( $lang_metas, array( 'fallbacks' => $fallbacks ) );
+			}
+
+			if ( empty( $args['lang_id'] ) ) {
+				return array_merge( $lang_metas, array( 'fallbacks' => array( 'es_ES' ) ) );
+			}
+
+			return $lang_metas;
+		};
+
+		add_filter( 'pll_language_metas', $filter, 10, 2 );
+		$de = self::create_language( 'de_DE' );
+
+		self::$model->clean_languages_cache();
+		$de = self::$model->get_language( 'de' );
+
+		$_POST = array(
+			'pll_action'        => 'update',
+			'_wpnonce_add-lang' => wp_create_nonce( 'add-lang' ),
+			'lang_id'           => $de->term_id,
+			'name'              => 'Deutsch',
+			'slug'              => 'de',
+			'locale'            => 'de_DE',
+			'rtl'               => '0',
+			'term_group'        => $de->term_group,
+			'flag'              => $de->flag_code,
+			'fallbacks'         => 'es_ES, de_AT',
+		);
+
+		$_REQUEST = array_merge( $_GET, $_POST );
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+		$this->assert_redirect( array( $pll_env, 'handle_actions' ), array( 'update' ) );
+
+		self::$model->clean_languages_cache();
+		$de = self::$model->get_language( 'de' );
+
+		$this->assertEqualSets( array( 'es_ES', 'de_AT' ), $de->fallbacks );
+
+		remove_filter( 'pll_language_metas', $filter, 10 );
+	}
+
+	public function test_translation_updates_form_when_updates_available() {
+		wp_set_current_user( 1 );
+
+		$update_plugins = (object) array(
+			'translations' => array(
+				(object) array(
+					'type'     => 'plugin',
+					'slug'     => 'polylang/polylang.php',
+					'language' => 'fr_FR',
+					'version'  => '1.0',
+					'updated'  => '2020-01-01',
+					'package'  => 'https://example.com/fr_FR.zip',
+				),
+			),
+		);
+
+		add_filter(
+			'pre_site_transient_update_plugins',
+			static function () use ( $update_plugins ) {
+				return $update_plugins;
+			}
+		);
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+
+		$method = new ReflectionMethod( PLL_Settings::class, 'get_translation_updates_form_markup' );
+		$method->setAccessible( true );
+		$markup = $method->invoke( $pll_env );
+
+		$this->assertStringContainsString( 'upgrade-translations', $markup );
+		$this->assertStringContainsString( 'do-translation-upgrade', $markup );
+		$this->assertStringContainsString( 'Update language packs', $markup );
+	}
+
+	public function test_translation_updates_form_empty_without_updates() {
+		wp_set_current_user( 1 );
+
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+		delete_site_transient( 'update_core' );
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+
+		$method = new ReflectionMethod( PLL_Settings::class, 'get_translation_updates_form_markup' );
+		$method->setAccessible( true );
+
+		$this->assertSame( '', $method->invoke( $pll_env ) );
+	}
+
+	public function test_translation_updates_info_notice_when_updates_available() {
+		wp_set_current_user( 1 );
+
+		$update_plugins = (object) array(
+			'translations' => array(
+				(object) array(
+					'type'     => 'plugin',
+					'slug'     => 'polylang/polylang.php',
+					'language' => 'fr_FR',
+					'version'  => '1.0',
+					'updated'  => '2020-01-01',
+					'package'  => 'https://example.com/fr_FR.zip',
+				),
+			),
+		);
+
+		add_filter(
+			'pre_site_transient_update_plugins',
+			static function () use ( $update_plugins ) {
+				return $update_plugins;
+			}
+		);
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+
+		$method = new ReflectionMethod( PLL_Settings::class, 'maybe_add_translation_updates_notice' );
+		$method->setAccessible( true );
+		$method->invoke( $pll_env );
+
+		$errors = get_settings_errors( 'polylang' );
+		$codes  = wp_list_pluck( $errors, 'code' );
+
+		$this->assertContains( 'pll_translation_updates_available', $codes );
+
+		$notice = wp_list_filter( $errors, array( 'code' => 'pll_translation_updates_available' ) );
+		$notice = reset( $notice );
+
+		$this->assertSame( 'info', $notice['type'] );
+		$this->assertStringContainsString( 'upgrade-translations', $notice['message'] );
+	}
 }

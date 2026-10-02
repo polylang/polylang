@@ -35,6 +35,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		// Adds screen options and the about box in the languages admin panel.
 		add_action( 'load-' . self::get_screen_id( 'lang' ), array( $this, 'load_page' ) );
 		add_action( 'load-' . self::get_screen_id( 'strings' ), array( $this, 'load_page_strings' ) );
+		add_action( 'load-' . self::get_screen_id( 'settings' ), array( $this, 'load_page_settings' ) );
 
 		// Saves the per-page value in screen options.
 		add_filter( 'set_screen_option_pll_lang_per_page', array( $this, 'set_screen_option' ), 10, 3 );
@@ -116,6 +117,8 @@ class PLL_Settings extends PLL_Admin_Base {
 		);
 
 		add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
+
+		$this->maybe_add_translation_updates_notice();
 	}
 
 	/**
@@ -134,6 +137,19 @@ class PLL_Settings extends PLL_Admin_Base {
 				'option'  => 'pll_strings_per_page',
 			)
 		);
+
+		$this->maybe_add_translation_updates_notice();
+	}
+
+	/**
+	 * Runs when the settings tab is loaded.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	public function load_page_settings(): void {
+		$this->maybe_add_translation_updates_notice();
 	}
 
 	/**
@@ -168,28 +184,18 @@ class PLL_Settings extends PLL_Admin_Base {
 				$language = $this->model->add_language( $_POST );
 
 				if ( is_wp_error( $language ) ) {
-						pll_add_notice( $language );
+					pll_add_notice( $language );
 				} else {
+					$this->download_wordpress_language_packs( $language );
 					pll_add_notice( new WP_Error( 'pll_languages_created', __( 'Language added.', 'polylang' ), 'success' ) );
-
-					if ( 'en_US' !== $language->locale && current_user_can( 'install_languages' ) ) {
-						// Attempts to install the language pack
-						require_once ABSPATH . 'wp-admin/includes/translation-install.php';
-						if ( ! wp_download_language_pack( $language->locale ) ) {
-							pll_add_notice( new WP_Error( 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ), 'warning' ) );
-						}
-
-						// Force checking for themes and plugins translations updates
-						wp_clean_themes_cache();
-						wp_clean_plugins_cache();
-					}
 				}
+
 				break;
 
 			case 'delete':
 				check_admin_referer( 'delete-lang' );
 
-				if ( ! empty( $_GET['lang'] ) && $this->model->delete_language( (int) $_GET['lang'] ) ) {
+				if ( ! empty( $_GET['lang'] ) && $this->model->delete_language( pll_sanitize_id( $_GET['lang'] ) ) ) {
 					pll_add_notice( new WP_Error( 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' ) );
 				}
 
@@ -197,11 +203,12 @@ class PLL_Settings extends PLL_Admin_Base {
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
-				$errors = $this->model->update_language( $_POST );
+				$language = $this->model->update_language( $_POST );
 
-				if ( is_wp_error( $errors ) ) {
-					pll_add_notice( $errors );
+				if ( is_wp_error( $language ) ) {
+					pll_add_notice( $language );
 				} else {
+					$this->download_wordpress_language_packs( $language );
 					pll_add_notice( new WP_Error( 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'success' ) );
 				}
 
@@ -210,7 +217,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			case 'default-lang':
 				check_admin_referer( 'default-lang' );
 
-				if ( $lang = $this->model->get_language( (int) $_GET['lang'] ) ) {
+				if ( $lang = $this->model->get_language( pll_sanitize_id( $_GET['lang'] ?? 0 ) ) ) {
 					$this->model->update_default_lang( $lang->slug );
 				}
 
@@ -257,6 +264,100 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
+	 * Queues an info notice when WordPress language packs can be updated.
+	 *
+	 * Relies on data already stored in the update transients (cron, Updates screen, etc.).
+	 * Does not contact WordPress.org from this screen.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	private function maybe_add_translation_updates_notice(): void {
+		if ( ! $this->model->has_languages() || ! current_user_can( 'update_languages' ) ) {
+			return;
+		}
+
+		$form = $this->get_translation_updates_form_markup();
+		if ( '' === $form ) {
+			return;
+		}
+
+		pll_add_notice( new WP_Error( 'pll_translation_updates_available', $form, 'info' ) );
+	}
+
+	/**
+	 * Prepares language pack updates after a language is saved.
+	 *
+	 * Clears plugin and theme update transients, then downloads WordPress core
+	 * language packs for the language and its fallbacks when allowed.
+	 * Plugin and theme translation updates are only offered for installed core locales.
+	 *
+	 * @since 3.9
+	 *
+	 * @param PLL_Language $language Saved language.
+	 * @return void
+	 */
+	private function download_wordpress_language_packs( PLL_Language $language ): void {
+		// Invalidate update transients so the next WordPress.org check includes this locale.
+		wp_clean_themes_cache();
+		wp_clean_plugins_cache();
+
+		if ( ! current_user_can( 'install_languages' ) ) {
+			return;
+		}
+
+		if ( 'en_US' === $language->locale && empty( $language->fallbacks ) ) {
+			return;
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
+
+		if ( 'en_US' !== $language->locale ) {
+			if ( ! wp_download_language_pack( $language->locale ) ) {
+				/* translators: %s is the language locale */
+				pll_add_notice( new WP_Error( 'pll_language_pack_download_failed', sprintf( __( 'Failed to download %s WordPress language pack.', 'polylang' ), $language->locale ) ) );
+			}
+		}
+
+		foreach ( $language->fallbacks as $locale ) {
+			if ( 'en_US' === $locale || $locale === $language->locale ) {
+				continue;
+			}
+
+			if ( ! wp_download_language_pack( $locale ) ) {
+				/* translators: %s is the language locale */
+				pll_add_notice( new WP_Error( 'pll_language_pack_download_failed', sprintf( __( 'Failed to download %s WordPress language pack.', 'polylang' ), $locale ) ) );
+			}
+		}
+	}
+
+	/**
+	 * Returns the translation updates form markup from the Updates screen.
+	 *
+	 * @see list_translation_updates()
+	 *
+	 * @since 3.9
+	 *
+	 * @return string Empty string when there is no form to display.
+	 */
+	private function get_translation_updates_form_markup(): string {
+		if ( ! current_user_can( 'update_languages' ) || ! wp_get_translation_updates() ) {
+			return '';
+		}
+
+		$form_action = self_admin_url( 'update-core.php?action=do-translation-upgrade' );
+
+		return sprintf(
+			'<form method="post" action="%1$s" name="upgrade-translations" class="upgrade"><p>%2$s</p>%3$s<p><input class="button" type="submit" value="%4$s" name="upgrade" /></p></form>',
+			esc_url( $form_action ),
+			esc_html__( 'New language packs are available for WordPress, plugins, and themes.', 'polylang' ),
+			wp_nonce_field( 'upgrade-translations', '_wpnonce', true, false ),
+			esc_attr__( 'Update language packs', 'polylang' )
+		);
+	}
+
+	/**
 	 * Displays the 3 tabs pages: languages, strings translations, settings
 	 * Also manages user input for these pages
 	 *
@@ -286,9 +387,9 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		// Handle user input.
 		$action = isset( $_REQUEST['pll_action'] ) && is_string( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( 'edit' === $action && isset( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
+			$edit_lang = $this->model->get_language( pll_sanitize_id( $_GET['lang'] ) ) ?: null;
 		} elseif ( ! empty( $action ) ) {
 			$this->handle_actions( $action );
 		}
