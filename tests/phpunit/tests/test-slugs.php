@@ -381,4 +381,161 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( 'dog-2', $term2->slug, 'WordPress should add numeric suffix for conflict in same language' );
 	}
+
+	/**
+	 * Test terms with slugs longer than the column limit are truncated on insert.
+	 *
+	 * WordPress 7.2 truncates slugs in wp_unique_term_slug() when a parent or numeric suffix is appended.
+	 *
+	 * @see https://github.com/WordPress/wordpress-develop/commit/98d218765f16ffac15fe6c17419786a4a36b990f
+	 */
+	public function test_long_translated_term_slugs_stay_within_column_limit() {
+		$wp_version = explode( '-', $GLOBALS['wp_version'] )[0];
+
+		if ( version_compare( $wp_version, '7.2', '<' ) ) {
+			// Backward compatibility with WordPress < 7.2
+			$this->markTestSkipped( 'This test requires WordPress 7.2 or higher' );
+		}
+
+		$truncated_numeric_suffix = str_repeat( 'a', 198 ) . '-2';
+
+		// Source language: inserting a 200 character slug that collides is truncated to make room for "-2".
+		$source_slug = str_repeat( 'a', 200 );
+
+		$en_source = get_term(
+			pll_insert_term(
+				'EN source',
+				'category',
+				'en',
+				array(
+					'slug' => $source_slug,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_source );
+		$this->assertSame( $source_slug, $en_source->slug );
+
+		$en_collision = get_term(
+			pll_insert_term(
+				'EN collision',
+				'category',
+				'en',
+				array(
+					'slug' => $source_slug,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_collision );
+		$this->assertSame( $truncated_numeric_suffix, $en_collision->slug );
+
+		// Percent-encodes to a 116 character slug; parent suffixes would exceed 200 characters without truncation.
+		$name = 'Категория на продукта';
+		$slug = sanitize_title( $name );
+
+		$en_parent = get_term(
+			pll_insert_term(
+				$name,
+				'category',
+				'en',
+				array(
+					'slug' => $slug,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_parent );
+		$this->assertSame( $slug, $en_parent->slug );
+
+		$fr_parent = get_term(
+			pll_insert_term( $name, 'category', 'fr' )['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $fr_parent );
+		$this->assertSame( $slug . '-fr', $fr_parent->slug );
+
+		$en_child = get_term(
+			pll_insert_term(
+				$name,
+				'category',
+				'en',
+				array(
+					'parent' => $en_parent->term_id,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $en_child );
+		$this->assertLessThanOrEqual( 200, strlen( $en_child->slug ), 'The slug does not fit the column.' );
+		$this->assertSame(
+			0,
+			preg_match( '/%(?![0-9a-fA-F]{2})/', $en_child->slug ),
+			'The slug contains a truncated percent-encoded sequence.'
+		);
+		$this->assertTrue(
+			wp_is_valid_utf8( urldecode( $en_child->slug ) ),
+			'The slug does not decode to valid UTF-8.'
+		);
+		$this->assertSame( 119, strlen( $en_child->slug ) );
+
+		/*
+		 * Clearing the slug regenerates it from the name, which then collides with the parent and gets suffixed.
+		 *
+		 * @see test_wp_update_term_child_with_long_encoded_slug_should_be_updated()
+		 */
+		$en_child = get_term(
+			pll_update_term(
+				$en_child->term_id,
+				array(
+					'name'   => $name,
+					'slug'   => '',
+					'parent' => $en_parent->term_id,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertSame( $name, $en_child->name );
+		$this->assertLessThanOrEqual( 200, strlen( $en_child->slug ), 'The slug does not fit the column.' );
+		$this->assertSame(
+			0,
+			preg_match( '/%(?![0-9a-fA-F]{2})/', $en_child->slug ),
+			'The slug contains a truncated percent-encoded sequence.'
+		);
+		$this->assertTrue(
+			wp_is_valid_utf8( urldecode( $en_child->slug ) ),
+			'The slug does not decode to valid UTF-8.'
+		);
+
+		$fr_child = get_term(
+			pll_insert_term(
+				$name,
+				'category',
+				'fr',
+				array(
+					'parent' => $fr_parent->term_id,
+				)
+			)['term_id'],
+			'category'
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $fr_child );
+		$this->assertLessThanOrEqual( 200, strlen( $fr_child->slug ), 'The slug does not fit the column.' );
+		$this->assertSame(
+			0,
+			preg_match( '/%(?![0-9a-fA-F]{2})/', $fr_child->slug ),
+			'The slug contains a truncated percent-encoded sequence.'
+		);
+		$this->assertTrue(
+			wp_is_valid_utf8( urldecode( $fr_child->slug ) ),
+			'The slug does not decode to valid UTF-8.'
+		);
+		$this->assertSame( 200, strlen( $fr_child->slug ) );
+	}
 }
