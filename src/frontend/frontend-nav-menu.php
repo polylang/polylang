@@ -115,7 +115,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				$item->title       = $element->get_label();
 				$item->attr_title  = '';
 				$item->url         = $element->url;
-				$item->classes     = array_merge( $item->classes, $element->item_classes, array( 'pll-parent-menu-item' ) );
+				$item->classes     = array_merge( $item->classes, $element->item_classes, array( 'pll-parent-menu-item', 'polylang-menu-item' ) );
 				$item->menu_order += $offset;
 
 				if ( $settings->show_flags ) {
@@ -137,7 +137,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				$lang_item->attr_title = '';
 				$lang_item->url        = $element->url;
 				$lang_item->lang       = $element->locale; // Save this for use in nav_menu_link_attributes.
-				$lang_item->classes    = $element->item_classes;
+				$lang_item->classes    = array_merge( $element->item_classes, array( 'polylang-menu-item' ) );
 
 				if ( 'dropdown' === $settings->layout ) {
 					$lang_item->menu_order       = $item->menu_order + $i;

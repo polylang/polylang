@@ -41,9 +41,9 @@
 .pll-switcher-inner .pll-submenu-toggle {
 	width: auto;
 	height: auto;
-	padding: 0 .4em 0 .2em;
+	padding: .2em;
 	border: none;
-	margin: 0;
+	margin: 0 .2em 0 0;
 	line-height: 0;
 	font-size: inherit;
 	background-color: transparent !important; /* !important to overwrite some themes. */
@@ -51,6 +51,7 @@
 }
 .pll-switcher-inner .pll-submenu-toggle:focus {
 	outline: auto;
+	outline-offset: inherit;
 }
 .pll-switcher-inner .pll-submenu-toggle svg {
 	display: block;
