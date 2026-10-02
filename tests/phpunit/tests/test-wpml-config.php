@@ -33,6 +33,14 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
+	public function tear_down() {
+		_unregister_post_type( 'book' );
+		_unregister_post_type( 'dvd' );
+		_unregister_taxonomy( 'genre' );
+		_unregister_taxonomy( 'publisher' );
+		parent::tear_down();
+	}
+
 	protected function prepare_options( $method = 'ARRAY' ) {
 		// mirror options defined in the sample wpml-config.xml
 		$my_plugins_options = array(
@@ -279,9 +287,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$post_types = array_unique( apply_filters( 'pll_get_post_types', $post_types, true ) );
 		$this->assertNotContains( 'book', $post_types );
 		$this->assertNotContains( 'dvd', $post_types );
-
-		_unregister_post_type( 'book' );
-		_unregister_post_type( 'dvd' );
 	}
 
 	public function test_tax() {
@@ -291,6 +296,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		register_post_type( 'book' ); // translated
 		register_taxonomy( 'genre', 'book' ); // translated
 		register_taxonomy( 'publisher', 'book' ); // untranslated
+		self::$model->cache->clean( 'post_types' );
 		self::$model->cache->clean( 'taxonomies' );
 
 		$this->assertTrue( self::$model->is_translated_taxonomy( 'genre' ) );
@@ -302,10 +308,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$taxonomies = array_unique( apply_filters( 'pll_get_taxonomies', $taxonomies, true ) );
 		$this->assertNotContains( 'genre', $taxonomies );
 		$this->assertNotContains( 'publisher', $taxonomies );
-
-		_unregister_post_type( 'book' );
-		_unregister_taxonomy( 'genre' );
-		_unregister_taxonomy( 'publisher' );
 	}
 
 	public function test_translate_strings() {
@@ -423,6 +425,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'other' => 'json,urlencode', // Will be discarded because not part of the config file, nor the parsing rules `$parsing_rules_for_attributes`.
 			),
 		);
+		$ids_rules_in_content         = array();
+		$ids_rules_in_attributes      = array();
 
 		$expected_parsing_rules                = array(
 			'my-plugin/my-block' => array(
@@ -480,13 +484,117 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'first-level-3' => 'json,urlencode',
 			),
 		);
+		$expected_ids_rules_in_content         = array(
+			'my-plugin/my-block'   => array(
+				'post'       => array(
+					'//*[@name="foo_form_post_ids"]/@value',
+				),
+				'term'       => array(
+					'//*[@name="foo_form_category_ids"]/@value',
+					'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
+				),
+				'post_mixed' => array(
+					'//*[@name="foo_form_post_ids_mixed"]/@value',
+				),
+			),
+			'my-plugin/my-block-8' => array(
+				'post'       => array(
+					'//*[@name="foo_form_post_ids"]/@value',
+				),
+				'term'       => array(
+					'//*[@name="foo_form_category_ids"]/@value',
+					'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
+				),
+				'post_mixed' => array(
+					'//*[@name="foo_form_post_ids_mixed"]/@value',
+				),
+			),
+		);
+		$expected_ids_rules_in_attributes      = array(
+			'my-plugin/my-block'   => array(
+				'post'       => array(
+					'PostIds' => array(
+						'*' => true,
+					),
+				),
+				'term'       => array(
+					'TermIds'       => array(
+						'*' => true,
+					),
+					'TermIdsMixed'  => array(
+						'bar' => array(
+							'*' => true,
+						),
+					),
+				),
+				'post_mixed' => array(
+					'PostIdsMixed' => array(
+						'foo' => array(
+							'*' => true,
+						),
+					),
+				),
+			),
+			'my-plugin/my-block-8' => array(
+				'post'       => array(
+					'first'  => array(
+						'p-page' => true,
+					),
+					'second' => array(
+						'p-posts' => array(
+							'e' => array(
+								'f' => array(
+									'g' => array(
+										'*' => true,
+									),
+								),
+								'h' => true,
+							),
+						),
+					),
+				),
+				'term'       => array(
+					'first'  => array(
+						't-tags' => array(
+							'a' => array(
+								'b' => array(
+									'c' => array(
+										'*' => true,
+									),
+									'd' => true,
+								),
+							),
+						),
+					),
+					'second' => array(
+						't-cat'     => true,
+						't-genre'   => true,
+						't-unknown' => true,
+					),
+				),
+				'attachment' => array(
+					'first' => array(
+						'p-attach' => true,
+					),
+				),
+				'post_mixed' => array(
+					'first' => array(
+						'p-unknown' => true,
+					),
+				),
+			),
+		);
 
 		$parsing_rules                = apply_filters( 'pll_blocks_xpath_rules', $parsing_rules );
 		$parsing_rules_for_attributes = apply_filters( 'pll_blocks_rules_for_attributes', $parsing_rules_for_attributes );
 		$encodings_for_attributes     = apply_filters( 'pll_block_attribute_encodings', $encodings_for_attributes );
+		$ids_rules_in_content         = apply_filters( 'pll_sync_blocks_xpath_rules', $ids_rules_in_content );
+		$ids_rules_in_attributes      = apply_filters( 'pll_sync_block_rules_for_attributes', $ids_rules_in_attributes );
 
 		$this->assertSameSets( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_encodings_for_attributes, $encodings_for_attributes, 'Encodings for blocks attributes from WPML config should be added and override the existing ones for each block.' );
+		$this->assertSameSetsWithIndex( $expected_ids_rules_in_content, $ids_rules_in_content, 'IDs for blocks contents from WPML config should be added.' );
+		$this->assertSameSetsWithIndex( $expected_ids_rules_in_attributes, $ids_rules_in_attributes, 'IDss for blocks attributes from WPML config should be added.' );
 	}
 }
