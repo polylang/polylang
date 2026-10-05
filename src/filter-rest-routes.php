@@ -68,14 +68,25 @@ class PLL_Filter_REST_Routes {
 
 			// Add params in query params
 			foreach ( $args as $key => $value ) {
+				if ( array_key_exists( $key, $query_params ) ) {
+					// Don't override existing query params.
+					continue;
+				}
+
 				$query_params[ $key ] = $value;
 			}
 
 			// Sort query params to put it in the same order as the preloading middleware does
 			ksort( $query_params );
 
-			// Replace the key by the correct path with query params reordered
-			$sorted_path = add_query_arg( urlencode_deep( $query_params ), $path_parts['path'] );
+			// Uses `build_query()` instead of `add_query_arg()` to preserve empty values as `key=`.
+			$sorted_query = build_query( urlencode_deep( $query_params ) );
+			$sorted_path  = $path_parts['path'];
+
+			// Replace the key by the correct path with query params reordered.
+			if ( '' !== $sorted_query ) {
+				$sorted_path .= '?' . $sorted_query;
+			}
 
 			if ( is_array( $path ) ) {
 				$preload_paths[ $k ][0] = $sorted_path;
