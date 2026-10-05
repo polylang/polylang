@@ -287,10 +287,6 @@ class PLL_Frontend extends PLL_Base {
 			return;
 		}
 
-		if ( isset( $this->static_pages ) ) {
-			$this->static_pages->init();
-		}
-
 		// Send the slug instead of the locale here to avoid conflicts with same locales.
 		$this->load_strings_translations( $this->curlang->slug );
 	}
