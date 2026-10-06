@@ -18,7 +18,7 @@ async function expectTranslationUpdatesNotice( page ) {
  *
  * @param {import('@playwright/test').Page} page
  */
-async function dissmissAllTranslationUpdatesNotices( page ) {
+async function dismissAllTranslationUpdatesNotices( page ) {
 	const dismissButtons = page.getByRole( 'button', { name: 'Dismiss this notice.' } );
 
 	// eslint-disable-next-line no-await-in-loop
@@ -46,7 +46,7 @@ test.describe( 'Language pack updates notice on the Languages settings screen', 
 			'admin.php',
 			`page=mlang&pll_action=edit&lang=${ english.term_id }`
 		);
-		await dissmissAllTranslationUpdatesNotices( page );
+		await dismissAllTranslationUpdatesNotices( page );
 
 		await page.getByRole( 'textbox', { name: 'Order' } ).fill( '1' );
 		await page.getByRole( 'button', { name: 'Update', exact: true } ).click();
@@ -56,7 +56,7 @@ test.describe( 'Language pack updates notice on the Languages settings screen', 
 
 	test( 'shows the notice after adding a language', async ( { page, admin } ) => {
 		await admin.visitAdminPage( 'admin.php', 'page=mlang' );
-		await dissmissAllTranslationUpdatesNotices( page );
+		await dismissAllTranslationUpdatesNotices( page );
 
 		await page.getByRole( 'textbox', { name: 'Full name' } ).fill( 'Français' );
 		await page.getByRole( 'textbox', { name: 'Locale' } ).fill( 'fr_FR' );
