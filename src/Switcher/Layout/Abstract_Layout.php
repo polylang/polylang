@@ -140,18 +140,30 @@ abstract class Abstract_Layout {
 	}
 
 	/**
-	 * Returns the name of the tag to use as "navigation", depending if the current theme supports HTML5 features.
+	 * Wraps the given content into a `<nav>` or `<div>` tag.
 	 *
 	 * @since 3.9
 	 *
+	 * @param string $content The content.
 	 * @return string
 	 */
-	protected function get_nav_tag(): string {
+	protected function wrap( string $content ): string {
 		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
-
 		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
-		return 'html5' === $format ? 'nav' : 'div';
+		$tag = 'html5' === $format ? 'nav' : 'div';
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = sprintf(
+			'<%1$s%2$s id="%3$s" class="%4$s" aria-label="%5$s">%6$s</%1$s>',
+			$tag,
+			'div' === $tag ? ' role="navigation"' : '',
+			esc_attr( $this->settings->unique_id ),
+			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
+			esc_attr( __( 'Choose a language', 'polylang' ) ),
+			"{$cr}{$content}"
+		);
+
+		return "{$cr}{$out}{$cr}";
 	}
 }

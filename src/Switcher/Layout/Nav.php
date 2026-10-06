@@ -34,19 +34,8 @@ class Nav extends Abstract_Layout {
 			return $out;
 		}
 
-		$cr  = $this->settings->preserve_spacing ? "\n" : '';
-		$tag = $this->get_nav_tag();
-		$out = sprintf(
-			'<%1$s%2$s id="%3$s" class="%4$s" aria-label="%5$s">%6$s</%1$s>',
-			$tag,
-			'div' === $tag ? ' role="navigation"' : '',
-			esc_attr( $this->settings->unique_id ),
-			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
-			esc_attr( __( 'Choose a language', 'polylang' ) ),
-			"{$cr}<ul>{$cr}{$out}</ul>"
-		);
-
-		return "{$cr}{$out}{$cr}";
+		$cr = $this->settings->preserve_spacing ? "\n" : '';
+		return $this->wrap( "<ul>{$cr}{$out}</ul>" );
 	}
 
 	/**
