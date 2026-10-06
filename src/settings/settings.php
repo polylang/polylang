@@ -274,7 +274,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	private function maybe_add_translation_updates_notice(): void {
-		if ( ! $this->model->has_languages() || ! current_user_can( 'update_languages' ) ) {
+		if ( ! $this->model->has_languages() || ! current_user_can( 'update_languages' ) || $this->has_translation_updates_notice() ) {
 			return;
 		}
 
@@ -284,6 +284,19 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		pll_add_notice( new WP_Error( 'pll_translation_updates_available', $form, 'info' ) );
+	}
+
+	/**
+	 * Checks if the translation updates notice is already displayed.
+	 *
+	 * @since 3.9
+	 *
+	 * @return bool
+	 */
+	private function has_translation_updates_notice(): bool {
+		$errors = get_settings_errors( 'polylang' );
+
+		return ! empty( $errors ) && in_array( 'pll_translation_updates_available', array_column( $errors, 'code' ), true );
 	}
 
 	/**
