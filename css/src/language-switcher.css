@@ -84,7 +84,7 @@
 	overflow: hidden;
 	opacity: 0;
 }
-.wp-block-polylang-language-switcher .pll-switcher-inner ul {
+.wp-block-polylang-language-switcher.has-background .pll-switcher-inner ul {
 	background-color: var(--pll-dropdown-background-color, inherit); /* Allow to change the color via the UI. */
 }
 .pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
