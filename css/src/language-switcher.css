@@ -50,7 +50,6 @@
 	color: currentColor !important;
 }
 .pll-switcher-inner .pll-submenu-toggle:focus {
-	outline: auto;
 	outline-offset: inherit;
 }
 .pll-switcher-inner .pll-submenu-toggle svg {
