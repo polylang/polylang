@@ -95,6 +95,7 @@ jQuery(
 				// Place at the beginning because window.location change triggers automatically page reloading.
 				if ( location.pathname.match( /post-new.php/gi ) && emptyPost ) {
 					reloadPageForEmptyPost( selectedOption.value );
+					return;
 				}
 
 				// Otherwise send an ajax request to refresh the legacy metabox and set the post language with the new language.
@@ -148,9 +149,15 @@ jQuery(
 					// WPCS location.search is never written in the page, just used to reload page with the right value of new_lang
 					// new_lang input is controlled server side in PHP. The value come from the dropdown list of language returned and escaped server side.
 					// Notice that window.location changing triggers automatically page reloading.
-					if ( -1 != location.search.indexOf( 'new_lang' ) ) {
-						// use regexp non capturing group to replace new_lang parameter no matter where it is and capture other parameters which can be behind it
-						window.location.search = window.location.search.replace( /(?:new_lang=[^&]*)(&)?(.*)/, 'new_lang=' + lang + '$1$2' );
+					const newLangParam = location.search.match( /(?:[?&])new_lang=([^&]*)/ );
+
+					if ( newLangParam && newLangParam[1] === lang ) {
+						return;
+					}
+
+					if ( newLangParam ) {
+						// use regexp non capturing group to replace new_lang parameter no matter where it is.
+						window.location.search = window.location.search.replace( /([?&])new_lang=[^&]*/, '$1new_lang=' + lang );
 					} else {
 						window.location.search = window.location.search + ( ( -1 != window.location.search.indexOf( '?' ) ) ? '&' : '?' ) + 'new_lang=' + lang;
 					}
