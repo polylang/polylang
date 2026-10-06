@@ -240,8 +240,8 @@ class PLL_Admin_Notices {
 				<?php
 				printf(
 					/* translators: %1$s is link start tag, %2$s is link end tag. */
-					esc_html__( 'We have noticed that you are using Polylang with WooCommerce. To ensure compatibility, we recommend you use %1$sPolylang for WooCommerce%2$s.', 'polylang' ),
-					'<a href="https://polylang.pro/pricing/polylang-for-woocommerce/">',
+					esc_html__( 'We have noticed that you are using WooCommerce. To ensure compatibility, we recommend that you use the %1$sPolylang Business Pack%2$s.', 'polylang' ),
+					'<a href="https://polylang.pro/pricing/polylang-business-pack/">',
 					'</a>'
 				);
 				?>
