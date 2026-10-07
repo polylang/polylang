@@ -51,15 +51,13 @@ class Select extends Abstract_Layout {
 			return "{$cr}{$select}{$cr}";
 		}
 
-		$out = sprintf(
-			'<div class="%1$s"><label class="screen-reader-text" for="%2$s">%3$s</label>%4$s</div>',
-			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
+		$label = sprintf(
+			'<label class="screen-reader-text" for="%1$s">%2$s</label>',
 			esc_attr( $this->settings->unique_id ),
-			esc_html( __( 'Choose a language', 'polylang' ) ),
-			$select
+			esc_html( __( 'Choose a language', 'polylang' ) )
 		);
 
-		return "{$cr}{$out}{$cr}";
+		return $this->wrap( "{$label}{$select}" );
 	}
 
 	/**
@@ -72,5 +70,24 @@ class Select extends Abstract_Layout {
 	 */
 	protected function get_element( PLL_Language $language ): Element {
 		return new Element( $language, $this->settings, $this->links );
+	}
+
+	/**
+	 * Wraps the given content into a `<div>` tag.
+	 *
+	 * @since 3.9
+	 *
+	 * @param string $content The content.
+	 * @return string
+	 */
+	protected function wrap( string $content ): string {
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = sprintf(
+			'<div class="%1$s">%2$s</div>',
+			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
+			$content
+		);
+
+		return "{$cr}{$out}{$cr}";
 	}
 }
