@@ -479,4 +479,38 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->assertSame( array(), $cache, "The cache should be primed with empty array when no language is assigned for {$post_id}." );
 	}
+
+	/**
+	 * Checks that a translation group is not deleted when term counting is deferred.
+	 */
+	public function test_translation_group_is_not_deleted_with_deferred_term_counting() {
+		[ $en, $fr, $de ] = self::factory()->post->create_many( 3 );
+
+		self::$model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $de, 'de' );
+
+		wp_defer_term_counting( true );
+
+		try {
+			// Creates the group: its count stays at 0 while counting is deferred.
+			self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
+
+			// Reuses the existing group, which is read with a stale count.
+			self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr, 'de' => $de ) );
+		} finally {
+			// Always restore the global state.
+			wp_defer_term_counting( false );
+		}
+
+		$this->assertSame(
+			array(
+				'en' => $en,
+				'fr' => $fr,
+				'de' => $de,
+			),
+			self::$model->post->get_translations( $en ),
+			'The translation group should not be deleted by the cleanup.'
+		);
+	}
 }
