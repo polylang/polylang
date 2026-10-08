@@ -173,8 +173,13 @@
 	height: 100%;
 	padding: 0.25em .5em;
 }
+:root .pll-layout-dropdown ul a,
 :root .pll-layout-dropdown ul a span {
-	color: var(--pll-dropdown-text-color, inherit);
+	color: var(--pll-dropdown-text-color, #000); /* Contrast with white background. */
+}
+:root .pll-layout-dropdown.has-text-color ul a,
+:root .pll-layout-dropdown.has-text-color ul a span {
+	color: var(--pll-dropdown-text-color, inherit); /* Allow to change the color via the UI. */
 }
 /* Links are flex containers — use justify-content, not text-align. */
 .pll-alignment-center a,
