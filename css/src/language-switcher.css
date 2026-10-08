@@ -27,13 +27,14 @@
 .pll-switcher-inner {
 	box-sizing: border-box;
 	width: fit-content;
-	gap: .25em;
+	gap: 0;
+	padding: 0 .25em;
 	position: relative;
 }
 .pll-switcher .pll-switcher-inner > a {
 	width: auto;
 	max-width: none;
-	padding: .25em 0 .25em .5em;
+	padding: 0 .25em;
 	color: inherit;
 	text-decoration: none;
 	z-index: 1;
@@ -43,7 +44,6 @@
 	height: auto;
 	padding: .2em;
 	border: none;
-	margin: 0 .2em 0 0;
 	line-height: 0;
 	font-size: inherit;
 	background-color: transparent !important; /* !important to overwrite some themes. */
