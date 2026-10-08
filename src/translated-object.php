@@ -199,13 +199,13 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			wp_set_object_terms( $p, $group, $this->tax_translations );
 		}
 
-		// Clean now unused translation groups.
+		// Clean now unused translation groups, except the one we just filled: its count may be stale (e.g. deferred term counting).
 		$terms = array_filter( $terms );
 		foreach ( $terms as $term ) {
 			// Get fresh count value.
 			$term = get_term( $term->term_id, $this->tax_translations );
 
-			if ( $term instanceof WP_Term && empty( $term->count ) ) {
+			if ( $term instanceof WP_Term && empty( $term->count ) && $group !== $term->term_id ) {
 				wp_delete_term( $term->term_id, $this->tax_translations );
 			}
 		}
