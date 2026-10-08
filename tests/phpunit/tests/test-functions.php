@@ -59,4 +59,14 @@ class Functions_Test extends PHPUnit_Framework_TestCase {
 
 		$this->assertSame( $expected, array_values( pll_sanitize_ids( $inputs ) ) ); // Use `array_values()` to re-index.
 	}
+
+	public function test_maybe_unserialize() {
+		$this->assertSame( array( 'a' => 1 ), pll_maybe_unserialize( serialize( array( 'a' => 1 ) ) ) );
+		$this->assertSame( 'plain', pll_maybe_unserialize( 'plain' ) );
+		$this->assertFalse( pll_maybe_unserialize( 'b:0;' ) );
+
+		$object = pll_maybe_unserialize( 'O:8:"stdClass":0:{}' );
+		$this->assertNotInstanceOf( stdClass::class, $object );
+		$this->assertSame( array( '__PHP_Incomplete_Class_Name' => 'stdClass' ), (array) $object );
+	}
 }

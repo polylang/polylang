@@ -131,7 +131,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		}
 
 		// Lang slugs as array keys, translation IDs as array values.
-		$translations = maybe_unserialize( $translations_term->description );
+		$translations = pll_maybe_unserialize( $translations_term->description );
 		$translations = is_array( $translations ) ? $translations : array();
 
 		return $this->validate_translations( $translations, 0, 'display' );
@@ -188,7 +188,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		} else {
 			// Take care not to overwrite extra data stored in the description field, if any.
 			$group = (int) $term->term_id;
-			$descr = maybe_unserialize( $term->description );
+			$descr = pll_maybe_unserialize( $term->description );
 			$descr = is_array( $descr ) ? array_diff_key( $descr, $old_translations ) : array(); // Remove old translations.
 			$descr = array_merge( $descr, $translations ); // Add new one.
 			wp_update_term( $group, $this->tax_translations, array( 'description' => (string) maybe_serialize( $descr ) ) );
@@ -234,7 +234,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return;
 		}
 
-		$descr = maybe_unserialize( $term->description );
+		$descr = pll_maybe_unserialize( $term->description );
 
 		if ( ! empty( $descr ) && is_array( $descr ) ) {
 			/*
@@ -456,7 +456,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 				continue;
 			}
 
-			$trans = maybe_unserialize( $terms[ $id ]->description );
+			$trans = pll_maybe_unserialize( $terms[ $id ]->description );
 			$translations[ $id ] = is_array( $trans ) ? $trans : array();
 		}
 
@@ -629,7 +629,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Prepare objects relationships.
 		if ( is_array( $terms ) ) {
 			foreach ( $terms as $term ) {
-				$t = maybe_unserialize( $term->description );
+				$t = pll_maybe_unserialize( $term->description );
 				if ( is_array( $t ) && in_array( $t, $translations ) ) {
 					foreach ( $t as $object_id ) {
 						if ( ! empty( $object_id ) ) {

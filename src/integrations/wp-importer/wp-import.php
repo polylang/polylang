@@ -72,7 +72,7 @@ class PLL_WP_Import extends WP_Import {
 					continue;
 				}
 
-				$strings = maybe_unserialize( $term_meta['value'] );
+				$strings = pll_maybe_unserialize( $term_meta['value'] );
 				$mo      = new PLL_MO();
 				$mo->import_from_db( $language );
 				foreach ( $strings as $msg ) {
@@ -116,7 +116,7 @@ class PLL_WP_Import extends WP_Import {
 		foreach ( $menu_items as $item ) {
 			foreach ( $item['postmeta'] as $meta ) {
 				if ( '_pll_menu_item' == $meta['key'] ) {
-					update_post_meta( $this->processed_menu_items[ $item['post_id'] ], '_pll_menu_item', maybe_unserialize( $meta['value'] ) );
+					update_post_meta( $this->processed_menu_items[ $item['post_id'] ], '_pll_menu_item', pll_maybe_unserialize( $meta['value'] ) );
 				}
 			}
 		}
@@ -135,7 +135,7 @@ class PLL_WP_Import extends WP_Import {
 		$term_relationships = array();
 
 		foreach ( $terms as $term ) {
-			$translations = maybe_unserialize( $term['term_description'] );
+			$translations = pll_maybe_unserialize( $term['term_description'] );
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
 					// Language relationship.
@@ -197,7 +197,7 @@ class PLL_WP_Import extends WP_Import {
 		$to_update = array();
 
 		foreach ( $terms as $term ) {
-			$translations     = maybe_unserialize( $term['term_description'] );
+			$translations     = pll_maybe_unserialize( $term['term_description'] );
 			$new_translations = array();
 			foreach ( $translations as $slug => $old_id ) {
 				if ( in_array( $slug, $languages, true ) && $old_id && ! empty( $processed_objects[ $old_id ] ) ) {
