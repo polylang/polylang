@@ -184,10 +184,12 @@ abstract class PLL_Translatable_Object {
 	/**
 	 * Tells if a serialized value contains a disallowed PHP type.
 	 *
-	 * The regex does not parse string payloads: a string value containing `{O:` or `";O:`
-	 * is treated as a disallowed type.
+	 * Leading and trailing whitespace is trimmed first, matching `is_serialized()` and `maybe_unserialize()`.
 	 *
-	 * Allowed serialized types: array, string, int, and bool.
+	 * The regex scans the whole blob for disallowed PHP serialization type tokens (`O:`, `C:`, `E:`, `r:`, `R:`),
+	 * including inside serialized string payloads. It does not parse `s:"…"` boundaries.
+	 *
+	 * Allowed serialized types: array, string, int, float, null and bool.
 	 *
 	 * @since 3.8.10
 	 *
@@ -195,7 +197,13 @@ abstract class PLL_Translatable_Object {
 	 * @return bool
 	 */
 	private function has_disallowed_type( string $description ): bool {
-		return 0 !== preg_match( '#(?:^|[;{])(?:[OCEdrR]:|N;)#', $description );
+		$description = trim( $description );
+
+		if ( '' === $description ) {
+			return false;
+		}
+
+		return 0 !== preg_match( '#[OCErR]:\d+[:;]#', $description );
 	}
 
 	/**

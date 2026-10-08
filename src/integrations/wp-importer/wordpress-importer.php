@@ -17,7 +17,6 @@ class PLL_WordPress_Importer {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
-		add_filter( 'wp_import_terms', array( $this, 'wp_import_terms' ) );
 	}
 
 	/**
@@ -43,28 +42,5 @@ class PLL_WordPress_Importer {
 
 		$GLOBALS['wp_import'] = new PLL_WP_Import();
 		register_importer( 'wordpress', 'WordPress', __( 'Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file.', 'polylang' ), array( $GLOBALS['wp_import'], 'dispatch' ) ); // phpcs:ignore WordPress.WP.CapitalPDangit.MisspelledInText
-	}
-
-	/**
-	 * Sets the flag when importing a language and the file has been exported with Polylang < 1.8.
-	 *
-	 * @since 1.8
-	 *
-	 * @param array $terms An array of arrays containing terms information form the WXR file.
-	 * @return array
-	 */
-	public function wp_import_terms( $terms ) {
-		$languages = include POLYLANG_DIR . '/src/settings/languages.php';
-
-		foreach ( $terms as $key => $term ) {
-			if ( 'language' === $term['term_taxonomy'] ) {
-				$description = maybe_unserialize( $term['term_description'] );
-				if ( empty( $description['flag_code'] ) && isset( $languages[ $description['locale'] ] ) ) {
-					$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
-					$terms[ $key ]['term_description'] = maybe_serialize( $description );
-				}
-			}
-		}
-		return $terms;
 	}
 }

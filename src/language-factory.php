@@ -93,7 +93,7 @@ class PLL_Language_Factory {
 		}
 
 		// The description fields can contain any property.
-		$description = maybe_unserialize( $terms['language']->description );
+		$description = pll_maybe_unserialize( $terms['language']->description );
 
 		if ( is_array( $description ) ) {
 			$description = array_intersect_key(

@@ -976,7 +976,7 @@ class Languages {
 			$language_term = get_term( (int) $args['lang_id'] );
 
 			if ( $language_term instanceof WP_Term ) {
-				$old_data = maybe_unserialize( $language_term->description );
+				$old_data = pll_maybe_unserialize( $language_term->description );
 			}
 		}
 
@@ -1117,7 +1117,7 @@ class Languages {
 		if ( is_array( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$term_ids[ $term->taxonomy ][] = $term->term_id;
-				$tr = maybe_unserialize( $term->description );
+				$tr = pll_maybe_unserialize( $term->description );
 				$tr = is_array( $tr ) ? $tr : array();
 
 				/**

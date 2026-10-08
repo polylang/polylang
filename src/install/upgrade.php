@@ -168,7 +168,7 @@ class PLL_Upgrade {
 				$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
 
 				if ( empty( $meta ) ) {
-					$strings = maybe_unserialize( $post->post_content );
+					$strings = pll_maybe_unserialize( $post->post_content );
 					if ( is_array( $strings ) ) {
 						update_post_meta( $post->ID, '_pll_strings_translations', $strings );
 					}
@@ -322,7 +322,7 @@ class PLL_Upgrade {
 				continue;
 			}
 
-			$description = maybe_unserialize( $term->description );
+			$description = pll_maybe_unserialize( $term->description );
 			$description = is_array( $description ) ? $description : array();
 
 			$description['fallbacks'] = $fallbacks;

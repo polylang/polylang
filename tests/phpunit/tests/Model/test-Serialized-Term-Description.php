@@ -99,18 +99,107 @@ class Test_Serialized_Term_Description extends PLL_UnitTestCase {
 		);
 	}
 
+	/**
+	 * WordPress trims before `is_serialized()` / `maybe_unserialize()`, but `has_disallowed_type()` did not.
+	 *
+	 * @dataProvider leading_whitespace_prefixes_provider
+	 *
+	 * @param string $prefix Leading whitespace prepended to a serialized object payload.
+	 * @return void
+	 */
+	public function test_sanitize_drops_object_with_leading_whitespace( $prefix ) {
+		$description = $prefix . serialize( new Exploit_Object_Serialization() );
+
+		$this->assertSame( '', $this->factory()->pll_model->post->sanitize_description( $description ) );
+	}
+
+	public function leading_whitespace_prefixes_provider() {
+		return array(
+			'newline' => array( "\n" ),
+			'tab'     => array( "\t" ),
+			'space'   => array( ' ' ),
+			'cr'      => array( "\r" ),
+		);
+	}
+
+	/**
+	 * Whitespace between structural delimiters and a type token must still be rejected.
+	 *
+	 * @dataProvider structural_whitespace_disallowed_descriptions_provider
+	 *
+	 * @param string $description Serialized payload with internal structural whitespace.
+	 * @return void
+	 */
+	public function test_sanitize_drops_disallowed_type_after_structural_whitespace( $description ) {
+		$this->assertSame( '', $this->factory()->pll_model->post->sanitize_description( $description ) );
+	}
+
+	public function structural_whitespace_disallowed_descriptions_provider() {
+		$object = serialize( new Exploit_Object_Serialization() );
+
+		return array(
+			'object with space after brace'            => array( 'a:1:{ ' . $object . '}' ),
+			'object with tab after semicolon in array' => array( 'a:1:{i:0;' . "\t" . $object . '}' ),
+		);
+	}
+
+	/**
+	 * Whitespace inside a serialized string value is data, not a structural delimiter.
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_keeps_serialized_string_with_internal_whitespace() {
+		$description = serialize( "  translation label  \n" );
+
+		$this->assertSame( $description, $this->factory()->pll_model->post->sanitize_description( $description ) );
+	}
+
+	/**
+	 * Object serialization bytes nested in an array string value must be dropped.
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_drops_object_bytes_inside_string_array_value() {
+		$description = serialize(
+			array(
+				'key' => 'O:8:"stdClass":0:{}',
+			)
+		);
+
+		$this->assertSame( '', $this->factory()->pll_model->post->sanitize_description( $description ) );
+	}
+
+	/**
+	 * Stored payloads with leading whitespace bypass read filters and are still passed to `maybe_unserialize()`.
+	 *
+	 * @return void
+	 */
+	public function test_translations_getter_ignores_object_stored_with_leading_whitespace() {
+		$posts = self::factory()->post->create_translated(
+			array( 'lang' => 'en' ),
+			array( 'lang' => 'fr' )
+		);
+
+		$term = $this->factory()->pll_model->post->get_object_term( $posts['en'], 'post_translations' );
+		$this->assertInstanceOf( WP_Term::class, $term );
+
+		$this->poison_description( (int) $term->term_id, 'post_translations', "\n" );
+
+		$this->assertSame(
+			array(),
+			$this->factory()->pll_model->post->get_translations_from_term_id( (int) $term->term_id )
+		);
+	}
+
 	public function disallowed_values_provider() {
 		return array(
-			'object'         => array( (object) array( 'cmd' => 'id' ) ),
-			'nested object'  => array( array( 'en' => 1, 'evil' => (object) array() ) ),
-			'exploit object' => array( new Exploit_Object_Serialization() ),
-			'null'           => array( null ),
-			'null in array'  => array( array( 'en' => 1, 'x' => null ) ),
-			'float'          => array( 1.5 ),
-			'float in array' => array( array( 'en' => 1.5 ) ),
-			'custom object'  => array( 'C:8:"stdClass":0:{}' ),
-			'enum'           => array( 'E:7:"Foo:Bar";' ),
-			'reference'      => array( 'a:1:{i:0;r:1;}' ),
+			'object'              => array( (object) array( 'cmd' => 'id' ) ),
+			'nested object'       => array( array( 'en' => 1, 'evil' => (object) array() ) ),
+			'exploit object'      => array( new Exploit_Object_Serialization() ),
+			'custom object'       => array( 'C:8:"stdClass":0:{}' ),
+			'enum'                => array( 'E:7:"Foo:Bar";' ),
+			'reference'           => array( 'a:1:{i:0;r:1;}' ),
+			'recursive reference' => array( 'a:1:{i:0;R:1;}' ),
 		);
 	}
 
@@ -362,14 +451,15 @@ class Test_Serialized_Term_Description extends PLL_UnitTestCase {
 	 *
 	 * @param int    $term_id  Term ID.
 	 * @param string $taxonomy Taxonomy name.
+	 * @param string $prefix   Optional whitespace prepended to the serialized object payload.
 	 * @return void
 	 */
-	private function poison_description( int $term_id, string $taxonomy ): void {
+	private function poison_description( int $term_id, string $taxonomy, string $prefix = '' ): void {
 		global $wpdb;
 
 		$wpdb->update(
 			$wpdb->term_taxonomy,
-			array( 'description' => serialize( new Exploit_Object_Serialization() ) ),
+			array( 'description' => $prefix . serialize( new Exploit_Object_Serialization() ) ),
 			array(
 				'term_id'  => $term_id,
 				'taxonomy' => $taxonomy,

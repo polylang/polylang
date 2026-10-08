@@ -172,3 +172,27 @@ function pll_is_edit_rest_request( WP_REST_Request $request ): bool {
 
 	return 'GET' === $request->get_method() && 'edit' === $request->get_param( 'context' );
 }
+
+/**
+ * Unserializes data only if it was serialized.
+ *
+ * Like `maybe_unserialize()` but passes options to `unserialize()`, including
+ * `allowed_classes` to mitigate PHP object injection.
+ *
+ * @since 3.8.11
+ *
+ * @param mixed $data    Data that might be unserialized.
+ * @param array $options {
+ *     Options for @see unserialize(). Default `array( 'allowed_classes' => false )`.
+ *
+ *     @type bool|class-string[] $allowed_classes Whether to allow PHP objects. Default false.
+ * }
+ * @return mixed Unserialized data, or the original value if not serialized.
+ */
+function pll_maybe_unserialize( $data, array $options = array( 'allowed_classes' => false ) ) {
+	if ( ! is_string( $data ) || ! is_serialized( $data ) ) {
+		return $data;
+	}
+
+	return unserialize( trim( $data ), $options ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize, PHPCompatibility.FunctionUse.NewFunctionParameters.unserialize_optionsFound
+}
