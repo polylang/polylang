@@ -24,7 +24,8 @@ class Nav extends Abstract_Layout {
 	 * @return string
 	 */
 	public function get(): string {
-		$out = '';
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = $cr;
 
 		foreach ( $this->get_elements() as $element ) {
 			$out .= $element->get();
@@ -34,8 +35,7 @@ class Nav extends Abstract_Layout {
 			return $out;
 		}
 
-		$cr = $this->settings->preserve_spacing ? "\n" : '';
-		return $this->wrap( "<ul>{$cr}{$out}</ul>" );
+		return $this->wrap( "<ul>{$out}</ul>" );
 	}
 
 	/**

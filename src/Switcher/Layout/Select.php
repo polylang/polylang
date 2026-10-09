@@ -28,7 +28,8 @@ class Select extends Abstract_Layout {
 	 * @return string
 	 */
 	public function get(): string {
-		$out = '';
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = $cr;
 
 		foreach ( $this->get_elements() as $element ) {
 			$out .= $element->get();
@@ -40,11 +41,10 @@ class Select extends Abstract_Layout {
 
 		Assets::enqueue_frontend_scripts();
 
-		$cr     = $this->settings->preserve_spacing ? "\n" : '';
 		$select = sprintf(
 			'<select class="pll-switcher-select" id="%1$s">%2$s</select>',
 			esc_attr( $this->settings->unique_id ),
-			"{$cr}{$out}"
+			$out
 		);
 
 		if ( ! $this->settings->show_wrapper ) {
@@ -57,7 +57,7 @@ class Select extends Abstract_Layout {
 			esc_html( __( 'Choose a language', 'polylang' ) )
 		);
 
-		return $this->wrap( "{$label}{$select}" );
+		return $this->wrap( "{$label}{$cr}{$select}" );
 	}
 
 	/**
@@ -85,7 +85,7 @@ class Select extends Abstract_Layout {
 		$out = sprintf(
 			'<div class="%1$s">%2$s</div>',
 			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
-			$content
+			"{$cr}{$content}{$cr}"
 		);
 
 		return "{$cr}{$out}{$cr}";

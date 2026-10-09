@@ -152,18 +152,18 @@ abstract class Abstract_Layout {
 		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
-		$tag = 'html5' === $format ? 'nav' : 'div';
-		$cr  = $this->settings->preserve_spacing ? "\n" : '';
-		$out = sprintf(
-			'<%1$s%2$s id="%3$s" class="%4$s" aria-label="%5$s">%6$s</%1$s>',
-			$tag,
-			'div' === $tag ? ' role="navigation"' : '',
+		$cr         = $this->settings->preserve_spacing ? "\n" : '';
+		$attributes = sprintf(
+			'id="%1$s" class="%2$s" aria-label="%3$s"',
 			esc_attr( $this->settings->unique_id ),
 			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
 			esc_attr( __( 'Choose a language', 'polylang' ) ),
-			"{$cr}{$content}"
 		);
 
-		return "{$cr}{$out}{$cr}";
+		if ( 'html5' === $format ) {
+			return "{$cr}<nav {$attributes}>{$cr}{$content}{$cr}</nav>{$cr}";
+		} else {
+			return "{$cr}<div role=\"navigation\" {$attributes}>{$cr}{$content}{$cr}</div>{$cr}";
+		}
 	}
 }
