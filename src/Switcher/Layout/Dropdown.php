@@ -31,7 +31,8 @@ class Dropdown extends Abstract_Layout {
 			return '';
 		}
 
-		$out = '';
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = $cr;
 
 		foreach ( $this->get_elements() as $element ) {
 			$out .= $element->get();
@@ -43,24 +44,13 @@ class Dropdown extends Abstract_Layout {
 
 		Assets::enqueue_frontend_scripts();
 
-		$cr  = $this->settings->preserve_spacing ? "\n" : '';
 		$out = sprintf(
-			"{$cr}<div class=\"pll-switcher-inner\">{$cr}%s{$cr}%s{$cr}<ul>{$cr}%s</ul>{$cr}</div>",
+			"<div class=\"pll-switcher-inner\">{$cr}%s{$cr}%s{$cr}<ul>%s</ul>{$cr}</div>",
 			$current_item,
 			$this->get_button(),
 			$out
 		);
-		$out = sprintf(
-			'<%1$s id="%2$s" class="%3$s" aria-label="%4$s">%5$s</%1$s>',
-			$this->get_nav_tag(),
-			esc_attr( $this->settings->unique_id ),
-			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
-			/* translators: accessibility text */
-			esc_attr__( 'Choose a language', 'polylang' ),
-			$out
-		);
-
-		return "{$cr}{$out}{$cr}";
+		return $this->wrap( $out );
 	}
 
 	/**

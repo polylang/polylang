@@ -27,13 +27,14 @@
 .pll-switcher-inner {
 	box-sizing: border-box;
 	width: fit-content;
-	gap: .25em;
+	gap: 0;
+	padding: 0 .25em;
 	position: relative;
 }
 .pll-switcher .pll-switcher-inner > a {
 	width: auto;
 	max-width: none;
-	padding: .25em 0 .25em .5em;
+	padding: .25em;
 	color: inherit;
 	text-decoration: none;
 	z-index: 1;
@@ -41,16 +42,15 @@
 .pll-switcher-inner .pll-submenu-toggle {
 	width: auto;
 	height: auto;
-	padding: 0 .4em 0 .2em;
+	padding: .2em;
 	border: none;
-	margin: 0;
 	line-height: 0;
 	font-size: inherit;
 	background-color: transparent !important; /* !important to overwrite some themes. */
 	color: currentColor !important;
 }
 .pll-switcher-inner .pll-submenu-toggle:focus {
-	outline: auto;
+	outline-offset: inherit;
 }
 .pll-switcher-inner .pll-submenu-toggle svg {
 	display: block;
@@ -83,7 +83,7 @@
 	overflow: hidden;
 	opacity: 0;
 }
-.wp-block-polylang-language-switcher .pll-switcher-inner ul {
+.wp-block-polylang-language-switcher.has-background .pll-switcher-inner ul {
 	background-color: var(--pll-dropdown-background-color, inherit); /* Allow to change the color via the UI. */
 }
 .pll-switcher-inner:hover .pll-submenu-toggle:not([aria-expanded]) + ul,
@@ -173,8 +173,13 @@
 	height: 100%;
 	padding: 0.25em .5em;
 }
+:root .pll-layout-dropdown ul a,
 :root .pll-layout-dropdown ul a span {
-	color: var(--pll-dropdown-text-color, inherit);
+	color: var(--pll-dropdown-text-color, #000); /* Contrast with white background. */
+}
+:root .pll-layout-dropdown.has-text-color ul a,
+:root .pll-layout-dropdown.has-text-color ul a span {
+	color: var(--pll-dropdown-text-color, inherit); /* Allow to change the color via the UI. */
 }
 /* Links are flex containers — use justify-content, not text-align. */
 .pll-alignment-center a,
