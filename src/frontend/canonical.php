@@ -87,6 +87,8 @@ class PLL_Canonical {
 			$requested_url = pll_get_requested_url();
 		}
 
+		$requested_url = (string) $requested_url;
+
 		if ( ( is_single() && ( ! is_attachment() || get_option( 'wp_attachment_pages_enabled' ) ) ) || ( is_page() && ! is_front_page() ) ) {
 			$post = get_post();
 			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
@@ -116,6 +118,9 @@ class PLL_Canonical {
 		if ( 3 === $this->options['force_lang'] ) {
 			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
 			foreach ( $this->options['domains'] as $lang => $domain ) {
+				if ( ! is_string( $domain ) ) {
+					continue;
+				}
 				$host = wp_parse_url( $domain, PHP_URL_HOST );
 				if ( $requested_host && $host && ltrim( $requested_host, 'w.' ) === ltrim( $host, 'w.' ) ) {
 					$language = $this->model->get_language( $lang );

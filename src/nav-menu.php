@@ -130,7 +130,10 @@ class PLL_Nav_Menu {
 		if ( 1 == count( $infos ) ) {
 			$infos[] = $this->options['default_lang'];
 		}
-		return array_combine( array( 'location', 'lang' ), $infos );
+		/** @phpstan-var array{location: string, lang: string} $location */
+		$location = array_combine( array( 'location', 'lang' ), $infos );
+
+		return $location;
 	}
 
 	/**
