@@ -17,6 +17,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		parent::tear_down();
 
 		wp_suspend_cache_addition( false );
+		wp_defer_term_counting( false );
 
 		if ( is_multisite() ) {
 			restore_current_blog();
@@ -492,16 +493,11 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		wp_defer_term_counting( true );
 
-		try {
-			// Creates the group: its count stays at 0 while counting is deferred.
-			self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
+		// Creates the group: its count stays at 0 while counting is deferred.
+		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
 
-			// Reuses the existing group, which is read with a stale count.
-			self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr, 'de' => $de ) );
-		} finally {
-			// Always restore the global state.
-			wp_defer_term_counting( false );
-		}
+		// Reuses the existing group, which is read with a stale count.
+		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr, 'de' => $de ) );
 
 		$this->assertSame(
 			array(
