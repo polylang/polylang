@@ -162,9 +162,9 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
 			if ( ! empty( $this->options['post_types'] ) ) {
-				/** @phpstan-var list<non-falsy-string> $option_post_types */
-				$option_post_types = $this->options['post_types'];
-				$post_types = array_merge( $post_types, array_combine( $option_post_types, $option_post_types ) );
+				/** @phpstan-var array<string, string> $custom_post_types */
+				$custom_post_types = array_combine( $this->options['post_types'], $this->options['post_types'] );
+				$post_types        = array_merge( $post_types, $custom_post_types );
 			}
 
 			if ( empty( $this->options['media_support'] ) ) {
