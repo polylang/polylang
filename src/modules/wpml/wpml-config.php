@@ -612,7 +612,6 @@ class PLL_WPML_Config {
 							if ( 'json' === $encoding ) {
 								// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
 								$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
-								
 								break;
 							}
 					}
