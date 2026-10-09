@@ -325,6 +325,12 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
+		$available_translations = wp_get_available_translations();
+		if ( empty( $available_translations[ $language->locale ] ) ) {
+			/* translators: %s is the language locale */
+			pll_add_notice( new WP_Error( 'pll_language_pack_not_available', sprintf( __( 'The %s WordPress language pack is not available.', 'polylang' ), $language->locale ), 'notice' ) );
+			return;
+		}
 
 		if ( 'en_US' !== $language->locale ) {
 			if ( ! wp_download_language_pack( $language->locale ) ) {
@@ -335,6 +341,12 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		foreach ( $language->fallbacks as $locale ) {
 			if ( 'en_US' === $locale || $locale === $language->locale ) {
+				continue;
+			}
+
+			if ( empty( $available_translations[ $locale ] ) ) {
+				/* translators: %s is the language locale */
+				pll_add_notice( new WP_Error( 'pll_language_pack_not_available', sprintf( __( 'The %s WordPress language pack is not available.', 'polylang' ), $locale ), 'notice' ) );
 				continue;
 			}
 
