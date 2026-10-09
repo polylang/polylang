@@ -102,7 +102,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			}
 
 			$options['item_classes']   = isset( $options['item_classes'] ) && is_array( $options['item_classes'] ) ? $options['item_classes'] : array();
-			$options['item_classes'][] = 'polylang-menu-item' ;
+			$options['item_classes'][] = 'polylang-menu-item';
 			$settings = new Settings( Fields::remove_legacy_settings( $options ) );
 			$elements = ( new Switcher( $settings, $this->links ) )->get_elements();
 
