@@ -612,6 +612,8 @@ class PLL_WPML_Config {
 							if ( 'json' === $encoding ) {
 								// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
 								$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
+								
+								break;
 							}
 					}
 				}
@@ -828,7 +830,7 @@ class PLL_WPML_Config {
 		$curpath[] = $name;
 
 		foreach ( $children as $child ) {
-			if ( ! $this->is_supported_field( $field ) ) {
+			if ( ! $this->is_supported_field( $child ) ) {
 				continue;
 			}
 
