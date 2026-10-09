@@ -179,15 +179,17 @@ class PLL_Admin_Notices {
 				$this->pllwc_notice();
 			}
 
+			/** @phpstan-var int<0, max> $first_activation */
 			$first_activation = $this->options['first_activation'];
-			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! static::is_dismissed( 'review' ) && is_int( $first_activation ) && time() > $first_activation + 15 * DAY_IN_SECONDS ) {
+			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! static::is_dismissed( 'review' ) && ! empty( $first_activation ) && time() > $first_activation + 15 * DAY_IN_SECONDS ) {
 				$this->review_notice();
 			}
 
 			$allowed_screen = PLL_Admin_Base::get_screen_id( 'strings' );
+			/** @phpstan-var string $previous_version */
 			$previous_version = $this->options['previous_version'];
 			if (
-				( is_string( $previous_version ) && '' !== $previous_version && version_compare( $previous_version, '3.7.0', '<' ) )
+				( ! empty( $previous_version ) && version_compare( $previous_version, '3.7.0', '<' ) )
 				&& $this->can_display_notice( 'empty-strings-translations', (array) $allowed_screen )
 				&& ! static::is_dismissed( 'empty-strings-translations' )
 			) {

@@ -725,8 +725,9 @@ class Languages {
 	 * @return \PLL_Language|false Default language object, `false` if no language found.
 	 */
 	public function get_default() {
-		$default_lang = $this->options['default_lang'];
-		if ( is_string( $default_lang ) && '' !== $default_lang ) {
+		if ( ! empty( $this->options['default_lang'] ) ) {
+			/** @phpstan-var non-empty-string $default_lang */
+			$default_lang = $this->options['default_lang'];
 			return $this->get( $default_lang );
 		}
 

@@ -199,9 +199,9 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		if ( false === $taxonomies ) {
 			$taxonomies = array( 'category' => 'category', 'post_tag' => 'post_tag' );
 
-			$option_taxonomies = $this->options['taxonomies'];
-			if ( is_array( $option_taxonomies ) && ! empty( $option_taxonomies ) ) {
+			if ( ! empty( $this->options['taxonomies'] ) ) {
 				/** @phpstan-var list<non-falsy-string> $option_taxonomies */
+				$option_taxonomies = $this->options['taxonomies'];
 				$taxonomies = array_merge( $taxonomies, array_combine( $option_taxonomies, $option_taxonomies ) );
 			}
 

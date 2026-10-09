@@ -117,10 +117,9 @@ class PLL_Canonical {
 
 		if ( 3 === $this->options['force_lang'] ) {
 			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
-			foreach ( $this->options['domains'] as $lang => $domain ) {
-				if ( ! is_string( $domain ) ) {
-					continue;
-				}
+			/** @phpstan-var array<non-falsy-string, string> $domains */
+			$domains = $this->options['domains'];
+			foreach ( $domains as $lang => $domain ) {
 				$host = wp_parse_url( $domain, PHP_URL_HOST );
 				if ( $requested_host && $host && ltrim( $requested_host, 'w.' ) === ltrim( $host, 'w.' ) ) {
 					$language = $this->model->get_language( $lang );

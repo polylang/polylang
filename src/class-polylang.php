@@ -164,8 +164,9 @@ class Polylang {
 		$options = new Options();
 
 		// Plugin upgrade
-		$version = $options['version'];
-		if ( is_string( $version ) && '' !== $version ) {
+		if ( ! empty( $options['version'] ) ) {
+			/** @phpstan-var string $version */
+			$version = $options['version'];
 			if ( version_compare( $version, POLYLANG_VERSION, '<' ) ) {
 				$upgrade = new PLL_Upgrade( $options );
 				if ( ! $upgrade->upgrade() ) { // If the version is too old

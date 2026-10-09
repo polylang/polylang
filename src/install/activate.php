@@ -41,8 +41,9 @@ class PLL_Activate extends PLL_Abstract_Activate {
 		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
 		$options = new Options();
 
-		$version = $options['version'];
-		if ( is_string( $version ) && '' !== $version ) {
+		if ( ! empty( $options['version'] ) ) {
+			/** @phpstan-var string $version */
+			$version = $options['version'];
 			// Check if we will be able to upgrade.
 			if ( version_compare( $version, static::get_plugin_version(), '<' ) && ! ( new PLL_Upgrade( $options ) )->can_upgrade() ) {
 				return;
