@@ -202,10 +202,15 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Clean now unused translation groups, except the one we just filled: its count may be stale (e.g. deferred term counting).
 		$terms = array_filter( $terms );
 		foreach ( $terms as $term ) {
+			// The group we just filled is never cleaned, so no need to read it again.
+			if ( $group === $term->term_id ) {
+				continue;
+			}
+
 			// Get fresh count value.
 			$term = get_term( $term->term_id, $this->tax_translations );
 
-			if ( $term instanceof WP_Term && empty( $term->count ) && $group !== $term->term_id ) {
+			if ( $term instanceof WP_Term && empty( $term->count ) ) {
 				wp_delete_term( $term->term_id, $this->tax_translations );
 			}
 		}
