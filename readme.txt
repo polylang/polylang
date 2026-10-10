@@ -113,6 +113,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Display DeepL billed characters after machine translation #3041
 * Pro: Fix inconsistency in translation setting displayed when an ACF field was created before the activation of Polylang Pro #2968
 * Pro: Fix bulk copy separating synchronized posts #2949
+* Pro: Fix XLIFF files with SVG images not imported #3118
 * Pro: Fix synchronized posts deleted when using "Rewrite & Republish" in Yoast Duplicate Post. Props @krokodok #1536
 * Add a dropdown language switcher with optional flags, available as a classic widget or block
 * Allow to customize the shape and size of the flags in all language switchers
