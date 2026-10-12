@@ -645,7 +645,7 @@ function pll_count_posts( $lang, $args = array() ) {
  *     An array of elements that make up a post to insert.
  *     @See https://developer.wordpress.org/reference/functions/wp_insert_post/ wp_insert_post() for accepted arguments.
  *
- *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ *     @type int[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
  * }
  * @param PLL_Language|string $language The post language object or slug.
  * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
@@ -671,12 +671,12 @@ function pll_insert_post( array $postarr, $language ) {
  * @param array               $args {
  *     Optional. Array of arguments for inserting a term.
  *
- *     @type string   $alias_of     Slug of the term to make this term an alias of.
- *                                  Default empty string. Accepts a term slug.
- *     @type string   $description  The term description. Default empty string.
- *     @type int      $parent       The id of the parent term. Default 0.
- *     @type string   $slug         The term slug to use. Default empty string.
- *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+ *     @type string $alias_of     Slug of the term to make this term an alias of.
+ *                                Default empty string. Accepts a term slug.
+ *     @type string $description  The term description. Default empty string.
+ *     @type int    $parent       The id of the parent term. Default 0.
+ *     @type string $slug         The term slug to use. Default empty string.
+ *     @type int[]  $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
  * }
  * @return array|WP_Error {
  *     An array of the new term data, `WP_Error` otherwise.
@@ -705,7 +705,7 @@ function pll_insert_term( string $term, string $taxonomy, $language, array $args
  *     @See https://developer.wordpress.org/reference/functions/wp_insert_post/ wp_insert_post() for accepted arguments.
  *
  *     @type PLL_Language|string $lang         The post language object or slug.
- *     @type string[]            $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ *     @type int[]               $translations The translation group to assign to the post with language slug as keys and post ID as values.
  * }
  * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
  */
@@ -729,7 +729,7 @@ function pll_update_post( array $postarr ) {
  *     @type string              $slug         The term slug to use. Default empty string.
  *     @type string              $name         The term name.
  *     @type PLL_Language|string $lang         The term language object or slug.
- *     @type string[]            $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+ *     @type int[]               $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
  * }
  * @return array|WP_Error {
  *     An array containing the `term_id` and `term_taxonomy_id`, `WP_Error` otherwise.
