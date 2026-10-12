@@ -61,11 +61,11 @@ class PLL_Accept_Language {
 	 * @return PLL_Accept_Language
 	 */
 	public static function from_array( $matches ) {
+		/** @phpstan-var array<string, string> $subtags */
 		$subtags = array_combine(
 			array_keys( array_slice( self::SUBTAG_PATTERNS, 0, count( $matches ) - 1 ) ),
 			array_slice( $matches, 1, count( self::SUBTAG_PATTERNS ) )
 		);
-		/** @phpstan-var array<string, string> $subtags */
 		$quality = count( $matches ) === 9 ? $matches[8] : 1.0;
 
 		return new PLL_Accept_Language( $subtags, $quality );
