@@ -483,6 +483,12 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 	/**
 	 * Checks that a translation group is not deleted when term counting is deferred.
+	 *
+	 * Two successive calls to `save_translations()` are needed on purpose: the first one creates the group,
+	 * and its count stays at 0 while term counting is deferred. The second one finds this existing group and
+	 * runs the cleanup loop, where the stale count used to make the group look unused and delete it.
+	 * A single call (e.g. with `create_translated()`) only goes through the creation branch, where the
+	 * cleanup loop does not run, so the test would pass even without the fix.
 	 */
 	public function test_translation_group_is_not_deleted_with_deferred_term_counting() {
 		[ $en, $fr, $de ] = self::factory()->post->create_many( 3 );
