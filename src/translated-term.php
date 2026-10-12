@@ -361,12 +361,12 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param array        $args {
 	 *     Optional. Array of arguments for inserting a term.
 	 *
-	 *     @type string   $alias_of     Slug of the term to make this term an alias of.
-	 *                                  Default empty string. Accepts a term slug.
-	 *     @type string   $description  The term description. Default empty string.
-	 *     @type int      $parent       The id of the parent term. Default 0.
-	 *     @type string   $slug         The term slug to use. Default empty string.
-	 *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+	 *     @type string $alias_of     Slug of the term to make this term an alias of.
+	 *                                Default empty string. Accepts a term slug.
+	 *     @type string $description  The term description. Default empty string.
+	 *     @type int    $parent       The id of the parent term. Default 0.
+	 *     @type string $slug         The term slug to use. Default empty string.
+	 *     @type int[]  $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
 	 * }
 	 * @return array|WP_Error {
 	 *     An array of the new term data, `WP_Error` otherwise.
@@ -410,7 +410,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *     @type int          $parent       The id of the parent term. Default 0.
 	 *     @type string       $slug         The term slug to use. Default empty string.
 	 *     @type PLL_Language $lang         The term language object.
-	 *     @type string[]     $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+	 *     @type int[]        $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
 	 * }
 	 * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
 	 *                        WP_Error otherwise.
