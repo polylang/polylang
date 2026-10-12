@@ -687,4 +687,22 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			)
 		);
 	}
+
+	public function test_redirect_canonical_does_not_mutate_curlang() {
+		$links_model = self::$model->get_links_model();
+		$frontend    = new PLL_Frontend( $links_model );
+		$canonical   = new PLL_Canonical( $frontend );
+
+		$en = self::$model->get_language( 'en' );
+		$fr = self::$model->get_language( 'fr' );
+		$frontend->curlang = $en;
+
+		$reflection = new ReflectionMethod( $canonical, 'redirect_canonical' );
+		if ( PHP_VERSION_ID < 80100 ) {
+			$reflection->setAccessible( true );
+		}
+		$reflection->invoke( $canonical, home_url( '/fr/' ), $fr );
+
+		$this->assertSame( $en, $frontend->curlang );
+	}
 }
