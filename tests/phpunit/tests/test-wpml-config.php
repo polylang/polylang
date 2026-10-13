@@ -591,7 +591,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$ids_rules_in_content         = apply_filters( 'pll_sync_blocks_xpath_rules', $ids_rules_in_content );
 		$ids_rules_in_attributes      = apply_filters( 'pll_sync_block_rules_for_attributes', $ids_rules_in_attributes );
 
-		$this->assertSameSets( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
+		$this->assertSameSetsWithIndex( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_encodings_for_attributes, $encodings_for_attributes, 'Encodings for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 		$this->assertSameSetsWithIndex( $expected_ids_rules_in_content, $ids_rules_in_content, 'IDs for blocks contents from WPML config should be added.' );
