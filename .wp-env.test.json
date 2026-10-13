@@ -1,0 +1,10 @@
+{
+	"phpVersion": "8.3",
+	"core": null,
+	"testsEnvironment": false,
+	"port": 8891,
+	"plugins": [ "." ],
+	"mappings": {
+		"wp-content/plugins/custom-strings": "./tests/e2e/plugins/custom-strings"
+	}
+}
