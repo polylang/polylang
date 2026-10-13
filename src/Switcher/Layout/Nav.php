@@ -24,7 +24,8 @@ class Nav extends Abstract_Layout {
 	 * @return string
 	 */
 	public function get(): string {
-		$out = '';
+		$cr  = $this->settings->preserve_spacing ? "\n" : '';
+		$out = $cr;
 
 		foreach ( $this->get_elements() as $element ) {
 			$out .= $element->get();
@@ -34,17 +35,7 @@ class Nav extends Abstract_Layout {
 			return $out;
 		}
 
-		$cr  = $this->settings->preserve_spacing ? "\n" : '';
-		$out = sprintf(
-			'<%1$s id="%2$s" class="%3$s" aria-label="%4$s">%5$s</%1$s>',
-			$this->get_nav_tag(),
-			esc_attr( $this->settings->unique_id ),
-			esc_attr( implode( ' ', $this->get_wrapper_classes() ) ),
-			esc_attr( __( 'Choose a language', 'polylang' ) ),
-			"{$cr}<ul>{$cr}{$out}</ul>"
-		);
-
-		return "{$cr}{$out}{$cr}";
+		return $this->wrap( "<ul>{$out}</ul>" );
 	}
 
 	/**

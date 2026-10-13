@@ -25,6 +25,7 @@ class GetElements_Test extends TestCase {
 			'is_empty'         => false,
 			'is_current'       => true,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_en->term_id,
 				'lang-item-en',
@@ -51,6 +52,7 @@ class GetElements_Test extends TestCase {
 			'is_empty'         => false,
 			'is_current'       => false,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_fr->term_id,
 				'lang-item-fr',
@@ -98,6 +100,7 @@ class GetElements_Test extends TestCase {
 			'is_empty'         => false,
 			'is_current'       => false,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_fr->term_id,
 				'lang-item-fr',
@@ -128,6 +131,7 @@ class GetElements_Test extends TestCase {
 			'is_empty'         => true,
 			'is_current'       => false,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_de->term_id,
 				'lang-item-de',

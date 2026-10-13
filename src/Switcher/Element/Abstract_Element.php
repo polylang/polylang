@@ -162,7 +162,7 @@ abstract class Abstract_Element {
 		$this->is_empty         = $language->get_tax_prop( 'language', 'count' ) <= 0;
 		$this->is_current       = $this->get_current_language_slug() === $language->slug;
 		$this->item_classes     = array_merge(
-			array( 'lang-item', "lang-item-{$language->term_id}", "lang-item-{$language->slug}" ),
+			array( 'polylang-item', 'lang-item', "lang-item-{$language->term_id}", "lang-item-{$language->slug}" ),
 			$settings->item_classes
 		);
 		$this->link_classes     = $settings->link_classes;

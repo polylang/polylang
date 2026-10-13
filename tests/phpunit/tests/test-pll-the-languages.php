@@ -63,6 +63,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			'current_lang'   => true,
 			'no_translation' => false,
 			'classes'        => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_en->term_id,
 				'lang-item-en',
@@ -77,6 +78,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			'is_current'       => true,
 			'is_empty'         => false,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_en->term_id,
 				'lang-item-en',
@@ -100,6 +102,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			'current_lang'   => false,
 			'no_translation' => false,
 			'classes'        => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_fr->term_id,
 				'lang-item-fr',
@@ -112,6 +115,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			'is_current'       => false,
 			'is_empty'         => false,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_fr->term_id,
 				'lang-item-fr',
@@ -133,6 +137,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			'current_lang'   => false,
 			'no_translation' => true,
 			'classes'        => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_de->term_id,
 				'lang-item-de',
@@ -146,6 +151,7 @@ class PLL_The_Languages_Test extends PLL_UnitTestCase {
 			'is_current'       => false,
 			'is_empty'         => false,
 			'item_classes'     => array(
+				'polylang-item',
 				'lang-item',
 				'lang-item-' . $language_de->term_id,
 				'lang-item-de',

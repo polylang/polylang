@@ -23,14 +23,14 @@ class Get_Test extends TestCase {
 		// The first language is the default one (en).
 		$en_language = $this->pll_model->get_language( 'en' );
 		$this->assertSameSets(
-			array( 'lang-item', 'lang-item-' . $en_language->term_id, 'lang-item-en', 'current-lang', 'no-translation', 'lang-item-first' ),
+			array( 'polylang-item', 'lang-item', 'lang-item-' . $en_language->term_id, 'lang-item-en', 'current-lang', 'no-translation', 'lang-item-first' ),
 			explode( ' ', $lis->item( 0 )->getAttribute( 'class' ) )
 		);
 
 		// The remaining language is fr.
 		$fr_language = $this->pll_model->get_language( 'fr' );
 		$this->assertSameSets(
-			array( 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'no-translation' ),
+			array( 'polylang-item', 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'no-translation' ),
 			explode( ' ', $lis->item( 1 )->getAttribute( 'class' ) )
 		);
 
@@ -98,7 +98,7 @@ class Get_Test extends TestCase {
 		$this->assertSame( $en_language->get_home_url(), $en_option->getAttribute( 'value' ) );
 		$this->assertSame( 'selected', $en_option->getAttribute( 'selected' ) );
 		$this->assertSameSets(
-			array( 'lang-item', 'lang-item-' . $en_language->term_id, 'lang-item-en', 'current-lang', 'no-translation', 'lang-item-first' ),
+			array( 'polylang-item', 'lang-item', 'lang-item-' . $en_language->term_id, 'lang-item-en', 'current-lang', 'no-translation', 'lang-item-first' ),
 			explode( ' ', $en_option->getAttribute( 'class' ) )
 		);
 		$this->assertSame( 'English', $en_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -111,7 +111,7 @@ class Get_Test extends TestCase {
 		$this->assertSame( $fr_language->get_home_url(), $fr_option->getAttribute( 'value' ) );
 		$this->assertSame( '', $fr_option->getAttribute( 'selected' ) );
 		$this->assertSameSets(
-			array( 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'no-translation' ),
+			array( 'polylang-item', 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'no-translation' ),
 			explode( ' ', $fr_option->getAttribute( 'class' ) )
 		);
 		$this->assertSame( 'Français', $fr_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase

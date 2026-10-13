@@ -741,6 +741,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 			'#'  => '%23',
 			"\n" => '',
 			"\r" => '',
+			' '  => '%20',
 		);
 		return str_replace( array_keys( $to_replace ), array_values( $to_replace ), $svg );
 	}
