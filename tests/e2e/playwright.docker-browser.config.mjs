@@ -8,6 +8,7 @@ const __dirname = path.dirname( __filename );
 const projectRoot = path.resolve( __dirname, '../..' );
 const baseURL = 'http://localhost:8891';
 process.env.WP_BASE_URL = baseURL;
+process.env.WP_ENV_CONFIG = '.wp-env.test.json';
 
 /**
  * Playwright config for running e2e tests with browsers in Docker.

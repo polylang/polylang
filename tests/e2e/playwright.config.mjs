@@ -2,6 +2,7 @@ import { getPlaywrightConfig } from '@wpsyntex/e2e-test-utils';
 
 const baseURL = 'http://localhost:8891';
 process.env.WP_BASE_URL = baseURL;
+process.env.WP_ENV_CONFIG = '.wp-env.test.json';
 
 const config = getPlaywrightConfig( {
 	globalSetup: './global.setup.mjs',
