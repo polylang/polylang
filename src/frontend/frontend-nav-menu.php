@@ -101,7 +101,6 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				continue;
 			}
 
-			$options['item_classes'] = isset( $options['item_classes'] ) && is_array( $options['item_classes'] ) ? $options['item_classes'] : array();
 			$settings = new Settings( Fields::remove_legacy_settings( $options ) );
 			$elements = ( new Switcher( $settings, $this->links ) )->get_elements();
 
