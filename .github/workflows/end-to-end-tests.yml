@@ -16,7 +16,8 @@ on:
       - 'webpack.config.js'
       - '.github/workflows/end-to-end-tests.yml'
       - 'babel.config.js'
-      - '.wp-env.json'
+      - '.wp-env.dev.json'
+      - '.wp-env.test.json'
   pull_request:
     branches: master
     paths: *e2e_paths
@@ -42,4 +43,6 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run Playwright tests
-      uses: polylang/actions/e2e@main
+      uses: polylang/actions/e2e@e2e-action-inputs
+      with:
+        wp-env-config-path: .wp-env.test.json
