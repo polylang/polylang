@@ -7,6 +7,7 @@ const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 const projectRoot = path.resolve( __dirname, '../..' );
 const baseURL = 'http://localhost:8891';
+
 process.env.WP_BASE_URL = baseURL;
 process.env.WP_ENV_CONFIG = '.wp-env.test.json';
 
@@ -15,7 +16,7 @@ process.env.WP_ENV_CONFIG = '.wp-env.test.json';
  *
  * @return {import('@playwright/test').PlaywrightTestConfig} Playwright config object.
  */
-const config = getPlaywrightConfig( {
+export default getPlaywrightConfig( {
 	testDir: path.resolve( __dirname, 'specs' ),
 	forbidOnly: false,
 	retries: 0,
@@ -32,11 +33,13 @@ const config = getPlaywrightConfig( {
 			},
 		},
 	],
+	use: {
+		baseURL,
+	},
+	webServer: {
+		command: `npm run --prefix ${ projectRoot } env:start:test && sleep 86400`,
+		url: baseURL,
+		reuseExistingServer: true,
+		timeout: 120 * 1000,
+	},
 } );
-
-config.use.baseURL = baseURL;
-config.projects[ 0 ].use.baseURL = baseURL;
-config.webServer.url = baseURL;
-config.webServer.command = `npm run --prefix ${ projectRoot } env:start:test && sleep 86400`;
-
-export default config;

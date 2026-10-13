@@ -1,17 +1,18 @@
 import { getPlaywrightConfig } from '@wpsyntex/e2e-test-utils';
 
 const baseURL = 'http://localhost:8891';
+
 process.env.WP_BASE_URL = baseURL;
 process.env.WP_ENV_CONFIG = '.wp-env.test.json';
 
-const config = getPlaywrightConfig( {
+export default getPlaywrightConfig( {
 	globalSetup: './global.setup.mjs',
 	globalTeardown: './global.teardown.mjs',
+	use: {
+		baseURL,
+	},
+	webServer: {
+		url: baseURL,
+		command: 'npm run env:start:test && sleep 86400',
+	},
 } );
-
-config.use.baseURL = baseURL;
-config.projects[ 0 ].use.baseURL = baseURL;
-config.webServer.url = baseURL;
-config.webServer.command = 'npm run env:start:test && sleep 86400';
-
-export default config;
