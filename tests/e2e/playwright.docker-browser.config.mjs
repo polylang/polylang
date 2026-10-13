@@ -6,10 +6,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 const projectRoot = path.resolve( __dirname, '../..' );
-const baseURL = 'http://localhost:8891';
-
-process.env.WP_BASE_URL = baseURL;
-process.env.WP_ENV_CONFIG = '.wp-env.test.json';
 
 /**
  * Playwright config for running e2e tests with browsers in Docker.
@@ -34,11 +30,11 @@ export default getPlaywrightConfig( {
 		},
 	],
 	use: {
-		baseURL,
+		baseURL: 'http://localhost:8891',
 	},
 	webServer: {
-		command: `npm run --prefix ${ projectRoot } env:start:test && sleep 86400`,
-		url: baseURL,
+		command: `npm run --prefix ${ projectRoot } env:start && sleep 86400`,
+		url: 'http://localhost:8891',
 		reuseExistingServer: true,
 		timeout: 120 * 1000,
 	},
