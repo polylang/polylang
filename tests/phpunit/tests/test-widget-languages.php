@@ -119,7 +119,7 @@ class Widget_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( 1, $lis->count() ); // hide_current = true (en) + hide_empty = true (de).
 		$li = $lis->item( 0 );
 		$this->assertSameSets(
-			array( 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'lang-item-first' ),
+			array( 'polylang-item', 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'lang-item-first' ),
 			explode( ' ', $li->getAttribute( 'class' ) )
 		);
 
