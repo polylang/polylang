@@ -6,7 +6,7 @@
 /**
  * Extracts the parsing rules from a `gutenberg-block` node (`wpml-config.xml`).
  *
- * @since 3.9
+ * @since 4.0
  *
  * @phpstan-import-type BlockName from PLL_WPML_Config
  * @phpstan-import-type NodeName from PLL_WPML_Config
@@ -60,7 +60,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * Constructor.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $block_node The XML node to parse. The node must correspond to a block.
 	 */
@@ -71,7 +71,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * Parses the block node and its children, and merges the result to the given rules.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param array[] $parsing_rules Parsing rules to merge the new rules to.
 	 * @return array[]
@@ -129,7 +129,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * Recursively parses the given node and its children.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $node A XML node.
 	 * @return void
@@ -186,7 +186,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * Returns the value of an attribute.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param  SimpleXMLElement $node           A XML node.
 	 * @param  string           $attribute_name Node of the attribute.
@@ -208,7 +208,7 @@ class PLL_WPML_Config_Block_Parser {
 	 * Tells if the given type is a "IDs" one.
 	 * These types are found on nodes: `type="post-ids"`.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param string $type The type.
 	 * @return bool
@@ -224,7 +224,7 @@ class PLL_WPML_Config_Block_Parser {
 	 * All post types are inferred to `post` except for `attachment` and `wp_block`.
 	 * If the post type is not specified or empty, the type is `post_mixed`.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $node A XML node.
 	 * @return string
@@ -254,7 +254,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * Tells if the given text node is supported.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $node A XML node.
 	 * @return bool
@@ -278,7 +278,7 @@ class PLL_WPML_Config_Block_Parser {
 	 * Given `$this->curpath` being `array( 'a', 'b' )` and the method receiving `'c'`, this will output:
 	 * `array( 'a' => array( 'b' => array( 'c' => true ) ) )`.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param string $name Current node's name.
 	 * @return array
@@ -301,7 +301,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * Maybe adds the encoding to the data.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $node A XML node.
 	 * @param string           $name The node's name.
@@ -331,7 +331,7 @@ class PLL_WPML_Config_Block_Parser {
 	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
 	 *
 	 * @since 3.6
-	 * @since 3.9 Moved from PLL_WPML_Config
+	 * @since 4.0 Moved from PLL_WPML_Config
 	 *
 	 * @param array $array1 Array to merge into.
 	 * @param array $array2 Array to merge.

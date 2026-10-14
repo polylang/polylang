@@ -464,7 +464,7 @@ class PLL_WPML_Config {
 	/**
 	 * Translation management for IDs in blocks content.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
 	 * @return string[][]
@@ -479,7 +479,7 @@ class PLL_WPML_Config {
 	/**
 	 * Translation management for IDs in block attributes.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
 	 * @return string[][]
