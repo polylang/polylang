@@ -12,8 +12,6 @@ process.env.WP_BASE_URL = baseURL;
 
 export default getPlaywrightConfig( {
 	wpCliCommand: 'npx wp-env --config=.wp-env.test.json run cli',
-	globalSetup: './global.setup.mjs',
-	globalTeardown: './global.teardown.mjs',
 	use: {
 		baseURL,
 		storageState: path.join( process.cwd(), 'artifacts/storage-states/admin.json' ),
