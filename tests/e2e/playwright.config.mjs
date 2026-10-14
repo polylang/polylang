@@ -11,9 +11,10 @@ export default getPlaywrightConfig( {
 	globalTeardown: './global.teardown.mjs',
 	use: {
 		baseURL: 'http://localhost:8891',
+		storageState: path.join( process.cwd(), 'artifacts/storage-states/admin.json' ),
 	},
 	webServer: {
-		command: `npm run --prefix ${ projectRoot } env:start && sleep 86400`,
+		command: `npm run --prefix ${ projectRoot } env:start`,
 		url: 'http://localhost:8891',
 		reuseExistingServer: true,
 		timeout: 120 * 1000,
