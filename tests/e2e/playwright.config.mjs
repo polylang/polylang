@@ -14,7 +14,6 @@ export default getPlaywrightConfig( {
 	wpCliCommand: 'npx wp-env --config=.wp-env.test.json run cli',
 	use: {
 		baseURL,
-		storageState: path.join( process.cwd(), 'artifacts/storage-states/admin.json' ),
 	},
 	webServer: {
 		command: `npm run --prefix ${ projectRoot } env:start`,
