@@ -1,18 +1,12 @@
 // @ts-check
-import { execSync } from 'child_process';
+import { wpEnvRun } from '@wpsyntex/e2e-test-utils';
 
 async function globalTeardown() {
 	// Set permalink structure back to default.
-	execSync(
-		/*
-		 * Use hard flush to update .htaccess rules as well as rewrite rules in database.
-		 */
-		'npx wp-env --config=.wp-env.test.json run cli wp rewrite structure "" --hard --allow-root',
-		{
-			cwd: process.cwd(),
-			stdio: 'ignore',
-		}
-	);
+	/*
+	 * Use hard flush to update .htaccess rules as well as rewrite rules in database.
+	 */
+	wpEnvRun( 'wp rewrite structure "" --hard --allow-root' );
 }
 
 export default globalTeardown;
