@@ -221,6 +221,11 @@ class PLL_Settings extends PLL_Admin_Base {
 
 				$this->model->set_language_in_mass();
 
+				/**
+				 * MENU FEAT (step 3): after posts and terms are handled, handle the menus.
+				 * Call `$this->model->set_menus_to_default_lang()` only if step 1 found menus.
+				 * Keep this call outside `set_language_in_mass()`, because this method calls itself.
+				 */
 				break;
 
 			case 'activate':
@@ -325,6 +330,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		if ( ! empty( $this->options['default_lang'] ) && $this->model->get_objects_with_no_lang( 1 ) ) {
 			printf(
 				'<div class="error"><p>%s <a href="%s">%s</a></p></div>',
+				// MENU FEAT (step 2): mention menus in the notice text.
 				esc_html__( 'There are posts, pages, categories or tags without language.', 'polylang' ),
 				esc_url( wp_nonce_url( '?page=mlang&pll_action=content-default-lang&noheader=true', 'content-default-lang' ) ),
 				esc_html__( 'You can set them all to the default language.', 'polylang' )
