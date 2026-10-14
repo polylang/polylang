@@ -41,7 +41,7 @@ if ( ! PLAYWRIGHT_VERSION ) {
 console.log( `Using Playwright version: ${ PLAYWRIGHT_VERSION }` );
 
 const PLAYWRIGHT_SERVER_NAME = 'playwright-server';
-const PLAYWRIGHT_SERVER_PORT = 3000;
+const PLAYWRIGHT_SERVER_PORT = 3333;
 const PLAYWRIGHT_IMAGE = `mcr.microsoft.com/playwright:v${ PLAYWRIGHT_VERSION }-noble`;
 
 /**

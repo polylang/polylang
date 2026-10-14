@@ -18,7 +18,6 @@ process.env.WP_BASE_URL = baseURL;
  */
 export default getPlaywrightConfig( {
 	wpCliCommand: 'npx wp-env --config=.wp-env.test.json run cli',
-	testDir: path.resolve( __dirname, 'specs' ),
 	forbidOnly: false,
 	retries: 0,
 	snapshotPathTemplate:
@@ -38,7 +37,7 @@ export default getPlaywrightConfig( {
 		baseURL,
 	},
 	webServer: {
-		command: `npm run --prefix ${ projectRoot } env:start`,
+		command: 'npm run env:start:test && sleep 86400',
 		url: baseURL,
 		reuseExistingServer: true,
 		timeout: 120 * 1000,
