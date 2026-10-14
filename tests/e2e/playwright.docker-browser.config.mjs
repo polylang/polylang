@@ -1,11 +1,6 @@
 import { devices } from '@playwright/test';
 import { getPlaywrightConfig } from '@wpsyntex/e2e-test-utils';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath( import.meta.url );
-const __dirname = path.dirname( __filename );
-const projectRoot = path.resolve( __dirname, '../..' );
 const baseURL = 'http://localhost:8891';
 
 // RequestUtils defaults to http://localhost:8889; align with Playwright baseURL.
