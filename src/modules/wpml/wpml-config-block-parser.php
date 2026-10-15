@@ -50,7 +50,7 @@ class PLL_WPML_Config_Block_Parser {
 	/**
 	 * @var bool
 	 */
-	private bool $translate = false;
+	private bool $translate_text = false;
 
 	/**
 	 * @var bool
@@ -89,8 +89,8 @@ class PLL_WPML_Config_Block_Parser {
 		}
 
 		// The `translate` attribute is at the block level.
-		$this->translate  = '1' === $this->get_node_attribute( $this->block_node, 'translate' );
-		$this->block_name = $block_name;
+		$this->translate_text = '1' === $this->get_node_attribute( $this->block_node, 'translate' );
+		$this->block_name     = $block_name;
 
 		foreach ( $this->block_node->children() as $child ) {
 			switch ( $child->getName() ) {
@@ -260,7 +260,7 @@ class PLL_WPML_Config_Block_Parser {
 	 * @return bool
 	 */
 	private function is_supported_text_node( SimpleXMLElement $node ): bool {
-		if ( ! $this->translate || $this->get_node_attribute( $node, 'type' ) !== '' ) {
+		if ( ! $this->translate_text || $this->get_node_attribute( $node, 'type' ) !== '' ) {
 			return false;
 		}
 
