@@ -40,7 +40,7 @@
     "@wordpress/eslint-plugin": "^25.8.0",
     "@wordpress/npm-package-json-lint-config": "^5.53.0",
     "@wpsyntex/distribute": "^0.1.0",
-    "@wpsyntex/e2e-test-utils": "github:polylang/e2e-test-utils#feat-wp-cli-command",
+    "@wpsyntex/e2e-test-utils": "^0.1.3",
     "@wpsyntex/polylang-build-scripts": "^2.5.0",
     "babel-loader": "^10.1.1",
     "clean-webpack-plugin": "^4.0.0",
