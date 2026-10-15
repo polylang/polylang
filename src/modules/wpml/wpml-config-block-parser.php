@@ -299,8 +299,7 @@ class PLL_WPML_Config_Block_Parser {
 	private function maybe_add_encoding( SimpleXMLElement $node ): void {
 		$name = $this->get_node_attribute( $node, 'name' );
 
-		if ( '' === $name || empty( $this->data['key'][ $this->block_name ][ $name ] ) ) {
-			// No need to try to decode something that doesn't exist.
+		if ( '' === $name ) {
 			return;
 		}
 
