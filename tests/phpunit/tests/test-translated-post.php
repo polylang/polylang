@@ -489,10 +489,13 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * term count used to delete the group while counting was deferred.
 	 */
 	public function test_post_translation_group_is_not_deleted_with_deferred_term_counting() {
-		[ $en, $fr, $de ] = self::factory()->post->create_many( 3 );
-
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
+
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		wp_defer_term_counting( true );
