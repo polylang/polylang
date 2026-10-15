@@ -21,6 +21,8 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
+		wp_defer_term_counting( false );
+
 		if ( is_multisite() ) {
 			restore_current_blog();
 		}
@@ -259,5 +261,64 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 			$objects = get_objects_in_term( $term->term_id, 'term_translations' );
 			$this->assertNotEmpty( $objects ); // Double check with the relationship.
 		}
+	}
+
+	/**
+	 * Checks that a term translation group is not deleted when term counting is deferred.
+	 *
+	 * `insert()` first calls `set_language()`, which creates a single-term group for the new term.
+	 * While counting is deferred, the count of this group stays at 0. The following `save_translations()`
+	 * call keeps this group (the one of the new term), links the source term to it and runs the cleanup
+	 * loop.
+	 */
+	public function test_term_translation_group_is_not_deleted_when_inserting_with_deferred_term_counting() {
+		// Source term, created before the import-like process (its group count is up to date).
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$source_group = self::$model->term->get_object_term( $en, 'term_translations' )->term_id;
+
+		// The term count assertions document WordPress' deferred counting, which this test relies on.
+		// If one fails, check whether `wp_defer_term_counting()` changed in core.
+		$this->assertSame(
+			1,
+			(int) get_term( $source_group, 'term_translations' )->count,
+			'The source group count should be 1 after its creation.'
+		);
+
+		wp_defer_term_counting( true );
+
+		$result = self::$model->term->insert(
+			'Name',
+			'category',
+			self::$model->get_language( 'fr' ),
+			array( 'translations' => array( 'en' => $en ) )
+		);
+		$fr = $result['term_id'];
+
+		// The group kept by `save_translations()` is the one created for the new term, not the source group.
+		$final_group = self::$model->term->get_object_term( $en, 'term_translations' )->term_id;
+
+		$this->assertSame(
+			0,
+			(int) get_term( $final_group, 'term_translations' )->count,
+			'The kept group count should still be 0 while term counting is deferred.'
+		);
+
+		// Flush the deferred counts.
+		wp_defer_term_counting( false );
+
+		$this->assertSame(
+			2,
+			(int) get_term( $final_group, 'term_translations' )->count,
+			'The kept group count should match the number of linked terms once the deferred counting is flushed.'
+		);
+
+		// This is the assertion that fails without the fix: the group was deleted and `fr` was lost.
+		$this->assertSame(
+			array( 'en' => $en, 'fr' => $fr ),
+			self::$model->term->get_translations( $en ),
+			'The translation group should not be deleted by the cleanup.'
+		);
 	}
 }
