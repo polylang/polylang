@@ -315,6 +315,11 @@ class PLL_WPML_Config_Block_Parser {
 			return;
 		}
 
+		if ( empty( $this->data['key'][ $this->block_name ][ $name ] ) ) {
+			// No need to try to decode something that doesn't exist.
+			return;
+		}
+
 		$encoding = $this->get_node_attribute( $node, 'encoding' );
 
 		if ( 'json' !== $encoding ) {
