@@ -53,11 +53,6 @@ class PLL_WPML_Config_Block_Parser {
 	private bool $translate_text = false;
 
 	/**
-	 * @var bool
-	 */
-	private bool $is_recursing = false;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 4.0
@@ -119,6 +114,7 @@ class PLL_WPML_Config_Block_Parser {
 
 				case 'key':
 					$this->recurse( $child );
+					$this->maybe_add_encoding( $child );
 					break;
 			}
 		}
@@ -146,17 +142,13 @@ class PLL_WPML_Config_Block_Parser {
 
 		if ( $children->count() > 0 ) {
 			// Recurse into the sub-nodes.
-			$this->curpath[]    = $name;
-			$this->is_recursing = true;
+			$this->curpath[] = $name;
 
 			foreach ( $children as $child ) {
 				$this->recurse( $child );
 			}
 
-			$this->is_recursing = false;
 			array_pop( $this->curpath );
-
-			$this->maybe_add_encoding( $node, $name );
 			return;
 		}
 
@@ -178,8 +170,6 @@ class PLL_WPML_Config_Block_Parser {
 				$this->data['key'][ $this->block_name ] ?? array(),
 				$this->build_path_array( $name )
 			);
-
-			$this->maybe_add_encoding( $node, $name );
 		}
 	}
 
@@ -304,18 +294,12 @@ class PLL_WPML_Config_Block_Parser {
 	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $node A XML node.
-	 * @param string           $name The node's name.
 	 * @return void
-	 *
-	 * @phpstan-param NodeName $name
 	 */
-	private function maybe_add_encoding( SimpleXMLElement $node, string $name ): void {
-		if ( $this->is_recursing ) {
-			// The encoding is present only on the first level.
-			return;
-		}
+	private function maybe_add_encoding( SimpleXMLElement $node ): void {
+		$name = $this->get_node_attribute( $node, 'name' );
 
-		if ( empty( $this->data['key'][ $this->block_name ][ $name ] ) ) {
+		if ( '' === $name || empty( $this->data['key'][ $this->block_name ][ $name ] ) ) {
 			// No need to try to decode something that doesn't exist.
 			return;
 		}
