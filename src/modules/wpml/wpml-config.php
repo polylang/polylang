@@ -23,11 +23,11 @@
  * @phpstan-type BlockIdsXPath array<BlockName, array<TradTypes, list<XPath>>>
  * @phpstan-type BlockIdsKey   array<BlockName, array<TradTypes, Rules>>
  * @phpstan-type ParsingRules  array{
- *     xpath?: BlockXPath,
- *     key?: BlockKey,
- *     encoding?: BlockEncoding,
- *     ids_in_content?: BlockIdsXPath,
- *     ids_in_attributes?: BlockIdsKey
+ *     PLL_WPML_Config::TEXT_IN_CONTENT?: BlockXPath,
+ *     PLL_WPML_Config::TEXT_IN_ATTRIBUTES?: BlockKey,
+ *     PLL_WPML_Config::TEXT_ENCODING?: BlockEncoding,
+ *     PLL_WPML_Config::IDS_IN_CONTENT?: BlockIdsXPath,
+ *     PLL_WPML_Config::IDS_IN_ATTRIBUTES?: BlockIdsKey
  * }
  *
  * @phpstan-type ParsedMetas array<
@@ -39,6 +39,12 @@
  * >
  */
 class PLL_WPML_Config {
+	public const TEXT_IN_CONTENT    = 'xpath';
+	public const TEXT_IN_ATTRIBUTES = 'key';
+	public const TEXT_ENCODING      = 'encoding';
+	public const IDS_IN_CONTENT     = 'ids_in_content';
+	public const IDS_IN_ATTRIBUTES  = 'ids_in_attributes';
+
 	/**
 	 * Singleton instance
 	 *
@@ -427,7 +433,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockXPath
 	 */
 	public function translate_blocks( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'xpath' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::TEXT_IN_CONTENT ) );
 	}
 
 	/**
@@ -443,7 +449,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockKey
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::TEXT_IN_ATTRIBUTES ) );
 	}
 
 	/**
@@ -458,7 +464,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockEncoding
 	 */
 	public function decode_blocks_attributes( $keys ) {
-		return array_merge( $keys, $this->get_blocks_parsing_rules( 'encoding' ) );
+		return array_merge( $keys, $this->get_blocks_parsing_rules( self::TEXT_ENCODING ) );
 	}
 
 	/**
@@ -473,7 +479,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockIdsXPath
 	 */
 	public function translate_blocks_ids_in_content( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'ids_in_content' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::IDS_IN_CONTENT ) );
 	}
 
 	/**
@@ -488,7 +494,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockIdsKey
 	 */
 	public function translate_blocks_ids_in_attributes( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'ids_in_attributes' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::IDS_IN_ATTRIBUTES ) );
 	}
 
 	/**
@@ -499,12 +505,12 @@ class PLL_WPML_Config {
 	 * @param string $rule_tag Tag name to extract.
 	 * @return string[][] The rules.
 	 *
-	 * @phpstan-param 'xpath'|'key'|'encoding'|'ids_in_content'|'ids_in_attributes' $rule_tag
+	 * @phpstan-param self::TEXT_IN_CONTENT|self::TEXT_IN_ATTRIBUTES|self::TEXT_ENCODING|self::IDS_IN_CONTENT|self::IDS_IN_ATTRIBUTES $rule_tag
 	 * @phpstan-return (
-	 *     $rule_tag is 'xpath' ? BlockXPath :
-	 *         ( $rule_tag is 'key' ? BlockKey :
-	 *             ( $rule_tag is 'encoding' ? BlockEncoding :
-	 *                 ( $rule_tag is 'ids_in_content' ? BlockIdsXPath : BlockIdsKey )
+	 *     $rule_tag is self::TEXT_IN_CONTENT ? BlockXPath :
+	 *         ( $rule_tag is self::TEXT_IN_ATTRIBUTES ? BlockKey :
+	 *             ( $rule_tag is self::TEXT_ENCODING ? BlockEncoding :
+	 *                 ( $rule_tag is self::IDS_IN_CONTENT ? BlockIdsXPath : BlockIdsKey )
 	 *             )
 	 *         )
 	 *     )

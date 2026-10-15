@@ -100,7 +100,7 @@ class PLL_WPML_Config_Block_Parser {
 					$translation_type = $this->get_ids_translation_type( $child );
 
 					if ( ! empty( $translation_type ) ) {
-						$this->data['ids_in_content'][ $this->block_name ][ $translation_type ][] = $rule;
+						$this->data[ PLL_WPML_Config::IDS_IN_CONTENT ][ $this->block_name ][ $translation_type ][] = $rule;
 						// No need to go further, since a `xpath` tag cannot have children, and we cannot have
 						// a tag that is a "IDs" one and a text one at the same time.
 						break;
@@ -108,7 +108,7 @@ class PLL_WPML_Config_Block_Parser {
 
 					// Text node.
 					if ( $this->is_supported_text_node( $child ) ) {
-						$this->data['xpath'][ $this->block_name ][] = $rule;
+						$this->data[ PLL_WPML_Config::TEXT_IN_CONTENT ][ $this->block_name ][] = $rule;
 					}
 					break;
 
@@ -157,8 +157,8 @@ class PLL_WPML_Config_Block_Parser {
 
 		if ( ! empty( $translation_type ) ) {
 			// Post IDs, Term IDs.
-			$this->data['ids_in_attributes'][ $this->block_name ][ $translation_type ] = $this->array_merge_recursive(
-				$this->data['ids_in_attributes'][ $this->block_name ][ $translation_type ] ?? array(),
+			$this->data[ PLL_WPML_Config::IDS_IN_ATTRIBUTES ][ $this->block_name ][ $translation_type ] = $this->array_merge_recursive(
+				$this->data[ PLL_WPML_Config::IDS_IN_ATTRIBUTES ][ $this->block_name ][ $translation_type ] ?? array(),
 				$this->build_path_array( $name )
 			);
 			return;
@@ -166,8 +166,8 @@ class PLL_WPML_Config_Block_Parser {
 
 		if ( $this->is_supported_text_node( $node ) ) {
 			// Text node.
-			$this->data['key'][ $this->block_name ] = $this->array_merge_recursive(
-				$this->data['key'][ $this->block_name ] ?? array(),
+			$this->data[ PLL_WPML_Config::TEXT_IN_ATTRIBUTES ][ $this->block_name ] = $this->array_merge_recursive(
+				$this->data[ PLL_WPML_Config::TEXT_IN_ATTRIBUTES ][ $this->block_name ] ?? array(),
 				$this->build_path_array( $name )
 			);
 		}
@@ -311,7 +311,7 @@ class PLL_WPML_Config_Block_Parser {
 		}
 
 		// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
-		$this->data['encoding'][ $this->block_name ][ $name ] = 'json,urlencode';
+		$this->data[ PLL_WPML_Config::TEXT_ENCODING ][ $this->block_name ][ $name ] = 'json,urlencode';
 	}
 
 	/**
