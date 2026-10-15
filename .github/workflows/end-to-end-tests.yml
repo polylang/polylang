@@ -41,6 +41,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Playwright tests
-        uses: polylang/actions/e2e@e2e-action-inputs
+        uses: polylang/actions/e2e@main
         with:
           wp-env-config-path: .wp-env.test.json
