@@ -484,11 +484,9 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	/**
 	 * Checks that a translation group is not deleted when term counting is deferred.
 	 *
-	 * Two successive calls to `save_translations()` are needed on purpose: the first one creates the group,
-	 * and its count stays at 0 while term counting is deferred. The second one finds this existing group and
-	 * runs the cleanup loop, where the stale count used to make the group look unused and delete it.
-	 * A single call (e.g. with `create_translated()`) only goes through the creation branch, where the
-	 * cleanup loop does not run, so the test would pass even without the fix.
+	 * Two successive calls to `save_translations()` are required: the first creates the group
+	 * (cleanup does not run). The second reuses that group and runs the cleanup loop, where a stale
+	 * term count used to delete the group while counting was deferred.
 	 */
 	public function test_translation_group_is_not_deleted_with_deferred_term_counting() {
 		[ $en, $fr, $de ] = self::factory()->post->create_many( 3 );
@@ -499,11 +497,41 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		wp_defer_term_counting( true );
 
-		// Creates the group: its count stays at 0 while counting is deferred.
+		// First save: creates the translation group.
 		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
 
-		// Reuses the existing group, which is read with a stale count.
+		$group_id = self::$model->post->get_object_term( $en, 'post_translations' )->term_id;
+
+		// The term count assertions document WordPress' deferred counting, which this test relies on.
+		// If one fails, check whether `wp_defer_term_counting()` changed in core.
+		$this->assertSame(
+			0,
+			(int) get_term( $group_id, 'post_translations' )->count,
+			'The translation group count should stay at 0 after the first save while term counting is deferred.'
+		);
+
+		// Second save: reuses the group and runs the cleanup loop.
 		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr, 'de' => $de ) );
+
+		$this->assertSame(
+			$group_id,
+			self::$model->post->get_object_term( $en, 'post_translations' )->term_id,
+			'The same translation group term should be reused after the second save.'
+		);
+
+		$this->assertSame(
+			0,
+			(int) get_term( $group_id, 'post_translations' )->count,
+			'The translation group count should still be stale after the second save while term counting is deferred.'
+		);
+
+		wp_defer_term_counting( false );
+
+		$this->assertSame(
+			3,
+			(int) get_term( $group_id, 'post_translations' )->count,
+			'The translation group count should match the number of linked posts after deferred term counting is flushed.'
+		);
 
 		$this->assertSame(
 			array(
