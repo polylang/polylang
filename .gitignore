@@ -9,7 +9,6 @@ vendor/
 dist/
 
 # Files
-.wp-env.override.json
 .wp-env.dev.override.json
 .wp-env.test.override.json
 src/integrations/integration-build.php
