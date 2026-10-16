@@ -183,8 +183,11 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		if ( empty( $term ) ) {
 			// Create a new term if necessary.
-			$group = uniqid( 'pll_' );
-			wp_insert_term( $group, $this->tax_translations, array( 'description' => (string) maybe_serialize( $translations ) ) );
+			$result = wp_insert_term( uniqid( 'pll_' ), $this->tax_translations, array( 'description' => (string) maybe_serialize( $translations ) ) );
+			if ( is_wp_error( $result ) ) {
+				return array();
+			}
+			$group = (int) $result['term_id'];
 		} else {
 			// Take care not to overwrite extra data stored in the description field, if any.
 			$group = (int) $term->term_id;
@@ -199,9 +202,14 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			wp_set_object_terms( $p, $group, $this->tax_translations );
 		}
 
-		// Clean now unused translation groups.
+		// Clean now unused translation groups, except the one we just filled: its count may be stale (e.g. deferred term counting).
 		$terms = array_filter( $terms );
 		foreach ( $terms as $term ) {
+			// The group we just filled is never cleaned, so no need to read it again.
+			if ( $group === $term->term_id ) {
+				continue;
+			}
+
 			// Get fresh count value.
 			$term = get_term( $term->term_id, $this->tax_translations );
 

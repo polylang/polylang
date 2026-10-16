@@ -17,6 +17,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		parent::tear_down();
 
 		wp_suspend_cache_addition( false );
+		wp_defer_term_counting( false );
 
 		if ( is_multisite() ) {
 			restore_current_blog();
@@ -478,5 +479,96 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$cache = wp_cache_get( $post_id, 'language_relationships' );
 
 		$this->assertSame( array(), $cache, "The cache should be primed with empty array when no language is assigned for {$post_id}." );
+	}
+
+	/**
+	 * Checks that a post translation group is not deleted when term counting is deferred.
+	 *
+	 * Two successive calls to `save_translations()` are required: the first creates the group
+	 * (cleanup does not run). The second reuses that group and runs the cleanup loop, where a stale
+	 * term count used to delete the group while counting was deferred.
+	 */
+	public function test_post_translation_group_is_not_deleted_with_deferred_term_counting() {
+		$en = self::factory()->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		$de = self::factory()->post->create();
+		self::$model->post->set_language( $de, 'de' );
+
+		wp_defer_term_counting( true );
+
+		// First save: creates the translation group.
+		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
+
+		$group_id = self::$model->post->get_object_term( $en, 'post_translations' )->term_id;
+
+		// The term count assertions document WordPress' deferred counting, which this test relies on.
+		// If one fails, check whether `wp_defer_term_counting()` changed in core.
+		$this->assertSame(
+			0,
+			(int) get_term( $group_id, 'post_translations' )->count,
+			'The translation group count should stay at 0 after the first save while term counting is deferred.'
+		);
+
+		// Second save: reuses the group and runs the cleanup loop.
+		self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr, 'de' => $de ) );
+
+		$this->assertSame(
+			$group_id,
+			self::$model->post->get_object_term( $en, 'post_translations' )->term_id,
+			'The same translation group term should be reused after the second save.'
+		);
+
+		$this->assertSame(
+			0,
+			(int) get_term( $group_id, 'post_translations' )->count,
+			'The translation group count should still be stale after the second save while term counting is deferred.'
+		);
+
+		wp_defer_term_counting( false );
+
+		$this->assertSame(
+			3,
+			(int) get_term( $group_id, 'post_translations' )->count,
+			'The translation group count should match the number of linked posts after deferred term counting is flushed.'
+		);
+
+		$this->assertSame(
+			array(
+				'en' => $en,
+				'fr' => $fr,
+				'de' => $de,
+			),
+			self::$model->post->get_translations( $en ),
+			'The translation group should not be deleted by the cleanup.'
+		);
+	}
+
+	/**
+	 * Checks that nothing is linked or cleaned when the translation group cannot be created.
+	 */
+	public function test_nothing_is_linked_when_group_creation_fails() {
+		$en = $this->factory()->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		// Makes `wp_insert_term()` fail, so the translation group cannot be created.
+		add_filter(
+			'pre_insert_term',
+			function () {
+				return new WP_Error( 'test', 'Forced failure.' );
+			}
+		);
+
+		$result = self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
+
+		$this->assertSame( array(), $result, 'Nothing should be saved when the group cannot be created.' );
+		$this->assertArrayNotHasKey( 'fr', self::$model->post->get_translations( $en ), 'The French post should not be linked.' );
+		$this->assertEmpty( wp_get_object_terms( $en, 'post_translations' ), 'No translation group should be created.' );
 	}
 }
