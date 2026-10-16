@@ -277,13 +277,11 @@ class PLL_WPML_Config_Block_Parser {
 	 * @phpstan-return Rules
 	 */
 	private function build_path_array( string $name ): array {
-		$this->curpath[] = $name;
-		$temp            = true;
+		$temp = array( $name => true );
 
 		foreach ( array_reverse( $this->curpath ) as $key ) {
 			$temp = array( $key => $temp );
 		}
-		array_pop( $this->curpath );
 
 		return $temp;
 	}
