@@ -546,4 +546,29 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 			'The translation group should not be deleted by the cleanup.'
 		);
 	}
+
+	/**
+	 * Checks that nothing is linked or cleaned when the translation group cannot be created.
+	 */
+	public function test_nothing_is_linked_when_group_creation_fails() {
+		$en = $this->factory()->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		// Makes `wp_insert_term()` fail, so the translation group cannot be created.
+		add_filter(
+			'pre_insert_term',
+			function () {
+				return new WP_Error( 'test', 'Forced failure.' );
+			}
+		);
+
+		$result = self::$model->post->save_translations( $en, array( 'en' => $en, 'fr' => $fr ) );
+
+		$this->assertSame( array(), $result, 'Nothing should be saved when the group cannot be created.' );
+		$this->assertArrayNotHasKey( 'fr', self::$model->post->get_translations( $en ), 'The French post should not be linked.' );
+		$this->assertEmpty( wp_get_object_terms( $en, 'post_translations' ), 'No translation group should be created.' );
+	}
 }
