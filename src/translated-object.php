@@ -185,7 +185,10 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			// Create a new term if necessary.
 			$group_name = uniqid( 'pll_' );
 			$result     = wp_insert_term( $group_name, $this->tax_translations, array( 'description' => (string) maybe_serialize( $translations ) ) );
-			$group      = is_wp_error( $result ) ? $group_name : (int) $result ['term_id'];
+			if ( is_wp_error( $result ) ) {
+				return array();
+			}
+			$group = (int) $result['term_id'];
 		} else {
 			// Take care not to overwrite extra data stored in the description field, if any.
 			$group = (int) $term->term_id;
