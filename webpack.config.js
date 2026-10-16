@@ -28,6 +28,7 @@ function configureWebpack( options ) {
 		'tmp/**',
 		'tests/**',
 		'webpack/**',
+		'scripts/**',
 		'**/build/**',
 	];
 
@@ -44,6 +45,7 @@ function configureWebpack( options ) {
 
 	const vanillaConfig = getVanillaConfig( {
 		workingDirectory,
+		strategy: 'bundled',
 		jsPatterns: [ '**/*.js' ],
 		jsIgnorePatterns: [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ],
 		cssPatterns: [ '**/*.css' ],
