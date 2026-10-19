@@ -140,18 +140,16 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	/**
 	 * Prepares the rewrite rules filters.
 	 *
+	 * Attaches filters once custom post types and taxonomies are registered.
+	 * Does not depend on languages existing yet; `rewrite_rules()` is a no-op until they do.
+	 *
 	 * @since 0.8.1
 	 * @since 3.5 Hooked to `pll_prepare_rewrite_rules` and remove `$pre` parameter.
 	 *
 	 * @return void
 	 */
 	public function prepare_rewrite_rules() {
-		/*
-		 * Don't modify the rules if there is no languages created yet and make sure
-		 * to add the filters only once and if all custom post types and taxonomies
-		 * have been registered.
-		 */
-		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || ! self::$can_filter_rewrite_rules ) {
+		if ( ! did_action( 'wp_loaded' ) || ! self::$can_filter_rewrite_rules ) {
 			return;
 		}
 
@@ -172,6 +170,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
+		if ( ! $this->model->has_languages() ) {
+
+			return $rules;
+		}
+
 		$filter = str_replace( '_rewrite_rules', '', (string) current_filter() );
 
 		global $wp_rewrite;
