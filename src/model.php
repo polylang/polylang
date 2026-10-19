@@ -518,16 +518,6 @@ class PLL_Model {
 		$objects = ! empty( $objects ) ? $objects : false;
 
 		/**
-		 * MENU FEAT (2e solution / step 1): detect menus that are not yet assigned to the default language.
-		 *
-		 * For each menu location of the current theme:
-		 * - Read the menu ID from the `nav_menu_locations` theme mod.
-		 * - If a menu is set, check the `nav_menus` Polylang option:
-		 *   is there a menu for the default language on this location?
-		 * - If not, add this location (with its menu ID) to `$objects['menus']`.
-		 */
-
-		/**
 		 * Filters the list of IDs of untranslated objects.
 		 *
 		 * @since 0.9
@@ -628,13 +618,6 @@ class PLL_Model {
 
 		$this->set_language_in_mass( $lang, $types_with_objects );
 	}
-
-	/**
-	 * MENU FEAT (step 4): set_menus_to_default_lang() assigns existing menus to the default language.
-	 *
-	 * Build `$value` from the current `nav_menus` option, so menus of other languages are kept.
-	 * Save it with `$this->options->set( 'nav_menus', $value )` and check the returned `WP_Error`.
-	 */
 
 	/**
 	 * Returns the number of posts grouped per language from the cache.
