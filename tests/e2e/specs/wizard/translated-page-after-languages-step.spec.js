@@ -9,14 +9,12 @@ import { deleteAllLanguages, resetAllSettings } from '@wpsyntex/e2e-test-utils';
  * @param {string} locale Language locale, e.g. `en_US`.
  */
 async function selectWizardLanguage( page, locale ) {
-	await page.locator( '#lang_list' ).selectOption( locale, { force: true } );
-	await page.evaluate( selectedLocale => {
-		const select = document.getElementById( 'lang_list' );
+	const languagesForm = page
+		.locator( 'form' )
+		.filter( { has: page.getByRole( 'heading', { name: 'Languages', exact: true } ) } );
+	const languageSelect = languagesForm.locator( 'select' );
 
-		if ( select && window.jQuery ) {
-			window.jQuery( select ).val( selectedLocale ).selectmenu( 'refresh' );
-		}
-	}, locale );
+	await languageSelect.selectOption( locale, { force: true } );
 }
 
 /**
@@ -75,11 +73,11 @@ test.describe( 'Translated page after wizard languages step', { tag: [ '@pre-rel
 
 		await selectWizardLanguage( page, 'en_US' );
 		await page.getByRole( 'button', { name: 'Add new language' } ).click();
-		await expect( page.locator( 'input[name="languages[]"][value="en_US"]' ) ).toHaveCount( 1 );
+		await expect( page.getByRole( 'row', { name: /English - en_US/ } ) ).toBeVisible();
 
 		await selectWizardLanguage( page, 'fr_FR' );
 		await page.getByRole( 'button', { name: 'Add new language' } ).click();
-		await expect( page.locator( 'input[name="languages[]"][value="fr_FR"]' ) ).toHaveCount( 1 );
+		await expect( page.getByRole( 'row', { name: /Français - fr_FR/ } ) ).toBeVisible();
 
 		await page.getByRole( 'button', { name: 'Continue' } ).click();
 
