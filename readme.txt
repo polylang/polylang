@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.8.11
+Stable tag: 3.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,7 +104,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-= 3.9 =
+= 3.9 (2026-10-19) =
 
 * Require WP 6.8 as minimum version
 * Pro: Allow to manage all Business Pack plugins with a single field for the license key
