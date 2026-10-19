@@ -518,7 +518,7 @@ class PLL_Model {
 		$objects = ! empty( $objects ) ? $objects : false;
 
 		/**
-		 * MENU FEAT (step 1): detect menus that are not yet assigned to the default language.
+		 * MENU FEAT (2e solution / step 1): detect menus that are not yet assigned to the default language.
 		 *
 		 * For each menu location of the current theme:
 		 * - Read the menu ID from the `nav_menu_locations` theme mod.
