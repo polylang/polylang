@@ -126,6 +126,58 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( 'No language', wp_nav_menu( $args ) );
 	}
 
+	/**
+	 * Menus stay visible in the default language when WordPress already assigned
+	 * a location but Polylang has not stored nav_menus yet (#2912).
+	 *
+	 * @ticket 2912
+	 */
+	public function test_nav_menu_locations_without_polylang_nav_menus_option() {
+		// Polylang has not synced menus yet (e.g. after activation, before saving in Appearance > Menus).
+		self::$model->options->reset( 'nav_menus' );
+		self::$model->options->save();
+
+		$locations        = array_keys( get_registered_nav_menus() );
+		$primary_location = reset( $locations );
+
+		$menu_id = wp_create_nav_menu( 'menu_2912' );
+		wp_update_nav_menu_item(
+			$menu_id,
+			0,
+			array(
+				'menu-item-type'      => 'post_type',
+				'menu-item-object'    => 'post',
+				'menu-item-object-id' => self::factory()->post->create( array( 'post_title' => 'Hello World' ) ),
+				'menu-item-title'     => 'Hello World',
+				'menu-item-status'    => 'publish',
+			)
+		);
+
+		set_theme_mod(
+			'nav_menu_locations',
+			array(
+				$primary_location => $menu_id,
+			)
+		);
+
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+		$pll_admin->model->set_languages_ready();
+
+		$menu_args = array(
+			'theme_location' => $primary_location,
+			'echo'           => false,
+		);
+
+		$this->setup_frontend( 'en' );
+		$this->assertStringContainsString( 'Hello World', wp_nav_menu( $menu_args ) );
+
+		$this->setup_frontend( 'fr' );
+		$this->assertStringNotContainsString( 'Hello World', (string) wp_nav_menu( $menu_args ) );
+
+		remove_theme_mod( 'nav_menu_locations' );
+	}
+
 	public function test_delete_nav_menu() {
 		$theme = get_option( 'stylesheet' );
 
