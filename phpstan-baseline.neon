@@ -681,7 +681,7 @@ parameters:
 		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
-			count: 5
+			count: 6
 			path: src/frontend/frontend-nav-menu.php
 
 		-
