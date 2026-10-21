@@ -2,7 +2,7 @@ name: End To End Tests
 
 on:
   push:
-    branches: master
+    branches: [master]
     paths: &e2e_paths
       - '**.php'
       - '!tests/**.php'
@@ -16,15 +16,14 @@ on:
       - 'webpack.config.js'
       - '.github/workflows/end-to-end-tests.yml'
       - 'babel.config.js'
-      - '.wp-env.json'
+      - '.wp-env.test.json'
   pull_request:
-    branches: master
+    branches: [master]
     paths: *e2e_paths
   schedule:
     # Runs every Monday at 00:00.
-    - cron:  '0 0 * * 1'
+    - cron: '0 0 * * 1'
   workflow_dispatch:
-
 
 # Cancel superseded PR runs; master commits use unique SHAs so they still all complete.
 concurrency:
@@ -38,8 +37,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the source code
-      uses: actions/checkout@v4
+      - name: Check out the source code
+        uses: actions/checkout@v4
 
-    - name: Run Playwright tests
-      uses: polylang/actions/e2e@main
+      - name: Run Playwright tests
+        uses: polylang/actions/e2e@main
+        with:
+          wp-env-config-path: .wp-env.test.json

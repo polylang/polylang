@@ -9,6 +9,8 @@ vendor/
 dist/
 
 # Files
+.wp-env.dev.override.json
+.wp-env.test.override.json
 src/integrations/integration-build.php
 src/modules/module-build.php
 .phpunit.result.cache

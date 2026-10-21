@@ -1,11 +1,10 @@
 import { devices } from '@playwright/test';
 import { getPlaywrightConfig } from '@wpsyntex/e2e-test-utils';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath( import.meta.url );
-const __dirname = path.dirname( __filename );
-const projectRoot = path.resolve( __dirname, '../..' );
+const baseURL = 'http://localhost:8891';
+
+// RequestUtils defaults to http://localhost:8889; align with Playwright baseURL.
+process.env.WP_BASE_URL = baseURL;
 
 /**
  * Playwright config for running e2e tests with browsers in Docker.
@@ -13,7 +12,7 @@ const projectRoot = path.resolve( __dirname, '../..' );
  * @return {import('@playwright/test').PlaywrightTestConfig} Playwright config object.
  */
 export default getPlaywrightConfig( {
-	testDir: path.resolve( __dirname, 'specs' ),
+	wpCliCommand: 'npx wp-env --config=.wp-env.test.json run cli',
 	forbidOnly: false,
 	retries: 0,
 	snapshotPathTemplate:
@@ -29,9 +28,12 @@ export default getPlaywrightConfig( {
 			},
 		},
 	],
+	use: {
+		baseURL,
+	},
 	webServer: {
-		command: `npm run --prefix ${ projectRoot } env:start`,
-		url: 'http://localhost:8889',
+		command: 'npm run env:start:test && sleep 86400',
+		url: baseURL,
 		reuseExistingServer: true,
 		timeout: 120 * 1000,
 	},
