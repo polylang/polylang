@@ -24,6 +24,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
+		$this->pll_admin->post = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
 		$this->pll_admin->classic_editor = new PLL_Admin_Classic_Editor( $this->pll_admin );
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
