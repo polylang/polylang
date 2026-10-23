@@ -10,6 +10,26 @@
  *
  * @since 1.0
  *
+ * @phpstan-type BlockName     non-falsy-string
+ * @phpstan-type XPath         non-falsy-string
+ * @phpstan-type NodeName      non-empty-string
+ * @phpstan-type Rules         array<NodeName, array|true>
+ * @phpstan-type EncodingTypes non-falsy-string
+ * @phpstan-type TradTypes     'term'|'post'|'attachment'|'wp_block'|'post_mixed'
+ *
+ * @phpstan-type BlockXPath    array<BlockName, list<XPath>>
+ * @phpstan-type BlockKey      array<BlockName, Rules>
+ * @phpstan-type BlockEncoding array<BlockName, array<EncodingTypes>>
+ * @phpstan-type BlockIdsXPath array<BlockName, array<TradTypes, list<XPath>>>
+ * @phpstan-type BlockIdsKey   array<BlockName, array<TradTypes, Rules>>
+ * @phpstan-type ParsingRules  array{
+ *     PLL_WPML_Config::TEXT_IN_CONTENT?: BlockXPath,
+ *     PLL_WPML_Config::TEXT_IN_ATTRIBUTES?: BlockKey,
+ *     PLL_WPML_Config::TEXT_ENCODING?: BlockEncoding,
+ *     PLL_WPML_Config::IDS_IN_CONTENT?: BlockIdsXPath,
+ *     PLL_WPML_Config::IDS_IN_ATTRIBUTES?: BlockIdsKey
+ * }
+ *
  * @phpstan-type ParsedMetas array<
  *     non-falsy-string,
  *     array{
@@ -17,11 +37,14 @@
  *         encoding: string
  *     }
  * >
- * @phpstan-type BlockXPath    array<non-falsy-string, list<non-empty-string>>
- * @phpstan-type BlockKey      array<non-falsy-string, array<array|true>>
- * @phpstan-type BlockEncoding array<non-falsy-string, array<string, non-falsy-string>>
  */
 class PLL_WPML_Config {
+	public const TEXT_IN_CONTENT    = 'xpath';
+	public const TEXT_IN_ATTRIBUTES = 'key';
+	public const TEXT_ENCODING      = 'encoding';
+	public const IDS_IN_CONTENT     = 'ids_in_content';
+	public const IDS_IN_ATTRIBUTES  = 'ids_in_attributes';
+
 	/**
 	 * Singleton instance
 	 *
@@ -50,11 +73,7 @@ class PLL_WPML_Config {
 	 *
 	 * @var array
 	 *
-	 * @phpstan-var array{
-	 *     xpath?: BlockXPath,
-	 *     key?: BlockKey,
-	 *     encoding?: BlockEncoding
-	 * }|null
+	 * @phpstan-var ParsingRules|null
 	 */
 	protected $parsing_rules = null;
 
@@ -143,6 +162,8 @@ class PLL_WPML_Config {
 		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
 		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 		add_filter( 'pll_block_attribute_encodings', array( $this, 'decode_blocks_attributes' ), 20 );
+		add_filter( 'pll_sync_blocks_xpath_rules', array( $this, 'translate_blocks_ids_in_content' ), 20 );
+		add_filter( 'pll_sync_block_rules_for_attributes', array( $this, 'translate_blocks_ids_in_attributes' ), 20 );
 
 		$matcher = new PLL_Format_Util();
 
@@ -412,7 +433,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockXPath
 	 */
 	public function translate_blocks( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'xpath' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::TEXT_IN_CONTENT ) );
 	}
 
 	/**
@@ -428,7 +449,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockKey
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::TEXT_IN_ATTRIBUTES ) );
 	}
 
 	/**
@@ -443,7 +464,37 @@ class PLL_WPML_Config {
 	 * @phpstan-return BlockEncoding
 	 */
 	public function decode_blocks_attributes( $keys ) {
-		return array_merge( $keys, $this->get_blocks_parsing_rules( 'encoding' ) );
+		return array_merge( $keys, $this->get_blocks_parsing_rules( self::TEXT_ENCODING ) );
+	}
+
+	/**
+	 * Translation management for IDs in blocks content.
+	 *
+	 * @since 4.0
+	 *
+	 * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
+	 * @return string[][]
+	 *
+	 * @phpstan-param BlockIdsXPath $parsing_rules
+	 * @phpstan-return BlockIdsXPath
+	 */
+	public function translate_blocks_ids_in_content( $parsing_rules ) {
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::IDS_IN_CONTENT ) );
+	}
+
+	/**
+	 * Translation management for IDs in block attributes.
+	 *
+	 * @since 4.0
+	 *
+	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
+	 * @return string[][]
+	 *
+	 * @phpstan-param BlockIdsKey $parsing_rules
+	 * @phpstan-return BlockIdsKey
+	 */
+	public function translate_blocks_ids_in_attributes( $parsing_rules ) {
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( self::IDS_IN_ATTRIBUTES ) );
 	}
 
 	/**
@@ -454,11 +505,13 @@ class PLL_WPML_Config {
 	 * @param string $rule_tag Tag name to extract.
 	 * @return string[][] The rules.
 	 *
-	 * @phpstan-param 'xpath'|'key'|'encoding' $rule_tag
+	 * @phpstan-param self::TEXT_IN_CONTENT|self::TEXT_IN_ATTRIBUTES|self::TEXT_ENCODING|self::IDS_IN_CONTENT|self::IDS_IN_ATTRIBUTES $rule_tag
 	 * @phpstan-return (
-	 *     $rule_tag is 'xpath' ? BlockXPath :
-	 *         ( $rule_tag is 'key' ? BlockKey :
-	 *             BlockEncoding
+	 *     $rule_tag is self::TEXT_IN_CONTENT ? BlockXPath :
+	 *         ( $rule_tag is self::TEXT_IN_ATTRIBUTES ? BlockKey :
+	 *             ( $rule_tag is self::TEXT_ENCODING ? BlockEncoding :
+	 *                 ( $rule_tag is self::IDS_IN_CONTENT ? BlockIdsXPath : BlockIdsKey )
+	 *             )
 	 *         )
 	 *     )
 	 * )
@@ -479,11 +532,7 @@ class PLL_WPML_Config {
 	 *
 	 * @return array Rules completed with ones from wpml-config file.
 	 *
-	 * @phpstan-return array{
-	 *     xpath?: BlockXPath,
-	 *     key?: BlockKey,
-	 *     encoding?: BlockEncoding
-	 * }
+	 * @phpstan-return ParsingRules
 	 */
 	protected function extract_blocks_parsing_rules() {
 		$parsing_rules = array();
@@ -496,85 +545,11 @@ class PLL_WPML_Config {
 			}
 
 			foreach ( $blocks as $block ) {
-				$translate = $this->get_field_attribute( $block, 'translate' );
-
-				if ( '1' !== $translate ) {
-					continue;
-				}
-
-				$block_name = $this->get_field_attribute( $block, 'type' );
-
-				if ( empty( $block_name ) ) {
-					continue;
-				}
-
-				foreach ( $block->children() as $child ) {
-					if ( ! $this->is_supported_field( $child ) ) {
-						continue;
-					}
-
-					$rule      = '';
-					$child_tag = $child->getName();
-
-					switch ( $child_tag ) {
-						case 'xpath':
-							$rule = trim( (string) $child );
-
-							if ( ! empty( $rule ) ) {
-								$parsing_rules['xpath'][ $block_name ][] = $rule;
-							}
-							break;
-
-						case 'key':
-							$rule = $this->get_field_attributes( $child );
-
-							if ( empty( $rule ) ) {
-								break;
-							}
-
-							if ( isset( $parsing_rules['key'][ $block_name ] ) ) {
-								$parsing_rules['key'][ $block_name ] = $this->array_merge_recursive( $parsing_rules['key'][ $block_name ], $rule );
-							} else {
-								$parsing_rules['key'][ $block_name ] = $rule;
-							}
-
-							$encoding = $this->get_field_attribute( $child, 'encoding' );
-
-							if ( 'json' !== $encoding ) {
-								break;
-							}
-
-							// For WPML, `json` means `json,urlencode` (and is the only format supported in this context).
-							$parsing_rules['encoding'][ $block_name ][ key( $rule ) ] = 'json,urlencode';
-							break;
-					}
-				}
+				$parsing_rules = ( new PLL_WPML_Config_Block_Parser( $block ) )->merge_to( $parsing_rules );
 			}
 		}
 
 		return $parsing_rules;
-	}
-
-	/**
-	 * Merges two arrays recursively.
-	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
-	 *
-	 * @since 3.6
-	 *
-	 * @param array $array1 Array to merge into.
-	 * @param array $array2 Array to merge.
-	 * @return array
-	 */
-	protected function array_merge_recursive( array $array1, array $array2 ): array {
-		foreach ( $array2 as $key => $value ) {
-			if ( is_array( $value ) && isset( $array1[ $key ] ) && is_array( $array1[ $key ] ) ) {
-				$array1[ $key ] = $this->array_merge_recursive( $array1[ $key ], $value );
-			} else {
-				$array1[ $key ] = $value;
-			}
-		}
-
-		return $array1;
 	}
 
 	/**
@@ -646,70 +621,6 @@ class PLL_WPML_Config {
 		}
 
 		return trim( (string) $attributes[ $attribute_name ] );
-	}
-
-	/**
-	 * Gets attributes values recursively.
-	 *
-	 * @since 3.6
-	 *
-	 * @param  SimpleXMLElement $field A XML node.
-	 * @return array An array of attributes.
-	 *
-	 * @phpstan-return array<non-empty-string, array|true>
-	 */
-	private function get_field_attributes( SimpleXMLElement $field ): array {
-		$name = $this->get_field_attribute( $field, 'name' );
-
-		if ( '' === $name ) {
-			return array();
-		}
-
-		$children = $field->children();
-
-		if ( 0 === $children->count() ) {
-			return array( $name => true );
-		}
-
-		$sub_attributes = array();
-
-		foreach ( $children as $child ) {
-			if ( ! $this->is_supported_field( $child ) ) {
-				continue;
-			}
-
-			$sub = $this->get_field_attributes( $child );
-
-			if ( empty( $sub ) ) {
-				continue;
-			}
-
-			$sub_attributes[ $name ] = array_merge( $sub_attributes[ $name ] ?? array(), $sub );
-		}
-
-		return $sub_attributes;
-	}
-
-	/**
-	 * Tells if the given field is supported.
-	 *
-	 * @since 3.8.4
-	 *
-	 * @param SimpleXMLElement $field A XML node.
-	 * @return bool
-	 */
-	private function is_supported_field( SimpleXMLElement $field ): bool {
-		if ( $this->get_field_attribute( $field, 'type' ) !== '' ) {
-			// No `type` supported for now.
-			return false;
-		}
-
-		if ( $field->getName() === 'key' ) {
-			// The only supported `search-method` is `wildcards` (which is the default value).
-			return in_array( $this->get_field_attribute( $field, 'search-method' ), array( '', 'wildcards' ), true );
-		}
-
-		return true;
 	}
 
 	/**
