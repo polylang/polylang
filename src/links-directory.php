@@ -175,12 +175,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			return $rules;
 		}
 
-		$filter = str_replace( '_rewrite_rules', '', (string) current_filter() );
-
 		global $wp_rewrite;
-		$newrules = array();
 
 		$languages = $this->model->get_languages_list( array( 'fields' => 'slug' ) );
+
 		if ( $this->options['hide_default'] ) {
 			$languages = array_diff( $languages, array( $this->options['default_lang'] ) );
 		}
@@ -192,6 +190,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		// For custom post type archives.
 		$cpts = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
 		$cpts = $cpts ? '#post_type=(' . implode( '|', $cpts ) . ')#' : '';
+
+		$filter   = str_replace( '_rewrite_rules', '', (string) current_filter() );
+		$newrules = array();
 
 		foreach ( $rules as $key => $rule ) {
 			if ( ! is_string( $rule ) || ! is_string( $key ) ) {
