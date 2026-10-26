@@ -227,7 +227,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env     = new PLL_Settings( $links_model );
 
 		$method = new ReflectionMethod( PLL_Settings::class, 'get_translation_updates_form_markup' );
-		$method->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $method->setAccessible( true );
 		$markup = $method->invoke( $pll_env );
 
 		$this->assertStringContainsString( 'upgrade-translations', $markup );
@@ -246,7 +246,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env     = new PLL_Settings( $links_model );
 
 		$method = new ReflectionMethod( PLL_Settings::class, 'get_translation_updates_form_markup' );
-		$method->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $method->setAccessible( true );
 
 		$this->assertSame( '', $method->invoke( $pll_env ) );
 	}
@@ -278,7 +278,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env     = new PLL_Settings( $links_model );
 
 		$method = new ReflectionMethod( PLL_Settings::class, 'maybe_add_translation_updates_notice' );
-		$method->setAccessible( true );
+		version_compare( PHP_VERSION, '8.1', '<' ) && $method->setAccessible( true );
 		$method->invoke( $pll_env );
 
 		$errors = get_settings_errors( 'polylang' );
