@@ -44,11 +44,12 @@ test.describe( 'Language pack updates notice on the Languages settings screen', 
 	} );
 
 	test( 'shows the notice after updating a language', async ( { requestUtils, page, admin } ) => {
-		await createLanguage( requestUtils, 'en_US' );
-		const english = await getLanguage( requestUtils, 'en' );
+		// Updating en_US does not download language packs, so no translation updates appear.
+		await createLanguage( requestUtils, 'fr_FR' );
+		const french = await getLanguage( requestUtils, 'fr' );
 		await admin.visitAdminPage(
 			'admin.php',
-			`page=mlang&pll_action=edit&lang=${ english.term_id }`
+			`page=mlang&pll_action=edit&lang=${ french.term_id }`
 		);
 		await dismissAllTranslationUpdatesNotices( page );
 
@@ -77,10 +78,9 @@ test.describe( 'Language pack updates notice on the Languages settings screen', 
 		page,
 		admin,
 	} ) => {
-		try {
-			await getLanguage( requestUtils, 'en' );
-		} catch {
-			await createLanguage( requestUtils, 'en_US' );
+		const hasFr = await getLanguage( requestUtils, 'fr' );
+		if ( ! hasFr ) {
+			await createLanguage( requestUtils, 'fr_FR' );
 		}
 
 		await admin.visitAdminPage( 'admin.php', 'page=mlang_strings' );
