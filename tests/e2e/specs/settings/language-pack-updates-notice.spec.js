@@ -1,7 +1,11 @@
 // @ts-check
 import { expect, test } from '@wordpress/e2e-test-utils-playwright';
-import { createLanguage, deleteAllLanguages, getLanguage } from '@wpsyntex/e2e-test-utils';
-import { execSync } from 'child_process';
+import {
+	createLanguage,
+	deleteAllLanguages,
+	getLanguage,
+	runWpCli,
+} from '@wpsyntex/e2e-test-utils';
 
 /**
  * @param {import('@playwright/test').Page} page
@@ -32,7 +36,7 @@ async function dismissAllTranslationUpdatesNotices( page ) {
 
 test.describe( 'Language pack updates notice on the Languages settings screen', () => {
 	test.beforeAll( async () => {
-		await execSync( 'npx wp-env run tests-cli wp transient delete settings_errors' );
+		await runWpCli( 'wp transient delete settings_errors' );
 	} );
 
 	test.afterAll( async ( { requestUtils } ) => {
