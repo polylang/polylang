@@ -28,6 +28,9 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 		$this->pll_admin->init();
 		$this->pll_admin->block_editor = new PLL_Admin_Block_Editor( $this->pll_admin );
+
+		remove_filter( 'block_editor_rest_api_preload_paths', '_wp_preload_entity_fields' );
+		remove_filter( 'block_editor_rest_api_preload_paths', '_wp_preload_entity_actions' );
 	}
 
 	public function tear_down() {
