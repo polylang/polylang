@@ -51,9 +51,9 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env = new PLL_Settings( $links_model );
 		$pll_env->languages_page();
 		$out = ob_get_clean();
-		$doc = new DomDocument();
+		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $out );
-		$xpath = new DOMXpath( $doc );
+		$xpath = new DOMXPath( $doc );
 
 		$input = $xpath->query( '//input[@name="lang_id"]' );
 		$this->assertEquals( $lang->term_id, $input->item( 0 )->getAttribute( 'value' ) ); // Hidden field.
