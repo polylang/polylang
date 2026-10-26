@@ -21,7 +21,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_polylang_textdomain_load_after_setup_theme() {
-		global $wp_version, $wp_textdomain_registry, $wp_locale_switcher;
+		global $wp_textdomain_registry, $wp_locale_switcher;
 
 		// To make `polylang` textdomain correctly registered.
 		$wp_textdomain_registry = new WP_Textdomain_Registry();
