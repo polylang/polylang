@@ -28,6 +28,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		unset( $GLOBALS['polylang'] );
 
+		remove_theme_mod( 'nav_menu_locations' );
+
 		parent::tear_down();
 	}
 
@@ -174,8 +176,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		$this->setup_frontend( 'fr' );
 		$this->assertStringNotContainsString( 'Hello World', (string) wp_nav_menu( $menu_args ) );
-
-		remove_theme_mod( 'nav_menu_locations' );
 	}
 
 	public function test_delete_nav_menu() {

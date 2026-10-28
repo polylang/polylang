@@ -243,7 +243,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			$theme = get_option( 'stylesheet' );
 
 			foreach ( array_keys( $menus ) as $loc ) {
-				/**
+				/*
 				 * For the default language, keep the menu assigned by WordPress as long as Polylang
 				 * has nothing stored for this location. The `nav_menus` option is empty until the menus
 				 * are saved once, and overwriting the value with `0` would hide the menu on the front end.
