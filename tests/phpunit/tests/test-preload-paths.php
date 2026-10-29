@@ -25,7 +25,12 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			$this->assertFalse( $this->pll_admin->model->post->get_language( $post->ID ), 'Post is untranslatable and shouldn\'t have a language set.' );
 		}
 
-		$this->assert_path_added( array( $path ), $filtered_path, array(), 'There should not be added path.' );
+		$added_paths = array(
+			"/wp/v2/entity-fields?kind=postType&name={$post->post_type}", // Added by `_wp_preload_entity_fields()`.
+			"/wp/v2/entity-actions?kind=postType&name={$post->post_type}", // Added by `_wp_preload_entity_actions()`.
+		);
+
+		$this->assert_path_added( array( $path ), $filtered_path, $added_paths, 'There should not be added path.' );
 
 		// A path could be an array containing the proper path and the method.
 		$filtered_path = reset( $filtered_path );
@@ -79,6 +84,8 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 					0 => '/wp/v2/media?lang=en',
 					1 => 'OPTIONS',
 				),
+				"/wp/v2/entity-fields?kind=postType&name={$post->post_type}", // Added by `_wp_preload_entity_fields()`.
+				"/wp/v2/entity-actions?kind=postType&name={$post->post_type}", // Added by `_wp_preload_entity_actions()`.
 			),
 		);
 

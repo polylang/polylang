@@ -47,25 +47,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @return mixed
 	 */
 	protected function get_preload_paths( $paths, $context ) {
-		$paths = apply_filters( 'block_editor_rest_api_preload_paths', $paths, $context );
-
-		if ( ! isset( $context->post ) ) {
-			return $paths;
-		}
-
-		$remove = array(
-			"/wp/v2/entity-fields?kind=postType&name={$context->post->post_type}", // Added by `_wp_preload_entity_fields()`.
-			"/wp/v2/entity-actions?kind=postType&name={$context->post->post_type}", // Added by `_wp_preload_entity_actions()`.
-		);
-
-		// `array_diff()` triggers a "Array to string conversion" error because `$paths`'s values can contain an array.
-		foreach ( $paths as $i => $path ) {
-			if ( in_array( $path, $remove, true ) ) {
-				unset( $paths[ $i ] );
-			}
-		}
-
-		return $paths;
+		return apply_filters( 'block_editor_rest_api_preload_paths', $paths, $context );
 	}
 
 	/**
