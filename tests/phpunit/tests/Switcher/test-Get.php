@@ -64,7 +64,12 @@ class Get_Test extends TestCase {
 	}
 
 	public function test_layout_select(): void {
-		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => 'select' ) )->get();
+		$html  = $this->get_switcher_and_init_frontend(
+			array(
+				'layout'      => 'select',
+				'show_labels' => 'codes', // Issue #3196.
+			)
+		)->get();
 		$xpath = $this->get_domxpath( $html );
 
 		$wrappers = $xpath->query( '//div' );
@@ -101,7 +106,7 @@ class Get_Test extends TestCase {
 			array( 'polylang-item', 'lang-item', 'lang-item-' . $en_language->term_id, 'lang-item-en', 'current-lang', 'no-translation', 'lang-item-first' ),
 			explode( ' ', $en_option->getAttribute( 'class' ) )
 		);
-		$this->assertSame( 'English', $en_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$this->assertSame( 'EN', $en_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		// The remaining language is fr.
 		$fr_language = $this->pll_model->get_language( 'fr' );
@@ -114,7 +119,7 @@ class Get_Test extends TestCase {
 			array( 'polylang-item', 'lang-item', 'lang-item-' . $fr_language->term_id, 'lang-item-fr', 'no-translation' ),
 			explode( ' ', $fr_option->getAttribute( 'class' ) )
 		);
-		$this->assertSame( 'Français', $fr_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$this->assertSame( 'FR', $fr_option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
 	public function test_layout_select_without_wrapper(): void {
