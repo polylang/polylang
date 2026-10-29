@@ -488,37 +488,52 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block'   => array(
 				'post' => array(
 					'//*[@name="foo_form_post_ids"]/@value',
+					'//*[@name="foo_form_post_ids_mixed"]/@value',
 				),
 				'term' => array(
 					'//*[@name="foo_form_category_ids"]/@value',
+					'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
 				),
 			),
 			'my-plugin/my-block-8' => array(
 				'post' => array(
 					'//*[@name="foo_form_post_ids"]/@value',
+					'//*[@name="foo_form_post_ids_mixed"]/@value',
 				),
 				'term' => array(
 					'//*[@name="foo_form_category_ids"]/@value',
+					'//*[@name="foo_form_taxonomy_ids_mixed"]/@value',
 				),
 			),
 		);
 		$expected_ids_rules_in_attributes      = array(
 			'my-plugin/my-block'   => array(
 				'post' => array(
-					'PostIds' => array(
+					'PostIds'      => array(
 						'*' => true,
+					),
+					'PostIdsMixed' => array(
+						'foo' => array(
+							'*' => true,
+						),
 					),
 				),
 				'term' => array(
 					'TermIds'       => array(
 						'*' => true,
 					),
+					'TermIdsMixed'  => array(
+						'bar' => array(
+							'*' => true,
+						),
+					),
 				),
 			),
 			'my-plugin/my-block-8' => array(
 				'post'       => array(
 					'first'  => array(
-						'p-page' => true,
+						'p-page'    => true,
+						'p-unknown' => true,
 					),
 					'second' => array(
 						'p-posts' => array(
@@ -547,8 +562,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 						),
 					),
 					'second' => array(
-						't-cat'   => true,
-						't-genre' => true,
+						't-cat'     => true,
+						't-genre'   => true,
+						't-unknown' => true,
 					),
 				),
 				'attachment' => array(

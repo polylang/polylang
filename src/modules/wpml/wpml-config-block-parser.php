@@ -207,8 +207,7 @@ class PLL_WPML_Config_Block_Parser {
 		switch ( $this->get_node_attribute( $node, 'type' ) ) {
 			case 'taxonomy-ids':
 				// Taxonomy IDs.
-				$sub_type = $this->get_node_attribute( $node, 'sub-type' );
-				return ! empty( $sub_type ) ? 'term' : '';
+				return 'term';
 
 			case 'post-ids':
 				// Post IDs.
@@ -218,7 +217,7 @@ class PLL_WPML_Config_Block_Parser {
 					return $sub_type;
 				}
 
-				return ! empty( $sub_type ) ? 'post' : '';
+				return 'post';
 
 			case '':
 				// Text.
