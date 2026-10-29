@@ -30,6 +30,11 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			"/wp/v2/entity-actions?kind=postType&name={$post->post_type}", // Added by `_wp_preload_entity_actions()`.
 		);
 
+		if ( version_compare( $GLOBALS['wp_version'], '7.2-alpha', '<' ) ) {
+			// Backward compatibility with WP < 7.2.
+			$added_paths = array();
+		}
+
 		$this->assert_path_added( array( $path ), $filtered_path, $added_paths, 'There should not be added path.' );
 
 		// A path could be an array containing the proper path and the method.
@@ -88,6 +93,11 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 				"/wp/v2/entity-actions?kind=postType&name={$post->post_type}", // Added by `_wp_preload_entity_actions()`.
 			),
 		);
+
+		if ( version_compare( $GLOBALS['wp_version'], '7.2-alpha', '<' ) ) {
+			// Backward compatibility with WP < 7.2.
+			unset( $media_path['expected'][1], $media_path['expected'][2] );
+		}
 
 		$this->assertSameSets(
 			$media_path['expected'],
