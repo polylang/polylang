@@ -37,10 +37,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 		set_current_screen( 'index.php' );
 
 		// Prevent WP to call `switch_to_locale()` from `WP_Rewrite::random_rewrite_rules()`.
-		remove_filter( 'locale', array( $wp_locale_switcher, 'filter_locale' ) );
-		remove_filter( 'determine_locale', array( $wp_locale_switcher, 'filter_locale' ) );
-		$wp_locale_switcher = new WP_Locale_Switcher();
-		$wp_locale_switcher->init(); // Done in wp-settings.php
+		add_filter( 'wp_enable_random_content_redirect', '__return_false' );
 
 		/**
 		 * Prevent PLL_OLT_Manager to reset `$GLOBALS['l10n']` when Polylang is initializing during test.
