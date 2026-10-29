@@ -248,10 +248,14 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				 * has nothing stored for this location. The `nav_menus` option is empty until the menus
 				 * are saved once, and overwriting the value with `0` would hide the menu on the front end.
 				 */
-				if ( $this->curlang->is_default && empty( $this->options['nav_menus'][ $theme ][ $loc ][ $this->curlang->slug ] ) ) {
-					continue;
+				if ( empty( $this->options['nav_menus'][ $theme ][ $loc ][ $this->curlang->slug ] ) ) {
+					if ( $this->curlang->is_default ) {
+						continue;
+					}
+					$menus[ $loc ] = 0;
+				} else {
+					$menus[ $loc ] = $this->options['nav_menus'][ $theme ][ $loc ][ $this->curlang->slug ];
 				}
-				$menus[ $loc ] = empty( $this->options['nav_menus'][ $theme ][ $loc ][ $this->curlang->slug ] ) ? 0 : $this->options['nav_menus'][ $theme ][ $loc ][ $this->curlang->slug ];
 			}
 
 			// Support for theme customizer
