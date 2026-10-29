@@ -96,19 +96,18 @@ class PLL_WPML_Config_Block_Parser {
 						break;
 					}
 
-					// Post IDs, Term IDs.
-					$translation_type = $this->get_ids_translation_type( $child );
+					$translation_type = $this->get_translation_type( $child );
 
-					if ( ! empty( $translation_type ) ) {
-						$this->data[ PLL_WPML_Config::IDS_IN_CONTENT ][ $this->block_name ][ $translation_type ][] = $rule;
-						// No need to go further, since a `xpath` tag cannot have children, and we cannot have
-						// a tag that is a "IDs" one and a text one at the same time.
+					// Text node.
+					if ( 'text' === $translation_type ) {
+						$this->data[ PLL_WPML_Config::TEXT_IN_CONTENT ][ $this->block_name ][] = $rule;
 						break;
 					}
 
-					// Text node.
-					if ( $this->is_supported_text_node( $child ) ) {
-						$this->data[ PLL_WPML_Config::TEXT_IN_CONTENT ][ $this->block_name ][] = $rule;
+					// Post IDs, Term IDs.
+					if ( ! empty( $translation_type ) ) {
+						$this->data[ PLL_WPML_Config::IDS_IN_CONTENT ][ $this->block_name ][ $translation_type ][] = $rule;
+						break;
 					}
 					break;
 
@@ -153,21 +152,21 @@ class PLL_WPML_Config_Block_Parser {
 		}
 
 		// Last node of this branch.
-		$translation_type = $this->get_ids_translation_type( $node );
+		$translation_type = $this->get_translation_type( $node );
 
-		if ( ! empty( $translation_type ) ) {
-			// Post IDs, Term IDs.
-			$this->data[ PLL_WPML_Config::IDS_IN_ATTRIBUTES ][ $this->block_name ][ $translation_type ] = $this->array_merge_recursive(
-				$this->data[ PLL_WPML_Config::IDS_IN_ATTRIBUTES ][ $this->block_name ][ $translation_type ] ?? array(),
+		// Text node.
+		if ( 'text' === $translation_type ) {
+			$this->data[ PLL_WPML_Config::TEXT_IN_ATTRIBUTES ][ $this->block_name ] = $this->array_merge_recursive(
+				$this->data[ PLL_WPML_Config::TEXT_IN_ATTRIBUTES ][ $this->block_name ] ?? array(),
 				$this->build_path_array( $name )
 			);
 			return;
 		}
 
-		if ( $this->is_supported_text_node( $node ) ) {
-			// Text node.
-			$this->data[ PLL_WPML_Config::TEXT_IN_ATTRIBUTES ][ $this->block_name ] = $this->array_merge_recursive(
-				$this->data[ PLL_WPML_Config::TEXT_IN_ATTRIBUTES ][ $this->block_name ] ?? array(),
+		// Post IDs, Term IDs.
+		if ( ! empty( $translation_type ) ) {
+			$this->data[ PLL_WPML_Config::IDS_IN_ATTRIBUTES ][ $this->block_name ][ $translation_type ] = $this->array_merge_recursive(
+				$this->data[ PLL_WPML_Config::IDS_IN_ATTRIBUTES ][ $this->block_name ][ $translation_type ] ?? array(),
 				$this->build_path_array( $name )
 			);
 		}
@@ -195,71 +194,51 @@ class PLL_WPML_Config_Block_Parser {
 	}
 
 	/**
-	 * Tells if the given type is a "IDs" one.
-	 * These types are found on nodes: `type="post-ids"`.
-	 *
-	 * @since 4.0
-	 *
-	 * @param string $type The type.
-	 * @return bool
-	 *
-	 * @phpstan-assert-if-true 'post-ids'|'taxonomy-ids' $type
-	 */
-	private function is_ids_type( string $type ): bool {
-		return in_array( $type, array( 'post-ids', 'taxonomy-ids' ), true );
-	}
-
-	/**
-	 * Returns the translation type of the given node, for IDs translation.
-	 * All post types are inferred to `post` except for `attachment` and `wp_block`.
-	 * If the post type is not specified or empty, the type is `post_mixed`.
+	 * Returns the translation type of the given node.
 	 *
 	 * @since 4.0
 	 *
 	 * @param SimpleXMLElement $node A XML node.
 	 * @return string
 	 *
-	 * @phpstan-return TradTypes|''
+	 * @phpstan-return TradTypes|'text'|''
 	 */
-	private function get_ids_translation_type( SimpleXMLElement $node ): string {
-		$type = $this->get_node_attribute( $node, 'type' );
+	private function get_translation_type( SimpleXMLElement $node ): string {
+		switch ( $this->get_node_attribute( $node, 'type' ) ) {
+			case 'taxonomy-ids':
+				// Taxonomy IDs.
+				$sub_type = $this->get_node_attribute( $node, 'sub-type' );
+				return ! empty( $sub_type ) ? 'term' : '';
 
-		if ( ! $this->is_ids_type( $type ) ) {
-			return '';
-		}
+			case 'post-ids':
+				// Post IDs.
+				$sub_type = $this->get_node_attribute( $node, 'sub-type' );
 
-		if ( 'taxonomy-ids' === $type ) {
-			return 'term';
-		}
+				if ( in_array( $sub_type, array( 'attachment', 'wp_block' ), true ) ) {
+					return $sub_type;
+				}
 
-		$sub_type = $this->get_node_attribute( $node, 'sub-type' );
+				return ! empty( $sub_type ) ? 'post' : '';
 
-		if ( in_array( $sub_type, array( 'attachment', 'wp_block' ), true ) ) {
-			return $sub_type;
-		}
+			case '':
+				// Text.
+				if ( ! $this->translate_text ) {
+					return '';
+				}
 
-		return ! empty( $sub_type ) ? 'post' : 'post_mixed';
-	}
+				switch ( $node->getName() ) {
+					case 'xpath':
+						return 'text';
 
-	/**
-	 * Tells if the given text node is supported.
-	 *
-	 * @since 4.0
-	 *
-	 * @param SimpleXMLElement $node A XML node.
-	 * @return bool
-	 */
-	private function is_supported_text_node( SimpleXMLElement $node ): bool {
-		if ( ! $this->translate_text || $this->get_node_attribute( $node, 'type' ) !== '' ) {
-			return false;
-		}
+					case 'key':
+						// The only supported `search-method` is `wildcards` (which is the default value).
+						if ( in_array( $this->get_node_attribute( $node, 'search-method' ), array( '', 'wildcards' ), true ) ) {
+							return 'text';
+						}
+				} // eo switch
+		} // eo switch
 
-		if ( $node->getName() === 'key' ) {
-			// The only supported `search-method` is `wildcards` (which is the default value).
-			return in_array( $this->get_node_attribute( $node, 'search-method' ), array( '', 'wildcards' ), true );
-		}
-
-		return true;
+		return '';
 	}
 
 	/**

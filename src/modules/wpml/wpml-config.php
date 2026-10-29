@@ -15,7 +15,7 @@
  * @phpstan-type NodeName      non-empty-string
  * @phpstan-type Rules         array<NodeName, array|true>
  * @phpstan-type EncodingTypes non-falsy-string
- * @phpstan-type TradTypes     'term'|'post'|'attachment'|'wp_block'|'post_mixed'
+ * @phpstan-type TradTypes     'term'|'post'|'attachment'|'wp_block'
  *
  * @phpstan-type BlockXPath    array<BlockName, list<XPath>>
  * @phpstan-type BlockKey      array<BlockName, Rules>
