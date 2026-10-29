@@ -147,9 +147,9 @@ class Get_Test extends TestCase {
 		)->get();
 		$xpath = $this->get_domxpath( $html );
 
-		$options = $xpath->query( '//select/option' );
-		$this->assertGreaterThan( 0, $options->count() );
-		$this->assertSame( 'EN', $options->item( 0 )->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$option = $xpath->query( '//select/option' )->item( 0 );
+		$this->assertInstanceOf( \DOMNode::class, $option );
+		$this->assertSame( 'EN', $option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
 	public function test_layout_dropdown(): void {
