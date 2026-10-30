@@ -136,7 +136,8 @@ class Get_Test extends TestCase {
 	}
 
 	/**
-	 * Issue #3196
+	 * @ticket #3196
+	 * @see https://github.com/polylang/polylang-pro/issues/3196
 	 */
 	public function test_layout_select_with_codes(): void {
 		$html  = $this->get_switcher_and_init_frontend(
