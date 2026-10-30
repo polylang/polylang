@@ -17,6 +17,7 @@
 		"yoast/wp-test-utils": "^1.0.0",
 		"mockery/mockery": "!=1.6.13",
 		"rector/rector": "^2",
+		"szepeviktor/consistent-versions": "^1.2",
 		"wpsyntex/wp-phpunit": "dev-master",
 		"wpsyntex/object-cache-annihilator": "dev-master"
 	},
@@ -64,6 +65,8 @@
 		],
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
+		"check-versions": "consistent-versions check .github/consistent-versions.yaml",
+		"check-versions-tag": "consistent-versions check .github/consistent-versions-tag.yaml",
 		"dist": "bin/distribute.sh",
 		"build-loader": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
 		"post-autoload-dump": [
@@ -86,6 +89,8 @@
 		"lint": "Runs both PHPCS and PHPStan.",
 		"rector": "Runs Rector.",
 		"build": "Builds the project.",
+		"check-versions": "Checks that version declarations across project files agree.",
+		"check-versions-tag": "Checks that the Git tag matches the declared release version.",
 		"dist": "Makes the zip file to distribute the project release.",
 		"build-loader": "Builds a list of files to load."
 	},
