@@ -250,8 +250,7 @@ class Settings extends Abstract_Settings_Legacy {
 
 		// Mandatory settings for the `select` layout.
 		if ( 'select' === $validated['layout'] ) {
-			$validated['show_flags']  = false;
-			$validated['show_labels'] = 'names';
+			$validated['show_flags'] = false;
 		}
 
 		// Make sure something is displayed.
