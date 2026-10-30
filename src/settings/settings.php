@@ -376,7 +376,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		return sprintf(
 			'<form method="post" action="%1$s" name="upgrade-translations" class="upgrade"><p>%2$s</p>%3$s<p><input class="button" type="submit" value="%4$s" name="upgrade" /></p></form>',
 			esc_url( $form_action ),
-			esc_html__( 'New language packs are available for WordPress, plugins, and themes.', 'polylang' ),
+			esc_html__( 'New language packs are available for WordPress, plugins, or themes.', 'polylang' ),
 			wp_nonce_field( 'upgrade-translations', '_wpnonce', true, false ),
 			esc_attr__( 'Update language packs', 'polylang' )
 		);
