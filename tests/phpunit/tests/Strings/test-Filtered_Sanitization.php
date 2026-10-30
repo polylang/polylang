@@ -63,7 +63,7 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 
 	/**
 	 * @testWith ["the_boss", "<script>alert('heck');</script>", "<script>alert('heck');</script>"]
-	 *           ["not_the_boss", "<script>alert('heck');</script>", "alert('heck');"]
+	 *           ["not_the_boss", "<script>alert('heck');</script>", ""]
 	 *
 	 * @param string $user   The user to set as current user.
 	 * @param string $string The string to sanitize.
@@ -73,12 +73,17 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 	public function test_sanitize_unsafe_string( $user, $string, $expected ) {
 		wp_set_current_user( self::${$user}->ID );
 
+		if ( 'not_the_boss' === $user && version_compare( $GLOBALS['wp_version'], '7.2-alpha', '<' ) ) {
+			// Backward compatibility with WP < 7.2.
+			$expected = "alert('heck');";
+		}
+
 		$this->assertSame( $expected, apply_filters( 'pll_sanitize_string_translation', $string, 'test', 'test', 'test', 'test' ) );
 	}
 
 	/**
-	 * @testWith ["the_boss", "<script>alert('heck');</script>", "alert('heck');"]
-	 *           ["not_the_boss", "<script>alert('heck');</script>", "alert('heck');"]
+	 * @testWith ["the_boss", "<script>alert('heck');</script>", ""]
+	 *           ["not_the_boss", "<script>alert('heck');</script>", ""]
 	 *
 	 * @param string $user   The user to set as current user.
 	 * @param string $string The string to sanitize.
@@ -86,6 +91,11 @@ class Test_Filtered_Sanitization extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function test_sanitize_widget_title( $user, $string, $expected ) {
+		if ( version_compare( $GLOBALS['wp_version'], '7.2-alpha', '<' ) ) {
+			// Backward compatibility with WP < 7.2.
+			$expected = "alert('heck');";
+		}
+
 		$this->assertSame( $expected, PLL_Admin_Strings::sanitize_string_translation( $string, 'widget_title', 'test', 'test', 'test' ) );
 	}
 

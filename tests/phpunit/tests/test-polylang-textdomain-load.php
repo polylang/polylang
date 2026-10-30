@@ -21,7 +21,7 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_polylang_textdomain_load_after_setup_theme() {
-		global $wp_version, $wp_textdomain_registry;
+		global $wp_textdomain_registry;
 
 		// To make `polylang` textdomain correctly registered.
 		$wp_textdomain_registry = new WP_Textdomain_Registry();
@@ -36,11 +36,14 @@ class Polylang_Textdomain_Load_Test extends PLL_UnitTestCase {
 		wp_set_current_user( 1 );
 		set_current_screen( 'index.php' );
 
+		// Prevent WP to call `switch_to_locale()` from `WP_Rewrite::random_rewrite_rules()`.
+		add_filter( 'wp_enable_random_content_redirect', '__return_false' );
+
 		/**
 		 * Prevent PLL_OLT_Manager to reset `$GLOBALS['l10n']` when Polylang is initializing during test.
 		 * Ensure this test work correctly because `lang_dir_for_domain` filter was introduced since WordPress 6.6.
 		 */
-		if ( is_admin() && version_compare( $wp_version, '6.6', '>=' ) ) {
+		if ( is_admin() ) {
 			remove_action( 'pll_language_defined', array( PLL_OLT_Manager::instance(), 'load_textdomains' ), 2 );
 			remove_action( 'pll_no_language_defined', array( PLL_OLT_Manager::instance(), 'load_textdomains' ) );
 		}
