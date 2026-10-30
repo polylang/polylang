@@ -12,7 +12,7 @@ import {
  */
 async function expectTranslationUpdatesNotice( page ) {
 	await expect(
-		page.getByText( 'New language packs are available for WordPress, plugins, and themes.' )
+		page.getByText( 'New language packs are available for WordPress, plugins, or themes.' )
 	).toBeVisible();
 	await expect( page.getByRole( 'button', { name: 'Update language packs' } ) ).toBeVisible();
 }
