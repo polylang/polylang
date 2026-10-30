@@ -347,6 +347,39 @@ class GetElements_Test extends TestCase {
 	}
 
 	/**
+	 * @ticket #3195 {@see https://github.com/polylang/polylang-pro/issues/3195}
+	 */
+	public function test_corrupted_language(): void {
+		global $wpdb;
+
+		$pll_env      = $this->init_frontend();
+		$language     = $this->pll_model->get_language( 'fr' );
+		$expected_url = $language->get_home_url();
+		$term_id      = $language->get_tax_prop( 'language', 'term_id' );
+
+		$where       = array(
+			'term_id'  => $term_id,
+			'taxonomy' => 'language',
+		);
+		$description = $wpdb->get_var(
+			$wpdb->prepare( "SELECT description FROM {$wpdb->term_taxonomy} WHERE term_id = %d AND taxonomy = %s", $term_id, 'language' )
+		);
+
+		// Modify the locale directly in the database without updating the serialized string length, as a manual edit would do.
+		$wpdb->update( $wpdb->term_taxonomy, array( 'description' => str_replace( 'fr_FR', 'fr', $description ) ), $where );
+		clean_term_cache( array( $term_id ), 'language' );
+		$this->pll_model->clean_languages_cache();
+
+		$elements = @$this->get_new_switcher( $pll_env )->get_elements(); // Suppress the `unserialize()` warning to let the assertions do their job.
+
+		$this->assertCount( 2, $elements, 'Both languages should still be displayed.' );
+		$this->assertArrayHasKey( 'en', $elements, 'The valid language should still be displayed.' );
+		$this->assertArrayHasKey( 'fr', $elements, 'The corrupted language should still be displayed.' );
+		$this->assertSame( '', $elements['fr']->locale, 'The locale of the corrupted language should be an empty string.' );
+		$this->assertSame( $expected_url, $elements['fr']->url, 'The link of the corrupted language should be kept.' );
+	}
+
+	/**
 	 * Replaces the `style` attribute of a flag by the one set by `Abstract_Element`.
 	 *
 	 * @param string $string Markup.
