@@ -101,6 +101,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		$this->pll_env->init();
 		$this->pll_env->static_pages->pll_language_defined();
+
+		do_action( 'after_setup_theme' );
 	}
 
 	public static function wpTearDownAfterClass() {
