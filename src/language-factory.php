@@ -171,6 +171,10 @@ class PLL_Language_Factory {
 			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
 
+		// A corrupted language description may lead to a missing locale and W3C locale.
+		$data['locale'] = (string) ( $data['locale'] ?? '' );
+		$data['w3c']    = (string) ( $data['w3c'] ?? '' );
+
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
 
 		$positive_fields = array( 'term_group', 'page_on_front', 'page_for_posts' );
