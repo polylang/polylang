@@ -135,6 +135,24 @@ class Get_Test extends TestCase {
 		$this->assertSame( 2, $xpath->query( '//select/option' )->count() );
 	}
 
+	/**
+	 * @ticket #3196
+	 * @see https://github.com/polylang/polylang-pro/issues/3196
+	 */
+	public function test_layout_select_with_codes(): void {
+		$html  = $this->get_switcher_and_init_frontend(
+			array(
+				'layout'       => 'select',
+				'show_labels'  => 'codes',
+			)
+		)->get();
+		$xpath = $this->get_domxpath( $html );
+
+		$option = $xpath->query( '//select/option' )->item( 0 );
+		$this->assertInstanceOf( \DOMNode::class, $option );
+		$this->assertSame( 'EN', $option->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+	}
+
 	public function test_layout_dropdown(): void {
 		$html  = $this->get_switcher_and_init_frontend( array( 'layout' => 'dropdown' ) )->get();
 		$xpath = $this->get_domxpath( $html );
