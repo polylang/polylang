@@ -347,16 +347,21 @@ class PLL_WPML_API {
 	 * @return void
 	 */
 	public static function wpml_switch_language( $lang = null, $cookie = false ) {
-		if ( null === self::$original_language ) {
-			self::$original_language = PLL()->curlang;
-		}
-
 		if ( empty( $lang ) ) {
-			PLL()->curlang = self::$original_language;
-		} elseif ( 'all' === $lang ) {
-			PLL()->curlang = null;
-		} elseif ( in_array( $lang, pll_languages_list() ) ) {
-			PLL()->curlang = PLL()->model->get_language( $lang );
+			if ( null !== self::$original_language ) {
+				PLL()->curlang           = self::$original_language;
+				self::$original_language = null;
+			}
+		} else {
+			if ( null === self::$original_language ) {
+				self::$original_language = PLL()->curlang;
+			}
+
+			if ( 'all' === $lang ) {
+				PLL()->curlang = null;
+			} elseif ( in_array( $lang, pll_languages_list() ) ) {
+				PLL()->curlang = PLL()->model->get_language( $lang );
+			}
 		}
 
 		if ( $cookie && isset( PLL()->choose_lang ) ) {

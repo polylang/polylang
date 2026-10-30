@@ -35,6 +35,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 		}
 
 		add_filter( 'request', array( $this, 'request' ) );
+		add_action( 'wp', array( $this, 'wp' ), 0 );
 	}
 
 	/**
@@ -121,5 +122,24 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 		}
 
 		return $qv;
+	}
+
+	/**
+	 * Re-asserts the URL language on 'wp' hook if it was modified or de-synchronized.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	public function wp(): void {
+		$slug = $this->links_model->get_language_from_url();
+
+		if ( ! empty( $slug ) && ( empty( $this->curlang ) || $this->curlang->slug !== $slug ) ) {
+			$language = $this->model->get_language( $slug );
+
+			if ( $language ) {
+				$this->curlang = $language;
+			}
+		}
 	}
 }

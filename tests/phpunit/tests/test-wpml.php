@@ -569,6 +569,13 @@ class WPML_Test extends PLL_UnitTestCase {
 		// Restore to the original language.
 		do_action( 'wpml_switch_language' );
 		$this->assertEquals( 'en', PLL()->curlang->slug );
+
+		// Subsequent switch should capture current language and restore cleanly.
+		do_action( 'wpml_switch_language', 'de' );
+		$this->assertEquals( 'de', PLL()->curlang->slug );
+
+		do_action( 'wpml_switch_language' );
+		$this->assertEquals( 'en', PLL()->curlang->slug );
 	}
 
 	public function test_wpml_get_element_translations_for_posts() {
