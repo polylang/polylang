@@ -335,10 +335,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertSame( 3, $flags->length );
 		foreach ( $flags as $flag ) {
 			/** @var DOMElement $flag */
-			$this->assertSame(
-				'display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%);aspect-ratio:3/2',
-				$flag->getAttribute( 'style' )
-			);
+			$this->assertSame( '', $flag->getAttribute( 'style' ) );
 		}
 
 		$flag_images = $xpath->query( '//span[@class="pll-switcher-flag"]/img' );
@@ -346,7 +343,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $flag_images as $flag_image ) {
 			/** @var DOMElement $flag_image */
 			$this->assertSame(
-				'display:block;object-fit:cover;object-position:center;width:100%;height:100%',
+				'object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
 				$flag_image->getAttribute( 'style' )
 			);
 		}
@@ -356,7 +353,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $labels as $label ) {
 			/** @var DOMElement $label */
 			$this->assertSame(
-				'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb',
+				'margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb',
 				$label->getAttribute( 'style' )
 			);
 		}
@@ -382,10 +379,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertSame( 3, $flags->length );
 		foreach ( $flags as $flag ) {
 			/** @var DOMElement $flag */
-			$this->assertSame(
-				'display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%);aspect-ratio:3/2',
-				$flag->getAttribute( 'style' )
-			);
+			$this->assertSame( '', $flag->getAttribute( 'style' ) );
 		}
 
 		$flag_images = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-flag"]/img' );
@@ -393,7 +387,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $flag_images as $flag_image ) {
 			/** @var DOMElement $flag_image */
 			$this->assertSame(
-				'display:block;object-fit:cover;object-position:center;width:100%;height:100%',
+				'object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
 				$flag_image->getAttribute( 'style' )
 			);
 		}
@@ -403,7 +397,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $labels as $label ) {
 			/** @var DOMElement $label */
 			$this->assertSame(
-				'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb',
+				'margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb',
 				$label->getAttribute( 'style' )
 			);
 		}

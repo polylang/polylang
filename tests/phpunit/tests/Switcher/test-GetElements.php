@@ -215,19 +215,15 @@ class GetElements_Test extends TestCase {
 		$label = $elements['en']->get_label();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"[^>]*><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>English<\/span>$/', // Empty alt.
+			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>English<\/span>$/', // No styles on `pll-switcher-flag`, empty alt.
 			$label
 		);
 		$this->assertStringContainsString(
-			'style="display:inline-block;flex-shrink:0;width:var(--pll-flag-width,18px);overflow:hidden;border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%);aspect-ratio:3/2"',
+			'style="object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
 			$label
 		);
 		$this->assertStringContainsString(
-			'style="display:block;object-fit:cover;object-position:center;width:100%;height:100%"',
-			$label
-		);
-		$this->assertStringContainsString(
-			'style="margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb"',
+			'style="margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb"',
 			$label
 		);
 	}
@@ -355,7 +351,7 @@ class GetElements_Test extends TestCase {
 	private function replace_flag_style( string $string ): string {
 		return preg_replace(
 			'/style=(["\']).*?\1/',
-			'style="display:block;object-fit:cover;object-position:center;width:100%;height:100%"',
+			'style="object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:var(--pll-flag-width,18px);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)"',
 			$string
 		);
 	}
