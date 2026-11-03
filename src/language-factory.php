@@ -112,6 +112,10 @@ class PLL_Language_Factory {
 			}
 		}
 
+		// A corrupted language description may hold values of unexpected types.
+		$data['locale']    = is_string( $data['locale'] ) ? $data['locale'] : '';
+		$data['flag_code'] = is_string( $data['flag_code'] ) ? $data['flag_code'] : '';
+
 		if ( ! empty( $data['locale'] ) ) {
 			if ( isset( $languages[ $data['locale'] ]['w3c'] ) ) {
 				$data['w3c'] = $languages[ $data['locale'] ]['w3c'];
@@ -171,9 +175,10 @@ class PLL_Language_Factory {
 			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
 
-		// A corrupted language description may lead to a missing locale and W3C locale.
-		$data['locale'] = (string) ( $data['locale'] ?? '' );
-		$data['w3c']    = (string) ( $data['w3c'] ?? '' );
+		// A corrupted language description may lead to unexpected types.
+		$data['locale']    = is_string( $data['locale'] ?? null ) ? $data['locale'] : '';
+		$data['w3c']       = is_string( $data['w3c'] ?? null ) ? $data['w3c'] : '';
+		$data['flag_code'] = is_string( $data['flag_code'] ?? null ) ? $data['flag_code'] : '';
 
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
 
