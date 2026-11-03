@@ -811,30 +811,6 @@ parameters:
 			path: src/install/upgrade.php
 
 		-
-			message: '#^Parameter \#1 \$flag_code of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/language-factory.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/language-factory.php
-
-		-
-			message: '#^Parameter \#4 \$locale of method PLL_Language_Factory\:\:get_flag\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/language-factory.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
-			count: 4
-			path: src/language-factory.php
-
-		-
 			message: '#^PHPDoc tag @var with type array\{tax\: non\-empty\-string, field\: ''count''\|''term_id''\|''term_taxonomy_id''\} is not subtype of native type array\{0\: non\-falsy\-string, tax\: non\-empty\-string, 1\: non\-empty\-string, field\: ''count''\|''term_id''\|''term_taxonomy_id'', 2\: ''count''\|''term_id''\|''term_taxonomy_id''\}\.$#'
 			identifier: varTag.nativeType
 			count: 1
