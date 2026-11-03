@@ -12,7 +12,7 @@ const V2Attributes = {
 	flag_aspect_ratio: '3:2',
 	flag_border_radius: 0,
 	flag_width: '18px',
-	flag_label_spacing: '0.3em',
+	flag_label_spacing: '.3em',
 	className: '',
 };
 

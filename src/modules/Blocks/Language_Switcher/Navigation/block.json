@@ -50,7 +50,7 @@
 		},
 		"flag_label_spacing": {
 			"type": "string",
-			"default": "0.3em"
+			"default": ".3em"
 		},
 		"className": {
 			"type": "string",
