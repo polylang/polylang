@@ -140,18 +140,16 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	/**
 	 * Prepares the rewrite rules filters.
 	 *
+	 * Attaches filters once custom post types and taxonomies are registered.
+	 * Does not depend on languages existing yet; `rewrite_rules()` is a no-op until they do.
+	 *
 	 * @since 0.8.1
 	 * @since 3.5 Hooked to `pll_prepare_rewrite_rules` and remove `$pre` parameter.
 	 *
 	 * @return void
 	 */
 	public function prepare_rewrite_rules() {
-		/*
-		 * Don't modify the rules if there is no languages created yet and make sure
-		 * to add the filters only once and if all custom post types and taxonomies
-		 * have been registered.
-		 */
-		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || ! self::$can_filter_rewrite_rules ) {
+		if ( ! did_action( 'wp_loaded' ) || ! self::$can_filter_rewrite_rules ) {
 			return;
 		}
 
@@ -172,12 +170,15 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
-		$filter = str_replace( '_rewrite_rules', '', (string) current_filter() );
+		if ( ! $this->model->has_languages() ) {
+
+			return $rules;
+		}
 
 		global $wp_rewrite;
-		$newrules = array();
 
 		$languages = $this->model->get_languages_list( array( 'fields' => 'slug' ) );
+
 		if ( $this->options['hide_default'] ) {
 			$languages = array_diff( $languages, array( $this->options['default_lang'] ) );
 		}
@@ -189,6 +190,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		// For custom post type archives.
 		$cpts = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
 		$cpts = $cpts ? '#post_type=(' . implode( '|', $cpts ) . ')#' : '';
+
+		$filter   = str_replace( '_rewrite_rules', '', (string) current_filter() );
+		$newrules = array();
 
 		foreach ( $rules as $key => $rule ) {
 			if ( ! is_string( $rule ) || ! is_string( $key ) ) {
