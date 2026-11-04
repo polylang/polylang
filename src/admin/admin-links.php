@@ -362,9 +362,9 @@ class PLL_Admin_Links extends PLL_Links {
 			return array();
 		}
 
-		// Capability check already done in post-new.php.
 		check_admin_referer( 'new-post-translation' );
-		return $this->get_objects_from_new_post_translation_request( (int) $_GET['from_post'], sanitize_key( $_GET['new_lang'] ) );
+
+		return $this->get_objects_from_new_post_translation_request( (int) $_GET['from_post'], sanitize_key( $_GET['new_lang'] ), sanitize_key( $GLOBALS['post_type'] ) );
 	}
 
 	/**
@@ -389,7 +389,8 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		check_admin_referer( 'translate_media' );
-		return $this->get_objects_from_new_post_translation_request( (int) $_GET['from_media'], sanitize_key( $_GET['new_lang'] ) );
+
+		return $this->get_objects_from_new_post_translation_request( (int) $_GET['from_media'], sanitize_key( $_GET['new_lang'] ), 'attachment' );
 	}
 
 	/**
@@ -397,8 +398,9 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 3.7
 	 *
-	 * @param int    $post_id   The original Post ID provided.
-	 * @param string $lang_slug The new translation language provided
+	 * @param int    $post_id            The original Post ID provided.
+	 * @param string $lang_slug          The new translation language provided.
+	 * @param string $expected_post_type Expected post type of the source post.
 	 * @return array {
 	 *     @type WP_Post      $from_post The source post.
 	 *     @type PLL_Language $new_lang  The target language.
@@ -406,15 +408,27 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
 	 */
-	private function get_objects_from_new_post_translation_request( int $post_id, string $lang_slug ): array {
+	private function get_objects_from_new_post_translation_request( int $post_id, string $lang_slug, string $expected_post_type ): array {
 		if ( $post_id <= 0 || empty( $lang_slug ) ) {
 			return array();
 		}
 
-		$post = get_post( $post_id );
 		$lang = $this->model->get_language( $lang_slug );
+		if ( ! $lang || ! $this->user->can_translate( $lang ) ) {
+			return array();
+		}
 
-		if ( empty( $post ) || empty( $lang ) ) {
+		$post = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return array();
+		}
+
+		if ( ! $this->user->has_cap( 'read_post', $post->ID ) ) {
+			return array();
+		}
+
+		if ( $expected_post_type !== $post->post_type ) {
 			return array();
 		}
 

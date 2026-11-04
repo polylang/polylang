@@ -372,11 +372,17 @@ if ( ! function_exists( 'wpml_get_copied_fields_for_post_edit' ) ) {
 	 * @return array
 	 */
 	function wpml_get_copied_fields_for_post_edit() {
-		if ( empty( $_GET['from_post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! PLL()->links instanceof PLL_Admin_Links ) {
 			return array();
 		}
 
-		$arr = array( 'original_post_id' => (int) $_GET['from_post'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		$context_data = PLL()->links->get_data_from_new_post_translation_request();
+
+		if ( empty( $context_data ) ) {
+			return array();
+		}
+
+		$arr = array( 'original_post_id' => $context_data['from_post']->ID );
 
 		// Don't know what WPML does but Polylang does copy all public meta keys by default.
 		$keys = get_post_custom_keys( $arr['original_post_id'] );

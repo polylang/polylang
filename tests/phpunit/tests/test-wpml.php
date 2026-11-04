@@ -650,4 +650,67 @@ class WPML_Test extends PLL_UnitTestCase {
 		$trid = apply_filters( 'wpml_element_trid', null, get_term( $en )->term_taxonomy_id, 'tax_post_tag' );
 		$this->assertEqualSets( $expected, apply_filters( 'wpml_get_element_translations', null, $trid, 'tax_post_tag' ) );
 	}
+
+	/**
+	 * @testWith ["private"]
+	 *           ["draft"]
+	 *
+	 * @param string $post_status Post status of the source post.
+	 */
+	public function test_wpml_get_copied_fields_for_post_edit_denies_unreadable_source( string $post_status ) {
+		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'contributor' ) ) );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => $post_status,
+				'post_author' => $editor,
+			)
+		);
+		self::$model->post->set_language( $from, 'en' );
+		add_post_meta( $from, 'key', 'value' );
+
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$pll_admin->links    = new PLL_Admin_Links( $pll_admin );
+		$GLOBALS['polylang'] = $pll_admin;
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$_GET                 = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$this->assertSame( array(), wpml_get_copied_fields_for_post_edit() );
+	}
+
+	public function test_wpml_get_copied_fields_for_post_edit_returns_fields_for_valid_request() {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+
+		$from = self::factory()->post->create();
+		self::$model->post->set_language( $from, 'en' );
+		add_post_meta( $from, 'key', 'value' );
+
+		$pll_admin           = new PLL_Admin( $this->links_model );
+		$pll_admin->links    = new PLL_Admin_Links( $pll_admin );
+		$GLOBALS['polylang'] = $pll_admin;
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$_GET                 = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$result = wpml_get_copied_fields_for_post_edit();
+
+		$this->assertSame( $from, $result['original_post_id'] );
+		$this->assertContains( 'key', $result['fields'] );
+	}
 }

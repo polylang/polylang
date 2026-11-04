@@ -1111,12 +1111,6 @@ parameters:
 			path: src/modules/wpml/wpml-api.php
 
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: src/modules/wpml/wpml-legacy-api.php
-
-		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
 			count: 2

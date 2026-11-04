@@ -3,6 +3,7 @@
 class Sync_Test extends PLL_UnitTestCase {
 	protected static $editor;
 	protected static $author;
+	protected static $contributor;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -18,8 +19,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
-		self::$author = $factory->user->create( array( 'role' => 'author' ) );
+		self::$editor      = $factory->user->create( array( 'role' => 'editor' ) );
+		self::$author      = $factory->user->create( array( 'role' => 'author' ) );
+		self::$contributor = $factory->user->create( array( 'role' => 'contributor' ) );
 	}
 
 	public function set_up() {
@@ -165,6 +167,83 @@ class Sync_Test extends PLL_UnitTestCase {
 		// delete_metadata_by_mid
 		$this->assertTrue( delete_meta( $mid ) );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key', false ) );
+	}
+
+	/**
+	 * @testWith ["private"]
+	 *           ["draft"]
+	 *
+	 * @param string $post_status Post status of the source post.
+	 */
+	public function test_create_post_translation_denies_unreadable_source( string $post_status ) {
+		wp_set_current_user( self::$contributor );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => $post_status,
+				'post_author' => self::$editor,
+			)
+		);
+		self::$model->post->set_language( $from, 'en' );
+		add_post_meta( $from, 'key', 'value' );
+
+		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$to              = self::factory()->post->create();
+		$GLOBALS['post'] = get_post( $to );
+
+		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] );
+
+		$this->assertEmpty( get_post_meta( $to, 'key', true ) );
+		$this->assertFalse( is_sticky( $to ) );
+	}
+
+	public function test_create_post_translation_allows_own_draft_source() {
+		wp_set_current_user( self::$contributor );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => 'draft',
+				'post_author' => self::$contributor,
+			)
+		);
+		self::$model->post->set_language( $from, 'en' );
+		add_post_meta( $from, 'key', 'value' );
+
+		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$to              = self::factory()->post->create();
+		$GLOBALS['post'] = get_post( $to );
+
+		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] );
+
+		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
 	}
 
 	public function test_create_post_translation() {
