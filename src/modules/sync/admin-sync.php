@@ -125,7 +125,17 @@ class PLL_Admin_Sync extends PLL_Sync {
 		$this->taxonomies->copy( $context_data['from_post']->ID, $post->ID, $lang->slug );
 		$this->post_metas->copy( $context_data['from_post']->ID, $post->ID, $lang->slug );
 
-		if ( is_sticky( $context_data['from_post']->ID ) ) {
+		$post_type_object = get_post_type_object( $context_data['from_post']->post_type );
+		if ( $post_type_object
+			&& is_sticky( $context_data['from_post']->ID )
+			&& (
+				in_array( 'sticky_posts', $this->options->get( 'sync' ), true )
+				|| (
+					current_user_can( $post_type_object->cap->edit_others_posts )
+					&& current_user_can( $post_type_object->cap->publish_posts )
+				)
+			)
+		) {
 			stick_post( $post->ID );
 		}
 
