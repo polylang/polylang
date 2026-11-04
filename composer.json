@@ -28,7 +28,10 @@
 		],
 		"psr-4": {
 			"WP_Syntex\\Polylang\\Script\\": "bin/"
-		}
+		},
+		"exclude-from-classmap": [
+			"bin/"
+		]
 	},
 	"autoload-dev": {
 		"classmap": [
