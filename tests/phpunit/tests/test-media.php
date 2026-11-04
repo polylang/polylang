@@ -207,6 +207,80 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertFileDoesNotExist( $filename, 'Deleting all translations must delete the files.' );
 	}
 
+	public function test_media_translation_request_denies_unreadable_attachment() {
+		$author = self::factory()->user->create( array( 'role' => 'author' ) );
+		wp_set_current_user( $author );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$private_parent = self::factory()->post->create(
+			array(
+				'post_status' => 'private',
+				'post_author' => 1,
+			)
+		);
+		$attachment = self::factory()->attachment->create(
+			array(
+				'post_parent' => $private_parent,
+				'post_author' => 1,
+			)
+		);
+		self::$model->post->set_language( $attachment, 'en' );
+
+		$_GET = array(
+			'action'     => 'translate_media',
+			'from_media' => $attachment,
+			'new_lang'   => 'fr',
+			'_wpnonce'   => wp_create_nonce( 'translate_media' ),
+		);
+		$_REQUEST = $_GET;
+
+		$this->assertEmpty( $this->pll_admin->links->get_data_from_new_media_translation_request() );
+	}
+
+	public function test_media_translation_request_allows_own_attachment() {
+		$author = self::factory()->user->create( array( 'role' => 'author' ) );
+		wp_set_current_user( $author );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$attachment = self::factory()->attachment->create(
+			array(
+				'post_author' => $author,
+				'post_status' => 'inherit',
+			)
+		);
+		self::$model->post->set_language( $attachment, 'en' );
+
+		$_GET = array(
+			'action'     => 'translate_media',
+			'from_media' => $attachment,
+			'new_lang'   => 'fr',
+			'_wpnonce'   => wp_create_nonce( 'translate_media' ),
+		);
+		$_REQUEST = $_GET;
+
+		$data = $this->pll_admin->links->get_data_from_new_media_translation_request();
+
+		$this->assertSame( $attachment, $data['from_post']->ID );
+		$this->assertSame( 'fr', $data['new_lang']->slug );
+	}
+
+	public function test_media_translation_request_rejects_non_attachment() {
+		wp_set_current_user( 1 );
+
+		$from = self::factory()->post->create();
+		self::$model->post->set_language( $from, 'en' );
+
+		$_GET = array(
+			'action'     => 'translate_media',
+			'from_media' => $from,
+			'new_lang'   => 'fr',
+			'_wpnonce'   => wp_create_nonce( 'translate_media' ),
+		);
+		$_REQUEST = $_GET;
+
+		$this->assertEmpty( $this->pll_admin->links->get_data_from_new_media_translation_request() );
+	}
+
 	protected static function set_upload_dir_time( $time ) {
 		return static function ( $upload ) use ( $time ) {
 			$time = '/' . trim( $time, '/' );

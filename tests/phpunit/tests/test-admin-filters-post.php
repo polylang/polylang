@@ -252,10 +252,50 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$form = ob_get_clean();
 		$doc = new DOMDocument();
 		$doc->loadHTML( $form );
-		$xpath = new DOMXpath( $doc );
+		$xpath = new DOMXPath( $doc );
 
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
+	}
+
+	public function test_languages_meta_box_ignores_unreadable_source() {
+		$contributor = self::factory()->user->create( array( 'role' => 'contributor' ) );
+		wp_set_current_user( $contributor );
+		$this->pll_admin->links      = new PLL_Admin_Links( $this->pll_admin );
+		$this->pll_admin->pref_lang  = self::$model->get_language( 'fr' );
+
+		$en = self::factory()->post->create(
+			array(
+				'post_title'  => 'test',
+				'post_status' => 'private',
+				'post_author' => self::$editor,
+			)
+		);
+		self::$model->post->set_language( $en, 'en' );
+
+		$post = self::factory()->post->create_and_get();
+		wp_set_object_terms( $post->ID, array(), 'language' );
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $en,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST             = $_GET;
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$GLOBALS['post']      = get_post( $en );
+
+		ob_start();
+		$this->pll_admin->classic_editor->post_language( $post );
+		$form = ob_get_clean();
+		$doc  = new DOMDocument();
+		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
+		$xpath = new DOMXPath( $doc );
+
+		$input = $xpath->query( '//input[@name="post_tr_lang[en]"]' );
+		$this->assertEquals( '0', $input->item( 0 )->getAttribute( 'value' ) );
 	}
 
 	public function test_languages_meta_box_for_new_translation() {
@@ -283,9 +323,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->pll_admin->classic_editor->post_language( $post );
 		$form = ob_get_clean();
-		$doc = new DomDocument();
+		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
-		$xpath = new DOMXpath( $doc );
+		$xpath = new DOMXPath( $doc );
 
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
@@ -313,9 +353,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->pll_admin->classic_editor->post_language( $fr_post );
 		$form = ob_get_clean();
-		$doc = new DomDocument();
+		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
-		$xpath = new DOMXpath( $doc );
+		$xpath = new DOMXPath( $doc );
 
 		// Language is French.
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
@@ -353,9 +393,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->pll_admin->classic_editor->post_language( get_post( $post_ID ) );
 		$form = ob_get_clean();
-		$doc = new DomDocument();
+		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $form );
-		$xpath = new DOMXpath( $doc );
+		$xpath = new DOMXPath( $doc );
 
 		// Language is French
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
@@ -609,7 +649,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		libxml_clear_errors();
 		libxml_use_internal_errors( $internal_errors );
 
-		$list = ( new DOMXpath( $doc ) )->query( '//ul/li[@class="all"]/a[@class="current"]' );
+		$list = ( new DOMXPath( $doc ) )->query( '//ul/li[@class="all"]/a[@class="current"]' );
 
 		$this->assertSame( 1, $list->count() );
 		$this->assertInstanceOf( DOMElement::class, $list->item( 0 ), 'The "All" link should be the current one.' );

@@ -394,6 +394,85 @@ class Test_Admin_Links extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * @testWith ["private"]
+	 *           ["draft"]
+	 *
+	 * @param string $post_status Post status of the source post.
+	 */
+	public function test_new_post_translation_request_denies_unreadable_source( string $post_status ) {
+		wp_set_current_user( self::$contributor->ID );
+		$this->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => $post_status,
+				'post_author' => self::$editor->ID,
+			)
+		);
+		$this->pll_admin->model->post->set_language( $from, 'en' );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$_GET                 = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$this->assertEmpty( $this->links->get_data_from_new_post_translation_request() );
+	}
+
+	public function test_new_post_translation_request_allows_own_draft_source() {
+		wp_set_current_user( self::$contributor->ID );
+		$this->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => 'draft',
+				'post_author' => self::$contributor->ID,
+			)
+		);
+		$this->pll_admin->model->post->set_language( $from, 'en' );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$data = $this->links->get_data_from_new_post_translation_request();
+
+		$this->assertSame( $from, $data['from_post']->ID );
+		$this->assertSame( 'fr', $data['new_lang']->slug );
+	}
+
+	public function test_new_post_translation_request_rejects_mismatched_post_type() {
+		wp_set_current_user( self::$editor->ID );
+		$this->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$from = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$this->pll_admin->model->post->set_language( $from, 'en' );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$this->assertEmpty( $this->links->get_data_from_new_post_translation_request() );
+	}
+
+	/**
 	 * Replace `PLL_Admin_Links::$user` with a user mock that can translate.
 	 *
 	 * @param array $methods An array of methods to mock and their return values.
