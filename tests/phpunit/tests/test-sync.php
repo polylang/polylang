@@ -246,6 +246,79 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
 	}
 
+	public function test_create_post_translation_does_not_copy_sticky_without_caps() {
+		wp_set_current_user( self::$contributor );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => 'publish',
+				'post_author' => self::$editor,
+			)
+		);
+		self::$model->post->set_language( $from, 'en' );
+		add_post_meta( $from, 'key', 'value' );
+		stick_post( $from );
+
+		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$to              = self::factory()->post->create();
+		$GLOBALS['post'] = get_post( $to );
+
+		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] );
+
+		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
+		$this->assertFalse( is_sticky( $to ) );
+	}
+
+	public function test_create_post_translation_copies_sticky_when_sync_enabled() {
+		wp_set_current_user( self::$contributor );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+		self::$model->options['sync'] = array( 'sticky_posts' );
+
+		$from = self::factory()->post->create(
+			array(
+				'post_status' => 'publish',
+				'post_author' => self::$editor,
+			)
+		);
+		self::$model->post->set_language( $from, 'en' );
+		stick_post( $from );
+
+		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->sync  = new PLL_Admin_Sync( $this->pll_admin );
+
+		$GLOBALS['pagenow']   = 'post-new.php';
+		$GLOBALS['post_type'] = 'post';
+
+		$_GET = array(
+			'post_type' => 'post',
+			'from_post' => $from,
+			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+		);
+		$_REQUEST = $_GET;
+
+		$to              = self::factory()->post->create();
+		$GLOBALS['post'] = get_post( $to );
+
+		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] );
+
+		$this->assertTrue( is_sticky( $to ) );
+	}
+
 	public function test_create_post_translation() {
 		// Categories.
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
