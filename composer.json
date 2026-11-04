@@ -1,100 +1,100 @@
 {
-	"name": "wpsyntex/polylang",
-	"description": "Making WordPress multilingual.",
-	"license": "GPL-3.0-or-later",
-	"homepage": "https://polylang.pro",
-	"type": "wordpress-plugin",
-	"require": {
-		"php": ">=7.4",
-		"wpsyntex/flags": "dev-main"
-	},
-	"require-dev": {
-		"wpsyntex/polylang-phpstan": "^2.0",
-		"dealerdirect/phpcodesniffer-composer-installer": "*",
-		"wp-coding-standards/wpcs": "^3",
-		"automattic/vipwpcs": "*",
-		"phpcompatibility/phpcompatibility-wp": "^3",
-		"yoast/wp-test-utils": "^1.0.0",
-		"mockery/mockery": "!=1.6.13",
-		"rector/rector": "^2",
-		"wpsyntex/wp-phpunit": "dev-master",
-		"wpsyntex/object-cache-annihilator": "dev-master"
-	},
-	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"autoload": {
-		"classmap": [
-            "src/"
-		],
-		"psr-4": {
-			"WP_Syntex\\Polylang\\Script\\": "bin/"
-		},
-		"exclude-from-classmap": [
-			"bin/"
-		]
-	},
-	"autoload-dev": {
-		"classmap": [
-			"tests/phpunit/"
-		]
-	},
-	"scripts": {
-		"install-suite": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh",
-		"install-suite-with-db": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh latest true",
-		"install-plugins": "bash tests/bin/install-plugins.sh",
-		"install-tests": [
-			"@install-suite",
-			"@install-plugins"
-		],
-		"install-tests-with-db": [
-			"@install-suite-with-db",
-			"@install-plugins"
-		],
-		"test":"vendor/bin/phpunit",
-		"coverage": "vendor/bin/phpunit --configuration phpunit.xml --coverage-html coverage",
-		"cs56": "vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist",
-		"cs": [
-			"vendor/bin/phpcs",
-			"@cs56"
-		],
-		"cs-fix": "vendor/bin/phpcbf",
-		"stan": "vendor/bin/phpstan analyze --memory-limit=2000M",
-		"rector-dry": "vendor/bin/rector process --dry-run",
-		"lint": [
-			"@cs",
-			"@stan",
-			"@rector-dry"
-		],
-		"rector": "vendor/bin/rector process",
-		"build": "bin/build.sh",
-		"dist": "bin/distribute.sh",
-		"build-loader": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
-		"post-autoload-dump": [
-			"@build-loader ./src/integrations",
-			"@build-loader ./src/modules"
-		]
-	},
-	"scripts-descriptions": {
-		"install-suite": "Installs the WordPress tests suite (without installing the database).",
-		"install-suite-with-db": "Installs the WordPress tests suite (with database creation).",
-		"install-plugins": "Installs dependencies needed for integration tests.",
-		"install-tests": "Installs both the WordPress tests suite (without installing the database) and the dependencies needed for integration tests.",
-		"install-tests-with-db": "Installs both the WordPress tests suite (with database creation) and the dependencies needed for integration tests, without creating the database.",
-		"test":"Runs PHPUnit tests.",
-		"coverage": "Generates code coverage report of the integration tests in HTML format.",
-		"cs":"Runs PHPCS linter.",
-		"cs56":"Runs PHPCompatibility linter on files that require php 5.6.",
-		"stan": "Runs PHPStan analysis.",
-		"rector-dry": "Runs a preview of Rector.",
-		"lint": "Runs both PHPCS and PHPStan.",
-		"rector": "Runs Rector.",
-		"build": "Builds the project.",
-		"dist": "Makes the zip file to distribute the project release.",
-		"build-loader": "Builds a list of files to load."
-	},
-	"config": {
-		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true
-		}
-	}
+  "name": "wpsyntex/polylang",
+  "description": "Making WordPress multilingual.",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://polylang.pro",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=7.4",
+    "wpsyntex/flags": "dev-main"
+  },
+  "require-dev": {
+    "wpsyntex/polylang-phpstan": "^2.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "wp-coding-standards/wpcs": "^3",
+    "automattic/vipwpcs": "*",
+    "phpcompatibility/phpcompatibility-wp": "^3",
+    "yoast/wp-test-utils": "^1.0.0",
+    "mockery/mockery": "!=1.6.13",
+    "rector/rector": "^2",
+    "wpsyntex/wp-phpunit": "dev-master",
+    "wpsyntex/object-cache-annihilator": "dev-master"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "classmap": [
+      "src/"
+    ],
+    "psr-4": {
+      "WP_Syntex\\Polylang\\Script\\": "bin/"
+    },
+    "exclude-from-classmap": [
+      "bin/"
+    ]
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/phpunit/"
+    ]
+  },
+  "scripts": {
+    "install-suite": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh",
+    "install-suite-with-db": "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh latest true",
+    "install-plugins": "bash tests/bin/install-plugins.sh",
+    "install-tests": [
+      "@install-suite",
+      "@install-plugins"
+    ],
+    "install-tests-with-db": [
+      "@install-suite-with-db",
+      "@install-plugins"
+    ],
+    "test": "vendor/bin/phpunit",
+    "coverage": "vendor/bin/phpunit --configuration phpunit.xml --coverage-html coverage",
+    "cs56": "vendor/bin/phpcs --standard=phpcs-phpcompatibility-56.xml.dist",
+    "cs": [
+      "vendor/bin/phpcs",
+      "@cs56"
+    ],
+    "cs-fix": "vendor/bin/phpcbf",
+    "stan": "vendor/bin/phpstan analyze --memory-limit=2000M",
+    "rector-dry": "vendor/bin/rector process --dry-run",
+    "lint": [
+      "@cs",
+      "@stan",
+      "@rector-dry"
+    ],
+    "rector": "vendor/bin/rector process",
+    "build": "bin/build.sh",
+    "dist": "bin/distribute.sh",
+    "build-loader": "WP_Syntex\\Polylang\\Script\\Loader_Paths_Finder::hard_code",
+    "post-autoload-dump": [
+      "@build-loader ./src/integrations",
+      "@build-loader ./src/modules"
+    ]
+  },
+  "scripts-descriptions": {
+    "install-suite": "Installs the WordPress tests suite (without installing the database).",
+    "install-suite-with-db": "Installs the WordPress tests suite (with database creation).",
+    "install-plugins": "Installs dependencies needed for integration tests.",
+    "install-tests": "Installs both the WordPress tests suite (without installing the database) and the dependencies needed for integration tests.",
+    "install-tests-with-db": "Installs both the WordPress tests suite (with database creation) and the dependencies needed for integration tests, without creating the database.",
+    "test": "Runs PHPUnit tests.",
+    "coverage": "Generates code coverage report of the integration tests in HTML format.",
+    "cs": "Runs PHPCS linter.",
+    "cs56": "Runs PHPCompatibility linter on files that require php 5.6.",
+    "stan": "Runs PHPStan analysis.",
+    "rector-dry": "Runs a preview of Rector.",
+    "lint": "Runs both PHPCS and PHPStan.",
+    "rector": "Runs Rector.",
+    "build": "Builds the project.",
+    "dist": "Makes the zip file to distribute the project release.",
+    "build-loader": "Builds a list of files to load."
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
 }
