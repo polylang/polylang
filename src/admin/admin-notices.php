@@ -20,6 +20,11 @@ class PLL_Admin_Notices {
 	protected $options;
 
 	/**
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
 	 * Stores custom notices.
 	 *
 	 * @var string[]
@@ -36,6 +41,7 @@ class PLL_Admin_Notices {
 	 */
 	public function __construct( PLL_Admin_Base $polylang ) {
 		$this->options = $polylang->options;
+		$this->model   = $polylang->model;
 
 		add_action( 'admin_init', array( $this, 'hide_notice' ) );
 		add_action( 'admin_notices', array( $this, 'display_notices' ) );
@@ -192,6 +198,15 @@ class PLL_Admin_Notices {
 				$this->empty_strings_translations_notice();
 			}
 
+			$pll_screens = array(
+				PLL_Admin_Base::get_screen_id( 'lang' ),
+				PLL_Admin_Base::get_screen_id( 'strings' ),
+				PLL_Admin_Base::get_screen_id( 'settings' ),
+			);
+			if ( $this->can_display_notice( 'translation-updates', $pll_screens ) && $this->should_display_translation_updates_notice() ) {
+				$this->translation_updates_notice();
+			}
+
 			// Custom notices
 			foreach ( static::get_notices() as $notice => $html ) {
 				if ( $this->can_display_notice( $notice ) && ! static::is_dismissed( $notice ) ) {
@@ -289,6 +304,41 @@ class PLL_Admin_Notices {
 			<p>
 				<?php esc_html_e( 'Translations matching the original string are shown as empty in the table. Untranslated content remains unchanged.', 'polylang' ); ?>
 			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Whether the translation updates notice should be displayed.
+	 *
+	 * Relies on data already stored in the update transients (cron, Updates screen, etc.).
+	 * Does not contact WordPress.org from this screen.
+	 *
+	 * @since 3.9
+	 *
+	 * @return bool
+	 */
+	private function should_display_translation_updates_notice() {
+		return $this->model->has_languages() && current_user_can( 'update_languages' ) && ! empty( wp_get_translation_updates() );
+	}
+
+	/**
+	 * Displays a notice when WordPress language packs can be updated.
+	 *
+	 * Not dismissible: it remains until the language packs are updated.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	private function translation_updates_notice() {
+		?>
+		<div class="pll-notice notice notice-info">
+			<form method="post" action="<?php echo esc_url( self_admin_url( 'update-core.php?action=do-translation-upgrade' ) ); ?>" name="upgrade-translations" class="upgrade">
+				<p><?php esc_html_e( 'New language packs are available for WordPress, plugins, or themes.', 'polylang' ); ?></p>
+				<?php wp_nonce_field( 'upgrade-translations' ); ?>
+				<p><input class="button" type="submit" value="<?php echo esc_attr__( 'Update language packs', 'polylang' ); ?>" name="upgrade" /></p>
+			</form>
 		</div>
 		<?php
 	}

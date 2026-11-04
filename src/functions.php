@@ -124,10 +124,24 @@ function pll_add_notice( WP_Error $error ) {
 		$message = wp_kses(
 			implode( '<br>', $error->get_error_messages( $error_code ) ),
 			array(
-				'a'    => array( 'href' => true ),
-				'br'   => array(),
-				'code' => array(),
-				'em'   => array(),
+				'a'     => array( 'href' => true ),
+				'br'    => array(),
+				'code'  => array(),
+				'em'    => array(),
+				'form'  => array(
+					'action' => true,
+					'class'  => true,
+					'method' => true,
+					'name'   => true,
+				),
+				'input' => array(
+					'class' => true,
+					'id'    => true,
+					'name'  => true,
+					'type'  => true,
+					'value' => true,
+				),
+				'p'     => array(),
 			)
 		);
 

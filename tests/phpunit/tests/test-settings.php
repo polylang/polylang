@@ -51,9 +51,9 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env = new PLL_Settings( $links_model );
 		$pll_env->languages_page();
 		$out = ob_get_clean();
-		$doc = new DomDocument();
+		$doc = new DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $out );
-		$xpath = new DOMXpath( $doc );
+		$xpath = new DOMXPath( $doc );
 
 		$input = $xpath->query( '//input[@name="lang_id"]' );
 		$this->assertEquals( $lang->term_id, $input->item( 0 )->getAttribute( 'value' ) ); // Hidden field.
@@ -149,5 +149,54 @@ class Settings_Test extends PLL_UnitTestCase {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $lang );
 		$this->assertSame( 'The translation', $mo->translate( 'Some string' ) );
+	}
+
+	public function test_update_language_from_settings_with_fallbacks() {
+		$filter = function ( $lang_metas, $args ) {
+			if ( ! empty( $args['fallbacks'] ) && is_string( $args['fallbacks'] ) ) {
+				$fallbacks = array_map( 'trim', explode( ',', $args['fallbacks'] ) );
+				$fallbacks = array_values( array_diff( array_unique( $fallbacks ), array( $args['locale'] ) ) );
+
+				return array_merge( $lang_metas, array( 'fallbacks' => $fallbacks ) );
+			}
+
+			if ( empty( $args['lang_id'] ) ) {
+				return array_merge( $lang_metas, array( 'fallbacks' => array( 'es_ES' ) ) );
+			}
+
+			return $lang_metas;
+		};
+
+		add_filter( 'pll_language_metas', $filter, 10, 2 );
+		$de = self::create_language( 'de_DE' );
+
+		self::$model->clean_languages_cache();
+		$de = self::$model->get_language( 'de' );
+
+		$_POST = array(
+			'pll_action'        => 'update',
+			'_wpnonce_add-lang' => wp_create_nonce( 'add-lang' ),
+			'lang_id'           => $de->term_id,
+			'name'              => 'Deutsch',
+			'slug'              => 'de',
+			'locale'            => 'de_DE',
+			'rtl'               => '0',
+			'term_group'        => $de->term_group,
+			'flag'              => $de->flag_code,
+			'fallbacks'         => 'es_ES, de_AT',
+		);
+
+		$_REQUEST = array_merge( $_GET, $_POST );
+
+		$links_model = self::$model->get_links_model();
+		$pll_env     = new PLL_Settings( $links_model );
+		$this->assert_redirect( array( $pll_env, 'handle_actions' ), array( 'update' ) );
+
+		self::$model->clean_languages_cache();
+		$de = self::$model->get_language( 'de' );
+
+		$this->assertEqualSets( array( 'es_ES', 'de_AT' ), $de->fallbacks );
+
+		remove_filter( 'pll_language_metas', $filter, 10 );
 	}
 }
