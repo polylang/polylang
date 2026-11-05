@@ -17,6 +17,7 @@ ignore-hidden = false
 extend-ignore-re = [
     "'bs_BA'",
     "Jani Alha",
+    "Oly Hossen",
     "olt-manager\\.php",
     # En français dans le texte.
     "Tableau de bord",
