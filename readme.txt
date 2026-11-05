@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.9.1
+Stable tag: 3.9.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -66,7 +66,6 @@ Helps optimizing the time spent translating your site with some very useful extr
 
 Thanks a lot to all translators who [help translating Polylang](https://translate.wordpress.org/projects/wp-plugins/polylang).
 Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the logo.
-Most of the flags included with Polylang are coming from [famfamfam](http://famfamfam.com/) and are public domain.
 Wherever third party code has been used, credit has been given in the code’s comments.
 
 == Installation ==
@@ -103,6 +102,15 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.9.2 (2026-11-09) =
+
+* Security: Fix exposure of some private posts metadata to non-authorized users. Reported by Oly Hossen via Patchstack.
+* Allow using language code in the `select` layout of the language switcher, via the API #2044
+* Fix a possible fatal error in the wizard #2045
+* Fix a fatal error when a language is corrupted in DB #2046
+* Fix 404 on pages created right after setting up languages with the Wizard #2039
+* Fix no nav menu displayed before a language location is applied #2040
 
 = 3.9.1 (2026-10-21) =
 
