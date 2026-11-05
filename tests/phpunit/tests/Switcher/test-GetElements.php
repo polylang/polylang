@@ -346,6 +346,63 @@ class GetElements_Test extends TestCase {
 		$this->assertSame( $this->pll_model->get_language( 'en' )->get_home_url(), $elements['en']->url );
 	}
 
+	public function corrupted_description_provider(): array {
+		return array(
+			// The locale is changed from `fr_FR` to `fr` without updating the serialized string length.
+			'manually edited locale'     => array(
+				'a:4:{s:9:"fallbacks";a:0:{}s:6:"locale";s:5:"fr";s:3:"rtl";b:0;s:9:"flag_code";s:2:"fr";}',
+				true, // `unserialize()` emits a warning.
+			),
+			'values of unexpected types' => array(
+				maybe_serialize(
+					array(
+						'locale'    => array( 'fr_FR' ),
+						'flag_code' => array( 'fr' ),
+					)
+				),
+				false,
+			),
+		);
+	}
+
+	/**
+	 * @ticket #3195 {@see https://github.com/polylang/polylang-pro/issues/3195}
+	 *
+	 * @dataProvider corrupted_description_provider
+	 *
+	 * @param string $description       Corrupted language description.
+	 * @param bool   $suppress_warnings Whether to suppress the warnings expected from the corrupted description.
+	 */
+	public function test_corrupted_language( string $description, bool $suppress_warnings ): void {
+		global $wpdb;
+
+		$pll_env      = $this->init_frontend();
+		$language     = $this->pll_model->get_language( 'fr' );
+		$expected_url = $language->get_home_url();
+		$term_id      = $language->get_tax_prop( 'language', 'term_id' );
+
+		// Corrupt the description directly in the database.
+		$wpdb->update(
+			$wpdb->term_taxonomy,
+			array( 'description' => $description ),
+			array(
+				'term_id'  => $term_id,
+				'taxonomy' => 'language',
+			)
+		);
+		clean_term_cache( array( $term_id ), 'language' );
+		$this->pll_model->clean_languages_cache();
+
+		$switcher = $this->get_new_switcher( $pll_env );
+		$elements = $suppress_warnings ? @$switcher->get_elements() : $switcher->get_elements();
+
+		$this->assertCount( 2, $elements, 'Both languages should still be displayed.' );
+		$this->assertArrayHasKey( 'en', $elements, 'The valid language should still be displayed.' );
+		$this->assertArrayHasKey( 'fr', $elements, 'The corrupted language should still be displayed.' );
+		$this->assertSame( '', $elements['fr']->locale, 'The locale of the corrupted language should be an empty string.' );
+		$this->assertSame( $expected_url, $elements['fr']->url, 'The link of the corrupted language should be kept.' );
+	}
+
 	/**
 	 * Replaces the `style` attribute of a flag by the one set by `Abstract_Element`.
 	 *
