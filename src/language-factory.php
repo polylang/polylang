@@ -82,8 +82,6 @@ class PLL_Language_Factory {
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
 			'is_default' => $this->options['default_lang'] === $terms['language']->slug,
-			'flag_code'  => '',
-			'locale'     => '',
 		);
 
 		foreach ( $terms as $term ) {
@@ -94,23 +92,16 @@ class PLL_Language_Factory {
 			);
 		}
 
-		// The description fields can contain any property.
 		$description = pll_maybe_unserialize( $terms['language']->description );
+		$description = is_array( $description ) ? $description : array();
 
-		if ( is_array( $description ) ) {
-			$description = array_intersect_key(
-				$description,
-				array( 'locale' => null, 'rtl' => null, 'flag_code' => null, 'active' => null, 'fallbacks' => null )
-			);
+		// `locale` and `flag_code` are used before `sanitize_data()`, so check their types in case of a corrupted description.
+		$data['locale']    = is_string( $description['locale'] ?? null ) ? $description['locale'] : '';
+		$data['flag_code'] = is_string( $description['flag_code'] ?? null ) ? $description['flag_code'] : '';
 
-			foreach ( $description as $prop => $value ) {
-				if ( 'rtl' === $prop ) {
-					$data['is_rtl'] = $value;
-				} else {
-					$data[ $prop ] = $value;
-				}
-			}
-		}
+		$data['is_rtl']    = $description['rtl'] ?? 0;
+		$data['active']    = $description['active'] ?? true;
+		$data['fallbacks'] = $description['fallbacks'] ?? array();
 
 		if ( ! empty( $data['locale'] ) ) {
 			if ( isset( $languages[ $data['locale'] ]['w3c'] ) ) {
@@ -170,6 +161,11 @@ class PLL_Language_Factory {
 		foreach ( $data['term_props'] as $tax => $props ) {
 			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
+
+		// A corrupted language description may lead to unexpected types.
+		$data['locale']    = is_string( $data['locale'] ?? null ) ? $data['locale'] : '';
+		$data['w3c']       = is_string( $data['w3c'] ?? null ) ? $data['w3c'] : '';
+		$data['flag_code'] = is_string( $data['flag_code'] ?? null ) ? $data['flag_code'] : '';
 
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
 
