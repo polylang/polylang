@@ -189,7 +189,7 @@ abstract class Abstract_Block {
 			$label_style = safecss_filter_attr(
 				sprintf(
 					'--pll-flag-label-spacing:%1$s',
-					$attributes['flag_label_spacing'] ?? '.3em'
+					$attributes['flag_label_spacing'] ?? '0.3em'
 				)
 			);
 		}

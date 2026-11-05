@@ -353,7 +353,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $labels as $label ) {
 			/** @var DOMElement $label */
 			$this->assertSame(
-				'margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb',
+				'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb',
 				$label->getAttribute( 'style' )
 			);
 		}
@@ -397,7 +397,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $labels as $label ) {
 			/** @var DOMElement $label */
 			$this->assertSame(
-				'margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb',
+				'margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb',
 				$label->getAttribute( 'style' )
 			);
 		}

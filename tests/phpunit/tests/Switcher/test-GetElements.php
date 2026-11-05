@@ -223,7 +223,7 @@ class GetElements_Test extends TestCase {
 			$label
 		);
 		$this->assertStringContainsString(
-			'style="margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb"',
+			'style="margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb"',
 			$label
 		);
 	}

@@ -26,7 +26,7 @@ const CSS_LENGTH_UNITS = [
 	{ value: 'vw', label: 'vw' },
 ];
 
-const LABEL_SPACING_DEFAULT_VALUE = '.3em';
+const LABEL_SPACING_DEFAULT_VALUE = '0.3em';
 
 const ALL_LAYOUT_OPTIONS = [
 	{

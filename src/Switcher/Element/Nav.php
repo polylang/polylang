@@ -81,7 +81,7 @@ class Nav extends Abstract_Element {
 
 		// Keep these inline styles in sync with `css/src/lib/switcher-flags.css`.
 		if ( ! empty( $this->label ) ) {
-			$style = empty( $this->flag ) ? '' : ' style="margin-inline-start:var(--pll-flag-label-spacing,.3em);writing-mode:horizontal-tb"';
+			$style = empty( $this->flag ) ? '' : ' style="margin-inline-start:var(--pll-flag-label-spacing,0.3em);writing-mode:horizontal-tb"';
 			$label .= sprintf( '<span class="pll-switcher-label"%1$s>%2$s</span>', $style, esc_html( $this->label ) );
 		}
 
