@@ -74,7 +74,7 @@ class Nav extends Abstract_Element {
 
 		if ( ! empty( $this->flag ) ) {
 			$label .= sprintf(
-				'<span class="pll-switcher-flag">%s</span>',
+				'<span class="pll-switcher-flag" style="display:inline-block;flex-shrink:0">%s</span>',
 				$this->flag
 			);
 		}

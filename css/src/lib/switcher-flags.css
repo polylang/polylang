@@ -11,6 +11,11 @@
 	writing-mode: horizontal-tb;
 }
 
+.pll-switcher-flag {
+	display: inline-block;
+	flex-shrink: 0;
+}
+
 .pll-switcher-flag img {
 	object-fit: cover;
 	object-position: center;

@@ -335,7 +335,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertSame( 3, $flags->length );
 		foreach ( $flags as $flag ) {
 			/** @var DOMElement $flag */
-			$this->assertSame( '', $flag->getAttribute( 'style' ) );
+			$this->assertSame( 'display:inline-block;flex-shrink:0', $flag->getAttribute( 'style' ) );
 		}
 
 		$flag_images = $xpath->query( '//span[@class="pll-switcher-flag"]/img' );
@@ -379,7 +379,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertSame( 3, $flags->length );
 		foreach ( $flags as $flag ) {
 			/** @var DOMElement $flag */
-			$this->assertSame( '', $flag->getAttribute( 'style' ) );
+			$this->assertSame( 'display:inline-block;flex-shrink:0', $flag->getAttribute( 'style' ) );
 		}
 
 		$flag_images = $xpath->query( '//div/ul/li/a/span[@class="pll-switcher-flag"]/img' );

@@ -215,7 +215,7 @@ class GetElements_Test extends TestCase {
 		$label = $elements['en']->get_label();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>English<\/span>$/', // No styles on `pll-switcher-flag`, empty alt.
+			'/^<span class="pll-switcher-flag" style="display:inline-block;flex-shrink:0"><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>English<\/span>$/', // No styles on `pll-switcher-flag`, empty alt.
 			$label
 		);
 		$this->assertStringContainsString(
@@ -237,7 +237,7 @@ class GetElements_Test extends TestCase {
 		)->get_elements();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"[^>]*><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>EN<\/span>$/', // Empty alt.
+			'/^<span class="pll-switcher-flag" style="display:inline-block;flex-shrink:0"[^>]*><img[^>]* alt=""[^>]*><\/span><span class="pll-switcher-label"[^>]*>EN<\/span>$/', // Empty alt.
 			$elements['en']->get_label()
 		);
 	}
@@ -251,7 +251,7 @@ class GetElements_Test extends TestCase {
 		)->get_elements();
 
 		$this->assertMatchesRegularExpression(
-			'/^<span class="pll-switcher-flag"[^>]*><img[^>]* alt="[^"]+"[^>]*><\/span>$/', // Non empty alt.
+			'/^<span class="pll-switcher-flag" style="display:inline-block;flex-shrink:0"[^>]*><img[^>]* alt="[^"]+"[^>]*><\/span>$/', // Non empty alt.
 			$elements['en']->get_label()
 		);
 	}
