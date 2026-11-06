@@ -219,7 +219,7 @@ class GetElements_Test extends TestCase {
 			$label
 		);
 		$this->assertStringContainsString(
-			'style="object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
+			'style="display:block;object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
 			$label
 		);
 		$this->assertStringContainsString(
@@ -351,7 +351,7 @@ class GetElements_Test extends TestCase {
 	private function replace_flag_style( string $string ): string {
 		return preg_replace(
 			'/style=(["\']).*?\1/',
-			'style="object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:var(--pll-flag-width,18px);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)"',
+			'style="display:block;object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:var(--pll-flag-width,18px);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)"',
 			$string
 		);
 	}

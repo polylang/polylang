@@ -244,7 +244,7 @@ abstract class Abstract_Element {
 		if ( '3:2' === $this->settings->flag_aspect_ratio ) {
 			$height = "calc({$height}*2/3)";
 		}
-		$style = "object-fit:cover;object-position:center;width:{$width};height:{$height};border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)";
+		$style = "display:block;object-fit:cover;object-position:center;width:{$width};height:{$height};border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)";
 
 		if ( ! $flag->set_attribute( 'style', $style ) ) {
 			return;

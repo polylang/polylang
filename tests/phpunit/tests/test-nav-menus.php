@@ -343,7 +343,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $flag_images as $flag_image ) {
 			/** @var DOMElement $flag_image */
 			$this->assertSame(
-				'object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
+				'display:block;object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
 				$flag_image->getAttribute( 'style' )
 			);
 		}
@@ -387,7 +387,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		foreach ( $flag_images as $flag_image ) {
 			/** @var DOMElement $flag_image */
 			$this->assertSame(
-				'object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
+				'display:block;object-fit:cover;object-position:center;width:var(--pll-flag-width,18px);height:calc(var(--pll-flag-width,18px)*2/3);border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)',
 				$flag_image->getAttribute( 'style' )
 			);
 		}
