@@ -29,6 +29,6 @@
 }
 
 .pll-aspect-ratio-11 .pll-switcher-flag img,
-.pll-switcher-flag.pll-aspect-ratio-11 {
+.pll-switcher-flag.pll-aspect-ratio-11 img {
 	height: var( --pll-flag-width, 18px );
 }
