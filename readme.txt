@@ -66,7 +66,6 @@ Helps optimizing the time spent translating your site with some very useful extr
 
 Thanks a lot to all translators who [help translating Polylang](https://translate.wordpress.org/projects/wp-plugins/polylang).
 Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the logo.
-Most of the flags included with Polylang are coming from [famfamfam](http://famfamfam.com/) and are public domain.
 Wherever third party code has been used, credit has been given in the code’s comments.
 
 == Installation ==
