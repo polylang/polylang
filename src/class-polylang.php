@@ -59,6 +59,20 @@ class Polylang {
 	/**
 	 * Tells whether the current request is an ajax request on frontend or not
 	 *
+	 * Caution: the result depends on data sent by the client (`$_REQUEST['pll_ajax_backend']` and
+	 * `$_REQUEST['action']`), which can be forged. For example, adding `pll_ajax_backend=1` to an
+	 * ajax request makes this method return false.
+	 *
+	 * It is meant to choose which Polylang context to load. It does not verify the user's intent
+	 * or capabilities, so it must not be used on its own to decide whether someone can access data
+	 * or a feature.
+	 *
+	 * Security checks must be performed separately: use `check_admin_referer()` to verify the user's
+	 * intent and `current_user_can()` to verify their capabilities, as appropriate.
+	 *
+	 * To only know whether the request goes through `admin-ajax.php`, use `wp_doing_ajax()`,
+	 * which relies on the `DOING_AJAX` constant and not on request parameters.
+	 *
 	 * @since 2.2
 	 *
 	 * @return bool
