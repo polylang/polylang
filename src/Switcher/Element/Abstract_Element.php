@@ -237,8 +237,16 @@ abstract class Abstract_Element {
 			return;
 		}
 
-		// Replaces the size set by `PLL_Language::get_flag_html()`. Keep in sync with `css/src/lib/switcher-flags.css`.
-		if ( ! $flag->set_attribute( 'style', 'display:block;object-fit:cover;object-position:center;width:100%;height:100%' ) ) {
+		// Replaces the size set by `PLL_Language::get_flag_html()`.
+		// Keep these inline styles in sync with `css/src/lib/switcher-flags.css`.
+		$width  = 'var(--pll-flag-width,18px)';
+		$height = $width;
+		if ( '3:2' === $this->settings->flag_aspect_ratio ) {
+			$height = "calc({$height}*2/3)";
+		}
+		$style = "display:block;object-fit:cover;object-position:center;width:{$width};height:{$height};border-radius:calc(var(--pll-flag-border-radius,0)*.5*1%)";
+
+		if ( ! $flag->set_attribute( 'style', $style ) ) {
 			return;
 		}
 
