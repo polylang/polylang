@@ -117,12 +117,9 @@ class PLL_Admin_Notices {
 		}
 
 		if ( empty( $allowed_screens ) ) {
-			$allowed_screens = array(
-				'dashboard',
-				'plugins',
-				PLL_Admin_Base::get_screen_id( 'lang' ),
-				PLL_Admin_Base::get_screen_id( 'strings' ),
-				PLL_Admin_Base::get_screen_id( 'settings' ),
+			$allowed_screens = array_merge(
+				array( 'dashboard', 'plugins' ),
+				$this->get_polylang_screens()
 			);
 		}
 
@@ -135,6 +132,22 @@ class PLL_Admin_Notices {
 		 * @param string $notice  The notice name.
 		 */
 		return apply_filters( 'pll_can_display_notice', in_array( $screen->id, $allowed_screens, true ), $notice );
+	}
+
+	/**
+	 * Returns Polylang admin screen IDs.
+	 *
+	 * @since 4.0
+	 *
+	 * @return string[]
+	 */
+	private function get_polylang_screens() {
+
+		return array(
+			PLL_Admin_Base::get_screen_id( 'lang' ),
+			PLL_Admin_Base::get_screen_id( 'strings' ),
+			PLL_Admin_Base::get_screen_id( 'settings' ),
+		);
 	}
 
 	/**
@@ -198,12 +211,12 @@ class PLL_Admin_Notices {
 				$this->empty_strings_translations_notice();
 			}
 
-			$pll_screens = array(
-				PLL_Admin_Base::get_screen_id( 'lang' ),
-				PLL_Admin_Base::get_screen_id( 'strings' ),
-				PLL_Admin_Base::get_screen_id( 'settings' ),
-			);
-			if ( $this->can_display_notice( 'translation-updates', $pll_screens ) && $this->should_display_translation_updates_notice() ) {
+			if (
+				$this->can_display_notice( 'translation-updates', $this->get_polylang_screens() )
+				&& $this->model->has_languages()
+				&& current_user_can( 'update_languages' )
+				&& ! empty( wp_get_translation_updates() )
+			) {
 				$this->translation_updates_notice();
 			}
 
@@ -309,25 +322,11 @@ class PLL_Admin_Notices {
 	}
 
 	/**
-	 * Whether the translation updates notice should be displayed.
-	 *
-	 * Relies on data already stored in the update transients (cron, Updates screen, etc.).
-	 * Does not contact WordPress.org from this screen.
-	 *
-	 * @since 3.9
-	 *
-	 * @return bool
-	 */
-	private function should_display_translation_updates_notice() {
-		return $this->model->has_languages() && current_user_can( 'update_languages' ) && ! empty( wp_get_translation_updates() );
-	}
-
-	/**
 	 * Displays a notice when WordPress language packs can be updated.
 	 *
 	 * Not dismissible: it remains until the language packs are updated.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @return void
 	 */

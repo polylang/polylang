@@ -3,16 +3,6 @@
 class Admin_Notices_Test extends PLL_UnitTestCase {
 	use PLL_Handle_WP_Redirect_Trait;
 
-	/**
-	 * @param WP_UnitTest_Factory $factory
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-	}
-
 	public function set_up() {
 		parent::set_up();
 
@@ -44,9 +34,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertFalse( strpos( $out, 'review' ) );
 	}
@@ -61,9 +49,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		if ( defined( 'POLYLANG_PRO' ) ) {
 			$this->assertFalse( strpos( $out, 'review' ) );
@@ -83,9 +69,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertFalse( strpos( $out, 'review' ) );
 	}
@@ -101,9 +85,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertEmpty( $out );
 	}
@@ -120,9 +102,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		}
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertNotFalse( strpos( $out, 'pllwc' ) );
 	}
@@ -143,14 +123,13 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 
 	public function test_translation_updates_notice_when_updates_available() {
 		wp_set_current_user( 1 );
+		self::create_language( 'fr_FR' );
 		$this->mock_plugin_translation_updates();
 		$this->set_languages_screen();
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertStringContainsString( 'upgrade-translations', $out );
 		$this->assertStringContainsString( 'do-translation-upgrade', $out );
@@ -169,9 +148,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertStringNotContainsString( 'upgrade-translations', $out );
 	}
@@ -180,17 +157,21 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		wp_set_current_user( 1 );
 		$this->mock_plugin_translation_updates();
 
-		$_GET['page'] = 'mlang';
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertStringNotContainsString( 'upgrade-translations', $out );
+	}
+
+	private function get_admin_notices_output() {
+		ob_start();
+		do_action( 'admin_notices' );
+
+		return ob_get_clean();
 	}
 
 	private function set_languages_screen() {

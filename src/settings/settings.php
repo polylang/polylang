@@ -254,7 +254,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * language packs for the language and its fallbacks when allowed.
 	 * Plugin and theme translation updates are only offered for installed core locales.
 	 *
-	 * @since 3.9
+	 * @since 4.0
 	 *
 	 * @param PLL_Language $language Saved language.
 	 * @return void
@@ -268,18 +268,16 @@ class PLL_Settings extends PLL_Admin_Base {
 			return;
 		}
 
-		if ( 'en_US' === $language->locale && empty( $language->fallbacks ) ) {
+		if ( 'en_US' === $language->locale ) {
 			return;
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 		$available_translations = wp_get_available_translations();
 
-		$locales = array_values(
-			array_diff(
-				array_unique( array_merge( array( $language->locale ), (array) $language->fallbacks ) ),
-				array( 'en_US' )
-			)
+		$locales = array_diff(
+			array_unique( array_merge( array( $language->locale ), (array) $language->fallbacks ) ),
+			array( 'en_US' )
 		);
 
 		foreach ( $locales as $locale ) {
