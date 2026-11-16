@@ -210,6 +210,11 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return string
 	 */
 	public function load_textdomain_mofile( $mofile ) {
+		if ( is_locale_switched() ) {
+			// The file already matches the locale requested by `switch_to_locale()`.
+			return $mofile;
+		}
+
 		$user_locale = get_user_locale();
 		return str_replace( "{$user_locale}.mo", "{$this->curlang->locale}.mo", $mofile );
 	}
