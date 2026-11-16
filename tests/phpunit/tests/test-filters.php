@@ -443,4 +443,36 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertCount( 0, get_comments( array( 'lang' => 'en' ) ) );
 		$this->assertEmpty( $wpdb->last_error, 'It should not have database error.' );
 	}
+
+	public function _return_fr_FR() {
+		return array( 'fr_FR' );
+	}
+
+	/**
+	 * @see https://github.com/polylang/polylang/issues/2026
+	 */
+	public function test_load_textdomain_mofile_during_locale_switch() {
+		$this->frontend->curlang = self::$model->get_language( 'en' );
+		$filters = new PLL_Frontend_Filters( $this->frontend );
+
+		// Outside a locale switch, the user locale is replaced by the current language.
+		$user_id = self::factory()->user->create( array( 'locale' => 'fr_FR' ) );
+		wp_set_current_user( $user_id );
+		$this->assertSame( 'languages/plugin-en_US.mo', $filters->load_textdomain_mofile( 'languages/plugin-fr_FR.mo' ) );
+
+		// During a locale switch, the requested file is kept for a user without a profile language.
+		wp_set_current_user( 0 );
+		add_filter( 'get_available_languages', array( $this, '_return_fr_FR' ) );
+		$old_locale_switcher           = $GLOBALS['wp_locale_switcher'];
+		$GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher();
+		$GLOBALS['wp_locale_switcher']->init();
+
+		$this->assertTrue( switch_to_locale( 'fr_FR' ) );
+		$mofile = $filters->load_textdomain_mofile( 'languages/plugin-fr_FR.mo' );
+		restore_current_locale();
+
+		$GLOBALS['wp_locale_switcher'] = $old_locale_switcher;
+
+		$this->assertSame( 'languages/plugin-fr_FR.mo', $mofile );
+	}
 }
