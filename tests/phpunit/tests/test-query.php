@@ -699,6 +699,45 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * A language clause nested in the tax query (as MailPoet builds its "Automated latest content" queries)
+	 * must not be combined with the current language.
+	 *
+	 * @testWith ["IN", "fr", "en"]
+	 *           ["NOT IN", "en", "en"]
+	 *
+	 * @param string $operator     Operator of the nested language clause.
+	 * @param string $queried_lang Language of the nested language clause.
+	 * @param string $current_lang Current language.
+	 */
+	public function test_nested_language_clause_in_tax_query( $operator, $queried_lang, $current_lang ) {
+		$en = self::factory()->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		$this->frontend->curlang = self::$model->get_language( $current_lang );
+
+		$args = array(
+			'post_type' => 'post',
+			'tax_query' => array(
+				array(
+					array(
+						'taxonomy' => 'language',
+						'field'    => 'id',
+						'terms'    => array( self::$model->get_language( $queried_lang )->get_tax_prop( 'language', 'term_id' ) ),
+						'operator' => $operator,
+					),
+					'relation' => 'OR',
+				),
+			),
+		);
+
+		$query = new WP_Query( $args );
+		$this->assertSame( array( $fr ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
+	/**
 	 * Tests cases with 'lang' and no post type in query.
 	 */
 	public function test_language_and_no_post_type_in_query() {
