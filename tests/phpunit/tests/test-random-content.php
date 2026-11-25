@@ -61,6 +61,7 @@ class Random_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @testWith ["en/random/", "en/a-post-in-en/"]
+	 *           ["en/random/author/admin/", "en/a-post-in-en/"]
 	 *           ["en/random/category/test-cat/", "en/a-post-in-en/"]
 	 *           ["en/random/tag/test-tag/", "en/a-post-in-en/"]
 	 *           ["en/random/custom-random-tax/test-custom-term/", "en/a-post-in-en/"]
@@ -87,10 +88,10 @@ class Random_Test extends PLL_UnitTestCase {
 		self::register_post_types_and_taxonomies();
 
 		// Post, custom CPT.
-		self::$post_en = $factory->post->create( array( 'post_title' => 'a-post-in-en' ) );
+		self::$post_en = $factory->post->create( array( 'post_title' => 'a-post-in-en', 'post_author' => 1 ) );
 		self::$model->post->set_language( self::$post_en, 'en' );
 
-		self::$custom_post_id = $factory->post->create( array( 'post_type' => self::CUSTOM_CPT, 'post_title' => 'a-custom-post-in-en' ) );
+		self::$custom_post_id = $factory->post->create( array( 'post_type' => self::CUSTOM_CPT, 'post_title' => 'a-custom-post-in-en', 'post_author' => 1 ) );
 		self::$model->post->set_language( self::$custom_post_id, 'en' );
 
 		// Category, tag, custom tax.
