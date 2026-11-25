@@ -1,6 +1,6 @@
 # E2E conventions
 
-Stack: `@wordpress/e2e-test-utils-playwright` + `@wpsyntex/e2e-test-utils`. Config: `tests/e2e/playwright.config.mjs`. Run: `npm run test:e2e` · scoped path · Docker browsers: `npm run test:e2e:docker-browser`.
+Stack: `@wordpress/e2e-test-utils-playwright` + `@wpsyntex/e2e-test-utils`. Config: `tests/e2e/playwright.config.mjs` (wp-env `http://localhost:8891`). Run: `npm run test:e2e` · scoped path · Docker browsers: `npm run test:e2e:docker-browser`.
 
 | Path | Purpose |
 |------|---------|
