@@ -44,7 +44,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 *
 	 * @var string[]
 	 */
-	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author' );
+	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author', 'random' );
 
 	/**
 	 * Constructor.
