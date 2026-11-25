@@ -3,8 +3,11 @@ name: Static Analysis
 on:
   push:
     branches: master
+    paths-ignore: &cursor_paths
+      - '.cursor/**'
   pull_request:
     branches: master
+    paths-ignore: *cursor_paths
   workflow_dispatch:
 
 
