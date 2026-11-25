@@ -1,0 +1,16 @@
+---
+description: Polylang Playwright layout, plugins, and snapshots
+globs: tests/e2e/**/*.{js,mjs,cjs}
+alwaysApply: false
+---
+
+# Polylang E2E
+
+Helpers: `@wpsyntex/e2e-test-utils`, then `tests/e2e/plugins/` (`custom-strings/`, `translation-updates/`). Image snapshots only — this repo has no download fixtures.
+
+```js
+const screenshot = await locator.screenshot();
+expect( screenshot ).toMatchSnapshot( 'name.png', { maxDiffPixelRatio: 0.25 } );
+```
+
+Do not redact language names or switcher markup. Layout: `.cursor/reference/e2e-conventions.md`.

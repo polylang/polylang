@@ -1,0 +1,14 @@
+---
+description: Polylang PHPUnit base class and PLL factory
+globs: tests/phpunit/**/*.php
+alwaysApply: false
+---
+
+# Polylang PHPUnit
+
+Extend `PLL_UnitTestCase` (`tests/phpunit/includes/testcase.php`) or a closer base in `includes/`. Languages, posts, and terms go through `self::factory()`.
+
+```php
+self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
+self::factory()->post->create( array( 'lang' => 'fr' ) );
+```

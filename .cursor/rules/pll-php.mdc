@@ -1,0 +1,15 @@
+---
+description: Polylang PHP namespaces and text domain
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Polylang PHP
+
+New files use `WP_Syntex\Polylang\…`. When editing a legacy `PLL_*` class, match that class. Text domain: `polylang`.
+
+```php
+namespace WP_Syntex\Polylang\Switcher\Settings;
+```
+
+Layout and Rector: `.cursor/reference/php-conventions.md`.
