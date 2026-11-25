@@ -1,0 +1,9 @@
+---
+description: Polylang third-party integration layout
+globs: src/integrations/**/*.php
+alwaysApply: false
+---
+
+# Integrations
+
+One plugin per folder. Entry is `src/integrations/<plugin>/load.php`. Copy the closest sibling, for example `src/integrations/wpseo/load.php`.

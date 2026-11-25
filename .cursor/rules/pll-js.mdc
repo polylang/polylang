@@ -1,0 +1,15 @@
+---
+description: Polylang JavaScript packages and block sources
+globs: js/**/*.{js,jsx,scss}
+alwaysApply: false
+---
+
+# Polylang JS
+
+Import `@wordpress/*` only (`eslint.config.cjs` → `import/core-modules`). Blocks live in `js/src/blocks/`; markup changes go through that block's `deprecated.js`.
+
+```js
+import { useSelect } from '@wordpress/data';
+```
+
+Paths: `.cursor/reference/js-conventions.md`.

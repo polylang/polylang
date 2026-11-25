@@ -1,0 +1,15 @@
+---
+description: Polylang PHP namespaces and text domain
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Polylang PHP
+
+Text domain: `polylang`. New modules, integrations, and test classes use `WP_Syntex\Polylang\…`. A new class in an existing `PLL_*` tree stays `PLL_*`.
+
+```php
+namespace WP_Syntex\Polylang\Switcher\Settings;
+```
+
+Layout and Rector: `.cursor/reference/php-conventions.md`.

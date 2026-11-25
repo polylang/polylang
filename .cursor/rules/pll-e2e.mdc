@@ -1,0 +1,9 @@
+---
+description: Polylang Playwright conventions
+globs: tests/e2e/**/*.{js,mjs,cjs}
+alwaysApply: false
+---
+
+# Polylang E2E
+
+Conventions: `.cursor/reference/e2e-conventions.md`.
