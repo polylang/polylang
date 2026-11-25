@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Polylang PHP
 
-New files use `WP_Syntex\Polylang\…`. When editing a legacy `PLL_*` class, match that class. Text domain: `polylang`.
+Text domain: `polylang`. New modules, integrations, and test classes use `WP_Syntex\Polylang\…`. A new class in an existing `PLL_*` tree stays `PLL_*`.
 
 ```php
 namespace WP_Syntex\Polylang\Switcher\Settings;
