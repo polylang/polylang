@@ -175,7 +175,7 @@ class Calendar extends \WP_Widget_Calendar {
 		}
 
 		// week_begins = 0 stands for Sunday.
-		$week_begins = (int) get_option( 'start_of_week' );
+		$week_begins = absint( get_option( 'start_of_week' ) ) % 7;
 
 		// Read the current date.
 		list( $current_year, $current_month, $current_day ) = array_map( 'intval', explode( '-', current_time( 'Y-m-j' ) ) );

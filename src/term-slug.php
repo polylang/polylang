@@ -149,7 +149,7 @@ class PLL_Term_Slug {
 		/**
 		 * Mostly copied from {@see wp_unique_term_slug()}.
 		 */
-		while ( ! empty( $the_parent ) ) {
+		do {
 			$parent_term = get_term( $the_parent, $this->taxonomy );
 			if ( ! $parent_term instanceof WP_Term ) {
 				break;
@@ -159,7 +159,7 @@ class PLL_Term_Slug {
 				break;
 			}
 			$the_parent = $parent_term->parent;
-		}
+		} while ( ! empty( $the_parent ) );
 
 		return $parent_suffix;
 	}
