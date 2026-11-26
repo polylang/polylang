@@ -118,6 +118,10 @@ class PLL_Translate_Option {
 		}
 
 		if ( empty( $GLOBALS['l10n']['pll_string'] ) || ! $GLOBALS['l10n']['pll_string'] instanceof PLL_MO ) {
+			$this->maybe_load_string_translations();
+		}
+
+		if ( empty( $GLOBALS['l10n']['pll_string'] ) || ! $GLOBALS['l10n']['pll_string'] instanceof PLL_MO ) {
 			return $value;
 		}
 
@@ -234,6 +238,39 @@ class PLL_Translate_Option {
 			$this->hashes[] = md5( "$string|$option|$context" );
 			PLL_Admin_Strings::register_string( $option, $string, $context, true );
 		}
+	}
+
+	/**
+	 * Attempts to load string translations if the current language is already
+	 * defined but the PLL_MO has not been loaded yet.
+	 *
+	 * This covers a timing gap where `get_option()` is called (e.g. during
+	 * `wp_head`) after `PLL()->curlang` is set via domain/URL detection,
+	 * but before `pll_language_defined` has fired `load_strings_translations()`.
+	 *
+	 * Without this, serialized options declared in wpml-config.xml `admin-texts`
+	 * are silently returned untranslated to the caller.
+	 *
+	 * @since 3.9
+	 *
+	 * @return void
+	 */
+	protected function maybe_load_string_translations() {
+		if ( empty( $GLOBALS['polylang'] ) ) {
+			return;
+		}
+
+		$pll = $GLOBALS['polylang'];
+
+		if ( ! $pll instanceof PLL_Base || ! isset( $pll->curlang ) || ! $pll->curlang instanceof PLL_Language ) {
+			return;
+		}
+
+		if ( ! method_exists( $pll, 'load_strings_translations' ) ) {
+			return;
+		}
+
+		$pll->load_strings_translations( $pll->curlang->slug );
 	}
 
 	/**
