@@ -25,13 +25,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	protected $archive_post_type = false;
 
 	/**
-	 * Caches the list of the non-builtin translated post types.
-	 *
-	 * @var string[]|null
-	 */
-	protected $non_builtin_translated_post_types = null;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -320,11 +313,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			return false;
 		}
 
-		if ( ! is_array( $this->non_builtin_translated_post_types ) ) {
-			$this->non_builtin_translated_post_types = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
-		}
+		$post_types = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
 
-		if ( empty( $this->non_builtin_translated_post_types ) ) {
+		if ( empty( $post_types ) ) {
 			return false;
 		}
 
@@ -338,10 +329,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		 * - index.php?foo_post_type=book
 		 * - index.php?post_type=book_foo
 		 */
-		$pattern = sprintf(
-			'/[\?&]post_type=(%s)(&|$)/',
-			implode( '|', $this->non_builtin_translated_post_types )
-		);
+		$pattern = sprintf( '/[\?&]post_type=(%s)(&|$)/', implode( '|', $post_types ) );
 
 		if ( ! preg_match( $pattern, $rule, $matches ) ) {
 			return false;
