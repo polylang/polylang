@@ -1,0 +1,1 @@
+Fix translations of the previous language loaded after switch_to_locale() in ajax requests on front #2026 - PR#2054
