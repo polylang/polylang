@@ -37,6 +37,7 @@ class PLL_AS3CF {
 	 * @return array
 	 */
 	public function copy_post_metas( $metas ) {
+		$metas = array_diff( $metas, array( 'amazonS3_cache' ) );
 		$metas[] = 'amazonS3_info';
 		$metas[] = 'as3cf_filesize_total';
 		return $metas;
