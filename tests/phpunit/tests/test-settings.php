@@ -24,8 +24,10 @@ class Settings_Test extends PLL_UnitTestCase {
 		global $pagenow, $hook_suffix, $plugin_page;
 
 		// Setup globals.
+		$pagenow = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
+		wp_set_current_user( 1 );
+		self::require_wp_menus();
 		$_GET['page'] = 'mlang';
-		$pagenow      = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
 		$hook_suffix  = 'settings_page_mlang';
 		$plugin_page  = 'mlang';
 		get_admin_page_title();
@@ -74,7 +76,6 @@ class Settings_Test extends PLL_UnitTestCase {
 	public function test_notice_for_objects_with_no_lang() {
 		$links_model = self::$model->get_links_model();
 		new PLL_Settings( $links_model );
-		do_action( 'admin_menu' );
 		do_action( 'load-languages_page_mlang' );
 
 		ob_start();
@@ -149,5 +150,45 @@ class Settings_Test extends PLL_UnitTestCase {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $lang );
 		$this->assertSame( 'The translation', $mo->translate( 'Some string' ) );
+	}
+
+	/**
+	 * @ticket #3217 {@see https://github.com/polylang/polylang-pro/issues/3217}
+	 */
+	public function test_strings_are_saved_when_submitted_with_removed_source_string() {
+		$lang = self::$model->get_language( 'fr' );
+
+		PLL_Admin_Strings::register_string( 'Test', 'Some string' );
+
+		$_GET['page'] = 'mlang_strings';
+		$_POST = array(
+			'pll_action' => 'string-translation',
+			'_wpnonce_string-translation' => wp_create_nonce( 'string-translation' ),
+			'submit' => 'Save changes',
+			'translation' => array(
+				'fr' => array(
+					md5( 'Some string' ) => 'The translation',
+					md5( 'Toto' ) => 'Toto translation',
+				),
+			),
+		);
+
+		$_REQUEST = array_merge( $_GET, $_POST );
+
+		$links_model = self::$model->get_links_model();
+		$this->assert_redirect( array( new PLL_Settings( $links_model ), 'languages_page' ) );
+
+		$mo = new PLL_MO();
+		$mo->import_from_db( $lang );
+		$this->assertSame(
+			'The translation',
+			$mo->translate( 'Some string' ),
+			'The translation for a still-registered source string should be saved.'
+		);
+		$this->assertSame(
+			'',
+			$mo->translate_if_any( 'Toto' ),
+			'A translation submitted for a removed source string should not be saved.'
+		);
 	}
 }
