@@ -119,6 +119,7 @@ abstract class Abstract_Block {
 		pll_register_script(
 			'blocks',
 			array(
+				'react-jsx-runtime',
 				'wp-block-editor',
 				'wp-blocks',
 				'wp-components',
