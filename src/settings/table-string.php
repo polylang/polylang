@@ -431,6 +431,9 @@ class PLL_Table_String extends WP_List_Table {
 				$mo->import_from_db( $language );
 
 				foreach ( $translations as $key => $translation ) {
+					if ( empty( $this->strings[ $key ] ) ) {
+						continue;
+					}
 					/**
 					 * Filters the string translation before it is saved in DB.
 					 * Allows to sanitize strings registered with pll_register_string().
