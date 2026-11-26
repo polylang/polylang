@@ -34,9 +34,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertFalse( strpos( $out, 'review' ) );
 	}
@@ -51,9 +49,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		if ( defined( 'POLYLANG_PRO' ) ) {
 			$this->assertFalse( strpos( $out, 'review' ) );
@@ -73,9 +69,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertFalse( strpos( $out, 'review' ) );
 	}
@@ -91,9 +85,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertEmpty( $out );
 	}
@@ -110,9 +102,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		}
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		ob_start();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
+		$out = $this->get_admin_notices_output();
 
 		$this->assertNotFalse( strpos( $out, 'pllwc' ) );
 	}
@@ -129,5 +119,86 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		} else {
 			$this->assertEmpty( get_user_meta( 1, 'pll_dismissed_notices', true ) );
 		}
+	}
+
+	public function test_translation_updates_notice_when_updates_available() {
+		wp_set_current_user( 1 );
+		self::create_language( 'fr_FR' );
+		$this->mock_plugin_translation_updates();
+		$this->set_languages_screen();
+
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
+
+		$out = $this->get_admin_notices_output();
+
+		$this->assertStringContainsString( 'upgrade-translations', $out );
+		$this->assertStringContainsString( 'do-translation-upgrade', $out );
+		$this->assertStringContainsString( 'Update language packs', $out );
+		$this->assertStringNotContainsString( 'pll-hide-notice=translation-updates', $out );
+	}
+
+	public function test_no_translation_updates_notice_without_updates() {
+		wp_set_current_user( 1 );
+
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+		delete_site_transient( 'update_core' );
+
+		$this->set_languages_screen();
+
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
+
+		$out = $this->get_admin_notices_output();
+
+		$this->assertStringNotContainsString( 'upgrade-translations', $out );
+	}
+
+	public function test_no_translation_updates_notice_on_plugins_screen() {
+		wp_set_current_user( 1 );
+		$this->mock_plugin_translation_updates();
+
+		$GLOBALS['hook_suffix'] = 'plugins.php';
+		set_current_screen();
+
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
+
+		$out = $this->get_admin_notices_output();
+
+		$this->assertStringNotContainsString( 'upgrade-translations', $out );
+	}
+
+	private function get_admin_notices_output() {
+		ob_start();
+		do_action( 'admin_notices' );
+
+		return ob_get_clean();
+	}
+
+	private function set_languages_screen() {
+		$_GET['page'] = 'mlang';
+		$GLOBALS['hook_suffix'] = PLL_Admin_Base::get_screen_id( 'lang' );
+		set_current_screen();
+	}
+
+	private function mock_plugin_translation_updates() {
+		$update_plugins = (object) array(
+			'translations' => array(
+				(object) array(
+					'type'     => 'plugin',
+					'slug'     => 'polylang/polylang.php',
+					'language' => 'fr_FR',
+					'version'  => '1.0',
+					'updated'  => '2020-01-01',
+					'package'  => 'https://example.com/fr_FR.zip',
+				),
+			),
+		);
+
+		add_filter(
+			'pre_site_transient_update_plugins',
+			static function () use ( $update_plugins ) {
+				return $update_plugins;
+			}
+		);
 	}
 }

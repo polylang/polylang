@@ -20,6 +20,11 @@ class PLL_Admin_Notices {
 	protected $options;
 
 	/**
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
 	 * Stores custom notices.
 	 *
 	 * @var string[]
@@ -36,6 +41,7 @@ class PLL_Admin_Notices {
 	 */
 	public function __construct( PLL_Admin_Base $polylang ) {
 		$this->options = $polylang->options;
+		$this->model   = $polylang->model;
 
 		add_action( 'admin_init', array( $this, 'hide_notice' ) );
 		add_action( 'admin_notices', array( $this, 'display_notices' ) );
@@ -111,12 +117,9 @@ class PLL_Admin_Notices {
 		}
 
 		if ( empty( $allowed_screens ) ) {
-			$allowed_screens = array(
-				'dashboard',
-				'plugins',
-				PLL_Admin_Base::get_screen_id( 'lang' ),
-				PLL_Admin_Base::get_screen_id( 'strings' ),
-				PLL_Admin_Base::get_screen_id( 'settings' ),
+			$allowed_screens = array_merge(
+				array( 'dashboard', 'plugins' ),
+				$this->get_polylang_screens()
 			);
 		}
 
@@ -129,6 +132,22 @@ class PLL_Admin_Notices {
 		 * @param string $notice  The notice name.
 		 */
 		return apply_filters( 'pll_can_display_notice', in_array( $screen->id, $allowed_screens, true ), $notice );
+	}
+
+	/**
+	 * Returns Polylang admin screen IDs.
+	 *
+	 * @since 4.0
+	 *
+	 * @return string[]
+	 */
+	private function get_polylang_screens() {
+
+		return array(
+			PLL_Admin_Base::get_screen_id( 'lang' ),
+			PLL_Admin_Base::get_screen_id( 'strings' ),
+			PLL_Admin_Base::get_screen_id( 'settings' ),
+		);
 	}
 
 	/**
@@ -190,6 +209,15 @@ class PLL_Admin_Notices {
 				&& ! static::is_dismissed( 'empty-strings-translations' )
 			) {
 				$this->empty_strings_translations_notice();
+			}
+
+			if (
+				$this->can_display_notice( 'translation-updates', $this->get_polylang_screens() )
+				&& $this->model->has_languages()
+				&& current_user_can( 'update_languages' )
+				&& ! empty( wp_get_translation_updates() )
+			) {
+				$this->translation_updates_notice();
 			}
 
 			// Custom notices
@@ -289,6 +317,27 @@ class PLL_Admin_Notices {
 			<p>
 				<?php esc_html_e( 'Translations matching the original string are shown as empty in the table. Untranslated content remains unchanged.', 'polylang' ); ?>
 			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Displays a notice when WordPress language packs can be updated.
+	 *
+	 * Not dismissible: it remains until the language packs are updated.
+	 *
+	 * @since 4.0
+	 *
+	 * @return void
+	 */
+	private function translation_updates_notice() {
+		?>
+		<div class="pll-notice notice notice-info">
+			<form method="post" action="<?php echo esc_url( self_admin_url( 'update-core.php?action=do-translation-upgrade' ) ); ?>" name="upgrade-translations" class="upgrade">
+				<p><?php esc_html_e( 'New language packs are available for WordPress, plugins, or themes.', 'polylang' ); ?></p>
+				<?php wp_nonce_field( 'upgrade-translations' ); ?>
+				<p><input class="button" type="submit" value="<?php echo esc_attr__( 'Update language packs', 'polylang' ); ?>" name="upgrade" /></p>
+			</form>
 		</div>
 		<?php
 	}
