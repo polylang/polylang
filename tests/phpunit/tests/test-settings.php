@@ -24,8 +24,10 @@ class Settings_Test extends PLL_UnitTestCase {
 		global $pagenow, $hook_suffix, $plugin_page;
 
 		// Setup globals.
+		$pagenow = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
+		wp_set_current_user( 1 );
+		self::require_wp_menus();
 		$_GET['page'] = 'mlang';
-		$pagenow      = 'admin.php'; // Set $pagenow so `get_admin_page_parent()` doesn't throw PHP deprecation notice with PHP 8.5.
 		$hook_suffix  = 'settings_page_mlang';
 		$plugin_page  = 'mlang';
 		get_admin_page_title();
@@ -74,7 +76,6 @@ class Settings_Test extends PLL_UnitTestCase {
 	public function test_notice_for_objects_with_no_lang() {
 		$links_model = self::$model->get_links_model();
 		new PLL_Settings( $links_model );
-		do_action( 'admin_menu' );
 		do_action( 'load-languages_page_mlang' );
 
 		ob_start();
