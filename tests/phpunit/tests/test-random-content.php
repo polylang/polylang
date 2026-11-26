@@ -139,6 +139,7 @@ class Random_Test extends PLL_UnitTestCase {
 		$wp_rewrite->flush_rules();
 
 		parent::go_to( $test_url );
+		do_action( 'template_redirect' );
 	}
 
 	protected static function register_post_types_and_taxonomies() {
