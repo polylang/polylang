@@ -71,7 +71,7 @@ class Random_Test extends PLL_UnitTestCase {
 	 * @param string $to_uri
 	 * @return void
 	 */
-	public function test_category_random_post( string $from_uri, string $to_uri ): void {
+	public function test_should_redirect_to_random_post( string $from_uri, string $to_uri ): void {
 		$this->assertTrue( wp_is_random_content_redirect_enabled() );
 		$this->assert_redirect(
 			array( $this, 'go_to' ),
