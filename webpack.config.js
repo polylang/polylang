@@ -85,6 +85,11 @@ function configureWebpack( options ) {
 		libraryName: 'polylang',
 		isProduction,
 		wpDependencies,
+		// Core's React, not the copy pulled in by @wordpress/babel-preset-default.
+		additionalExternals: {
+			'react/jsx-runtime': 'ReactJSXRuntime',
+			'react/jsx-dev-runtime': 'ReactJSXRuntime',
+		},
 		sassLoadPaths: [
 			path.resolve(
 				workingDirectory,
