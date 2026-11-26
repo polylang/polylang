@@ -50,6 +50,9 @@ class Random_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp_rewrite']->init();
 		$GLOBALS['wp_rewrite']->extra_rules_top = array();
 		$GLOBALS['wp_rewrite']->set_permalink_structure( '/%postname%/' );
+
+		// Prevent false positives.
+		remove_action( 'template_redirect', 'redirect_canonical' );
 	}
 
 	public function tear_down() {
