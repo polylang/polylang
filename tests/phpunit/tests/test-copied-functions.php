@@ -8,7 +8,7 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_get_calendar() {
-		$this->check_method( 'cf4d5e113053d1cbc1d1f454d9b44038', '7.2', 'get_calendar' );
+		$this->check_method( '1091cc9154c78828de17f4398696db8d', '7.3', 'get_calendar' );
 	}
 
 	public function test_wp_admin_bar() {
@@ -19,7 +19,7 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	 * Monitors PLL_Term_Slug::maybe_get_parent_suffix()
 	 */
 	public function test_wp_unique_term_slug() {
-		$this->check_method( 'ccfa5e5319999728d553fce744884153', '7.2', 'wp_unique_term_slug' );
-		$this->check_internal_method( 'b84b8505f2708c20ef72d9f01568e305', PLL_Term_Slug::class, 'maybe_get_parent_suffix' );
+		$this->check_internal_method( '747593613aa10fa414d46ce80227d520', PLL_Term_Slug::class, 'maybe_get_parent_suffix' );
+		$this->check_method( '02a156bbc3b2661986b1a3b037d351e2', '7.3', 'wp_unique_term_slug' );
 	}
 }
