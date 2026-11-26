@@ -172,6 +172,18 @@ abstract class PLL_Base {
 
 		if ( $this->is_active_on_current_site() ) {
 			$this->links_model = $this->model->get_links_model();
+
+			/*
+			 * Refresh the static pages ids, which are read once from the options
+			 * and would otherwise still belong to the previous blog. They are
+			 * cached per language by PLL_Static_Pages::set_static_pages(), hooked
+			 * to 'pll_additional_language_data' in every context, so a languages
+			 * cache built while the blog is switched would store the ids of the
+			 * previous blog.
+			 */
+			if ( ! empty( $this->static_pages ) ) {
+				$this->static_pages->init();
+			}
 		}
 	}
 
