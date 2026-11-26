@@ -5,6 +5,7 @@ class Random_Test extends PLL_UnitTestCase {
 
 	private const CUSTOM_CPT = 'custom-random-cpt';
 	private const CUSTOM_TAX = 'custom-random-tax';
+	private const BASE_SLUG  = '/pll-randy';
 
 	private static $post_en;
 	private static $custom_post_id;
@@ -26,6 +27,8 @@ class Random_Test extends PLL_UnitTestCase {
 
 		self::generate_shared_fixtures( $factory );
 		self::$model->languages->clean_cache();
+
+		update_option( 'wp_random_base', self::BASE_SLUG );
 	}
 
 	public function set_up() {
@@ -78,7 +81,7 @@ class Random_Test extends PLL_UnitTestCase {
 		$this->assertTrue( wp_is_random_content_redirect_enabled() );
 		$this->assert_redirect(
 			array( $this, 'go_to' ),
-			array( home_url( $from_uri ) )
+			array( home_url( str_replace( '/random', self::BASE_SLUG, $from_uri ) ) )
 		);
 		$this->assert_redirect_location( "http://example.org/{$to_uri}" );
 		$this->assert_redirect_status( 302 );
