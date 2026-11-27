@@ -8,11 +8,11 @@
 .pll-switcher ul {
 	padding: 0;
 	margin: 0;
-	list-style: none;
 	line-height: normal;
 }
 .pll-switcher li {
 	margin: 0;
+	list-style: none;
 }
 
 /* Dropdown layout */
