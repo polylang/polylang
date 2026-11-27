@@ -467,7 +467,7 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Issue #937.
 	 */
 	public function test_invalid_search() {
-		$this->go_to( home_url( '/fr/random/?s=' ) );
+		$this->go_to( home_url( '/fr/invalid/?s=' ) );
 		$this->assertQueryTrue( 'is_404' );
 	}
 

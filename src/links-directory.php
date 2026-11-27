@@ -18,6 +18,13 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	protected $home_relative;
 
 	/**
+	 * Temporarily stores the post type contained in the current post type archive rule.
+	 *
+	 * @var false|string
+	 */
+	protected $archive_post_type = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -187,10 +194,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$slug = $wp_rewrite->root . ( $this->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $languages ) . ')/';
 		}
 
-		// For custom post type archives.
-		$cpts = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
-		$cpts = $cpts ? '#post_type=(' . implode( '|', $cpts ) . ')#' : '';
-
 		$filter   = str_replace( '_rewrite_rules', '', (string) current_filter() );
 		$newrules = array();
 
@@ -225,10 +228,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			}
 
 			// Rewrite rules filtered by language.
-			elseif ( in_array( $filter, $this->always_rewrite ) || in_array( $filter, $this->model->get_filtered_taxonomies() ) || ( $cpts && preg_match( $cpts, $rule, $matches ) && ! strpos( $rule, 'name=' ) ) || ( 'rewrite_rules_array' != $filter && $this->options['force_lang'] ) ) {
+			elseif ( $this->should_add_rules_by_language( $filter, $rule ) ) {
 
 				/** This filter is documented in src/links-directory.php */
-				if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $key => $rule ), $filter, empty( $matches[1] ) ? false : $matches[1] ) ) {
+				if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $key => $rule ), $filter, $this->archive_post_type ) ) {
 					if ( isset( $slug ) ) {
 						$newrules[ $slug . str_replace( $wp_rewrite->root, '', ltrim( $key, '^' ) ) ] = str_replace(
 							array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
@@ -257,6 +260,83 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		return $newrules;
+	}
+
+	/**
+	 * Tells if Polylang should add rewrite rules to filter by language.
+	 *
+	 * @since 4.0
+	 *
+	 * @param string $filter Name of the current filter (or the beginning of it).
+	 * @param string $rule   Rewrite rule.
+	 * @return bool
+	 */
+	protected function should_add_rules_by_language( string $filter, string $rule ): bool {
+		$this->archive_post_type = false;
+
+		if ( 'rewrite_rules_array' !== $filter && $this->options['force_lang'] ) {
+			return true;
+		}
+
+		if ( in_array( $filter, $this->always_rewrite, true ) ) {
+			return true;
+		}
+
+		if ( in_array( $filter, $this->model->get_filtered_taxonomies(), true ) ) {
+			return true;
+		}
+
+		return $this->is_custom_post_type_from_archive_rule( $rule );
+	}
+
+	/**
+	 * Tells if the given rule corresponds to a custom post type archive page.
+	 * Note: `$this->archive_post_type` must be set to `false` beforehand.
+	 *
+	 * @since 4.0
+	 *
+	 * @param string $rule Rewrite rule.
+	 * @return bool
+	 */
+	protected function is_custom_post_type_from_archive_rule( string $rule ): bool {
+		/*
+		 * `name=` means it's not an archive page.
+		 * `random=1` means it's a "random" page, which has already beel processed in the filter `random_rewrite_rules`.
+		 */
+		if ( function_exists( 'wp_is_random_content_redirect_enabled' ) && wp_is_random_content_redirect_enabled() ) { /** Backward compatibility with WP < 7.2. */
+			$pattern = '/[\?&](name=|random=1)/';
+		} else {
+			$pattern = '/[\?&]name=/';
+		}
+
+		if ( preg_match( $pattern, $rule ) ) {
+			return false;
+		}
+
+		$post_types = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
+
+		if ( empty( $post_types ) ) {
+			return false;
+		}
+
+		/*
+		 * Matches:
+		 * - index.php?foo=1&post_type=book&bar=1
+		 * - index.php?foo=1&post_type=book
+		 * - index.php?post_type=book&bar=1
+		 * - index.php?post_type=book
+		 * Does not match (`book` is in the list, `book_foo` starts with `book` but is not in the list):
+		 * - index.php?foo_post_type=book
+		 * - index.php?post_type=book_foo
+		 */
+		$pattern = sprintf( '/[\?&]post_type=(%s)(&|$)/', implode( '|', $post_types ) );
+
+		if ( ! preg_match( $pattern, $rule, $matches ) ) {
+			return false;
+		}
+
+		$this->archive_post_type = $matches[1];
+		return true;
 	}
 
 	/**

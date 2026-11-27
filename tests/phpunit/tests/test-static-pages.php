@@ -110,6 +110,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		wp_delete_post( self::$posts_en, true );
 		wp_delete_post( self::$posts_fr, true );
 
+		_unregister_post_type( 'trcpt' );
+
 		parent::wpTearDownAfterClass();
 	}
 
@@ -523,14 +525,14 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public function test_post_type_archives_with_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
-		$this->init_test();
-
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
 
 		self::$model->options['post_types'] = array( 'trcpt' );
+
+		$this->init_test();
 
 		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -542,8 +544,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		$this->go_to( home_url( '/en/trcpt/' ) );
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
-
-		_unregister_post_type( 'trcpt' );
 	}
 
 	/**
