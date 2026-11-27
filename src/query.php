@@ -45,9 +45,27 @@ class PLL_Query {
 			return true;
 		}
 
-		if ( ! empty( $qvars['tax_query'] ) && is_array( $qvars['tax_query'] ) ) {
-			foreach ( $qvars['tax_query'] as $tax_query ) {
+		return ! empty( $qvars['tax_query'] ) && $this->have_language_taxonomy( $qvars['tax_query'] );
+	}
+
+	/**
+	 * Checks if the language taxonomy is queried.
+	 * Compatible with nested queries, like `have_translated_taxonomy()`.
+	 *
+	 * @since 4.0
+	 *
+	 * @param array $tax_queries An array of tax queries.
+	 * @return bool
+	 */
+	protected function have_language_taxonomy( $tax_queries ) {
+		if ( is_array( $tax_queries ) ) {
+			foreach ( $tax_queries as $tax_query ) {
 				if ( isset( $tax_query['taxonomy'] ) && 'language' === $tax_query['taxonomy'] ) {
+					return true;
+				}
+
+				// Nested queries.
+				elseif ( is_array( $tax_query ) && $this->have_language_taxonomy( $tax_query ) ) {
 					return true;
 				}
 			}

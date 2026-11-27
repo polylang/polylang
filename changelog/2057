@@ -1,0 +1,1 @@
+Fix a language clause nested in the tax query being combined with the current language #2056 - PR#2057
