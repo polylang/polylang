@@ -77,6 +77,30 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * Checks if a tax query contains the language taxonomy.
+	 *
+	 * @param array $queries Tax query clauses.
+	 * @return bool True if the language taxonomy is found.
+	 */
+	protected function has_language_tax_query( $queries ) {
+		foreach ( $queries as $query ) {
+			if ( ! is_array( $query ) ) {
+				continue;
+			}
+
+			if ( isset( $query['taxonomy'] ) && 'language' === $query['taxonomy'] ) {
+				return true;
+			}
+
+			if ( $this->has_language_tax_query( $query ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Creates english and french posts along with two terms.
 	 * Also creates posts without terms.
 	 *
@@ -659,6 +683,33 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 
 		$query = new WP_Query( array( 'post_type' => 'any', 'lang' => 'fr' ) );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
+	}
+
+	public function test_language_tax_query_hidden_from_pre_get_posts() {
+		// Posts
+		$en = self::factory()->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+
+		$tax_queries = array();
+		$inspect_query = function ( $query ) use ( &$tax_queries ) {
+			$tax_queries = $query->tax_query->queries;
+		};
+
+		add_action( 'pre_get_posts', $inspect_query, 20 );
+
+		try {
+			$query = new WP_Query( array( 'post_type' => 'post' ) );
+		} finally {
+			remove_action( 'pre_get_posts', $inspect_query, 20 );
+		}
+
+		$this->assertFalse( $this->has_language_tax_query( $tax_queries ) );
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 

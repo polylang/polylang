@@ -93,11 +93,7 @@ class PLL_Frontend extends PLL_Base {
 
 		// Filters posts by language
 		add_action( 'parse_query', array( $this, 'parse_query' ), 6 );
-
-		// Not before 'check_canonical_url'
-		if ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) {
-			add_action( 'template_redirect', array( $this, 'auto_translate' ), 7 );
-		}
+		add_action( 'pre_get_posts', array( $this, 'hide_language_tax_query' ), 1 );
 
 		add_action( 'admin_bar_menu', array( $this, 'remove_customize_admin_bar' ), 41 ); // After WP_Admin_Bar::add_menus
 
@@ -159,8 +155,7 @@ class PLL_Frontend extends PLL_Base {
 		$this->canonical = new PLL_Canonical( $this );
 		add_action( 'template_redirect', array( $this->canonical, 'check_canonical_url' ), 4 );
 
-		// Auto translate for Ajax
-		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
+		if ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) {
 			$this->auto_translate();
 		}
 	}
@@ -239,6 +234,52 @@ class PLL_Frontend extends PLL_Base {
 				unset( $query->queried_object ); // FIXME useless?
 			}
 		}
+	}
+
+	/**
+	 * Hides Polylang's internal language tax query from third-party pre_get_posts callbacks.
+	 *
+	 * @since 3.9
+	 *
+	 * @param WP_Query $query WP_Query object.
+	 * @return void
+	 */
+	public function hide_language_tax_query( $query ) {
+		if ( ! $query->tax_query instanceof WP_Tax_Query ) {
+			return;
+		}
+
+		if ( empty( $query->tax_query->queries ) || ! is_array( $query->tax_query->queries ) ) {
+			return;
+		}
+
+		$query->tax_query->queries = $this->remove_language_tax_query( $query->tax_query->queries );
+		unset( $query->tax_query->queried_terms['language'] );
+	}
+
+	/**
+	 * Removes the internal language tax query recursively.
+	 *
+	 * @since 3.9
+	 *
+	 * @param array $queries Tax query clauses.
+	 * @return array Tax query clauses without Polylang's internal language query.
+	 */
+	protected function remove_language_tax_query( $queries ) {
+		foreach ( $queries as $key => $tax_query ) {
+			if ( ! is_array( $tax_query ) ) {
+				continue;
+			}
+
+			if ( isset( $tax_query['taxonomy'] ) && 'language' === $tax_query['taxonomy'] ) {
+				unset( $queries[ $key ] );
+				continue;
+			}
+
+			$queries[ $key ] = $this->remove_language_tax_query( $tax_query );
+		}
+
+		return $queries;
 	}
 
 	/**
